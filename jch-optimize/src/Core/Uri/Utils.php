@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
+ *
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
+ *
+ *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace JchOptimize\Core\Uri;
+
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\UriResolver;
+use GuzzleHttp\Psr7\Utils as GuzzleUtils;
+use InvalidArgumentException;
+use JchOptimize\ContainerFactory;
+use JchOptimize\Core\Cdn;
+use JchOptimize\Core\SystemUri;
+use Psr\Http\Message\UriInterface;
+
+use function array_column;
+use function strtr;
+
+class Utils
+{
+    public static function originDomains(): array
+    {
+        $container = ContainerFactory::getContainer();
+        /** @var Cdn $cdn */
+        $cdn = $container->get(Cdn::class);
+        $domains = $cdn->getCdnDomains();
+        $cdnDomains = array_column($domains, 'domain');
+
+        $systemDomain = new Uri(SystemUri::currentBaseFull());
+        $originDomains = [$systemDomain];
+        //We count each configured CDN domain as 'equivalent' to the system domain, so we just
+        //build an array by swapping the CDN domains
+        foreach ($cdnDomains as $cdnDomain) {
+            $originDomains[] = UriResolver::resolve($systemDomain, $cdnDomain)->withPath($systemDomain->getPath());
+        }
+
+        return $originDomains;
+    }
+
+    /**
+     * Returns a UriInterface for an accepted value. If there's an error processing the
+     * received value, an '_invalidUri' string is returned,
+     * Use this whenever possible as Windows paths are converted to unix style so Uris can be created
+     *
+     * @param string|UriInterface $uri
+     *
+     * @return UriInterface
+     */
+    public static function uriFor($uri): UriInterface
+    {
+        //convert Window directory to unix style
+        if(is_string($uri)) {
+            $uri = strtr(trim($uri), '\\', '/');
+        }
+
+        try {
+            return UriNormalizer::normalize(GuzzleUtils::uriFor($uri));
+        } catch (InvalidArgumentException $e) {
+            return new Uri('_invalidUri');
+        }
+    }
+}

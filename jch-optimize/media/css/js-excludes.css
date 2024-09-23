@@ -1,0 +1,98 @@
+
+/** JavaScript Excludes **/
+div.jch-js-fieldset-children:only-child {
+    display: none;
+}
+
+.jch-js-excludes-container, .jch-js-excludes-header {
+    display: flex;
+    flex-direction: row;
+    clear: both;
+    width: 310px;
+}
+
+.jch-js-excludes-header {
+    font-size: 13px;
+    text-decoration: underline #aaaaaa;
+    text-underline-offset: 2px;
+}
+
+.jch-js-excludes-header .jch-js-ieo-header {
+    width: 88%;
+    border-right: 1px solid #aaaaaa;
+    padding-bottom: 3px;
+    text-align: right;
+}
+
+.jch-js-excludes-header .jch-js-dontmove-header {
+    width: 12%;
+    text-align: left;
+    overflow: visible;
+    white-space: nowrap;
+    padding-bottom: 3px;
+}
+
+.jch-js-excludes-container .jch-js-ieo {
+    width: 12%;
+    border-right: 1px solid #aaaaaa;
+    text-align: center;
+}
+
+.jch-js-excludes-container .jch-js-dontmove {
+    width: 12%;
+    text-align: center;
+}
+
+.jch-js-excludes-container .jch-js-excludes {
+    width: 76%;
+    text-align: right;
+    overflow: visible;
+    display: inline-flex;
+    justify-content: flex-end;
+}
+
+.jch-js-excludes-container .jch-js-excludes span {
+    position: relative;
+    margin: 0 2px 3px 0;
+    padding: 1px 20px 1px 5px;
+    border: 1px solid #aaaaaa;
+    max-width: 100%;
+    border-radius: 3px;
+    background-color: #eeeeee;
+    background-image: linear-gradient(#f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%);
+    background-size: 100% 19px;
+    background-repeat: repeat-x;
+    background-clip: padding-box;
+    box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+    color: #333333;
+    line-height: 1;
+    cursor: default;
+    font-size: 13px;
+    font-weight: 400;
+    height: 19px;
+    white-space: nowrap;
+    display: inline-table;
+    box-sizing: border-box;
+    border-collapse: separate;
+}
+
+.jch-js-excludes-container .jch-js-excludes input {
+    display: none;
+}
+
+.jch-js-excludes .jch-multiselect-remove-button {
+    position: absolute;
+    top: 4px;
+    right: -1px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: url(../chosen-js/chosen-sprite.png) -42px 1px no-repeat;
+    font-size: 1px;
+    cursor: pointer;
+    border: none;
+}
+
+.jch-js-excludes .jch-multiselect-remove-button:hover {
+    background-position: -42px -10px;
+}

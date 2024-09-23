@@ -1,0 +1,4192 @@
+{
+    "packages": [
+        {
+            "name": "codealfa\/minify",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/codealfa\/minify.git",
+                "reference": "a11d3fc4da27e170ca8cb9f966915ff9cfdc519d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/minify\/zipball\/a11d3fc4da27e170ca8cb9f966915ff9cfdc519d",
+                "reference": "a11d3fc4da27e170ca8cb9f966915ff9cfdc519d",
+                "shasum": ""
+            },
+            "require": {
+                "codealfa\/regextokenizer": "dev-master",
+                "php": ">=7.0"
+            },
+            "time": "2023-10-22T18:28:00+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "CodeAlfa\\Minify\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Samuel Marshall",
+                    "email": "sdmarshall73@gmail.com"
+                }
+            ],
+            "description": "An extremely fast PHP based minification library for Javascript, CSS, Html and Json scripts using Regex Parsing",
+            "support": {
+                "issues": "https:\/\/github.com\/codealfa\/minify\/issues",
+                "source": "https:\/\/github.com\/codealfa\/minify\/tree\/master"
+            },
+            "install-path": "..\/codealfa\/minify"
+        },
+        {
+            "name": "codealfa\/regextokenizer",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/codealfa\/regextokenizer.git",
+                "reference": "b660bf5d561078f40bcbf1a68eeb63428a14b17d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/regextokenizer\/zipball\/b660bf5d561078f40bcbf1a68eeb63428a14b17d",
+                "reference": "b660bf5d561078f40bcbf1a68eeb63428a14b17d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr\/log": "^1"
+            },
+            "time": "2023-07-25T23:50:35+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "CodeAlfa\\RegexTokenizer\\": "src\/"
+                }
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Samuel Marshall",
+                    "email": "sdmarshall73@gmail.com"
+                }
+            ],
+            "description": "description",
+            "support": {
+                "source": "https:\/\/github.com\/codealfa\/regextokenizer\/tree\/master",
+                "issues": "https:\/\/github.com\/codealfa\/regextokenizer\/issues"
+            },
+            "install-path": "..\/codealfa\/regextokenizer"
+        },
+        {
+            "name": "composer\/ca-bundle",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/composer\/ca-bundle.git",
+                "reference": "4d0ae9807cf38e759b6f10b09195b3addd7d8685"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/composer\/ca-bundle\/zipball\/4d0ae9807cf38e759b6f10b09195b3addd7d8685",
+                "reference": "4d0ae9807cf38e759b6f10b09195b3addd7d8685",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-pcre": "*",
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan\/phpstan": "^0.12.55",
+                "psr\/log": "^1.0",
+                "symfony\/phpunit-bridge": "^4.2 || ^5",
+                "symfony\/process": "^2.5 || ^3.0 || ^4.0 || ^5.0 || ^6.0"
+            },
+            "time": "2023-10-11T09:24:02+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Composer\\CaBundle\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http:\/\/seld.be"
+                }
+            ],
+            "description": "Lets you find a path to the system CA bundle, and includes a fallback to the Mozilla CA bundle.",
+            "keywords": [
+                "cabundle",
+                "cacert",
+                "certificate",
+                "ssl",
+                "tls"
+            ],
+            "support": {
+                "irc": "irc:\/\/irc.freenode.org\/composer",
+                "issues": "https:\/\/github.com\/composer\/ca-bundle\/issues",
+                "source": "https:\/\/github.com\/composer\/ca-bundle\/tree\/main"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/composer\/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": ".\/ca-bundle"
+        },
+        {
+            "name": "guzzlehttp\/guzzle",
+            "version": "7.5.x-dev",
+            "version_normalized": "7.5.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/guzzle\/guzzle.git",
+                "reference": "584d1f06b5caa07b0587f5054d551ed65460ce5d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/guzzle\/guzzle\/zipball\/584d1f06b5caa07b0587f5054d551ed65460ce5d",
+                "reference": "584d1f06b5caa07b0587f5054d551ed65460ce5d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp\/promises": "^1.5",
+                "guzzlehttp\/psr7": "^1.9.1 || ^2.4.5",
+                "php": "^7.2.5 || ^8.0",
+                "psr\/http-client": "^1.0",
+                "symfony\/deprecation-contracts": "^2.2 || ^3.0"
+            },
+            "provide": {
+                "psr\/http-client-implementation": "1.0"
+            },
+            "require-dev": {
+                "bamarni\/composer-bin-plugin": "^1.8.1",
+                "ext-curl": "*",
+                "php-http\/client-integration-tests": "^3.0",
+                "phpunit\/phpunit": "^8.5.29 || ^9.5.23",
+                "psr\/log": "^1.1 || ^2.0 || ^3.0"
+            },
+            "suggest": {
+                "ext-curl": "Required for CURL handler support",
+                "ext-intl": "Required for Internationalized Domain Name (IDN) support",
+                "psr\/log": "Required for using the Log middleware"
+            },
+            "time": "2023-05-15T20:42:18+00:00",
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src\/functions_include.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\GuzzleHttp\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https:\/\/github.com\/GrahamCampbell"
+                },
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https:\/\/github.com\/mtdowling"
+                },
+                {
+                    "name": "Jeremy Lindblom",
+                    "email": "jeremeamia@gmail.com",
+                    "homepage": "https:\/\/github.com\/jeremeamia"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https:\/\/github.com\/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https:\/\/github.com\/Nyholm"
+                },
+                {
+                    "name": "M\u00e1rk S\u00e1gi-Kaz\u00e1r",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https:\/\/github.com\/sagikazarmark"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https:\/\/github.com\/Tobion"
+                }
+            ],
+            "description": "Guzzle is a PHP HTTP client library",
+            "keywords": [
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "psr-18",
+                "psr-7",
+                "rest",
+                "web service"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/guzzle\/guzzle\/issues",
+                "source": "https:\/\/github.com\/guzzle\/guzzle\/tree\/7.5"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/github.com\/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/guzzlehttp\/guzzle",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/guzzlehttp\/guzzle"
+        },
+        {
+            "name": "guzzlehttp\/promises",
+            "version": "1.5.x-dev",
+            "version_normalized": "1.5.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/guzzle\/promises.git",
+                "reference": "67ab6e18aaa14d753cc148911d273f6e6cb6721e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/guzzle\/promises\/zipball\/67ab6e18aaa14d753cc148911d273f6e6cb6721e",
+                "reference": "67ab6e18aaa14d753cc148911d273f6e6cb6721e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "symfony\/phpunit-bridge": "^4.4 || ^5.1"
+            },
+            "time": "2023-05-21T12:31:43+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src\/functions_include.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\GuzzleHttp\\Promise\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https:\/\/github.com\/GrahamCampbell"
+                },
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https:\/\/github.com\/mtdowling"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https:\/\/github.com\/Nyholm"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https:\/\/github.com\/Tobion"
+                }
+            ],
+            "description": "Guzzle promises library",
+            "keywords": [
+                "promise"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/guzzle\/promises\/issues",
+                "source": "https:\/\/github.com\/guzzle\/promises\/tree\/1.5.3"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/github.com\/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/guzzlehttp\/promises",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/guzzlehttp\/promises"
+        },
+        {
+            "name": "guzzlehttp\/psr7",
+            "version": "1.9.x-dev",
+            "version_normalized": "1.9.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/guzzle\/psr7.git",
+                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/guzzle\/psr7\/zipball\/e4490cabc77465aaee90b20cfc9a770f8c04be6b",
+                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "psr\/http-message": "~1.0",
+                "ralouphie\/getallheaders": "^2.0.5 || ^3.0.0"
+            },
+            "provide": {
+                "psr\/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "ext-zlib": "*",
+                "phpunit\/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
+            },
+            "suggest": {
+                "laminas\/laminas-httphandlerrunner": "Emit PSR-7 responses"
+            },
+            "time": "2023-04-17T16:00:37+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src\/functions_include.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\GuzzleHttp\\Psr7\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https:\/\/github.com\/GrahamCampbell"
+                },
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https:\/\/github.com\/mtdowling"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https:\/\/github.com\/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https:\/\/github.com\/Nyholm"
+                },
+                {
+                    "name": "M\u00e1rk S\u00e1gi-Kaz\u00e1r",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https:\/\/github.com\/sagikazarmark"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https:\/\/github.com\/Tobion"
+                }
+            ],
+            "description": "PSR-7 message implementation that also provides common utility methods",
+            "keywords": [
+                "http",
+                "message",
+                "psr-7",
+                "request",
+                "response",
+                "stream",
+                "uri",
+                "url"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/guzzle\/psr7\/issues",
+                "source": "https:\/\/github.com\/guzzle\/psr7\/tree\/1.9"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/github.com\/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/guzzlehttp\/psr7",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/guzzlehttp\/psr7"
+        },
+        {
+            "name": "illuminate\/collections",
+            "version": "8.x-dev",
+            "version_normalized": "8.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/illuminate\/collections.git",
+                "reference": "705a4e1ef93cd492c45b9b3e7911cccc990a07f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/illuminate\/collections\/zipball\/705a4e1ef93cd492c45b9b3e7911cccc990a07f4",
+                "reference": "705a4e1ef93cd492c45b9b3e7911cccc990a07f4",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate\/contracts": "^8.0",
+                "illuminate\/macroable": "^8.0",
+                "php": "^7.3|^8.0"
+            },
+            "suggest": {
+                "symfony\/var-dumper": "Required to use the dump method (^5.4)."
+            },
+            "time": "2022-06-23T15:29:49+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "helpers.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\Illuminate\\Support\\": ""
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Collections package.",
+            "homepage": "https:\/\/laravel.com",
+            "support": {
+                "issues": "https:\/\/github.com\/laravel\/framework\/issues",
+                "source": "https:\/\/github.com\/laravel\/framework"
+            },
+            "install-path": "..\/illuminate\/collections"
+        },
+        {
+            "name": "illuminate\/contracts",
+            "version": "8.x-dev",
+            "version_normalized": "8.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/illuminate\/contracts.git",
+                "reference": "5e0fd287a1b22a6b346a9f7cd484d8cf0234585d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/illuminate\/contracts\/zipball\/5e0fd287a1b22a6b346a9f7cd484d8cf0234585d",
+                "reference": "5e0fd287a1b22a6b346a9f7cd484d8cf0234585d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0",
+                "psr\/container": "^1.0",
+                "psr\/simple-cache": "^1.0"
+            },
+            "time": "2022-01-13T14:47:47+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Illuminate\\Contracts\\": ""
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Contracts package.",
+            "homepage": "https:\/\/laravel.com",
+            "support": {
+                "issues": "https:\/\/github.com\/laravel\/framework\/issues",
+                "source": "https:\/\/github.com\/laravel\/framework"
+            },
+            "install-path": "..\/illuminate\/contracts"
+        },
+        {
+            "name": "illuminate\/macroable",
+            "version": "8.x-dev",
+            "version_normalized": "8.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/illuminate\/macroable.git",
+                "reference": "aed81891a6e046fdee72edd497f822190f61c162"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/illuminate\/macroable\/zipball\/aed81891a6e046fdee72edd497f822190f61c162",
+                "reference": "aed81891a6e046fdee72edd497f822190f61c162",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "time": "2021-11-16T13:57:03+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Illuminate\\Support\\": ""
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Macroable package.",
+            "homepage": "https:\/\/laravel.com",
+            "support": {
+                "issues": "https:\/\/github.com\/laravel\/framework\/issues",
+                "source": "https:\/\/github.com\/laravel\/framework"
+            },
+            "install-path": "..\/illuminate\/macroable"
+        },
+        {
+            "name": "intervention\/image",
+            "version": "2.7.2",
+            "version_normalized": "2.7.2.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/Intervention\/image.git",
+                "reference": "04be355f8d6734c826045d02a1079ad658322dad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/Intervention\/image\/zipball\/04be355f8d6734c826045d02a1079ad658322dad",
+                "reference": "04be355f8d6734c826045d02a1079ad658322dad",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "guzzlehttp\/psr7": "~1.1 || ^2.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery\/mockery": "~0.9.2",
+                "phpunit\/phpunit": "^4.8 || ^5.7 || ^7.5.15"
+            },
+            "suggest": {
+                "ext-gd": "to use GD library based image processing.",
+                "ext-imagick": "to use Imagick based image processing.",
+                "intervention\/imagecache": "Caching extension for the Intervention Image library"
+            },
+            "time": "2022-05-21T17:30:32+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "_JchOptimizeVendor\\Intervention\\Image\\ImageServiceProvider"
+                    ],
+                    "aliases": {
+                        "Image": "Intervention\\Image\\Facades\\Image"
+                    }
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Intervention\\Image\\": "src\/Intervention\/Image"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oliver Vogel",
+                    "email": "oliver@intervention.io",
+                    "homepage": "https:\/\/intervention.io\/"
+                }
+            ],
+            "description": "Image handling and manipulation library with support for Laravel integration",
+            "homepage": "http:\/\/image.intervention.io\/",
+            "keywords": [
+                "gd",
+                "image",
+                "imagick",
+                "laravel",
+                "thumbnail",
+                "watermark"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/Intervention\/image\/issues",
+                "source": "https:\/\/github.com\/Intervention\/image\/tree\/2.7.2"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/paypal.me\/interventionio",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/Intervention",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/intervention\/image"
+        },
+        {
+            "name": "joomla\/controller",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/controller.git",
+                "reference": "6a5a386246f6e67ab0c3a4e71d27f0f208720b65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/controller\/zipball\/6a5a386246f6e67ab0c3a4e71d27f0f208720b65",
+                "reference": "6a5a386246f6e67ab0c3a4e71d27f0f208720b65",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "require-dev": {
+                "joomla\/application": "^2.0",
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/input": "^2.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "suggest": {
+                "joomla\/application": "The joomla\/application package is required to use Joomla\\Controller\\AbstractController",
+                "joomla\/input": "The joomla\/input package is required to use Joomla\\Controller\\AbstractController"
+            },
+            "time": "2023-06-05T19:36:12+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Controller\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Controller Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/controller",
+            "keywords": [
+                "controller",
+                "framework",
+                "joomla"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/controller\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/controller\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/controller"
+        },
+        {
+            "name": "joomla\/di",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/di.git",
+                "reference": "b68f8de6c3a214eac22c2172f966d8965fd47f9c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/di\/zipball\/b68f8de6c3a214eac22c2172f966d8965fd47f9c",
+                "reference": "b68f8de6c3a214eac22c2172f966d8965fd47f9c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5|~8.0.0|~8.1.0",
+                "psr\/container": "^1.0",
+                "symfony\/deprecation-contracts": "^2.1"
+            },
+            "provide": {
+                "psr\/container-implementation": "~1.0"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/test": "^2.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "time": "2023-06-05T19:40:46+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\DI\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla DI Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/di",
+            "keywords": [
+                "container",
+                "dependency injection",
+                "di",
+                "framework",
+                "ioc",
+                "joomla"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/di\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/di\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/di"
+        },
+        {
+            "name": "joomla\/filesystem",
+            "version": "dev-1.x-dev",
+            "version_normalized": "dev-1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/filesystem.git",
+                "reference": "9ad5d9b64960f0ea56fb71364a33622843b95c27"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/filesystem\/zipball\/9ad5d9b64960f0ea56fb71364a33622843b95c27",
+                "reference": "9ad5d9b64960f0ea56fb71364a33622843b95c27",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.10|^7.0|^8.0"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^2.0@alpha",
+                "joomla\/test": "^1.0",
+                "mikey179\/vfsstream": "~1.0",
+                "paragonie\/random_compat": "~1.0|~2.0",
+                "phpunit\/phpunit": "^4.8.35|^5.4.3|^6.0|^7.0|^8.0"
+            },
+            "suggest": {
+                "paragonie\/random_compat": "Required to use Joomla\\Filesystem\\Path::isOwner()"
+            },
+            "time": "2022-03-29T12:45:36+00:00",
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Filesystem\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Filesystem Package",
+            "homepage": "https:\/\/github.com\/joomla\/joomla-framework-filesystem",
+            "keywords": [
+                "filesystem",
+                "framework",
+                "joomla"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/filesystem\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/filesystem\/tree\/1.x-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/filesystem"
+        },
+        {
+            "name": "joomla\/filter",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/filter.git",
+                "reference": "9102630f9069351c1259b6f585a704fde7029d2a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/filter\/zipball\/9102630f9069351c1259b6f585a704fde7029d2a",
+                "reference": "9102630f9069351c1259b6f585a704fde7029d2a",
+                "shasum": ""
+            },
+            "require": {
+                "joomla\/string": "^2.0",
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "conflict": {
+                "joomla\/language": "<2.0"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/language": "^2.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "suggest": {
+                "joomla\/language": "Required only if you want to use `OutputFilter::stringURLSafe`."
+            },
+            "time": "2023-08-26T07:57:54+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Filter\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Filter Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/filter",
+            "keywords": [
+                "filter",
+                "framework",
+                "joomla"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/filter\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/filter\/tree\/2.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/filter"
+        },
+        {
+            "name": "joomla\/input",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/input.git",
+                "reference": "80d2b6384d60307a11b9af39bdc9a8d254949e94"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/input\/zipball\/80d2b6384d60307a11b9af39bdc9a8d254949e94",
+                "reference": "80d2b6384d60307a11b9af39bdc9a8d254949e94",
+                "shasum": ""
+            },
+            "require": {
+                "joomla\/filter": "^2.0",
+                "php": "^7.2.5|~8.0.0|~8.1.0",
+                "symfony\/deprecation-contracts": "^2.1"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/test": "^2.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "time": "2023-06-05T20:02:37+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Input\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Input Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/input",
+            "keywords": [
+                "framework",
+                "input",
+                "joomla"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/input\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/input\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/input"
+        },
+        {
+            "name": "joomla\/model",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/model.git",
+                "reference": "f322645993346efa5505500f59d6471cbd0d564b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/model\/zipball\/f322645993346efa5505500f59d6471cbd0d564b",
+                "reference": "f322645993346efa5505500f59d6471cbd0d564b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/database": "^2.0",
+                "joomla\/registry": "^2.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "suggest": {
+                "joomla\/database": "^2.0 Allows using database models",
+                "joomla\/registry": "^2.0 Allows using stateful models"
+            },
+            "time": "2023-06-05T20:05:42+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Model\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Model Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/model",
+            "keywords": [
+                "framework",
+                "joomla",
+                "model"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/model\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/model\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/model"
+        },
+        {
+            "name": "joomla\/registry",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/registry.git",
+                "reference": "fde95733e7e2634d64bff71f611ee02b9ceff354"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/registry\/zipball\/fde95733e7e2634d64bff71f611ee02b9ceff354",
+                "reference": "fde95733e7e2634d64bff71f611ee02b9ceff354",
+                "shasum": ""
+            },
+            "require": {
+                "joomla\/utilities": "^2.0",
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "conflict": {
+                "symfony\/yaml": "<3.4"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "phpunit\/phpunit": "^8.5|^9.0",
+                "symfony\/yaml": "^3.4|^4.4|^5.0"
+            },
+            "suggest": {
+                "ext-json": "ext-json is needed for JSON support",
+                "ext-simplexml": "ext-simplexml is needed for XML support",
+                "symfony\/yaml": "Install symfony\/yaml if you require YAML support."
+            },
+            "time": "2023-08-21T09:27:18+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Registry\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Registry Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/registry",
+            "keywords": [
+                "framework",
+                "joomla",
+                "registry"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/registry\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/registry\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/registry"
+        },
+        {
+            "name": "joomla\/renderer",
+            "version": "2.0.1",
+            "version_normalized": "2.0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/renderer.git",
+                "reference": "0b514c40d3858fbbbf3bf3347832bc4fc3e776da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/renderer\/zipball\/0b514c40d3858fbbbf3bf3347832bc4fc3e776da",
+                "reference": "0b514c40d3858fbbbf3bf3347832bc4fc3e776da",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "conflict": {
+                "illuminate\/view": "<6.0",
+                "league\/plates": "<3.0",
+                "mustache\/mustache": "<2.3",
+                "symfony\/templating": "<3.4"
+            },
+            "require-dev": {
+                "illuminate\/events": "^6.0|^7.0",
+                "illuminate\/filesystem": "^6.0|^7.0",
+                "illuminate\/view": "^6.0|^7.0",
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/test": "^2.0",
+                "league\/plates": "^3.0",
+                "mustache\/mustache": "^2.3",
+                "phpunit\/phpunit": "^8.5|^9.0",
+                "symfony\/templating": "^3.4|^4.4|^5.0",
+                "twig\/twig": "^2.14.11|^3.3.8"
+            },
+            "suggest": {
+                "illuminate\/view": "Install ^6.0|^7.0 if you are using Laravel's Blade template engine.",
+                "league\/plates": "Install ^3.0 if you are using the Plates template engine.",
+                "mustache\/mustache": "Install ^2.3 if you are using the Mustache template engine.",
+                "symfony\/templating": "Install ^3.4|^4.4|^5.0 if you are using Symfony's PHP template component.",
+                "twig\/twig": "Install ^2.14.11|^3.3.8 if you are using the Twig template engine."
+            },
+            "time": "2022-08-21T11:38:16+00:00",
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Renderer\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "description": "Joomla Renderer Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/renderer",
+            "keywords": [
+                "framework",
+                "joomla",
+                "renderer"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/renderer\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/renderer\/tree\/2.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/renderer"
+        },
+        {
+            "name": "joomla\/string",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/string.git",
+                "reference": "c7a9330f7316a574f3ff538053fa65dc38bafbe6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/string\/zipball\/c7a9330f7316a574f3ff538053fa65dc38bafbe6",
+                "reference": "c7a9330f7316a574f3ff538053fa65dc38bafbe6",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5|~8.0.0|~8.1.0",
+                "symfony\/deprecation-contracts": "^2.1"
+            },
+            "conflict": {
+                "doctrine\/inflector": "<1.2"
+            },
+            "require-dev": {
+                "doctrine\/inflector": "^1.2",
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/test": "^2.0.1",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "suggest": {
+                "doctrine\/inflector": "To use the string inflector",
+                "ext-mbstring": "For improved processing"
+            },
+            "time": "2023-06-05T20:15:46+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src\/phputf8\/utf8.php",
+                    "src\/phputf8\/ord.php",
+                    "src\/phputf8\/str_ireplace.php",
+                    "src\/phputf8\/str_pad.php",
+                    "src\/phputf8\/str_split.php",
+                    "src\/phputf8\/strcasecmp.php",
+                    "src\/phputf8\/strcspn.php",
+                    "src\/phputf8\/stristr.php",
+                    "src\/phputf8\/strrev.php",
+                    "src\/phputf8\/strspn.php",
+                    "src\/phputf8\/trim.php",
+                    "src\/phputf8\/ucfirst.php",
+                    "src\/phputf8\/ucwords.php",
+                    "src\/phputf8\/utils\/ascii.php",
+                    "src\/phputf8\/utils\/validation.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\String\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla String Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/string",
+            "keywords": [
+                "framework",
+                "joomla",
+                "string"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/string\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/string\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/string"
+        },
+        {
+            "name": "joomla\/utilities",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/utilities.git",
+                "reference": "2baa8af18fd2ee5a185606b91ab2e273f77e5e4b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/utilities\/zipball\/2baa8af18fd2ee5a185606b91ab2e273f77e5e4b",
+                "reference": "2baa8af18fd2ee5a185606b91ab2e273f77e5e4b",
+                "shasum": ""
+            },
+            "require": {
+                "joomla\/string": "^2.0",
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "time": "2023-03-13T09:14:13+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\Utilities\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla Utilities Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/utilities",
+            "keywords": [
+                "framework",
+                "joomla",
+                "utilities"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/utilities\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/utilities\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/utilities"
+        },
+        {
+            "name": "joomla\/view",
+            "version": "dev-2.0-dev",
+            "version_normalized": "dev-2.0-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/joomla-framework\/view.git",
+                "reference": "7d5e706b29cac01d0b1ee11b871eabaa823f9063"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/view\/zipball\/7d5e706b29cac01d0b1ee11b871eabaa823f9063",
+                "reference": "7d5e706b29cac01d0b1ee11b871eabaa823f9063",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5|~8.0.0|~8.1.0"
+            },
+            "require-dev": {
+                "joomla\/coding-standards": "^3.0@dev",
+                "joomla\/renderer": "^2.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "suggest": {
+                "joomla\/renderer": "Required to use Joomla\\View\\BaseHtmlView"
+            },
+            "time": "2023-06-05T20:17:32+00:00",
+            "default-branch": true,
+            "type": "joomla-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0-dev": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Joomla\\View\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Joomla View Package",
+            "homepage": "https:\/\/github.com\/joomla-framework\/view",
+            "keywords": [
+                "framework",
+                "joomla",
+                "view"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/joomla-framework\/view\/issues",
+                "source": "https:\/\/github.com\/joomla-framework\/view\/tree\/2.0-dev"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/joomla",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/joomla\/view"
+        },
+        {
+            "name": "laminas\/laminas-cache",
+            "version": "3.0.x-dev",
+            "version_normalized": "3.0.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-cache.git",
+                "reference": "86b47eb7b05bc4d24edafb3039494ba81405983b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-cache\/zipball\/86b47eb7b05bc4d24edafb3039494ba81405983b",
+                "reference": "86b47eb7b05bc4d24edafb3039494ba81405983b",
+                "shasum": ""
+            },
+            "require": {
+                "laminas\/laminas-cache-storage-implementation": "1.0",
+                "laminas\/laminas-eventmanager": "^3.4",
+                "laminas\/laminas-servicemanager": "^3.7",
+                "laminas\/laminas-stdlib": "^3.6",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0",
+                "psr\/cache": "^1.0",
+                "psr\/simple-cache": "^1.0",
+                "webmozart\/assert": "^1.9"
+            },
+            "conflict": {
+                "symfony\/console": "<5.1"
+            },
+            "provide": {
+                "psr\/cache-implementation": "1.0",
+                "psr\/simple-cache-implementation": "1.0"
+            },
+            "require-dev": {
+                "laminas\/laminas-cache-storage-adapter-apcu": "2.0.x-dev",
+                "laminas\/laminas-cache-storage-adapter-blackhole": "2.0.x-dev",
+                "laminas\/laminas-cache-storage-adapter-filesystem": "2.0.x-dev",
+                "laminas\/laminas-cache-storage-adapter-memory": "2.0.x-dev",
+                "laminas\/laminas-cache-storage-adapter-test": "2.0.x-dev",
+                "laminas\/laminas-cli": "^1.0",
+                "laminas\/laminas-coding-standard": "~2.2.0",
+                "laminas\/laminas-config-aggregator": "^1.5",
+                "laminas\/laminas-feed": "^2.14",
+                "laminas\/laminas-serializer": "^2.6",
+                "phpbench\/phpbench": "^1.0",
+                "phpunit\/phpunit": "^9.5",
+                "psalm\/plugin-phpunit": "^0.16.1",
+                "vimeo\/psalm": "^4.9"
+            },
+            "suggest": {
+                "laminas\/laminas-cache-storage-adapter-apcu": "APCu implementation",
+                "laminas\/laminas-cache-storage-adapter-blackhole": "Blackhole\/Void implementation",
+                "laminas\/laminas-cache-storage-adapter-ext-mongodb": "MongoDB implementation",
+                "laminas\/laminas-cache-storage-adapter-filesystem": "Filesystem implementation",
+                "laminas\/laminas-cache-storage-adapter-memcached": "Memcached implementation",
+                "laminas\/laminas-cache-storage-adapter-memory": "Memory implementation",
+                "laminas\/laminas-cache-storage-adapter-redis": "Redis implementation",
+                "laminas\/laminas-cache-storage-adapter-session": "Session implementation",
+                "laminas\/laminas-cli": "The laminas-cli binary can be used to consume commands provided by this component",
+                "laminas\/laminas-serializer": "Laminas\\Serializer component"
+            },
+            "time": "2021-11-17T15:17:24+00:00",
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Laminas\\Cache",
+                    "config-provider": "Laminas\\Cache\\ConfigProvider"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Cache\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Caching implementation with a variety of storage options, as well as codified caching strategies for callbacks, classes, and output",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "cache",
+                "laminas",
+                "psr-16",
+                "psr-6"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-cache\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-cache\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-cache\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-cache"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-cache"
+        },
+        {
+            "name": "laminas\/laminas-cache-storage-adapter-apcu",
+            "version": "2.1.x-dev",
+            "version_normalized": "2.1.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-apcu.git",
+                "reference": "344aa69ff029788bd340a3bda63754d24623bd85"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-cache-storage-adapter-apcu\/zipball\/344aa69ff029788bd340a3bda63754d24623bd85",
+                "reference": "344aa69ff029788bd340a3bda63754d24623bd85",
+                "shasum": ""
+            },
+            "require": {
+                "ext-apcu": "^5.1.10",
+                "laminas\/laminas-cache": "^3.0",
+                "php": "^7.4 || ~8.0.0 || ~8.1.0"
+            },
+            "provide": {
+                "laminas\/laminas-cache-storage-implementation": "1.0"
+            },
+            "require-dev": {
+                "laminas\/laminas-cache": "3.0.x-dev || ^3.0",
+                "laminas\/laminas-cache-storage-adapter-test": "2.0.x-dev || ^2.0",
+                "laminas\/laminas-coding-standard": "~2.4.0",
+                "psalm\/plugin-phpunit": "^0.17.0",
+                "vimeo\/psalm": "^4.26"
+            },
+            "time": "2022-08-31T08:12:20+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Laminas\\Cache\\Storage\\Adapter\\Apcu\\ConfigProvider",
+                    "module": "Laminas\\Cache\\Storage\\Adapter\\Apcu"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Laminas cache adapter for apcu",
+            "keywords": [
+                "cache",
+                "laminas"
+            ],
+            "support": {
+                "docs": "https:\/\/docs.laminas.dev\/laminas-cache-storage-adapter-apcu\/",
+                "forum": "https:\/\/discourse.laminas.dev\/",
+                "issues": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-apcu\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-apcu\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-apcu"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-cache-storage-adapter-apcu"
+        },
+        {
+            "name": "laminas\/laminas-cache-storage-adapter-blackhole",
+            "version": "2.0.x-dev",
+            "version_normalized": "2.0.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-blackhole.git",
+                "reference": "fdb6c4b9813cc7365d72c002b09dc808e34b7002"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-cache-storage-adapter-blackhole\/zipball\/fdb6c4b9813cc7365d72c002b09dc808e34b7002",
+                "reference": "fdb6c4b9813cc7365d72c002b09dc808e34b7002",
+                "shasum": ""
+            },
+            "require": {
+                "laminas\/laminas-cache": "^3.0",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
+            },
+            "provide": {
+                "laminas\/laminas-cache-storage-implementation": "1.0"
+            },
+            "require-dev": {
+                "laminas\/laminas-cache": "3.0.x-dev",
+                "laminas\/laminas-cache-storage-adapter-test": "2.0.x-dev",
+                "laminas\/laminas-coding-standard": "~2.3.0",
+                "psalm\/plugin-phpunit": "^0.16.1",
+                "vimeo\/psalm": "^4.9"
+            },
+            "time": "2021-11-08T06:06:27+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Laminas\\Cache\\Storage\\Adapter\\BlackHole\\ConfigProvider",
+                    "module": "Laminas\\Cache\\Storage\\Adapter\\BlackHole"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Laminas cache adapter for blackhole",
+            "keywords": [
+                "cache",
+                "laminas"
+            ],
+            "support": {
+                "docs": "https:\/\/docs.laminas.dev\/laminas-cache-storage-adapter-blackhole\/",
+                "forum": "https:\/\/discourse.laminas.dev\/",
+                "issues": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-blackhole\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-blackhole\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-blackhole"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-cache-storage-adapter-blackhole"
+        },
+        {
+            "name": "laminas\/laminas-cache-storage-adapter-filesystem",
+            "version": "2.1.x-dev",
+            "version_normalized": "2.1.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-filesystem.git",
+                "reference": "d9712a8292fc0a84219e4aba97b6b04b95057cb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-cache-storage-adapter-filesystem\/zipball\/d9712a8292fc0a84219e4aba97b6b04b95057cb6",
+                "reference": "d9712a8292fc0a84219e4aba97b6b04b95057cb6",
+                "shasum": ""
+            },
+            "require": {
+                "laminas\/laminas-cache": "^3.0",
+                "php": "^7.4 || ~8.0.0 || ~8.1.0"
+            },
+            "provide": {
+                "laminas\/laminas-cache-storage-implementation": "1.0"
+            },
+            "require-dev": {
+                "ext-pcntl": "*",
+                "ext-posix": "*",
+                "laminas\/laminas-cache-storage-adapter-benchmark": "^1.0",
+                "laminas\/laminas-cache-storage-adapter-test": "^2.0 || 2.0.x-dev",
+                "laminas\/laminas-coding-standard": "~2.4",
+                "laminas\/laminas-serializer": "^2.13.0",
+                "phpunit\/phpunit": "^9.5.24",
+                "psalm\/plugin-phpunit": "^0.17.0",
+                "vimeo\/psalm": "^4.27.0"
+            },
+            "time": "2022-09-16T08:23:26+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Laminas\\Cache\\Storage\\Adapter\\Filesystem\\ConfigProvider",
+                    "module": "Laminas\\Cache\\Storage\\Adapter\\Filesystem"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Laminas cache adapter for filesystem",
+            "keywords": [
+                "cache",
+                "laminas"
+            ],
+            "support": {
+                "docs": "https:\/\/docs.laminas.dev\/laminas-cache-storage-adapter-filesystem\/",
+                "forum": "https:\/\/discourse.laminas.dev\/",
+                "issues": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-filesystem\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-filesystem\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-filesystem"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-cache-storage-adapter-filesystem"
+        },
+        {
+            "name": "laminas\/laminas-cache-storage-adapter-memcached",
+            "version": "2.1.x-dev",
+            "version_normalized": "2.1.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-memcached.git",
+                "reference": "5d6795281f388842ed96acbfc3f8659d0742282f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-cache-storage-adapter-memcached\/zipball\/5d6795281f388842ed96acbfc3f8659d0742282f",
+                "reference": "5d6795281f388842ed96acbfc3f8659d0742282f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-memcached": "^3.1.5",
+                "laminas\/laminas-cache": "^3.0",
+                "php": "~7.4.0 || ~8.0.0 || ~8.1.0"
+            },
+            "conflict": {
+                "laminas\/laminas-servicemanager": "<3.11"
+            },
+            "provide": {
+                "laminas\/laminas-cache-storage-implementation": "1.0"
+            },
+            "require-dev": {
+                "boesing\/psalm-plugin-stringf": "^1.2",
+                "laminas\/laminas-cache-storage-adapter-benchmark": "^1.0",
+                "laminas\/laminas-cache-storage-adapter-test": "^2.0",
+                "laminas\/laminas-coding-standard": "~2.3.0",
+                "phpunit\/phpunit": "^9.5.8",
+                "psalm\/plugin-phpunit": "^0.17.0",
+                "vimeo\/psalm": "^4.10"
+            },
+            "time": "2022-08-11T18:08:33+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Laminas\\Cache\\Storage\\Adapter\\Memcached\\ConfigProvider",
+                    "module": "Laminas\\Cache\\Storage\\Adapter\\Memcached"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Laminas cache adapter for memcached",
+            "keywords": [
+                "cache",
+                "laminas",
+                "memcached"
+            ],
+            "support": {
+                "docs": "https:\/\/docs.laminas.dev\/laminas-cache-storage-adapter-memcached\/",
+                "forum": "https:\/\/discourse.laminas.dev\/",
+                "issues": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-memcached\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-memcached\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-memcached"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-cache-storage-adapter-memcached"
+        },
+        {
+            "name": "laminas\/laminas-cache-storage-adapter-redis",
+            "version": "2.1.x-dev",
+            "version_normalized": "2.1.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-redis.git",
+                "reference": "289717d10a89755d3f36f799565a3fb9c7e9ab24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-cache-storage-adapter-redis\/zipball\/289717d10a89755d3f36f799565a3fb9c7e9ab24",
+                "reference": "289717d10a89755d3f36f799565a3fb9c7e9ab24",
+                "shasum": ""
+            },
+            "require": {
+                "ext-redis": "^4.3 || ^5.0.2",
+                "laminas\/laminas-cache": "^3.0",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
+            },
+            "provide": {
+                "laminas\/laminas-cache-storage-implementation": "1.0"
+            },
+            "require-dev": {
+                "laminas\/laminas-cache": "^3.0.x-dev",
+                "laminas\/laminas-cache-storage-adapter-benchmark": "^1.0",
+                "laminas\/laminas-cache-storage-adapter-test": "2.0.x-dev",
+                "laminas\/laminas-coding-standard": "~2.1.4",
+                "laminas\/laminas-serializer": "^2.10",
+                "psalm\/plugin-phpunit": "^0.15.1",
+                "vimeo\/psalm": "^4.7"
+            },
+            "time": "2022-02-18T12:09:35+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Laminas\\Cache\\Storage\\Adapter\\Redis\\ConfigProvider",
+                    "module": "Laminas\\Cache\\Storage\\Adapter\\Redis"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Laminas cache adapter for redis",
+            "keywords": [
+                "cache",
+                "laminas"
+            ],
+            "support": {
+                "docs": "https:\/\/docs.laminas.dev\/laminas-cache-storage-adapter-redis\/",
+                "forum": "https:\/\/discourse.laminas.dev\/",
+                "issues": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-redis\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-redis\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-cache-storage-adapter-redis"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-cache-storage-adapter-redis"
+        },
+        {
+            "name": "laminas\/laminas-eventmanager",
+            "version": "3.11.x-dev",
+            "version_normalized": "3.11.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-eventmanager.git",
+                "reference": "9cfa79ce247c567f05ce4b7c975c6bdf9698c5dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-eventmanager\/zipball\/9cfa79ce247c567f05ce4b7c975c6bdf9698c5dd",
+                "reference": "9cfa79ce247c567f05ce4b7c975c6bdf9698c5dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0"
+            },
+            "conflict": {
+                "container-interop\/container-interop": "<1.2",
+                "zendframework\/zend-eventmanager": "*"
+            },
+            "require-dev": {
+                "laminas\/laminas-coding-standard": "~2.5.0",
+                "laminas\/laminas-stdlib": "^3.15",
+                "phpbench\/phpbench": "^1.2.7",
+                "phpunit\/phpunit": "^9.5.26",
+                "psalm\/plugin-phpunit": "^0.18.0",
+                "psr\/container": "^1.1.2 || ^2.0.2",
+                "vimeo\/psalm": "^5.0.0"
+            },
+            "suggest": {
+                "laminas\/laminas-stdlib": "^2.7.3 || ^3.0, to use the FilterChain feature",
+                "psr\/container": "^1.1.2 || ^2.0.2, to use the lazy listeners feature"
+            },
+            "time": "2023-10-10T08:29:58+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\EventManager\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Trigger and listen to events within a PHP application",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "event",
+                "eventmanager",
+                "events",
+                "laminas"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-eventmanager\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-eventmanager\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-eventmanager\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-eventmanager"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-eventmanager"
+        },
+        {
+            "name": "laminas\/laminas-json",
+            "version": "3.5.x-dev",
+            "version_normalized": "3.5.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-json.git",
+                "reference": "7a8a1d7bf2d05dd6c1fbd7c0868d3848cf2b57ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-json\/zipball\/7a8a1d7bf2d05dd6c1fbd7c0868d3848cf2b57ec",
+                "reference": "7a8a1d7bf2d05dd6c1fbd7c0868d3848cf2b57ec",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
+            },
+            "conflict": {
+                "zendframework\/zend-json": "*"
+            },
+            "require-dev": {
+                "laminas\/laminas-coding-standard": "~2.4.0",
+                "laminas\/laminas-stdlib": "^2.7.7 || ^3.1",
+                "phpunit\/phpunit": "^9.5.25"
+            },
+            "suggest": {
+                "laminas\/laminas-json-server": "For implementing JSON-RPC servers",
+                "laminas\/laminas-xml2json": "For converting XML documents to JSON"
+            },
+            "time": "2022-10-17T04:06:45+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Json\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "provides convenience methods for serializing native PHP to JSON and decoding JSON to native PHP",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "json",
+                "laminas"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-json\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-json\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-json\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-json"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-json"
+        },
+        {
+            "name": "laminas\/laminas-log",
+            "version": "2.14.x-dev",
+            "version_normalized": "2.14.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-log.git",
+                "reference": "39f3dcbd77fd0d84b190ff1332f5d3d28d56527e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-log\/zipball\/39f3dcbd77fd0d84b190ff1332f5d3d28d56527e",
+                "reference": "39f3dcbd77fd0d84b190ff1332f5d3d28d56527e",
+                "shasum": ""
+            },
+            "require": {
+                "laminas\/laminas-servicemanager": "^3.3.0",
+                "laminas\/laminas-stdlib": "^3.0",
+                "php": "^7.3 || ~8.0.0",
+                "psr\/log": "^1.1.2"
+            },
+            "conflict": {
+                "zendframework\/zend-log": "*"
+            },
+            "provide": {
+                "psr\/log-implementation": "1.0.0"
+            },
+            "require-dev": {
+                "laminas\/laminas-coding-standard": "~1.0.0",
+                "laminas\/laminas-db": "^2.6",
+                "laminas\/laminas-escaper": "^2.5",
+                "laminas\/laminas-filter": "^2.5",
+                "laminas\/laminas-mail": "^2.6.1",
+                "laminas\/laminas-validator": "^2.10.1",
+                "mikey179\/vfsstream": "^1.6.7",
+                "phpspec\/prophecy-phpunit": "^2.0",
+                "phpunit\/phpunit": "^9.4.1"
+            },
+            "suggest": {
+                "ext-mongo": "mongo extension to use Mongo writer",
+                "ext-mongodb": "mongodb extension to use MongoDB writer",
+                "laminas\/laminas-db": "Laminas\\Db component to use the database log writer",
+                "laminas\/laminas-escaper": "Laminas\\Escaper component, for use in the XML log formatter",
+                "laminas\/laminas-mail": "Laminas\\Mail component to use the email log writer",
+                "laminas\/laminas-validator": "Laminas\\Validator component to block invalid log messages"
+            },
+            "time": "2021-12-03T10:30:27+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Laminas\\Log",
+                    "config-provider": "Laminas\\Log\\ConfigProvider"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Log\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Robust, composite logger with filtering, formatting, and PSR-3 support",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "laminas",
+                "log",
+                "logging"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-log\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-log\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-log\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-log"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-log"
+        },
+        {
+            "name": "laminas\/laminas-paginator",
+            "version": "2.11.x-dev",
+            "version_normalized": "2.11.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-paginator.git",
+                "reference": "7f00d5fdecd1b4f67c8e84e6f6d57bbabda4b7d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-paginator\/zipball\/7f00d5fdecd1b4f67c8e84e6f6d57bbabda4b7d8",
+                "reference": "7f00d5fdecd1b4f67c8e84e6f6d57bbabda4b7d8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laminas\/laminas-stdlib": "^3.6.0",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
+            },
+            "conflict": {
+                "zendframework\/zend-paginator": "*"
+            },
+            "require-dev": {
+                "laminas\/laminas-cache": "^2.13.0",
+                "laminas\/laminas-coding-standard": "~2.1.4",
+                "laminas\/laminas-config": "^2.6.0",
+                "laminas\/laminas-filter": "^2.11.1",
+                "laminas\/laminas-servicemanager": "^3.7.0",
+                "laminas\/laminas-view": "^2.14.1",
+                "phpunit\/phpunit": "^9.5.10",
+                "psalm\/plugin-phpunit": "^0.15.1",
+                "vimeo\/psalm": "^4.10.0"
+            },
+            "suggest": {
+                "laminas\/laminas-cache": "Laminas\\Cache component to support cache features",
+                "laminas\/laminas-filter": "Laminas\\Filter component",
+                "laminas\/laminas-paginator-adapter-laminasdb": "Provides pagination adapters for Select statements and TableGateway instances",
+                "laminas\/laminas-servicemanager": "Laminas\\ServiceManager component",
+                "laminas\/laminas-view": "Laminas\\View component"
+            },
+            "time": "2021-10-14T15:59:50+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Laminas\\Paginator",
+                    "config-provider": "Laminas\\Paginator\\ConfigProvider"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Paginator\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Paginate collections of data from arbitrary sources",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "laminas",
+                "paginator"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-paginator\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-paginator\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-paginator\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-paginator"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-paginator"
+        },
+        {
+            "name": "laminas\/laminas-serializer",
+            "version": "2.12.x-dev",
+            "version_normalized": "2.12.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-serializer.git",
+                "reference": "2826fd71f202569c169456a4b84297da9ff630cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-serializer\/zipball\/2826fd71f202569c169456a4b84297da9ff630cd",
+                "reference": "2826fd71f202569c169456a4b84297da9ff630cd",
+                "shasum": ""
+            },
+            "require": {
+                "laminas\/laminas-json": "^3.1",
+                "laminas\/laminas-stdlib": "^3.2",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
+            },
+            "conflict": {
+                "zendframework\/zend-serializer": "*"
+            },
+            "require-dev": {
+                "laminas\/laminas-coding-standard": "~2.3.0",
+                "laminas\/laminas-math": "^3.3",
+                "laminas\/laminas-servicemanager": "^3.6",
+                "phpunit\/phpunit": "^9.3"
+            },
+            "suggest": {
+                "laminas\/laminas-math": "(^3.3) To support Python Pickle serialization",
+                "laminas\/laminas-servicemanager": "(^3.6) To support plugin manager support"
+            },
+            "time": "2021-12-06T04:52:05+00:00",
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Laminas\\Serializer",
+                    "config-provider": "Laminas\\Serializer\\ConfigProvider"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Serializer\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Serialize and deserialize PHP structures to a variety of representations",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "laminas",
+                "serializer"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-serializer\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-serializer\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-serializer\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-serializer"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-serializer"
+        },
+        {
+            "name": "laminas\/laminas-servicemanager",
+            "version": "3.20.x-dev",
+            "version_normalized": "3.20.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-servicemanager.git",
+                "reference": "bc2c2cbe2dd90db8b9d16b0618f542692b76ab59"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-servicemanager\/zipball\/bc2c2cbe2dd90db8b9d16b0618f542692b76ab59",
+                "reference": "bc2c2cbe2dd90db8b9d16b0618f542692b76ab59",
+                "shasum": ""
+            },
+            "require": {
+                "laminas\/laminas-stdlib": "^3.2.1",
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
+                "psr\/container": "^1.0"
+            },
+            "conflict": {
+                "ext-psr": "*",
+                "laminas\/laminas-code": "<3.3.1",
+                "zendframework\/zend-code": "<3.3.1",
+                "zendframework\/zend-servicemanager": "*"
+            },
+            "provide": {
+                "psr\/container-implementation": "^1.0"
+            },
+            "replace": {
+                "container-interop\/container-interop": "^1.2.0"
+            },
+            "require-dev": {
+                "composer\/package-versions-deprecated": "^1.11.99.5",
+                "laminas\/laminas-coding-standard": "~2.4.0",
+                "laminas\/laminas-container-config-test": "^0.8",
+                "laminas\/laminas-dependency-plugin": "^2.2",
+                "mikey179\/vfsstream": "^1.6.11@alpha",
+                "ocramius\/proxy-manager": "^2.14.1",
+                "phpbench\/phpbench": "^1.2.7",
+                "phpunit\/phpunit": "^9.5.26",
+                "psalm\/plugin-phpunit": "^0.18.0",
+                "vimeo\/psalm": "^5.0.0"
+            },
+            "suggest": {
+                "ocramius\/proxy-manager": "ProxyManager ^2.1.1 to handle lazy initialization of services"
+            },
+            "time": "2022-12-01T17:03:38+00:00",
+            "default-branch": true,
+            "bin": [
+                "bin\/generate-deps-for-config-factory",
+                "bin\/generate-factory-for-class"
+            ],
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src\/autoload.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\ServiceManager\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Factory-Driven Dependency Injection Container",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "PSR-11",
+                "dependency-injection",
+                "di",
+                "dic",
+                "laminas",
+                "service-manager",
+                "servicemanager"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-servicemanager\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-servicemanager\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-servicemanager\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-servicemanager"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-servicemanager"
+        },
+        {
+            "name": "laminas\/laminas-stdlib",
+            "version": "3.16.x-dev",
+            "version_normalized": "3.16.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/laminas\/laminas-stdlib.git",
+                "reference": "f4f773641807c7ccee59b758bfe4ac4ba33ecb17"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-stdlib\/zipball\/f4f773641807c7ccee59b758bfe4ac4ba33ecb17",
+                "reference": "f4f773641807c7ccee59b758bfe4ac4ba33ecb17",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
+            },
+            "conflict": {
+                "zendframework\/zend-stdlib": "*"
+            },
+            "require-dev": {
+                "laminas\/laminas-coding-standard": "^2.4.0",
+                "phpbench\/phpbench": "^1.2.7",
+                "phpunit\/phpunit": "^9.5.26",
+                "psalm\/plugin-phpunit": "^0.18.0",
+                "vimeo\/psalm": "^5.0.0"
+            },
+            "time": "2022-12-03T18:48:01+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Laminas\\Stdlib\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "SPL extensions, array utilities, error handlers, and more",
+            "homepage": "https:\/\/laminas.dev",
+            "keywords": [
+                "laminas",
+                "stdlib"
+            ],
+            "support": {
+                "chat": "https:\/\/laminas.dev\/chat",
+                "docs": "https:\/\/docs.laminas.dev\/laminas-stdlib\/",
+                "forum": "https:\/\/discourse.laminas.dev",
+                "issues": "https:\/\/github.com\/laminas\/laminas-stdlib\/issues",
+                "rss": "https:\/\/github.com\/laminas\/laminas-stdlib\/releases.atom",
+                "source": "https:\/\/github.com\/laminas\/laminas-stdlib"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "install-path": "..\/laminas\/laminas-stdlib"
+        },
+        {
+            "name": "league\/flysystem",
+            "version": "2.x-dev",
+            "version_normalized": "2.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/thephpleague\/flysystem.git",
+                "reference": "8aaffb653c5777781b0f7f69a5d937baf7ab6cdb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/thephpleague\/flysystem\/zipball\/8aaffb653c5777781b0f7f69a5d937baf7ab6cdb",
+                "reference": "8aaffb653c5777781b0f7f69a5d937baf7ab6cdb",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "league\/mime-type-detection": "^1.0.0",
+                "php": "^7.2 || ^8.0"
+            },
+            "conflict": {
+                "guzzlehttp\/ringphp": "<1.1.1"
+            },
+            "require-dev": {
+                "async-aws\/s3": "^1.5",
+                "async-aws\/simple-s3": "^1.0",
+                "aws\/aws-sdk-php": "^3.132.4",
+                "composer\/semver": "^3.0",
+                "ext-fileinfo": "*",
+                "ext-ftp": "*",
+                "friendsofphp\/php-cs-fixer": "^3.2",
+                "google\/cloud-storage": "^1.23",
+                "phpseclib\/phpseclib": "^2.0",
+                "phpstan\/phpstan": "^0.12.26",
+                "phpunit\/phpunit": "^8.5 || ^9.4",
+                "sabre\/dav": "^4.1"
+            },
+            "time": "2022-09-17T21:02:32+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\League\\Flysystem\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "File storage abstraction for PHP",
+            "keywords": [
+                "WebDAV",
+                "aws",
+                "cloud",
+                "file",
+                "files",
+                "filesystem",
+                "filesystems",
+                "ftp",
+                "s3",
+                "sftp",
+                "storage"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/thephpleague\/flysystem\/issues",
+                "source": "https:\/\/github.com\/thephpleague\/flysystem\/tree\/2.x"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/ecologi.com\/frankdejonge",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/league\/flysystem",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/league\/flysystem"
+        },
+        {
+            "name": "league\/glide",
+            "version": "2.3.0",
+            "version_normalized": "2.3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/thephpleague\/glide.git",
+                "reference": "2ff92c8f1edc80b74e2d3c5efccfc7223f74d407"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/thephpleague\/glide\/zipball\/2ff92c8f1edc80b74e2d3c5efccfc7223f74d407",
+                "reference": "2ff92c8f1edc80b74e2d3c5efccfc7223f74d407",
+                "shasum": ""
+            },
+            "require": {
+                "intervention\/image": "^2.7",
+                "league\/flysystem": "^2.0|^3.0",
+                "php": "^7.2|^8.0",
+                "psr\/http-message": "^1.0|^2.0"
+            },
+            "require-dev": {
+                "mockery\/mockery": "^1.3.3",
+                "phpunit\/php-token-stream": "^3.1|^4.0",
+                "phpunit\/phpunit": "^8.5|^9.0"
+            },
+            "time": "2023-07-08T06:26:07+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\League\\Glide\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Reinink",
+                    "email": "jonathan@reinink.ca",
+                    "homepage": "http:\/\/reinink.ca"
+                },
+                {
+                    "name": "Titouan Galopin",
+                    "email": "galopintitouan@gmail.com",
+                    "homepage": "https:\/\/titouangalopin.com"
+                }
+            ],
+            "description": "Wonderfully easy on-demand image manipulation library with an HTTP based API.",
+            "homepage": "http:\/\/glide.thephpleague.com",
+            "keywords": [
+                "ImageMagick",
+                "editing",
+                "gd",
+                "image",
+                "imagick",
+                "league",
+                "manipulation",
+                "processing"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/thephpleague\/glide\/issues",
+                "source": "https:\/\/github.com\/thephpleague\/glide\/tree\/2.3.0"
+            },
+            "install-path": "..\/league\/glide"
+        },
+        {
+            "name": "league\/mime-type-detection",
+            "version": "1.14.0",
+            "version_normalized": "1.14.0.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/thephpleague\/mime-type-detection.git",
+                "reference": "b6a5854368533df0295c5761a0253656a2e52d9e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/thephpleague\/mime-type-detection\/zipball\/b6a5854368533df0295c5761a0253656a2e52d9e",
+                "reference": "b6a5854368533df0295c5761a0253656a2e52d9e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp\/php-cs-fixer": "^3.2",
+                "phpstan\/phpstan": "^0.12.68",
+                "phpunit\/phpunit": "^8.5.8 || ^9.3 || ^10.0"
+            },
+            "time": "2023-10-17T14:13:20+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\League\\MimeTypeDetection\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Mime-type detection for Flysystem",
+            "support": {
+                "issues": "https:\/\/github.com\/thephpleague\/mime-type-detection\/issues",
+                "source": "https:\/\/github.com\/thephpleague\/mime-type-detection\/tree\/1.14.0"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/league\/flysystem",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/league\/mime-type-detection"
+        },
+        {
+            "name": "nicmart\/tree",
+            "version": "0.3.1",
+            "version_normalized": "0.3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/nicmart\/Tree.git",
+                "reference": "c55ba47c64a3cb7454c22e6d630729fc2aab23ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/nicmart\/Tree\/zipball\/c55ba47c64a3cb7454c22e6d630729fc2aab23ff",
+                "reference": "c55ba47c64a3cb7454c22e6d630729fc2aab23ff",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "ergebnis\/composer-normalize": "^2.8.0",
+                "ergebnis\/license": "^1.0.0",
+                "ergebnis\/php-cs-fixer-config": "^2.2.1",
+                "phpunit\/phpunit": "^7.5.20"
+            },
+            "time": "2020-11-27T09:02:17+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Tree\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicol\u00f2 Martini",
+                    "email": "nicmartnic@gmail.com"
+                }
+            ],
+            "description": "A basic but flexible php tree data structure and a fluent tree builder implementation.",
+            "support": {
+                "issues": "https:\/\/github.com\/nicmart\/Tree\/issues",
+                "source": "https:\/\/github.com\/nicmart\/Tree\/tree\/0.3.1"
+            },
+            "install-path": "..\/nicmart\/tree"
+        },
+        {
+            "name": "paragi\/php-websocket-client",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/paragi\/PHP-websocket-client.git",
+                "reference": "a40a6bf0525a1e76950d19b41201ccccb80bf9cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/paragi\/PHP-websocket-client\/zipball\/a40a6bf0525a1e76950d19b41201ccccb80bf9cd",
+                "reference": "a40a6bf0525a1e76950d19b41201ccccb80bf9cd",
+                "shasum": ""
+            },
+            "require-dev": {
+                "cboden\/ratchet": "dev-master",
+                "phpunit\/phpunit": "9.5.x-dev"
+            },
+            "time": "2022-03-22T21:49:11+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Paragi\\PhpWebsocket\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Websocket client",
+            "support": {
+                "issues": "https:\/\/github.com\/paragi\/PHP-websocket-client\/issues",
+                "source": "https:\/\/github.com\/paragi\/PHP-websocket-client\/tree\/1.0.0"
+            },
+            "install-path": "..\/paragi\/php-websocket-client"
+        },
+        {
+            "name": "psr\/cache",
+            "version": "1.0.1",
+            "version_normalized": "1.0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/php-fig\/cache.git",
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/php-fig\/cache\/zipball\/d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2016-08-06T20:24:11+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Psr\\Cache\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http:\/\/www.php-fig.org\/"
+                }
+            ],
+            "description": "Common interface for caching libraries",
+            "keywords": [
+                "cache",
+                "psr",
+                "psr-6"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/php-fig\/cache\/tree\/master"
+            },
+            "install-path": "..\/psr\/cache"
+        },
+        {
+            "name": "psr\/container",
+            "version": "1.x-dev",
+            "version_normalized": "1.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/php-fig\/container.git",
+                "reference": "513e0666f7216c7459170d56df27dfcefe1689ea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/php-fig\/container\/zipball\/513e0666f7216c7459170d56df27dfcefe1689ea",
+                "reference": "513e0666f7216c7459170d56df27dfcefe1689ea",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4.0"
+            },
+            "time": "2021-11-05T16:50:12+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Psr\\Container\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https:\/\/www.php-fig.org\/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https:\/\/github.com\/php-fig\/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/php-fig\/container\/issues",
+                "source": "https:\/\/github.com\/php-fig\/container\/tree\/1.1.2"
+            },
+            "install-path": "..\/psr\/container"
+        },
+        {
+            "name": "psr\/http-client",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/php-fig\/http-client.git",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/php-fig\/http-client\/zipball\/bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0 || ^8.0",
+                "psr\/http-message": "^1.0 || ^2.0"
+            },
+            "time": "2023-09-23T14:17:50+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Psr\\Http\\Client\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https:\/\/www.php-fig.org\/"
+                }
+            ],
+            "description": "Common interface for HTTP clients",
+            "homepage": "https:\/\/github.com\/php-fig\/http-client",
+            "keywords": [
+                "http",
+                "http-client",
+                "psr",
+                "psr-18"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/php-fig\/http-client"
+            },
+            "install-path": "..\/psr\/http-client"
+        },
+        {
+            "name": "psr\/http-message",
+            "version": "1.1",
+            "version_normalized": "1.1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/php-fig\/http-message.git",
+                "reference": "cb6ce4845ce34a8ad9e68117c10ee90a29919eba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/php-fig\/http-message\/zipball\/cb6ce4845ce34a8ad9e68117c10ee90a29919eba",
+                "reference": "cb6ce4845ce34a8ad9e68117c10ee90a29919eba",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "time": "2023-04-04T09:50:52+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Psr\\Http\\Message\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http:\/\/www.php-fig.org\/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https:\/\/github.com\/php-fig\/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/php-fig\/http-message\/tree\/1.1"
+            },
+            "install-path": "..\/psr\/http-message"
+        },
+        {
+            "name": "psr\/log",
+            "version": "1.1.4",
+            "version_normalized": "1.1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/php-fig\/log.git",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/php-fig\/log\/zipball\/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2021-05-03T11:20:27+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Psr\\Log\\": "Psr\/Log\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https:\/\/www.php-fig.org\/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https:\/\/github.com\/php-fig\/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/php-fig\/log\/tree\/1.1.4"
+            },
+            "install-path": "..\/psr\/log"
+        },
+        {
+            "name": "psr\/simple-cache",
+            "version": "1.0.1",
+            "version_normalized": "1.0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/php-fig\/simple-cache.git",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/php-fig\/simple-cache\/zipball\/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2017-10-23T01:57:42+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Psr\\SimpleCache\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http:\/\/www.php-fig.org\/"
+                }
+            ],
+            "description": "Common interfaces for simple caching",
+            "keywords": [
+                "cache",
+                "caching",
+                "psr",
+                "psr-16",
+                "simple-cache"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/php-fig\/simple-cache\/tree\/master"
+            },
+            "install-path": "..\/psr\/simple-cache"
+        },
+        {
+            "name": "ralouphie\/getallheaders",
+            "version": "3.0.3",
+            "version_normalized": "3.0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/ralouphie\/getallheaders.git",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/ralouphie\/getallheaders\/zipball\/120b605dfeb996808c31b6477290a714d356e822",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "php-coveralls\/php-coveralls": "^2.1",
+                "phpunit\/phpunit": "^5 || ^6.5"
+            },
+            "time": "2019-03-08T08:55:37+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src\/getallheaders.php"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https:\/\/github.com\/ralouphie\/getallheaders\/issues",
+                "source": "https:\/\/github.com\/ralouphie\/getallheaders\/tree\/develop"
+            },
+            "install-path": "..\/ralouphie\/getallheaders"
+        },
+        {
+            "name": "slim\/php-view",
+            "version": "dev-joomla",
+            "version_normalized": "dev-joomla",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/codealfa\/PHP-Renderer.git",
+                "reference": "ab25024a44b3c65a4c2a9968ce283233b490fcb9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/PHP-Renderer\/zipball\/ab25024a44b3c65a4c2a9968ce283233b490fcb9",
+                "reference": "ab25024a44b3c65a4c2a9968ce283233b490fcb9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "psr\/http-message": "^1.1"
+            },
+            "require-dev": {
+                "phpunit\/phpunit": "^9.6",
+                "slim\/psr7": "^1.6",
+                "squizlabs\/php_codesniffer": "^3.7"
+            },
+            "time": "2023-05-07T18:05:36+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Slim\\Views\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Slim\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit --configuration phpunit.xml.dist"
+                ],
+                "test:coverage": [
+                    "phpunit --configuration phpunit.xml.dist --coverage-clover build\/logs\/clover.xml --coverage-html build\/coverage"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Glenn Eggleton",
+                    "email": "geggleto@gmail.com"
+                }
+            ],
+            "description": "Render PHP view scripts into a PSR-7 Response object.",
+            "keywords": [
+                "framework",
+                "php",
+                "phtml",
+                "renderer",
+                "slim",
+                "template",
+                "view"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/codealfa\/PHP-Renderer\/tree\/joomla"
+            },
+            "install-path": "..\/slim\/php-view"
+        },
+        {
+            "name": "spatie\/browsershot",
+            "version": "3.60.1",
+            "version_normalized": "3.60.1.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/spatie\/browsershot.git",
+                "reference": "8779b2cd10dcd9dab4abd0127429e5578da3f9ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/browsershot\/zipball\/8779b2cd10dcd9dab4abd0127429e5578da3f9ab",
+                "reference": "8779b2cd10dcd9dab4abd0127429e5578da3f9ab",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.0",
+                "spatie\/image": "^1.5.3|^2.0",
+                "spatie\/temporary-directory": "^1.1|^2.0",
+                "symfony\/process": "^4.2|^5.0|^6.0"
+            },
+            "require-dev": {
+                "pestphp\/pest": "^1.20",
+                "spatie\/phpunit-snapshot-assertions": "^4.2.3"
+            },
+            "time": "2023-11-28T10:50:45+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Spatie\\Browsershot\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https:\/\/github.com\/freekmurze",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Convert a webpage to an image or pdf using headless Chrome",
+            "homepage": "https:\/\/github.com\/spatie\/browsershot",
+            "keywords": [
+                "chrome",
+                "convert",
+                "headless",
+                "image",
+                "pdf",
+                "puppeteer",
+                "screenshot",
+                "webpage"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/spatie\/browsershot\/tree\/3.60.1"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/spatie",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/spatie\/browsershot"
+        },
+        {
+            "name": "spatie\/crawler",
+            "version": "v6.x-dev",
+            "version_normalized": "6.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/spatie\/crawler.git",
+                "reference": "276ecb429a770474695a1278a9ad3e719fbef259"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/crawler\/zipball\/276ecb429a770474695a1278a9ad3e719fbef259",
+                "reference": "276ecb429a770474695a1278a9ad3e719fbef259",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp\/guzzle": "^7.2",
+                "guzzlehttp\/psr7": "^1.7",
+                "illuminate\/collections": "^8.17",
+                "nicmart\/tree": "^0.3.0",
+                "php": "^7.4|^8.0",
+                "spatie\/browsershot": "^3.14",
+                "spatie\/robots-txt": "^1.0.9|^2.0",
+                "symfony\/dom-crawler": "^5.2"
+            },
+            "require-dev": {
+                "phpunit\/phpunit": "^9.4"
+            },
+            "time": "2021-04-14T13:50:22+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Spatie\\Crawler\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be"
+                }
+            ],
+            "description": "Crawl all internal links found on a website",
+            "homepage": "https:\/\/github.com\/spatie\/crawler",
+            "keywords": [
+                "crawler",
+                "link",
+                "spatie",
+                "website"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/spatie\/crawler\/issues",
+                "source": "https:\/\/github.com\/spatie\/crawler\/tree\/6.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/spatie",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/spatie\/crawler"
+        },
+        {
+            "name": "spatie\/image",
+            "version": "2.2.7",
+            "version_normalized": "2.2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/spatie\/image.git",
+                "reference": "2f802853aab017aa615224daae1588054b5ab20e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/image\/zipball\/2f802853aab017aa615224daae1588054b5ab20e",
+                "reference": "2f802853aab017aa615224daae1588054b5ab20e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-exif": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "league\/glide": "^2.2.2",
+                "php": "^8.0",
+                "spatie\/image-optimizer": "^1.7",
+                "spatie\/temporary-directory": "^1.0|^2.0",
+                "symfony\/process": "^3.0|^4.0|^5.0|^6.0"
+            },
+            "require-dev": {
+                "pestphp\/pest": "^1.22",
+                "phpunit\/phpunit": "^9.5",
+                "symfony\/var-dumper": "^4.0|^5.0|^6.0",
+                "vimeo\/psalm": "^4.6"
+            },
+            "time": "2023-07-24T13:54:13+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Spatie\\Image\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https:\/\/spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Manipulate images with an expressive API",
+            "homepage": "https:\/\/github.com\/spatie\/image",
+            "keywords": [
+                "image",
+                "spatie"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/spatie\/image\/tree\/2.2.7"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/spatie.be\/open-source\/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/spatie",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/spatie\/image"
+        },
+        {
+            "name": "spatie\/image-optimizer",
+            "version": "1.7.2",
+            "version_normalized": "1.7.2.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/spatie\/image-optimizer.git",
+                "reference": "62f7463483d1bd975f6f06025d89d42a29608fe1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/image-optimizer\/zipball\/62f7463483d1bd975f6f06025d89d42a29608fe1",
+                "reference": "62f7463483d1bd975f6f06025d89d42a29608fe1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": "^7.3|^8.0",
+                "psr\/log": "^1.0 | ^2.0 | ^3.0",
+                "symfony\/process": "^4.2|^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "pestphp\/pest": "^1.21",
+                "phpunit\/phpunit": "^8.5.21|^9.4.4",
+                "symfony\/var-dumper": "^4.2|^5.0|^6.0|^7.0"
+            },
+            "time": "2023-11-03T10:08:02+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Spatie\\ImageOptimizer\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https:\/\/spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily optimize images using PHP",
+            "homepage": "https:\/\/github.com\/spatie\/image-optimizer",
+            "keywords": [
+                "image-optimizer",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/spatie\/image-optimizer\/issues",
+                "source": "https:\/\/github.com\/spatie\/image-optimizer\/tree\/1.7.2"
+            },
+            "install-path": "..\/spatie\/image-optimizer"
+        },
+        {
+            "name": "spatie\/robots-txt",
+            "version": "2.0.3",
+            "version_normalized": "2.0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/spatie\/robots-txt.git",
+                "reference": "dacba2ba159364987392aa1b0002e196c5923970"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/robots-txt\/zipball\/dacba2ba159364987392aa1b0002e196c5923970",
+                "reference": "dacba2ba159364987392aa1b0002e196c5923970",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "larapack\/dd": "^1.0",
+                "phpunit\/phpunit": "^8.0 || ^9.0"
+            },
+            "time": "2023-11-22T12:57:35+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Spatie\\Robots\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brent Roose",
+                    "email": "brent@spatie.be",
+                    "homepage": "https:\/\/spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Determine if a page may be crawled from robots.txt and robots meta tags",
+            "homepage": "https:\/\/github.com\/spatie\/robots-txt",
+            "keywords": [
+                "robots-txt",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/spatie\/robots-txt\/issues",
+                "source": "https:\/\/github.com\/spatie\/robots-txt\/tree\/2.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/spatie.be\/open-source\/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/spatie",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/spatie\/robots-txt"
+        },
+        {
+            "name": "spatie\/temporary-directory",
+            "version": "2.2.0",
+            "version_normalized": "2.2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/spatie\/temporary-directory.git",
+                "reference": "efc258c9f4da28f0c7661765b8393e4ccee3d19c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/temporary-directory\/zipball\/efc258c9f4da28f0c7661765b8393e4ccee3d19c",
+                "reference": "efc258c9f4da28f0c7661765b8393e4ccee3d19c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit\/phpunit": "^9.5"
+            },
+            "time": "2023-09-25T07:13:36+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Spatie\\TemporaryDirectory\\": "src"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Vanderbist",
+                    "email": "alex@spatie.be",
+                    "homepage": "https:\/\/spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily create, use and destroy temporary directories",
+            "homepage": "https:\/\/github.com\/spatie\/temporary-directory",
+            "keywords": [
+                "php",
+                "spatie",
+                "temporary-directory"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/spatie\/temporary-directory\/issues",
+                "source": "https:\/\/github.com\/spatie\/temporary-directory\/tree\/2.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/spatie.be\/open-source\/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/spatie",
+                    "type": "github"
+                }
+            ],
+            "install-path": "..\/spatie\/temporary-directory"
+        },
+        {
+            "name": "symfony\/deprecation-contracts",
+            "version": "2.5.x-dev",
+            "version_normalized": "2.5.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/deprecation-contracts.git",
+                "reference": "80d075412b557d41002320b96a096ca65aa2c98d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/deprecation-contracts\/zipball\/80d075412b557d41002320b96a096ca65aa2c98d",
+                "reference": "80d075412b557d41002320b96a096ca65aa2c98d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "time": "2023-01-24T14:02:46+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.5-dev"
+                },
+                "thanks": {
+                    "name": "symfony\/contracts",
+                    "url": "https:\/\/github.com\/symfony\/contracts"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "function.php"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "A generic function and convention to trigger deprecation notices",
+            "homepage": "https:\/\/symfony.com",
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/deprecation-contracts\/tree\/2.5"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/deprecation-contracts"
+        },
+        {
+            "name": "symfony\/dom-crawler",
+            "version": "5.4.x-dev",
+            "version_normalized": "5.4.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/dom-crawler.git",
+                "reference": "728f1fc136252a626ba5a69c02bd66a3697ff201"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/dom-crawler\/zipball\/728f1fc136252a626ba5a69c02bd66a3697ff201",
+                "reference": "728f1fc136252a626ba5a69c02bd66a3697ff201",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony\/deprecation-contracts": "^2.1|^3",
+                "symfony\/polyfill-ctype": "~1.8",
+                "symfony\/polyfill-mbstring": "~1.0",
+                "symfony\/polyfill-php80": "^1.16"
+            },
+            "conflict": {
+                "masterminds\/html5": "<2.6"
+            },
+            "require-dev": {
+                "masterminds\/html5": "^2.6",
+                "symfony\/css-selector": "^4.4|^5.0|^6.0"
+            },
+            "suggest": {
+                "symfony\/css-selector": ""
+            },
+            "time": "2023-11-17T20:43:48+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Symfony\\Component\\DomCrawler\\": ""
+                },
+                "exclude-from-classmap": [
+                    "\/Tests\/"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Eases DOM navigation for HTML and XML documents",
+            "homepage": "https:\/\/symfony.com",
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/dom-crawler\/tree\/5.4"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/dom-crawler"
+        },
+        {
+            "name": "symfony\/polyfill-ctype",
+            "version": "1.x-dev",
+            "version_normalized": "1.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/polyfill-ctype.git",
+                "reference": "ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-ctype\/zipball\/ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb",
+                "reference": "ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-ctype": "*"
+            },
+            "suggest": {
+                "ext-ctype": "For best performance"
+            },
+            "time": "2023-01-26T09:26:14+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.28-dev"
+                },
+                "thanks": {
+                    "name": "symfony\/polyfill",
+                    "url": "https:\/\/github.com\/symfony\/polyfill"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\Symfony\\Polyfill\\Ctype\\": ""
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gert de Pagter",
+                    "email": "BackEndTea@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for ctype functions",
+            "homepage": "https:\/\/symfony.com",
+            "keywords": [
+                "compatibility",
+                "ctype",
+                "polyfill",
+                "portable"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/polyfill-ctype\/tree\/v1.28.0"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/polyfill-ctype"
+        },
+        {
+            "name": "symfony\/polyfill-mbstring",
+            "version": "1.x-dev",
+            "version_normalized": "1.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/polyfill-mbstring.git",
+                "reference": "42292d99c55abe617799667f454222c54c60e229"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-mbstring\/zipball\/42292d99c55abe617799667f454222c54c60e229",
+                "reference": "42292d99c55abe617799667f454222c54c60e229",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-mbstring": "*"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "time": "2023-07-28T09:04:16+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.28-dev"
+                },
+                "thanks": {
+                    "name": "symfony\/polyfill",
+                    "url": "https:\/\/github.com\/symfony\/polyfill"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\Symfony\\Polyfill\\Mbstring\\": ""
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https:\/\/symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/polyfill-mbstring\/tree\/v1.28.0"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/polyfill-mbstring"
+        },
+        {
+            "name": "symfony\/polyfill-php80",
+            "version": "1.x-dev",
+            "version_normalized": "1.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/polyfill-php80.git",
+                "reference": "6caa57379c4aec19c0a12a38b59b26487dcfe4b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-php80\/zipball\/6caa57379c4aec19c0a12a38b59b26487dcfe4b5",
+                "reference": "6caa57379c4aec19c0a12a38b59b26487dcfe4b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "time": "2023-01-26T09:26:14+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.28-dev"
+                },
+                "thanks": {
+                    "name": "symfony\/polyfill",
+                    "url": "https:\/\/github.com\/symfony\/polyfill"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\Symfony\\Polyfill\\Php80\\": ""
+                },
+                "classmap": [
+                    "Resources\/stubs"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ion Bazan",
+                    "email": "ion.bazan@gmail.com"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
+            "homepage": "https:\/\/symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/polyfill-php80\/tree\/v1.28.0"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/polyfill-php80"
+        },
+        {
+            "name": "symfony\/process",
+            "version": "5.4.x-dev",
+            "version_normalized": "5.4.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/process.git",
+                "reference": "8fa22178dfc368911dbd513b431cd9b06f9afe7a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/process\/zipball\/8fa22178dfc368911dbd513b431cd9b06f9afe7a",
+                "reference": "8fa22178dfc368911dbd513b431cd9b06f9afe7a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony\/polyfill-php80": "^1.16"
+            },
+            "time": "2023-12-02T08:41:43+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Symfony\\Component\\Process\\": ""
+                },
+                "exclude-from-classmap": [
+                    "\/Tests\/"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Executes commands in sub-processes",
+            "homepage": "https:\/\/symfony.com",
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/process\/tree\/5.4"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/process"
+        },
+        {
+            "name": "webmozart\/assert",
+            "version": "1.11.0",
+            "version_normalized": "1.11.0.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/webmozarts\/assert.git",
+                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/webmozarts\/assert\/zipball\/11cb2199493b2f8a3b53e7f19068fc6aac760991",
+                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "php": "^7.2 || ^8.0"
+            },
+            "conflict": {
+                "phpstan\/phpstan": "<0.12.20",
+                "vimeo\/psalm": "<4.6.1 || 4.6.2"
+            },
+            "require-dev": {
+                "phpunit\/phpunit": "^8.5.13"
+            },
+            "time": "2022-06-03T18:03:27+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.10-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\Webmozart\\Assert\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                }
+            ],
+            "description": "Assertions to validate method input\/output with nice error messages.",
+            "keywords": [
+                "assert",
+                "check",
+                "validate"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/webmozarts\/assert\/issues",
+                "source": "https:\/\/github.com\/webmozarts\/assert\/tree\/1.11.0"
+            },
+            "install-path": "..\/webmozart\/assert"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

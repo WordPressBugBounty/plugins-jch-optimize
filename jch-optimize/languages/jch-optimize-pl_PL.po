@@ -1,0 +1,1150 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: jch-optimize-for-wordpress\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/plugin\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-02-05T11:07:51-05:00\n"
+"PO-Revision-Date: 2022-02-19 19:39\n"
+"Language: pl_PL\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: jch-optimize\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: jch-optimize-for-wordpress\n"
+"X-Crowdin-Project-ID: 498330\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: jch-optimize.pot\n"
+"X-Crowdin-File-ID: 6\n"
+
+#. Plugin Name of the plugin
+msgid "JCH Optimize Pro"
+msgstr "JCH Optimize Pro"
+
+#. Plugin URI of the plugin
+msgid "http://www.jch-optimize.net/"
+msgstr "http://www.jch-optimize.net/"
+
+#. Author of the plugin
+msgid "Samuel Marshall"
+msgstr "Samuel Marshall"
+
+#: lib/src/Plugin/Admin.php:67
+msgid "JCH Optimize Settings"
+msgstr "Ustawienia JCH Optimize"
+
+#: lib/src/Plugin/Admin.php:147
+msgid "Please open a directory to optimize images."
+msgstr "Proszę otworzyć katalog, aby zoptymalizować zdjęcia."
+
+#: lib/src/Plugin/Admin.php:148
+msgid "Please enter your Download ID on the Configurations tab."
+msgstr "Wprowadź swój identyfikator pobierania (Download ID) na karcie Ustawienia."
+
+#: lib/src/Plugin/Admin.php:255
+msgid "Settings"
+msgstr "Ustawienia"
+
+#: lib/src/Plugin/Admin.php:257
+msgid "Clean Cache"
+msgstr "Wyczyść pamięć podręczną"
+
+#: lib/src/Controller/OptimizeImage.php:39
+msgid "%1$d images optimized in %2$s"
+msgstr "%1$d zoptymalizowanych obrazów w %2$s"
+
+#: lib/src/Controller/OptimizeImage.php:42
+msgid "The Optimize Image function failed with message \""
+msgstr "Optymalizacja obrazu nie powiodła się. Komunikat \""
+
+#: lib/src/Controller/BrowserCaching.php:33
+msgid "Failed trying to add browser caching codes to the .htaccess file"
+msgstr "Próba dodania kodów buforowania przeglądarki do pliku .htaccess nie powiodła się"
+
+#: lib/src/Controller/BrowserCaching.php:35
+msgid "No .htaccess file were found in the root of this site"
+msgstr "Nie znaleziono pliku .htaccess w katalogu głównym tej witryny"
+
+#: lib/src/Controller/BrowserCaching.php:37
+msgid "The .htaccess file was updated successfully"
+msgstr "Plik .htaccess został zaktualizowany"
+
+#: lib/src/Controller/BrowserCaching.php:41
+msgid "Successfully added codes to the .htaccess file to promote browser caching"
+msgstr "Pomyślnie dodano kody do pliku .htaccess aby promować buforowanie przeglądarki"
+
+#: lib/src/Controller/OrderPlugins.php:37
+msgid "Plugins ordered successfully"
+msgstr "Pomyślnie zamówiono wtyczki"
+
+#: lib/src/Controller/KeyCache.php:32
+msgid "New cache key generated!"
+msgstr "Nowy klucz pamięci podręcznej został wygenerowany!"
+
+#: lib/src/Controller/CleanCache.php:38
+msgid "Cache deleted successfully!"
+msgstr "Pamięć podręczna usunięta pomyślnie!"
+
+#: lib/src/Controller/CleanCache.php:40
+msgid "Error cleaning cache!"
+msgstr "Błąd czyszczenia pamięci podręcznej!"
+
+#: lib/src/Controller/RestoreImages.php:33
+msgid "Failed restoring all original images"
+msgstr "Nie udało się przywrócić wszystkich oryginalnych obrazów"
+
+#: lib/src/Controller/DeleteBackups.php:35
+#: lib/src/Controller/RestoreImages.php:35
+msgid "The folder containing backup images wasn't created yet. Try optimizing some images first."
+msgstr "Folder zawierający kopie zapasowe obrazów nie został jeszcze utworzony. Spróbuj najpierw zoptymalizować niektóre obrazy."
+
+#: lib/src/Controller/RestoreImages.php:37
+msgid "Successfully restored all images"
+msgstr "Pomyślnie przywrócono wszystkie obrazy"
+
+#: lib/src/Controller/DeleteBackups.php:33
+msgid "Failed trying to delete backup images"
+msgstr "Nie udało się usunąć kopii zapasowej"
+
+#: lib/src/Controller/DeleteBackups.php:37
+msgid "Successfully deleted backup images"
+msgstr "Pomyślnie usunięto kopię zapasową"
+
+#: lib/src/Html/Helper.php:72
+msgid "Only available in Pro Version!"
+msgstr "Dostępne tylko w wersji Pro!"
+
+#: lib/src/Html/Helper.php:111
+#: lib/src/Html/Helper.php:240
+msgid "No"
+msgstr "Nie"
+
+#: lib/src/Html/Helper.php:112
+#: lib/src/Html/Helper.php:241
+msgid "Yes"
+msgstr "Tak"
+
+#: lib/src/Html/Helper.php:204
+msgid "Add item"
+msgstr "Dodaj pozycję"
+
+#: lib/src/Html/Renderer/Section.php:22
+msgid "General"
+msgstr "Ogólne"
+
+#: lib/src/Html/Renderer/Section.php:27
+msgid "Exclude Menu Urls"
+msgstr "Wyklucz adresy URL"
+
+#: lib/src/Html/Renderer/Section.php:28
+msgid "Enter any part of a url to exclude that page from optimization. You will need to add these urls to the list manually by typing the url in the textbox and click the 'Add item' button."
+msgstr "Wprowadź część adresu URL, aby wykluczyć tę stronę z optymalizacji. Musisz dodać te adresy URL do listy ręcznie wpisując adres URL w polu tekstowym i kliknij przycisk 'Dodaj pozycję'."
+
+#: lib/src/Html/Renderer/Section.php:33
+msgid "Combine CSS/Js"
+msgstr "Połącz CSS/Js"
+
+#: lib/src/Html/Renderer/Section.php:39
+msgid "Combine Files Automatic Settings"
+msgstr "Łączenie plików: ustawienia automatyczne"
+
+#: lib/src/Html/Renderer/Section.php:40
+msgid "These settings for the combined files are configured by the Automatic settings on the Dashboard tab. You don't need to configure them yourself."
+msgstr "Te ustawienia dla połączonych plików są konfigurowane przez ustawienia automatyczne na karcie Pulpitu. Nie musisz ich konfigurować samodzielnie."
+
+#: lib/src/Html/Renderer/Section.php:46
+msgid "CSS Automatic Settings"
+msgstr "CSS: ustawienia automatyczne"
+
+#: lib/src/Html/Renderer/Section.php:47
+msgid "These settings are configured by the Automatic settings on the Control Panel tab. You don't need to configure them yourself."
+msgstr "Te ustawienia są skonfigurowane przez ustawienia automatyczne na karcie Panelu zarządzania. Nie musisz ich konfigurować samodzielnie."
+
+#: lib/src/Html/Renderer/Section.php:52
+msgid "Exclude CSS Files"
+msgstr "Wyklucz pliki CSS"
+
+#: lib/src/Html/Renderer/Section.php:58
+#: lib/src/Html/TabSettings.php:76
+msgid "Remove CSS Files"
+msgstr "Usuń pliki CSS"
+
+#: lib/src/Html/Renderer/Section.php:64
+msgid "Optimize CSS Delivery"
+msgstr "Optymalizacja Dostarczania CSS"
+
+#: lib/src/Html/Renderer/Section.php:65
+msgid "The plugin will attempt to extract the critical CSS that is required to format the page above the fold and put this in a &lt;style&gt; element inside the &lt;head&gt; section of the HTML to prevent 'render-blocking'. The combined CSS will then be loaded asynchronously. Select the number of HTML elements from the top of the page that you want the plugin to find the critical CSS for. The smaller the number, the smaller the size of the critical CSS but you might see some jumping of the page if the number is too small."
+msgstr "Wtyczka spróbuje wyodrębnić krytyczny CSS, który jest wymagany do sformatowania strony i umieścić ją w elemencie &lt;style&gt; wewnątrz sekcji &lt;head&gt; HTMLa, aby zapobiec blokowaniu renderowania. Połączony CSS zostanie wtedy załadowany asynchronicznie. Wybierz liczbę elementów HTML u góry strony, dla której wtyczka ma znaleźć kluczowy CSS. Im mniejsza liczba, mniejszy rozmiar krytycznego CSS, ale możę wystąpić skakanie strony, jeśli liczba jest zbyt mała."
+
+#: lib/src/Html/Renderer/Section.php:72
+msgid "These settings are configured by the Automatic settings on the Control Panel tab. You don't need to configure them yourself"
+msgstr "Te ustawienia są skonfigurowane przez ustawienia automatyczne na karcie Panelu zarządzania. Nie musisz ich konfigurować samodzielnie"
+
+#: lib/src/Html/Renderer/Section.php:83
+msgid "Exclude Files While Preserving Execution Order"
+msgstr "Wyklucz pliki podczas przechowywania zlecenia wykonania"
+
+#: lib/src/Html/Renderer/Section.php:89
+msgid "Exclude File Ignoring Execution Order"
+msgstr "Wyklucz plik ignorowania zlecenia wykonania"
+
+#: lib/src/Html/Renderer/Section.php:90
+msgid "Only use these settings if you're sure that the files/scripts you are excluding does not have any dependencies on any other files/scripts that are combined. If you are not sure then use the above section to exclude your files to avoid breaking your page."
+msgstr "Używaj tych ustawień tylko wtedy, gdy jesteś pewien, że pliki/skrypty, które wykluczasz, nie mają żadnych zależności od innych plików/skryptów, które są połączone. Jeśli nie jesteś pewien, użyj powyższej sekcji, aby wykluczyć swoje pliki, aby uniknąć zepsucia strony."
+
+#: lib/src/Html/Renderer/Section.php:95
+msgid "Don't Move These Files To Bottom Of Page When Excluded"
+msgstr "Nie przenieś tych plików na dół strony po wykluczeniu"
+
+#: lib/src/Html/Renderer/Section.php:108
+msgid "Page Cache"
+msgstr "Pamięć podręczna strony"
+
+#: lib/src/Html/Renderer/Section.php:109
+msgid "The HTML source of the page will be cached to significantly speed up page loads. Deactivate caching while configuring the plugin and be sure to flush cache after making changes to the site."
+msgstr "Źródło HTML strony będzie buforowane aby znacznie przyspieszyć ładowanie strony. Dezaktywuj buforowanie podczas konfigurowania wtyczki i upewnij się, że usunięto pamięć podręczną po dokonaniu zmian na witrynie."
+
+#: lib/src/Html/Renderer/Section.php:115
+msgid "Add Image Attributes"
+msgstr "Dodaj atrybuty obrazu"
+
+#: lib/src/Html/Renderer/Section.php:116
+msgid "When enabled, the plugin will add missing 'width' and 'height' attributes to &lt;img/&gt; elements. PLEASE NOTE: This works best when the images are scaled to the size they are shown onscreen. If images appear the wrong size, try rescaling the images correctly or disable this option."
+msgstr "Po włączeniu wtyczka doda brakujące atrybuty 'szerokość' i 'wysokość' do elementów &lt;img/&gt;. UWAGA: To działa najlepiej, gdy obrazy są skalowane do rozmiaru w jakim są wyświetlane na ekranie. Jeśli obrazy pojawiają się w niewłaściwym rozmiarze, spróbuj przeskalować zdjęcia poprawnie lub wyłącz tę opcję."
+
+#: lib/src/Html/Renderer/Section.php:121
+msgid "Sprite Generator"
+msgstr "Generator duszków (spritów)"
+
+#: lib/src/Html/Renderer/Section.php:122
+msgid "The plugin will combine selected background images into one image called a sprite to reduce http requests. Combine CSS must be enabled for the Sprite Generator to work."
+msgstr "Wtyczka połączy wybrane obrazy tła w jeden obraz o nazwie duszek (sprite), aby zmniejszyć żądania http. Połączenie CSS musi być włączone, aby generator duszków działał."
+
+#: lib/src/Html/Renderer/Section.php:128
+msgid "Enable to delay the loading of iframes, images and responsive images until they are scrolled into view. This further speeds up the loading of the page and reduces http requests."
+msgstr "Włącz, aby opóźnić wczytywanie iframes, obrazów i responsywnych obrazów, dopóki nie zostaną one wyświetlone w widoku. To jeszcze bardziej przyspiesza ładowanie strony i zmniejsza żądania http."
+
+#: lib/src/Html/Renderer/Section.php:135
+msgid "Plugin will send appropriate headers to your server to push resource files before the browser requests them. Please note this only works if http/2 is enabled on the server"
+msgstr "Wtyczka wyśle odpowiednie nagłówki na serwer, aby przesłać pliki zasobów zanim przeglądarka je zażąda. Pamiętaj, że działa tylko wtedy, gdy http/2 jest włączony na serwerze"
+
+#: lib/src/Html/Renderer/Section.php:147
+msgid "CDN"
+msgstr "CDN"
+
+#: lib/src/Html/Renderer/Section.php:154
+msgid "Global Options"
+msgstr "Opcje globalne"
+
+#: lib/src/Html/Renderer/Section.php:155
+msgid "Use our API to optimize the images on your server. You can either let the plugin find the images on your page to optimize or manually select them in the file tree explorer. Be sure to save your 'Download ID' in the plugin before trying to optimize images as that will authenticate you to access the API. These settings apply to both methods."
+msgstr "Użyj naszego API, aby zoptymalizować obrazy na serwerze. Możesz też pozwolić wtyczce znaleźć obrazy na swojej stronie, aby zoptymalizować lub ręcznie wybrać je w dziwie plików eksploratora. Upewnij się, aby zapisać swój 'ID pobierania' w wtyczce przed zoptymalizowaniem obrazów, ponieważ to uwierzytelni Cię aby uzyskać dostęp do API. Te ustawienia dotyczą obu metod."
+
+#: lib/src/Html/Renderer/Section.php:161
+msgid "The plugin will scan the pages of your website for you to find the images to optimize. (Currently only the Main Menu). You don't need to select them beforehand."
+msgstr "Wtyczka zeskanuje strony twojej witryny w celu znalezienia obrazów do zoptymalizowania (Obecnie tylko Menu Główne). Nie musisz ich wcześniej wybierać."
+
+#: lib/src/Html/Renderer/Section.php:167
+msgid "Use the file tree to select the subfolders and files you want to optimize. Files will be optimized in subfolders recursively. If you want to rescale your images while optimizing, enter the new width and height in the respective columns beside each image on the right hand side."
+msgstr "Użyj drzewa plików, aby wybrać podfoldery i pliki, które chcesz zoptymalizować. Pliki zostaną zoptymalizowane w podfolderach rekurencyjnie. Jeśli chcesz przeskalować zdjęcia podczas optymalizacji, wpisz nową szerokość i wysokość w odpowiednich kolumnach obok każdego obrazu po prawej stronie."
+
+#: lib/src/Html/Renderer/Section.php:173
+msgid "Reduce DOM"
+msgstr "Zmniejsz DOM"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "30 min"
+msgstr "30 min"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "1 hour"
+msgstr "1 godzina"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "3 hours"
+msgstr "3 godziny"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "6 hours"
+msgstr "6 godzin"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "12 hours"
+msgstr "12 godzin"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "1 day"
+msgstr "1 dzień"
+
+#: lib/src/Html/Renderer/Setting.php:52
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "2 days"
+msgstr "2 dni"
+
+#: lib/src/Html/Renderer/Setting.php:52
+msgid "7 days"
+msgstr "7 dni"
+
+#: lib/src/Html/Renderer/Setting.php:52
+msgid "2 weeks"
+msgstr "2 tygodnie"
+
+#: lib/src/Html/Renderer/Setting.php:57
+msgid "Basic"
+msgstr "Podstawowe"
+
+#: lib/src/Html/Renderer/Setting.php:57
+msgid "Advanced"
+msgstr "Zaawansowane"
+
+#: lib/src/Html/Renderer/Setting.php:57
+msgid "Ultra"
+msgstr "Ultra"
+
+#: lib/src/Html/Renderer/Setting.php:62
+msgid "Static css and js files"
+msgstr "Statyczne pliki css i js"
+
+#: lib/src/Html/Renderer/Setting.php:62
+msgid "PHP file with query"
+msgstr "Plik PHP z zapytaniem"
+
+#: lib/src/Html/Renderer/Setting.php:62
+msgid "PHP using url re-write"
+msgstr "PHP używające przepisania URL (re-write)"
+
+#: lib/src/Html/Renderer/Setting.php:62
+msgid "PHP using url re-write (Without Options +FollowSymLinks)"
+msgstr "PHP używające przepisania adresu url (Bez opcji +FollowSymLinks)"
+
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "15 min"
+msgstr "15 min"
+
+#: lib/src/Html/Renderer/Setting.php:224
+msgid "1 week"
+msgstr "1 tydzień"
+
+#: lib/src/Html/Renderer/Setting.php:278
+msgid "vertical"
+msgstr "pionowo"
+
+#: lib/src/Html/Renderer/Setting.php:278
+msgid "horizontal"
+msgstr "poziomo"
+
+#: lib/src/Html/Renderer/Setting.php:388
+msgid "scheme relative"
+msgstr "schemat względny"
+
+#: lib/src/Html/Renderer/Setting.php:388
+msgid "http"
+msgstr "http"
+
+#: lib/src/Html/Renderer/Setting.php:388
+msgid "https"
+msgstr "https"
+
+#: lib/src/Html/TabSettings.php:47
+msgid "Download ID"
+msgstr "ID pobierania"
+
+#: lib/src/Html/TabSettings.php:47
+msgid "You'll find your Download ID in your account. Enter your Download ID here to enable automatic updates of the PRO version and to access our Optimize Image API."
+msgstr "Na koncie znajdziesz swój identyfikator pobierania (ID pobierania). Wprowadź tutaj swój ID pobierania, aby włączyć automatyczne aktualizacje wersji PRO i uzyskać dostęp do naszego API Optymalizowania Obrazów."
+
+#: lib/src/Html/TabSettings.php:47
+msgid "Debug Plugin"
+msgstr "Debuguj wtyczkę"
+
+#: lib/src/Html/TabSettings.php:47
+msgid "Order plugin"
+msgstr "Zamów wtyczkę"
+
+#: lib/src/Html/TabSettings.php:47
+msgid "Disable logged in users"
+msgstr "Wyłącz zalogowanych użytkowników"
+
+#: lib/src/Html/TabSettings.php:47
+msgid "When enabled, the plugin will be disabled for all users that are logged in"
+msgstr "Po włączeniu wtyczka zostanie wyłączona dla wszystkich zalogowanych użytkowników"
+
+#: lib/src/Html/TabSettings.php:51
+#: lib/src/Html/TabSettings.php:128
+msgid "Exclude urls"
+msgstr "Wyklucz URLe"
+
+#: lib/src/Html/TabSettings.php:51
+msgid "Enter a substring of the url you want to exclude here. Just type the string in the textbox then click the 'Add Item' button for each url then save your settings"
+msgstr "Wprowadź fragment ciągu adresu URL, który chcesz tutaj wykluczyć. Po prostu wpisz ciąg w polu tekstowym, a następnie kliknij przycisk 'Dodaj element' dla każdego adresu URL, a następnie zapisz ustawienia"
+
+#: lib/src/Html/TabSettings.php:55
+#: lib/src/Html/TabSettings.php:80
+#: lib/src/Html/TabSettings.php:98
+#: lib/src/Html/TabSettings.php:128
+#: lib/src/Html/TabSettings.php:142
+#: lib/src/Html/TabSettings.php:146
+#: lib/src/Html/TabSettings.php:150
+#: lib/src/Html/TabSettings.php:164
+#: lib/src/Html/TabSettings.php:168
+#: lib/src/Html/TabSettings.php:182
+#: lib/src/Html/TabSettings.php:227
+msgid "Enable"
+msgstr "Włącz"
+
+#: lib/src/Html/TabSettings.php:55
+msgid "Smart combine"
+msgstr "Inteligentne łączenie"
+
+#: lib/src/Html/TabSettings.php:55
+msgid "Will try to combine system and template files together respectively that are consistent across pages. <p>This produces several smaller combined files promoting browser caching across page loads; reduces chances of excessive cache generation and takes advantages of better files delivery offered by Http/2 servers"
+msgstr "Spróbuje połączyć odpowiednio pliki systemowe i szablony, które są spójne między stronami. <p>W ten sposób powstaje kilka mniejszych połączonych plików promujących buforowanie przeglądarek przez ładowanie stron; zmniejsza szanse na nadmierne generowanie pamięci podręcznej i korzysta z lepszego dostarczania plików obsługiwanego przez serwery Http/2"
+
+#: lib/src/Html/TabSettings.php:55
+#: lib/src/Html/TabSettings.php:128
+msgid "Cache lifetime"
+msgstr "Okres przechowywania pamięci podręcznej"
+
+#: lib/src/Html/TabSettings.php:55
+msgid "The lifetime of the cache files generated by the plugin. <p>If you're using a Page Cache plugin be sure to set this higher than the lifetime set in Page Cache. <p>If you're having issue with excess amount of cache being generated then lowering this setting will help."
+msgstr "Okres ważności plików pamięci podręcznej generowanych przez wtyczkę. <p>Jeśli używasz wtyczki Pamięci podręcznej strony upewnij się, że ustawiono to powyżej czasu życia ustawionego w Pamięci podręcznej. <p>Jeśli masz problem z generowaniem nadmiernej ilości pamięci podręcznej, pomocne będzie obniżenie tego ustawienia. "
+
+#: lib/src/Html/TabSettings.php:55
+msgid "HTML Minification level"
+msgstr "Poziom minimalizacji HTML"
+
+#: lib/src/Html/TabSettings.php:55
+msgid "If 'Minify HTML' is enabled, this will determine the level of minification. The incremental changes per level are as follows: <dl><dt>Basic - </dt><dd>Adjoining whitespaces outside of elements are reduced to one whitespace, HTML comments preserved;</dd><dt>Advanced - </dt><dd>Remove HTML comments, whitespace around block elements and undisplayed elements, Remove unnecessary whitespaces inside of elements and around their attributes;</dd> <dt>Ultra -</dt> <dd>Remove redundant attributes, for example, 'text/javascript', and remove quotes from around selected attributes (HTML5)</dd> </dl>"
+msgstr "Jeśli 'Zminimalizuj HTML' jest włączone, to określi poziom tej minimacji. Przyrostowe zmiany na poziomie są następujące: <dl><dt>Podstawowy - </dt><dd>Przylegające spacje poza elementami są redukowane do jednej spacji, z zachowaniem komentarzy HTML; </dd><dt>Zaawansowane - </dt><dd>Usuń komentarze HTML, białe spacje wokół elementów blokowych i niewyświetlanych elementów, Usuń niepotrzebne spacje wewnątrz elementów i wokół ich atrybutów; </dd> <dt>Ultra -</dt> <dd>Usuń zbędne atrybuty, na przykład „tekst/javascript” i usuń cudzysłowy z okolic wybranych atrybutów (HTML5) </dd> </dl>"
+
+#: lib/src/Html/TabSettings.php:55
+msgid "Combined files delivery"
+msgstr "Dostarczanie połączonych plików"
+
+#: lib/src/Html/TabSettings.php:55
+msgid "Use try-catch"
+msgstr "Użyj \"try-catch\""
+
+#: lib/src/Html/TabSettings.php:59
+msgid "The plugin will compress the combined JavaScript and CSS file respectively using gzip, if you've selected one of the PHP options for 'Combined files delivery'. This can decrease file size dramatically."
+msgstr "Wtyczka skompresuje połączony plik JavaScript i CSS za pomocą gzip, jeśli wybrałeś jedną z opcji PHP dla 'Dostarczanie połączonych plików'. Może to dramatycznie zmniejszyć rozmiar pliku."
+
+#: lib/src/Html/TabSettings.php:59
+msgid "Minify HTML"
+msgstr "Zminimalizuj HTML"
+
+#: lib/src/Html/TabSettings.php:59
+msgid "The plugin will remove all unnecessary whitespaces and comments from the HTML to reduce the total size of the web page."
+msgstr "Wtyczka usunie wszystkie niepotrzebne spacje i komentarze z HTML, aby zmniejszyć całkowity rozmiar strony internetowej."
+
+#: lib/src/Html/TabSettings.php:59
+msgid "Include all plugins"
+msgstr "Dołącz wszystkie wtyczki"
+
+#: lib/src/Html/TabSettings.php:59
+msgid "By default, all files from third party plugins and external domains are excluded. If enabled, they will be included."
+msgstr "Domyślnie wszystkie pliki z zewnętrznych wtyczek i domen są wyłączone. Jeśli włączone, zostaną dołączone."
+
+#: lib/src/Html/TabSettings.php:59
+msgid "Include PHP and external files"
+msgstr "Dołącz PHP i zewnętrzne pliki"
+
+#: lib/src/Html/TabSettings.php:68
+msgid "Combine CSS files"
+msgstr "Połącz pliki CSS"
+
+#: lib/src/Html/TabSettings.php:68
+msgid "This will combine all CSS files into one file and remove all the links to the individual files from the page, replacing them with a link generated by the plugin to the combined file."
+msgstr "Spowoduje to połączenie wszystkich plików CSS w jeden plik i usunięcie wszystkich linków do poszczególnych plików ze strony, zastąpując je linkiem wygenerowanym przez wtyczkę do połączonego pliku."
+
+#: lib/src/Html/TabSettings.php:68
+msgid "Minify CSS"
+msgstr "Zminimalizuj CSS"
+
+#: lib/src/Html/TabSettings.php:68
+msgid "The plugin will remove all unnecessary whitespaces and comments from the combined CSS file to reduce the total file size."
+msgstr "Wtyczka usunie wszystkie niepotrzebne spacje i komentarze z połączonego pliku CSS, aby zmniejszyć całkowity rozmiar pliku."
+
+#: lib/src/Html/TabSettings.php:68
+msgid "Replace @imports in CSS"
+msgstr "Zastąp @import-y w CSS"
+
+#: lib/src/Html/TabSettings.php:72
+msgid "Exclude CSS files"
+msgstr "Wyklucz pliki CSS"
+
+#: lib/src/Html/TabSettings.php:72
+msgid "Select the CSS files you want to exclude."
+msgstr "Wybierz pliki CSS, które chcesz wykluczyć."
+
+#: lib/src/Html/TabSettings.php:72
+msgid "Exclude CSS from these plugins"
+msgstr "Wyklucz CSS z tych wtyczek"
+
+#: lib/src/Html/TabSettings.php:72
+msgid "The plugin will exclude all CSS files from the extensions you have selected."
+msgstr "Wtyczka wykluczy wszystkie pliki CSS z wybranych rozszerzeń."
+
+#: lib/src/Html/TabSettings.php:76
+msgid "Select or add the files you want to prevent from loading on the site's pages."
+msgstr "Wybierz lub dodaj pliki, których ładowanie chcesz uniemożliwić na stronach serwisu."
+
+#: lib/src/Html/TabSettings.php:80
+msgid "Number of elements"
+msgstr "Liczba elementów"
+
+#: lib/src/Html/TabSettings.php:80
+msgid "When enabled, the plugin will 'lazy-load' the combined CSS file only after the page is interacted with to prevent unnecessary processing of unused CSS before the page is loaded."
+msgstr "Gdy włączone, wtyczka 'lazy-load' połączonego pliku CSS dopiero po interakcji strony, aby zapobiec niepotrzebnemu przetworzeniu nieużywanego CSS przed załadowaniem strony."
+
+#: lib/src/Html/TabSettings.php:80
+msgid "CSS dynamic selectors"
+msgstr "Dynamiczne selektory CSS"
+
+#: lib/src/Html/TabSettings.php:102
+msgid "Select or add the files you want to exclude"
+msgstr "Wybierz lub dodaj pliki, które chcesz wykluczyć"
+
+#: lib/src/Html/TabSettings.php:102
+msgid "Exclude all internal &lt;script&gt; declarations"
+msgstr "Wyklucz wszystkie wewnętrzne deklaracje &lt;script&gt;"
+
+#: lib/src/Html/TabSettings.php:110
+msgid "Inline scripts"
+msgstr "Skrypty inline"
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Enable page caching"
+msgstr "Włącz buforowanie strony"
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Platform specific"
+msgstr "Specyficzne dla platformy"
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Enable if HTML output on mobile differs from desktop."
+msgstr "Włącz, jeśli dane wyjściowe HTML na urządzeniu mobilnym różnią się od komputera."
+
+#: lib/src/Html/TabSettings.php:128
+msgid "The period of time for which the page cache will be valid. Be sure to set this lower that the cache lifetime of combined files at all times."
+msgstr "Okres ważności pamięci podręcznej strony. Upewnij się, że ustawiono niższą wartość niż czas trwania pamięci podręcznej połączonych plików dla wszystkich opcji."
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Enter any part of a url to exclude that page from caching."
+msgstr "Wprowadź dowolną część adresu url aby wykluczyć tę stronę z buforowania."
+
+#: lib/src/Html/TabSettings.php:146
+msgid "Sprite build direction"
+msgstr "Kierunek budowy duszka (sprite-a)"
+
+#: lib/src/Html/TabSettings.php:146
+msgid "Determine in which direction the images must be placed in sprite."
+msgstr "Określ kierunek, w którym obrazy muszą być umieszczone w duszku (sprite)."
+
+#: lib/src/Html/TabSettings.php:146
+msgid "Wrap images"
+msgstr "Zawijaj obrazy"
+
+#: lib/src/Html/TabSettings.php:146
+msgid "Exclude image from sprite"
+msgstr "Wyklucz obraz z duszka (sprite-a)"
+
+#: lib/src/Html/TabSettings.php:146
+msgid "You can exclude one or more of the images if they are displayed incorrectly."
+msgstr "Możesz wykluczyć jeden lub więcej obrazów, jeśli są one wyświetlane nieprawidłowo."
+
+#: lib/src/Html/TabSettings.php:146
+msgid "Include additional images in sprite"
+msgstr "Dołącz dodatkowe obrazy w duszka (sprite-a)."
+
+#: lib/src/Html/TabSettings.php:146
+msgid "You can include additional images in the sprite to the ones that were selected by default. Use this option cautiously, as these files are likely to display incorrectly."
+msgstr "Możesz włączyć dodatkowe obrazy na duszku (sprite) do tych, które zostały domyślnie wybrane. Użyj tej opcji ostrożnie, ponieważ te pliki prawdopodobnie będą wyświetlanie nieprawidłowo."
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Autosize images"
+msgstr "Automatyczny rozmiar obrazów"
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Enable effects"
+msgstr "Włącz efekty"
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Enable to use fade-in effects when images are scrolled into view."
+msgstr "Włącz, aby używać efektów zanikania podczas przewijania obrazów w widoku."
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Lazy load iframes"
+msgstr "Lazy load ramek (iframes)"
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Will lazyload background images defined in 'style' attributes on HTML elements."
+msgstr "Aktywuje lazyload obrazów tła zdefiniowanych w atrybutach \"style\" w HTMLu."
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Audio/Video"
+msgstr "Audio/wideo"
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Exclude these images"
+msgstr "Wyklucz te obrazy"
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Select or manually add the urls of the images you want to exclude from lazy load."
+msgstr "Wybierz lub ręcznie dodaj adresy URL obrazów, które chcesz wykluczyć z powolnego ładowania (lazy load)."
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Exclude these folders"
+msgstr "Wyklucz te foldery"
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Exclude all the images in the selected folders."
+msgstr "Wyklucz wszystkie obrazy w wybranych folderach."
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Exclude these classes"
+msgstr "Wyklucz te klasy"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Exclude deferred files"
+msgstr "Wyłącz odroczone pliki"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Push CDN files"
+msgstr "Push plików CDN"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Files loaded over your CDN domains will also be included in the Link headers"
+msgstr "Pliki załadowane przez domeny CDN również będą zawarte w nagłówkach linków"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "File types"
+msgstr "Typy plików"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Select the file types you want pushed by http/2"
+msgstr "Wybierz typy plików, które chcesz wypchnąć (push) przez http/2"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Include files"
+msgstr "Dołącz pliki"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Sometimes some files are dynamically loaded so you can add these files here. Be sure any file added here are loaded on all pages and that you include the full file path including any queries etc. Only the following file extensions are supported: .js, .css, .webp, .gif, .png, .jpg, .woff, .woff2"
+msgstr "Czasami niektóre pliki są ładowane dynamicznie, więc możesz dodać te pliki tutaj. Upewnij się, że plik dodany tutaj jest wczytywany na wszystkich stronach i że dołączasz pełną ścieżkę pliku, w tym wszelkie zapytania itp. Obsługiwane są tylko następujące rozszerzenia plików: .js, .css, .webp, .gif, .png, .jpg, .woff, .woff2"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Exclude files"
+msgstr "Wyklucz pliki"
+
+#: lib/src/Html/TabSettings.php:164
+msgid "If you see any warnings in the browser console that the preloaded files weren't used within a few seconds you can exclude these files here"
+msgstr "Jeśli zobaczysz jakiekolwiek ostrzeżenia w konsoli przeglądarki, że wstępnie załadowane pliki nie zostały użyte w ciągu kilku sekund, możesz wykluczyć te pliki tutaj"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Preconnect CDNs"
+msgstr "Połącz wstępne CDN"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Add preconnect resource hints in the HTML for all your CDN domains to establish early connections and speed up loading of resources from your CDN."
+msgstr "Dodaj wstępne podpowiedzi o zasobach w HTML dla wszystkich domen CDN, aby nawiązać wczesne połączenia i przyspieszyć ładowanie zasobów z CDN."
+
+#: lib/src/Html/TabSettings.php:182
+msgid "CDN scheme"
+msgstr "Schemat CDN"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Select the scheme that you want prepended to the CDN/Cookieless domain"
+msgstr "Wybierz schemat, który chcesz podłączyć do domeny CDN/Cookieless"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Domain 1"
+msgstr "Domena 1"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Enter value for Domain #1 here"
+msgstr "Wprowadź wartość dla domeny #1"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Static files 1"
+msgstr "Pliki statyczne 1"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Select the static file types that you want to be loaded over Domain #1"
+msgstr "Wybierz statyczne typy plików, które chcesz załadować przez domenę #1"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Custom extensions 1"
+msgstr "Własne rozszerzenia 1"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "To add custom extensions of file types to be loaded over CDN on Domain 1, type the extension in the textbox and press the 'Add item' button"
+msgstr "Aby dodać niestandardowe rozszerzenia typów plików do załadowania przez CDN na Domenę 1, wpisz rozszerzenie w polu tekstowym i naciśnij przycisk 'Dodaj pozycję'"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Domain 2"
+msgstr "Domena 2"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Enter value for Domain #2 here"
+msgstr "Wprowadź wartość dla domeny #2"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Static files 2"
+msgstr "Pliki statyczne 2"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Select the static file types that you want to be loaded over Domain #2"
+msgstr "Wybierz statyczne typy plików, które chcesz załadować przez domenę #2"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Domain 3"
+msgstr "Domena 3"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Enter value for Domain #3 here"
+msgstr "Wprowadź wartość dla domeny #3"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Static files 3"
+msgstr "Pliki statyczne 3"
+
+#: lib/src/Html/TabSettings.php:182
+msgid "Select the static file types that you want to be loaded over Domain #3"
+msgstr "Wybierz statyczne typy plików, które chcesz załadować przez domenę #3"
+
+#: lib/src/Html/TabSettings.php:197
+msgid "Ignore optimized images"
+msgstr "Ignoruj zoptymalizowane obrazy"
+
+#: lib/src/Html/TabSettings.php:197
+msgid "Will not attempt to optimize any images in subfolders that have already been marked as optimized."
+msgstr "Nie spróbuje zoptymalizować żadnych obrazów w podfolderach, które zostały już oznaczone jako zoptymalizowane."
+
+#: lib/src/Html/TabSettings.php:198
+msgid "Next-Gen images"
+msgstr "Obrazy nowej generacji"
+
+#: lib/src/Html/TabSettings.php:198
+msgid "When enabled the plugin will convert the images that are optimized to webp format and load these instead."
+msgstr "Gdy włączone, wtyczka skonwertuje zoptymalizowane obrazy do formatu webp i załaduje je zamiast nich."
+
+#: lib/src/Html/TabSettings.php:209
+msgid "Auto resize images"
+msgstr "Automatyczna zmiana rozmiaru obrazów"
+
+#: lib/src/Html/TabSettings.php:209
+msgid "Images will be resized automatically to the dimensions as shown on screen. If you use an application that shows the images larger when you hover over them be sure to use different images for the large ones. For this to work the url to your site must be available publicly."
+msgstr "Obrazy zostaną automatycznie przeskalowane do wymiarów pokazanych na ekranie. Jeśli używasz aplikacji, która pokazuje większe obrazy po najechaniu kursorem na nie, upewnij się, że używasz innychobrazów dla dużych obrazów. Aby to zadziałało, adres URL do Twojej strony musi być publicznie dostępny."
+
+#: lib/src/Html/TabSettings.php:213
+msgid "Recurse in subfolders"
+msgstr "Rekurencja w podfolderach"
+
+#: lib/src/Html/TabSettings.php:213
+msgid "Will optimize all images in selected folders and recurse into subfolders infinitely. If disabled, only the images in the selected folders will be optimized. Subfolders will be ignored."
+msgstr "Optymalizuje wszystkie obrazy w wybranych folderach z uwzględnieniem wszystkich podfolderów. Jeśli wyłączone, tylko obrazy w wybranych folderach zostaną zoptymalizowane. Podfoldery zostaną zignorowane."
+
+#: lib/src/Html/TabSettings.php:227
+msgid "HTML sections"
+msgstr "Sekcje HTML"
+
+#: lib/src/Html/Renderer/Section.php:134
+msgid "Http/2 Preload"
+msgstr "Wstępne ładowanie Http/2"
+
+#. Description of the plugin
+msgid "Boost your WordPress site's performance with JCH Optimize as measured on PageSpeed"
+msgstr ""
+
+#: lib/src/Controller/BrowserCaching.php:39
+msgid "Failed to update the .htaccess file"
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:34
+msgid "These settings affect the combined CSS and JavaScript files generated by the plugin."
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:59
+msgid "You can remove and prevent CSS files from loading on the page if they're not being used at all to speed up page load and rendering. Please be sure these files are not being used anywhere on the site to prevent breaking your pages."
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:71
+msgid "JavaScript Automatic Settings"
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:77
+msgid "Reduce Unused JavaScript"
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:84
+msgid "Exclude individual JavaScript files or files from selected extensions. Files selected in this section will be excluded while preserving execution order on the page by splitting the combined files around excluded files. This ensures no dependency between files are broken and break the page."
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:96
+msgid "By default, the plugin will move all excluded and combined JavaScript files to the bottom of the page when using the Premium or Optimum setting. If there's a JavaScript file or script that is excluded that you DON'T want moved to the bottom of the page, enter them here in these settings. These files/scripts must be excluded above for these settings to take effect."
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:101
+msgid "Remove JavaScript Files"
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:102
+msgid "You can remove and prevent JavaScript files from loading on the page if they're not being used at all. This helps to speed up page download and rendering. Please be sure these files are not being used anywhere on the site to prevent breaking your pages."
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:140
+msgid "Optimize Fonts"
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:148
+msgid "Enter your CDN or cookieless domain here. The plugin will load all static files including background images, combined JavaScript and CSS files, and generated sprite from this domain. This requires that this domain is already set up and points to your site root."
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:174
+msgid "HTML5 sectioning related elements such as header, footer, section, aside, and nav that fall below the fold will be commented out if the number of DOM elements exceed 600. These sections will be inserted back into the DOM using JavaScript after the page has been loaded. <span class=\"alert alert-warning\" style=\"padding: 1px 3px;\"> Warning: Use with care. Can interfere with sections that use JavaScript to render.</span>"
+msgstr ""
+
+#: lib/src/Html/Renderer/Section.php:179
+msgid "Mode Switcher Menu"
+msgstr ""
+
+#: lib/src/Html/Renderer/Setting.php:239
+msgid "Filesystem"
+msgstr ""
+
+#: lib/src/Html/Renderer/Setting.php:239
+msgid "APCu"
+msgstr ""
+
+#: lib/src/Html/Renderer/Setting.php:239
+msgid "WinCache"
+msgstr ""
+
+#: lib/src/Html/Renderer/Setting.php:239
+msgid "Memcached"
+msgstr ""
+
+#: lib/src/Html/Renderer/Setting.php:239
+msgid "Redis"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:47
+msgid "This option will add the 'commented out' url of the individual files inside the combined file above the contents that came from that file. This is useful when configuring the plugin and trying to resolve conflicts. <p>This will also add a Profiler menu to the AdminBar, so you can review the times that the plugin methods take to run."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:55
+msgid "By default, the combined files will be loaded as static CSS and JavaScript files. You would need to include directives in your .htaccess file to gzip these files. <p>You can use PHP files instead that will be gzipped if that option is set. PHP files can be loaded with a query attached with the information to find the combined files, or you can use url rewrite if it's available on the server so the files can be masked as static files. If your server prohibits the use of the Options +FollowSymLinks directive in .htaccess files use the respective option."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:55
+msgid "If you're seeing JavaScript errors in the console, you can try enabling this option to wrap each JavaScript file in a 'try-catch' block to prevent the errors from one file affecting the combined file."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:59
+msgid "GZip JavaScript and CSS"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:68
+msgid "The plugin will replace %s at-rules with the contents of the files they are importing. This will be done recursively."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:68
+msgid "In-page CSS inside %s tags will be included in the aggregated file in the order they appear on the page."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:72
+#: lib/src/Html/TabSettings.php:102
+msgid "Exclude individual in-page %s"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:72
+#: lib/src/Html/TabSettings.php:102
+#: lib/src/Html/TabSettings.php:106
+msgid "Select the internal %s you want to exclude."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:72
+msgid "Exclude all in-page %s"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:72
+msgid "This is useful if you are generating an excess amount of cache files due to the file name of the combined CSS file keeps changing and you can't identify which %s declaration is responsible"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:80
+msgid "Reduce unused CSS"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:80
+msgid "In some cases when Reduce Unused CSS is enabled, you may need to add the CSS for some dynamic elements to the critical CSS for them to load properly. Add any substring from the CSS declaration here to have them included."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "Combine JavaScript files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "This will combine all JavaScript files into one file and remove all the links to the individual files from the page, replacing them with a link generated by the plugin to the combined file."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "Minify JavaScript"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "The plugin will remove all unnecessary whitespaces and comments from the combined JavaScript file to reduce the total file size."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "Include in-page %s declarations"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "In-page JavaScript inside %s tags will be included in the combined file in the order they appear on the page."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "Position JavaScript files at bottom of page"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "Place combined JavaScript file at bottom of the page just before the ending %1$s tag.<p> If some JavaScript files are excluded while preserving execution order, only the last combined JavaScript file will be placed at the bottom of the page.<p> If this is disabled, the plugin only combines files found in the %2$s section of the HTML. This option extends the search to the %3$s section."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:94
+msgid "Defer or load JavaScript asychronously"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:98
+msgid "Critical JavaScript files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:98
+msgid "Select any files required to perform initial render to exclude from the Reduce Unused JavaScript feature."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:98
+msgid "Critical scripts"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:98
+msgid "Enter any substring of any scripts here that you need to perform any initial render."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:102
+#: lib/src/Html/TabSettings.php:106
+msgid "Exclude JavaScript files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:102
+#: lib/src/Html/TabSettings.php:106
+msgid "Exclude JavaScript files from these plugins"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:102
+#: lib/src/Html/TabSettings.php:106
+msgid "The plugin will exclude all JavaScript files from the plugins you have selected."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:102
+msgid "This is useful if you are generating an excess amount of cache files due to the file name of the combined JavaScript file keeps changing and you can't identify which SCRIPT declaration is responsible"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:106
+msgid "Select or add the JavaScript files you want to exclude."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:106
+msgid "Exclude individual in-page %s declarations"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:110
+msgid "JavaScript files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:110
+msgid "Don't move these JavaScript files (<i> that were excluded in the above sections</i> ) to the bottom of the page. These files will be left at their original position on the page."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:110
+msgid "Enter any substring of an excluded script here to prevent this script being moved to the bottom. <p> Inline scripts in the %s of the document containing the 'document.write' method will NOT be moved by default."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:114
+msgid "Remove JavaScript files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:114
+msgid "Select or add the JavaScript files you want to prevent from loading on the site's pages."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Disable caching for users who have posted a form until the cache expires. May be useful for some sites that update content on user interaction such as shopping carts."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Use Http Requests"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Storage Adapter"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Memcached server host"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Enter the host of the Memcached server you want to use, e.g, '127.0.0.1'"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Memcached server port"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Enter the port number of the Memcached server you have configured, e.g '11211'"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Redis server host"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Set the Redis server host, e.g., '127.0.0.1'"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Redis server port"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Set the Redis server port, e.g., '6379'"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Redis server password"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Set the Redis server password if there's one configured"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:128
+msgid "Redis database"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:146
+msgid "Will wrap images in sprite into another row or column if the length of the sprite becomes longer than %s"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:150
+msgid "If enabled will also lazyload %s elements."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Background images in 'style' attributes"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Background images in CSS files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:150
+msgid "Exclude all images that has these classes declared on the %s element"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Will exclude JavaScript files that are deferred or loaded asynchronously, deferred CSS file in Optimize CSS Delivery feature, and images that are lazy-loaded. This can help reduce bandwidth and speed up first paint rendering."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:164
+msgid "Preload JavaScript modules"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:164
+msgid "You may see the alert 'Avoid chaining critical requests' on PageSpeed and the list includes JavaScript modules. Enable this setting to preload these files and remove them from the critical rendering path."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:168
+msgid "Force swap policy"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:168
+msgid "If font-display is already set in your @font-face content, the policy will be set to 'swap'. This ensures your text are visible while the sites load and improve your PageSpeed scores."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:168
+msgid "Optimize these files"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:168
+msgid "If you have CSS files only containing @font-face content, or font files you want preloaded, you can add them here so they'll be optimized like the Google Font files. You may need to manually enter any external domain below to have them preconnected."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:168
+msgid "Preconnect domains"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:168
+msgid "Add external domains you want preconnected here. Be sure to include the scheme also, eg., 'https://example.com'."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:203
+msgid "Lossy optimization"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:203
+msgid "Levels are either Lossy or Lossless, the default is Lossy. With Lossy optimization images will be more optimized and smaller but may result in a small reduction of quality, most times invisible to the untrained eye. If you don't want that then you can choose Lossless instead. The images will not be as optimized but there will be no loss of quality."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:204
+msgid "Save metadata"
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:204
+msgid "The Optimize Image API will remove all metadata from images while optimizing including any copyrights or Exif textual content not part of the actual image to produce the smallest possible file size. If you wish to retain this information at a small loss in optimization then you should enable this option."
+msgstr ""
+
+#: lib/src/Html/TabSettings.php:231
+msgid "Disable Mode Switcher"
+msgstr ""
+
+#: lib/src/Platform/Profiler.php:32
+msgid "Profiler"
+msgstr ""
+
+#: mu-plugins/jch-optimize-mode-switcher.php:51
+msgid "Network active"
+msgstr ""
+
+#: mu-plugins/jch-optimize-mode-switcher.php:55
+msgid "Production"
+msgstr ""
+
+#: mu-plugins/jch-optimize-mode-switcher.php:61
+msgid "Development"
+msgstr ""
+
+#: mu-plugins/jch-optimize-mode-switcher.php:70
+#: mu-plugins/jch-optimize-mode-switcher.php:85
+msgid "JCH Optimize"
+msgstr ""
+
+#: mu-plugins/jch-optimize-mode-switcher.php:157
+msgid "JCH Optimize set in Production mode."
+msgstr ""
+
+#: mu-plugins/jch-optimize-mode-switcher.php:195
+msgid "JCH Optimize set in Development mode."
+msgstr ""

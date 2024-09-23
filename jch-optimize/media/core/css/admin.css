@@ -1,0 +1,233 @@
+/**
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
+ *
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2020 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
+ *
+ * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
+ */
+
+
+/** Optimize Images **/
+#progressbar {
+    margin: 10px 20px 0;
+    width: calc(100% - 40px);
+    height: 30px;
+}
+
+#optimize-log {
+    border: 1px #CCC solid;
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px 20px;
+    overflow-y: auto;
+    height: 300px;
+}
+
+#optimize-log li {
+    font-size: 11px;
+}
+
+#optimize-status {
+    padding: 7px;
+    font-size: 12px;
+    font-style: italic;
+    margin: 0 20px;
+}
+
+
+.collapsible h3 span {
+    margin-left: 10px;
+}
+
+.collapsible.collapse-open h3 span:before {
+    content: "\f151"
+}
+
+.collapsible.collapse-close h3 span:before {
+    content: "\f150"
+}
+
+.form-horizontal .control-label .spacer hr {
+    margin: 0 0 15px !important;
+}
+
+.admin-panel-block {
+    padding: 40px 30px;
+    border: solid 1px #d4d9d0;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+div.icons-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+/** New icons **/
+figure.icon {
+    position: relative;
+    margin: 0 12px 15px 0;
+    text-align: center;
+}
+
+figure.icon a {
+    height: 110px;
+    width: 110px;
+    text-decoration: none;
+    padding: 7px 5px 5px;
+    background-color: #fafafa;
+    line-height: 13px;
+    box-sizing: content-box;
+    position: relative;
+}
+
+figure.icon img {
+    display: block;
+    margin: 0 auto 5px;
+}
+
+figure.icon span.fig-caption {
+    word-break: break-word;
+    width: 90%;
+    line-height: 1em;
+    display: inline-block;
+    z-index: 100;
+    pointer-events: all;
+}
+
+figure.icon span.toggle-wrapper {
+    display: inline-block;
+    position: absolute;
+    top: 93px;
+    left: 0;
+    text-align: center;
+    width: 100%
+}
+
+figure.icon span.toggle-wrapper > img {
+    margin: 5px auto 0;
+}
+
+figure.icon span#proonly-span {
+    display: inline-block;
+    position: absolute;
+    bottom: 15px;
+    left: 40px;
+}
+
+figure.icon.disabled.proonly a {
+    pointer-events: none;
+    cursor: default;
+    background-color: #eaeaea;
+}
+
+figure.icon.enabled i.toggle:before, figure.icon.disabled i.toggle:before,
+.popover li i.toggle:before {
+    content: "\f205";
+}
+
+figure.icon.disabled {
+    opacity: 0.6;
+}
+
+figure.icon.disabled i.toggle,
+.popover li i.toggle.off {
+    color: #ce3813;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+figure.icon.enabled i.toggle,
+.popover li i.toggle.on {
+    color: #60af2c;
+}
+
+figure .btn {
+    display: inline-block;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #f3f3f3;
+    color: #333;
+    border: 1px solid #b3b3b3;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+figure .btn:hover, figure .btn:focus {
+    background-color: #e6e6e6;
+    text-decoration: none;
+    text-shadow: none;
+    border: 1px solid #b3b3b3;
+}
+
+/** Checkboxes group **/
+
+.jch-checkboxes-grid-wrapper {
+    padding: 0;
+    margin: 0;
+    display: grid;
+}
+
+.jch-checkboxes-grid-wrapper.columns-4 {
+    width: 250px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.jch-checkboxes-grid-wrapper.columns-5 {
+    width: 300px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+/** Popovers **/
+
+.popover h4.list-header {
+    font-weight: 500;
+    margin: 0 0 1em 0;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-align: center;
+}
+
+.popover h4.list-header:before, .popover h4.list-header:after {
+    position: absolute;
+    top: 51%;
+    overflow: hidden;
+    width: 50%;
+    height: 1px;
+    content: '\a0';
+    background-color: #ccc;
+    margin-left: 20px;
+}
+
+.popover h4.list-header:before {
+    margin-left: -60%;
+    text-align: right;
+}
+
+.popover ul {
+    min-width: 200px;
+}
+
+.popover li {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.popover i {
+    margin: auto 0;
+}
