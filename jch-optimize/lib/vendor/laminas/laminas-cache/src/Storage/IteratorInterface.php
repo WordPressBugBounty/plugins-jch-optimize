@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage;
 
 use Iterator;
+
 interface IteratorInterface extends Iterator
 {
     public const CURRENT_AS_SELF = 0;

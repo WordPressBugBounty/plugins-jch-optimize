@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,51 +13,42 @@
 
 namespace JchOptimize\Core\Html;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
+use function defined;
+
+defined('_JCH_EXEC') or die('Restricted access');
+
 class ElementObject
 {
     /**
-     * @var null|bool True if element is self-closing, if null, then it's optional
+     * @var bool|null   True if element is self-closing, if null, then it's optional
      */
-    public ?bool $bSelfClosing = \false;
+    public ?bool $voidElementOrStartTagOnly = false;
 
+    public bool $isNested = false;
     /**
-     * @var bool True to capture inside content of elements
+     * @var array  Name or names of element to search for
      */
-    public bool $bCaptureContent = \false;
-    public bool $negateAggregatedPosCriteria = \false;
-    public bool $bCaptureAttributes = \false;
-    public bool $bParseContentLazily = \true;
-
+    protected array $aNames;
     /**
-     * @var array Name or names of element to search for
-     */
-    protected array $aNames = ['[a-z0-9]++'];
-
-    /**
-     * @var array Array of negative criteria to test against the attributes
+     * @var array  Array of negative criteria to test against the attributes
      */
     protected array $aNegAttrCriteria = [];
-
     /**
-     * @var array Array of positive criteria to check against the attributes
+     * @var array  Array of positive criteria to check against the attributes
      */
     protected array $aPosAttrCriteria = [];
-
     /**
-     * @var array Array of attributes to capture values
+     * @var array  Array of attributes to capture values
      */
-    protected array $aCaptureAttributes = [];
+    protected array $posContentCriteria = [];
 
-    /**
-     * @var array|string Regex criteria for target value
-     */
-    protected $mValueCriteria = '';
-    protected array $aCaptureOneOrBothAttributes = [];
+    protected array $negContentCriteria = [];
 
-    /**
-     * @param $aNames array    Name(s) of elements to search for
-     */
+    public function __construct()
+    {
+        $this->aNames[] = Parser::htmlGenericElementNameToken();
+    }
+
     public function setNamesArray(array $aNames): void
     {
         $this->aNames = $aNames;
@@ -67,9 +59,9 @@ class ElementObject
         return $this->aNames;
     }
 
-    public function addNegAttrCriteriaRegex(string $sCriteria): void
+    public function addNegAttrCriteriaRegex(string|array $criteria): void
     {
-        $this->aNegAttrCriteria[] = $sCriteria;
+        $this->aNegAttrCriteria[] = $criteria;
     }
 
     public function getNegAttrCriteriaArray(): array
@@ -87,39 +79,23 @@ class ElementObject
         return $this->aPosAttrCriteria;
     }
 
-    public function setCaptureAttributesArray(array $aAttributes = [
-        // @lang RegExp
-        '[^\\s/"\'=<>]++',
-    ]): void
+    public function getPosContentCriteriaRegex(): array
     {
-        $this->aCaptureAttributes = $aAttributes;
+        return $this->posContentCriteria;
     }
 
-    public function getCaptureAttributesArray(): array
+    public function addPosContentCriteriaRegex(string $posContentCriteria): void
     {
-        return $this->aCaptureAttributes;
+        $this->posContentCriteria[] = $posContentCriteria;
     }
 
-    public function setValueCriteriaRegex($mCriteria): void
+    public function getNegContentCriteriaRegex(): array
     {
-        $this->mValueCriteria = $mCriteria;
+        return $this->negContentCriteria;
     }
 
-    /**
-     * @return array|string
-     */
-    public function getValueCriteriaRegex()
+    public function addNegContentCriteriaRegex(string $negContentCriteria): void
     {
-        return $this->mValueCriteria;
-    }
-
-    public function setCaptureOneOrBothAttributesArray(array $aAttributes): void
-    {
-        $this->aCaptureOneOrBothAttributes = $aAttributes;
-    }
-
-    public function getCaptureOneOrBothAttributesArray(): array
-    {
-        return $this->aCaptureOneOrBothAttributes;
+        $this->negContentCriteria[] = $negContentCriteria;
     }
 }

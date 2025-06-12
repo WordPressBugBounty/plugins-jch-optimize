@@ -1,22 +1,23 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter;
 
 use ArrayObject;
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Capabilities;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Event;
-use _JchOptimizeVendor\Laminas\Cache\Storage\ExceptionEvent;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
-use _JchOptimizeVendor\Laminas\Cache\Storage\PluginAwareInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\PostEvent;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
-use _JchOptimizeVendor\Laminas\EventManager\EventManager;
-use _JchOptimizeVendor\Laminas\EventManager\EventManagerInterface;
-use _JchOptimizeVendor\Laminas\EventManager\ResponseCollection;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Capabilities;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Event;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ExceptionEvent;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\PluginAwareInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\PostEvent;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventManager;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventManagerInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\ResponseCollection;
 use SplObjectStorage;
 use stdClass;
 use Traversable;
+
 use function array_keys;
 use function array_unique;
 use function array_values;
@@ -25,6 +26,7 @@ use function func_num_args;
 use function get_class;
 use function preg_match;
 use function sprintf;
+
 abstract class AbstractAdapter implements StorageInterface, PluginAwareInterface
 {
     /**
@@ -324,7 +326,7 @@ abstract class AbstractAdapter implements StorageInterface, PluginAwareInterface
      * @return mixed Data on success, null on failure
      * @throws Exception\ExceptionInterface
      */
-    protected abstract function internalGetItem(&$normalizedKey, &$success = null, &$casToken = null);
+    abstract protected function internalGetItem(&$normalizedKey, &$success = null, &$casToken = null);
     /**
      * Get multiple items.
      *
@@ -572,7 +574,7 @@ abstract class AbstractAdapter implements StorageInterface, PluginAwareInterface
      * @return bool
      * @throws Exception\ExceptionInterface
      */
-    protected abstract function internalSetItem(&$normalizedKey, &$value);
+    abstract protected function internalSetItem(&$normalizedKey, &$value);
     /**
      * Store multiple items.
      *
@@ -954,7 +956,7 @@ abstract class AbstractAdapter implements StorageInterface, PluginAwareInterface
      * @return bool
      * @throws Exception\ExceptionInterface
      */
-    protected abstract function internalRemoveItem(&$normalizedKey);
+    abstract protected function internalRemoveItem(&$normalizedKey);
     /**
      * Remove multiple items.
      *

@@ -11,10 +11,10 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Service;
+namespace JchOptimize\WordPress\Service;
 
-use JchOptimize\Core\Container\Container;
-use JchOptimize\Core\Container\ServiceProviderInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Joomla\DI\ServiceProviderInterface;
 use JchOptimize\Core\Registry;
 
 use function define;
@@ -36,7 +36,7 @@ class ConfigurationProvider implements ServiceProviderInterface
         }
     }
 
-    public function register(Container $container)
+    public function register(Container $container): void
     {
         $container->alias('params', Registry::class)
                   ->share(

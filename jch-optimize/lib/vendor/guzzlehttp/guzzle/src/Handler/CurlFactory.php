@@ -1,16 +1,17 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Handler;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Handler;
 
-use _JchOptimizeVendor\GuzzleHttp\Exception\ConnectException;
-use _JchOptimizeVendor\GuzzleHttp\Exception\RequestException;
-use _JchOptimizeVendor\GuzzleHttp\Promise as P;
-use _JchOptimizeVendor\GuzzleHttp\Promise\FulfilledPromise;
-use _JchOptimizeVendor\GuzzleHttp\Promise\PromiseInterface;
-use _JchOptimizeVendor\GuzzleHttp\Psr7\LazyOpenStream;
-use _JchOptimizeVendor\GuzzleHttp\TransferStats;
-use _JchOptimizeVendor\GuzzleHttp\Utils;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\ConnectException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\RequestException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise as P;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\FulfilledPromise;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\PromiseInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\LazyOpenStream;
+use _JchOptimizeVendor\V91\GuzzleHttp\TransferStats;
+use _JchOptimizeVendor\V91\GuzzleHttp\Utils;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+
 /**
  * Creates curl resources from a request
  *
@@ -38,7 +39,7 @@ class CurlFactory implements CurlFactoryInterface
     {
         $this->maxHandles = $maxHandles;
     }
-    public function create(RequestInterface $request, array $options) : EasyHandle
+    public function create(RequestInterface $request, array $options): EasyHandle
     {
         if (isset($options['curl']['body_as_string'])) {
             $options['_body_as_string'] = $options['curl']['body_as_string'];
@@ -61,7 +62,7 @@ class CurlFactory implements CurlFactoryInterface
         \curl_setopt_array($easy->handle, $conf);
         return $easy;
     }
-    public function release(EasyHandle $easy) : void
+    public function release(EasyHandle $easy): void
     {
         $resource = $easy->handle;
         unset($easy->handle);
@@ -87,7 +88,7 @@ class CurlFactory implements CurlFactoryInterface
      * @param callable(RequestInterface, array): PromiseInterface $handler
      * @param CurlFactoryInterface                                $factory Dictates how the handle is released
      */
-    public static function finish(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory) : PromiseInterface
+    public static function finish(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory): PromiseInterface
     {
         if (isset($easy->options['on_stats'])) {
             self::invokeStats($easy);
@@ -104,7 +105,7 @@ class CurlFactory implements CurlFactoryInterface
         }
         return new FulfilledPromise($easy->response);
     }
-    private static function invokeStats(EasyHandle $easy) : void
+    private static function invokeStats(EasyHandle $easy): void
     {
         $curlStats = \curl_getinfo($easy->handle);
         $curlStats['appconnect_time'] = \curl_getinfo($easy->handle, \CURLINFO_APPCONNECT_TIME);
@@ -114,7 +115,7 @@ class CurlFactory implements CurlFactoryInterface
     /**
      * @param callable(RequestInterface, array): PromiseInterface $handler
      */
-    private static function finishError(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory) : PromiseInterface
+    private static function finishError(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory): PromiseInterface
     {
         // Get error information and release the handle to the factory.
         $ctx = ['errno' => $easy->errno, 'error' => \curl_error($easy->handle), 'appconnect_time' => \curl_getinfo($easy->handle, \CURLINFO_APPCONNECT_TIME)] + \curl_getinfo($easy->handle);
@@ -126,7 +127,7 @@ class CurlFactory implements CurlFactoryInterface
         }
         return self::createRejection($easy, $ctx);
     }
-    private static function createRejection(EasyHandle $easy, array $ctx) : PromiseInterface
+    private static function createRejection(EasyHandle $easy, array $ctx): PromiseInterface
     {
         static $connectionErrors = [\CURLE_OPERATION_TIMEOUTED => \true, \CURLE_COULDNT_RESOLVE_HOST => \true, \CURLE_COULDNT_CONNECT => \true, \CURLE_SSL_CONNECT_ERROR => \true, \CURLE_GOT_NOTHING => \true];
         if ($easy->createResponseException) {
@@ -149,7 +150,7 @@ class CurlFactory implements CurlFactoryInterface
     /**
      * @return array<int|string, mixed>
      */
-    private function getDefaultConf(EasyHandle $easy) : array
+    private function getDefaultConf(EasyHandle $easy): array
     {
         $conf = ['_headers' => $easy->request->getHeaders(), \CURLOPT_CUSTOMREQUEST => $easy->request->getMethod(), \CURLOPT_URL => (string) $easy->request->getUri()->withFragment(''), \CURLOPT_RETURNTRANSFER => \false, \CURLOPT_HEADER => \false, \CURLOPT_CONNECTTIMEOUT => 300];
         if (\defined('CURLOPT_PROTOCOLS')) {
@@ -165,7 +166,7 @@ class CurlFactory implements CurlFactoryInterface
         }
         return $conf;
     }
-    private function applyMethod(EasyHandle $easy, array &$conf) : void
+    private function applyMethod(EasyHandle $easy, array &$conf): void
     {
         $body = $easy->request->getBody();
         $size = $body->getSize();
@@ -184,7 +185,7 @@ class CurlFactory implements CurlFactoryInterface
             unset($conf[\CURLOPT_WRITEFUNCTION], $conf[\CURLOPT_READFUNCTION], $conf[\CURLOPT_FILE], $conf[\CURLOPT_INFILE]);
         }
     }
-    private function applyBody(RequestInterface $request, array $options, array &$conf) : void
+    private function applyBody(RequestInterface $request, array $options, array &$conf): void
     {
         $size = $request->hasHeader('Content-Length') ? (int) $request->getHeaderLine('Content-Length') : null;
         // Send the body as a string if the size is less than 1MB OR if the
@@ -204,7 +205,7 @@ class CurlFactory implements CurlFactoryInterface
             if ($body->isSeekable()) {
                 $body->rewind();
             }
-            $conf[\CURLOPT_READFUNCTION] = static function ($ch, $fd, $length) use($body) {
+            $conf[\CURLOPT_READFUNCTION] = static function ($ch, $fd, $length) use ($body) {
                 return $body->read($length);
             };
         }
@@ -217,7 +218,7 @@ class CurlFactory implements CurlFactoryInterface
             $conf[\CURLOPT_HTTPHEADER][] = 'Content-Type:';
         }
     }
-    private function applyHeaders(EasyHandle $easy, array &$conf) : void
+    private function applyHeaders(EasyHandle $easy, array &$conf): void
     {
         foreach ($conf['_headers'] as $name => $values) {
             foreach ($values as $value) {
@@ -242,7 +243,7 @@ class CurlFactory implements CurlFactoryInterface
      * @param string $name    Case-insensitive header to remove
      * @param array  $options Array of options to modify
      */
-    private function removeHeader(string $name, array &$options) : void
+    private function removeHeader(string $name, array &$options): void
     {
         foreach (\array_keys($options['_headers']) as $key) {
             if (!\strcasecmp($key, $name)) {
@@ -251,7 +252,7 @@ class CurlFactory implements CurlFactoryInterface
             }
         }
     }
-    private function applyHandlerOptions(EasyHandle $easy, array &$conf) : void
+    private function applyHandlerOptions(EasyHandle $easy, array &$conf): void
     {
         $options = $easy->options;
         if (isset($options['verify'])) {
@@ -292,11 +293,11 @@ class CurlFactory implements CurlFactoryInterface
         }
         if (!isset($options['sink'])) {
             // Use a default temp stream if no sink was set.
-            $options['sink'] = \_JchOptimizeVendor\GuzzleHttp\Psr7\Utils::tryFopen('php://temp', 'w+');
+            $options['sink'] = \_JchOptimizeVendor\V91\GuzzleHttp\Psr7\Utils::tryFopen('php://temp', 'w+');
         }
         $sink = $options['sink'];
         if (!\is_string($sink)) {
-            $sink = \_JchOptimizeVendor\GuzzleHttp\Psr7\Utils::streamFor($sink);
+            $sink = \_JchOptimizeVendor\V91\GuzzleHttp\Psr7\Utils::streamFor($sink);
         } elseif (!\is_dir(\dirname($sink))) {
             // Ensure that the directory exists before failing in curl.
             throw new \RuntimeException(\sprintf('Directory %s does not exist for sink value of %s', \dirname($sink), $sink));
@@ -304,7 +305,7 @@ class CurlFactory implements CurlFactoryInterface
             $sink = new LazyOpenStream($sink, 'w+');
         }
         $easy->sink = $sink;
-        $conf[\CURLOPT_WRITEFUNCTION] = static function ($ch, $write) use($sink) : int {
+        $conf[\CURLOPT_WRITEFUNCTION] = static function ($ch, $write) use ($sink): int {
             return $sink->write($write);
         };
         $timeoutRequiresNoSignal = \false;
@@ -379,7 +380,7 @@ class CurlFactory implements CurlFactoryInterface
                 throw new \InvalidArgumentException('progress client option must be callable');
             }
             $conf[\CURLOPT_NOPROGRESS] = \false;
-            $conf[\CURLOPT_PROGRESSFUNCTION] = static function ($resource, int $downloadSize, int $downloaded, int $uploadSize, int $uploaded) use($progress) {
+            $conf[\CURLOPT_PROGRESSFUNCTION] = static function ($resource, int $downloadSize, int $downloaded, int $uploadSize, int $uploaded) use ($progress) {
                 $progress($downloadSize, $downloaded, $uploadSize, $uploaded);
             };
         }
@@ -399,7 +400,7 @@ class CurlFactory implements CurlFactoryInterface
      *
      * @param callable(RequestInterface, array): PromiseInterface $handler
      */
-    private static function retryFailedRewind(callable $handler, EasyHandle $easy, array $ctx) : PromiseInterface
+    private static function retryFailedRewind(callable $handler, EasyHandle $easy, array $ctx): PromiseInterface
     {
         try {
             // Only rewind if the body has been read from.
@@ -422,7 +423,7 @@ class CurlFactory implements CurlFactoryInterface
         }
         return $handler($easy->request, $easy->options);
     }
-    private function createHeaderFn(EasyHandle $easy) : callable
+    private function createHeaderFn(EasyHandle $easy): callable
     {
         if (isset($easy->options['on_headers'])) {
             $onHeaders = $easy->options['on_headers'];
@@ -432,7 +433,7 @@ class CurlFactory implements CurlFactoryInterface
         } else {
             $onHeaders = null;
         }
-        return static function ($ch, $h) use($onHeaders, $easy, &$startingResponse) {
+        return static function ($ch, $h) use ($onHeaders, $easy, &$startingResponse) {
             $value = \trim($h);
             if ($value === '') {
                 $startingResponse = \true;

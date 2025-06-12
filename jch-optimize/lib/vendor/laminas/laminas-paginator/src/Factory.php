@@ -1,13 +1,15 @@
 <?php
 
 // phpcs:disable Generic.NamingConventions.ConstructorName.OldStyle, WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
-use _JchOptimizeVendor\Laminas\Paginator\Adapter\AdapterInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\ServiceManager;
-use _JchOptimizeVendor\Laminas\Stdlib\ArrayUtils;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Adapter\AdapterInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\ServiceManager;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ArrayUtils;
 use Traversable;
+
 use function is_array;
+
 abstract class Factory
 {
     /**

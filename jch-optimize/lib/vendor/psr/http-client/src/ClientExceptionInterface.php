@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Http\Client;
+namespace _JchOptimizeVendor\V91\Psr\Http\Client;
 
 /**
  * Every HTTP client related exception MUST implement this interface.

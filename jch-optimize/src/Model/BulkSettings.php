@@ -11,14 +11,14 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Model;
+namespace JchOptimize\WordPress\Model;
 
-use JchOptimize\Core\Filesystem\File;
-use JchOptimize\Core\Filesystem\Folder;
+use _JchOptimizeVendor\V91\Joomla\Filesystem\File;
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Folder;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UploadedFileInterface;
 use JchOptimize\Core\Mvc\Model;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
-use JchOptimize\Core\Uri\UploadedFile;
 
 use function dirname;
 use function file_exists;
@@ -45,7 +45,7 @@ class BulkSettings extends Model
         return $file;
     }
 
-    public function importSettings(UploadedFile $uploadedFile): void
+    public function importSettings(UploadedFileInterface $uploadedFile): void
     {
         $targetPath = JCH_PLUGIN_DIR . 'tmp/' . $uploadedFile->getClientFilename();
 

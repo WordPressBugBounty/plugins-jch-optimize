@@ -3,10 +3,13 @@
 /**
  * @see https://github.com/laminas/laminas-serializer for the canonical source repository
  */
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Serializer\Adapter;
+
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Serializer\Adapter;
 
 use Traversable;
+
 abstract class AbstractAdapter implements AdapterInterface
 {
     /** @var AdapterOptions */

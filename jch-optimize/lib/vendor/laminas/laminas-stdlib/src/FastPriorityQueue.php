@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Countable;
 use Iterator;
@@ -9,6 +10,7 @@ use ReturnTypeWillChange;
 use Serializable;
 use SplPriorityQueue as PhpSplPriorityQueue;
 use UnexpectedValueException;
+
 use function current;
 use function in_array;
 use function is_array;
@@ -20,6 +22,7 @@ use function reset;
 use function serialize;
 use function sprintf;
 use function unserialize;
+
 /**
  * This is an efficient implementation of an integer priority queue in PHP
  *
@@ -80,7 +83,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      * @var int
      */
     protected $subIndex = 0;
-    public function __serialize() : array
+    public function __serialize(): array
     {
         $clone = clone $this;
         $clone->setExtractFlags(self::EXTR_BOTH);
@@ -90,7 +93,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
         }
         return $data;
     }
-    public function __unserialize(array $data) : void
+    public function __unserialize(array $data): void
     {
         foreach ($data as $item) {
             $this->insert($item['data'], $item['priority']);

@@ -11,9 +11,10 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
 
-use JchOptimize\Core\Interfaces\Excludes as ExcludesInterface;
+use JchOptimize\Core\Platform\ExcludesInterface;
+use JchOptimize\Core\Platform\PathsInterface;
 
 use function preg_match;
 
@@ -21,6 +22,9 @@ defined('_WP_EXEC') or die('Restricted access');
 
 class Excludes implements ExcludesInterface
 {
+    public function __construct(private PathsInterface $paths)
+    {
+    }
 
     /**
      * @param   string  $type
@@ -28,7 +32,7 @@ class Excludes implements ExcludesInterface
      *
      * @return array
      */
-    public static function body(string $type, string $section = 'file'): array
+    public function body(string $type, string $section = 'file'): array
     {
         if ($type == 'js') {
             if ($section == 'script') {
@@ -49,9 +53,9 @@ class Excludes implements ExcludesInterface
      *
      * @return string
      */
-    public static function extensions(): string
+    public function extensions(): string
     {
-        return Paths::rewriteBaseFolder();
+        return $this->paths->rewriteBaseFolder();
     }
 
     /**
@@ -60,7 +64,7 @@ class Excludes implements ExcludesInterface
      *
      * @return array
      */
-    public static function head(string $type, string $section = 'file'): array
+    public function head(string $type, string $section = 'file'): array
     {
         if ($type == 'js') {
             if ($section == 'script') {
@@ -82,12 +86,12 @@ class Excludes implements ExcludesInterface
      *
      * @return bool
      */
-    public static function editors(string $url): bool
+    public function editors(string $url): bool
     {
         return (bool)preg_match('#/editors/#i', $url);
     }
 
-    public static function smartCombine(): array
+    public function smartCombine(): array
     {
         return [
                 'wp-includes/',

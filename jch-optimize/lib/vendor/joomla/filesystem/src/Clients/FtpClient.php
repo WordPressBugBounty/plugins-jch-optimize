@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem\Clients;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Exception\FilesystemException;
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem\Clients;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Exception\FilesystemException;
+
 /*
  * Error Codes:
  * - 30 : Unable to connect to host
@@ -136,7 +138,7 @@ class FtpClient
         $this->setOptions($options);
         if (FTP_NATIVE) {
             // Autoloading fails for Buffer as the class is used as a stream handler
-            \class_exists('_JchOptimizeVendor\\Joomla\\Filesystem\\Buffer');
+            \class_exists('_JchOptimizeVendor\\V91\\Joomla\\Filesystem\\Buffer');
         }
     }
     /**

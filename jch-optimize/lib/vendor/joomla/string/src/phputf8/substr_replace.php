@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * @package utf8
@@ -13,11 +13,11 @@ namespace _JchOptimizeVendor;
 * @see utf8_strlen
 * @see utf8_substr
 */
-function utf8_substr_replace($str, $repl, $start, $length = NULL)
+function utf8_substr_replace($str, $repl, $start, $length = null)
 {
     \preg_match_all('/./us', $str, $ar);
     \preg_match_all('/./us', $repl, $rar);
-    if ($length === NULL) {
+    if ($length === null) {
         $length = utf8_strlen($str);
     }
     \array_splice($ar[0], $start, $length, $rar[0]);

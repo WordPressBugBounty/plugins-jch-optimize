@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support;
+namespace _JchOptimizeVendor\V91\Illuminate\Support;
 
 /**
  * @mixin \Illuminate\Support\Enumerable
@@ -39,7 +39,7 @@ class HigherOrderCollectionProxy
      */
     public function __get($key)
     {
-        return $this->collection->{$this->method}(function ($value) use($key) {
+        return $this->collection->{$this->method}(function ($value) use ($key) {
             return \is_array($value) ? $value[$key] : $value->{$key};
         });
     }
@@ -52,7 +52,7 @@ class HigherOrderCollectionProxy
      */
     public function __call($method, $parameters)
     {
-        return $this->collection->{$this->method}(function ($value) use($method, $parameters) {
+        return $this->collection->{$this->method}(function ($value) use ($method, $parameters) {
             return $value->{$method}(...$parameters);
         });
     }

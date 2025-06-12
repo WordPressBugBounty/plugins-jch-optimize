@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\EventManager\ListenerAggregateInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\ListenerAggregateInterface;
+
 interface PluginInterface extends ListenerAggregateInterface
 {
     /**

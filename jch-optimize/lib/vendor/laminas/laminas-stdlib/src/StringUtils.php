@@ -1,14 +1,16 @@
 <?php
 
 // phpcs:disable WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\StringWrapper\Iconv;
-use _JchOptimizeVendor\Laminas\Stdlib\StringWrapper\Intl;
-use _JchOptimizeVendor\Laminas\Stdlib\StringWrapper\MbString;
-use _JchOptimizeVendor\Laminas\Stdlib\StringWrapper\Native;
-use _JchOptimizeVendor\Laminas\Stdlib\StringWrapper\StringWrapperInterface;
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper\Iconv;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper\Intl;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper\MbString;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper\Native;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper\StringWrapperInterface;
+
 use function array_search;
 use function defined;
 use function extension_loaded;
@@ -16,6 +18,7 @@ use function in_array;
 use function is_string;
 use function preg_match;
 use function strtoupper;
+
 /**
  * Utility class for handling strings of different character encodings
  * using available PHP extensions.

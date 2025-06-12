@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 /**
  * A promise that has been fulfilled.
@@ -27,7 +27,7 @@ class FulfilledPromise implements PromiseInterface
         $queue = Utils::queue();
         $p = new Promise([$queue, 'run']);
         $value = $this->value;
-        $queue->add(static function () use($p, $value, $onFulfilled) {
+        $queue->add(static function () use ($p, $value, $onFulfilled) {
             if (Is::pending($p)) {
                 try {
                     $p->resolve($onFulfilled($value));

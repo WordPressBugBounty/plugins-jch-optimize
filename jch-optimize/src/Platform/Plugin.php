@@ -11,10 +11,9 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
 
-use JchOptimize\Core\Interfaces\Plugin as PluginInterface;
-
+use JchOptimize\Core\Platform\PluginInterface;
 use JchOptimize\Core\Registry;
 
 use function get_option;
@@ -24,48 +23,28 @@ defined('_WP_EXEC') or die('Restricted access');
 
 class Plugin implements PluginInterface
 {
-
     protected static ?string $plugin = null;
 
-    /**
-     *
-     * @return void
-     */
-    public static function getPluginId()
+    public function getPluginId(): void
     {
-        return;
     }
 
-    /**
-     *
-     * @return void
-     */
-    public static function getPlugin()
+    public function getPlugin(): void
     {
-        return;
     }
 
-    /**
-     *
-     * @param   Registry  $params
-     */
-    public static function saveSettings(Registry $params): void
+    public function saveSettings(Registry $params): void
     {
         $options = $params->toArray();
 
         update_option('jch-optimize_settings', $options);
     }
 
-    /**
-     *
-     * @return Registry
-     */
-    public static function getPluginParams(): Registry
+    public function getPluginParams(): Registry
     {
         /** @var array $options */
         $options = get_option('jch-optimize_settings');
 
         return new Registry($options);
     }
-
 }

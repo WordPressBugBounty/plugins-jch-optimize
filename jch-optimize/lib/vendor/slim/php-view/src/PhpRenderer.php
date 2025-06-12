@@ -5,13 +5,16 @@
  *
  * @license https://github.com/slimphp/PHP-View/blob/3.x/LICENSE.md (MIT License)
  */
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Slim\Views;
+
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Slim\Views;
 
 use InvalidArgumentException;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
-use _JchOptimizeVendor\Slim\Views\Exception\PhpTemplateNotFoundException;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Slim\Views\Exception\PhpTemplateNotFoundException;
 use Throwable;
+
 class PhpRenderer
 {
     protected string $templatePath;
@@ -37,7 +40,7 @@ class PhpRenderer
      *
      * @throws Throwable
      */
-    public function render(ResponseInterface $response, string $template, array $data = []) : ResponseInterface
+    public function render(ResponseInterface $response, string $template, array $data = []): ResponseInterface
     {
         $output = $this->fetch($template, $data, \true);
         $response->getBody()->write($output);
@@ -46,7 +49,7 @@ class PhpRenderer
     /**
      * @return string
      */
-    public function getLayout() : string
+    public function getLayout(): string
     {
         return $this->layout;
     }
@@ -60,7 +63,7 @@ class PhpRenderer
      *
      * @throws PhpTemplateNotFoundException
      */
-    public function setLayout(string $layout) : void
+    public function setLayout(string $layout): void
     {
         if ($layout && !$this->templateExists($layout)) {
             throw new PhpTemplateNotFoundException('Layout template "' . $layout . '" does not exist');
@@ -70,7 +73,7 @@ class PhpRenderer
     /**
      * @return array
      */
-    public function getAttributes() : array
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -79,7 +82,7 @@ class PhpRenderer
      *
      * @return void
      */
-    public function setAttributes(array $attributes) : void
+    public function setAttributes(array $attributes): void
     {
         $this->attributes = $attributes;
     }
@@ -89,7 +92,7 @@ class PhpRenderer
      *
      * @return void
      */
-    public function addAttribute(string $key, $value) : void
+    public function addAttribute(string $key, $value): void
     {
         $this->attributes[$key] = $value;
     }
@@ -108,14 +111,14 @@ class PhpRenderer
     /**
      * @return string
      */
-    public function getTemplatePath() : string
+    public function getTemplatePath(): string
     {
         return $this->templatePath;
     }
     /**
      * @param string $templatePath
      */
-    public function setTemplatePath(string $templatePath) : void
+    public function setTemplatePath(string $templatePath): void
     {
         $this->templatePath = \rtrim($templatePath, '/\\') . '/';
     }
@@ -128,7 +131,7 @@ class PhpRenderer
      *
      * @throws Throwable
      */
-    public function fetch(string $template, array $data = [], bool $useLayout = \false) : string
+    public function fetch(string $template, array $data = [], bool $useLayout = \false): string
     {
         $output = $this->fetchTemplate($template, $data);
         if ($this->layout && $useLayout) {
@@ -145,7 +148,7 @@ class PhpRenderer
      *
      * @throws Throwable
      */
-    public function fetchTemplate(string $template, array $data = []) : string
+    public function fetchTemplate(string $template, array $data = []): string
     {
         if (isset($data['template'])) {
             throw new InvalidArgumentException('Duplicate template key found');
@@ -171,7 +174,7 @@ class PhpRenderer
      *
      * @return bool
      */
-    public function templateExists(string $template) : bool
+    public function templateExists(string $template): bool
     {
         $path = $this->templatePath . $template;
         return \is_file($path) && \is_readable($path);
@@ -182,7 +185,7 @@ class PhpRenderer
      *
      * @return void
      */
-    protected function protectedIncludeScope(string $template, array $data) : void
+    protected function protectedIncludeScope(string $template, array $data): void
     {
         \extract($data);
         include \func_get_arg(0);

@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\Event;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
-use _JchOptimizeVendor\Laminas\EventManager\EventManagerInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Event;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventManagerInterface;
+
 use function connection_aborted;
 use function ignore_user_abort;
+
 class IgnoreUserAbort extends AbstractPlugin
 {
     /**

@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Model;
 
-use _JchOptimizeVendor\Joomla\Database\DatabaseInterface;
+namespace _JchOptimizeVendor\V91\Joomla\Model;
+
+use _JchOptimizeVendor\V91\Joomla\Database\DatabaseInterface;
+
 /**
  * Trait representing a model holding a database reference
  *

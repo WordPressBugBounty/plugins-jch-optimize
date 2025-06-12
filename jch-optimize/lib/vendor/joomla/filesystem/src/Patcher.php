@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem;
+
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem;
 
 /**
  * A Unified Diff Format Patcher class
@@ -189,11 +190,11 @@ class Patcher
      * @param   string   $root      The files root path
      * @param   integer  $strip     The number of '/' to strip
      *
-     * @return	Patcher  $this for chaining
+     * @return  Patcher  $this for chaining
      *
      * @since   1.0
      */
-    public function addFile($filename, $root = \_JchOptimizeVendor\JPATH_ROOT, $strip = 0)
+    public function addFile($filename, $root = \_JchOptimizeVendor\V91\JPATH_ROOT, $strip = 0)
     {
         return $this->add(\file_get_contents($filename), $root, $strip);
     }
@@ -204,11 +205,11 @@ class Patcher
      * @param   string   $root   The files root path
      * @param   integer  $strip  The number of '/' to strip
      *
-     * @return	Patcher  $this for chaining
+     * @return  Patcher  $this for chaining
      *
      * @since   1.0
      */
-    public function add($udiff, $root = \_JchOptimizeVendor\JPATH_ROOT, $strip = 0)
+    public function add($udiff, $root = \_JchOptimizeVendor\V91\JPATH_ROOT, $strip = 0)
     {
         $this->patches[] = array('udiff' => $udiff, 'root' => isset($root) ? \rtrim($root, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR : '', 'strip' => $strip);
         return $this;

@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2013 Open Source Matters, Inc.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Registry;
 
-use _JchOptimizeVendor\Joomla\Utilities\ArrayHelper;
+namespace _JchOptimizeVendor\V91\Joomla\Registry;
+
+use _JchOptimizeVendor\V91\Joomla\Utilities\ArrayHelper;
+
 /**
  * Registry class
  *
@@ -408,7 +410,7 @@ class Registry implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \
         if ($separator === null) {
             $separator = $this->separator;
         } else {
-            \_JchOptimizeVendor\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 4.', self::class, self::class);
+            \_JchOptimizeVendor\V91\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 4.', self::class, self::class);
         }
         /*
          * Explode the registry path into an array and remove empty
@@ -727,7 +729,7 @@ class Registry implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \
     {
         switch ($name) {
             case 'separator':
-                \_JchOptimizeVendor\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 3.', self::class, self::class);
+                \_JchOptimizeVendor\V91\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 3.', self::class, self::class);
                 return $this->separator;
             default:
                 if (\property_exists($this, $name)) {
@@ -753,14 +755,14 @@ class Registry implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \
     {
         switch ($name) {
             case 'separator':
-                \_JchOptimizeVendor\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 3.', self::class, self::class);
+                \_JchOptimizeVendor\V91\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 3.', self::class, self::class);
                 $this->separator = $value;
                 break;
             default:
                 if (\property_exists($this, $name)) {
                     throw new \RuntimeException(\sprintf('Cannot access protected or private property %s::$%s', __CLASS__, $name));
                 }
-                \_JchOptimizeVendor\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'Creating a property will be removed in version 3.', self::class, self::class);
+                \_JchOptimizeVendor\V91\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'Creating a property will be removed in version 3.', self::class, self::class);
                 $this->{$name} = $value;
                 break;
         }

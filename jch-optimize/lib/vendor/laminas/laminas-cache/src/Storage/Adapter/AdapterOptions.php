@@ -1,15 +1,16 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter;
 
 use ArrayObject;
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Event;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
-use _JchOptimizeVendor\Laminas\EventManager\EventsCapableInterface;
-use _JchOptimizeVendor\Laminas\Stdlib\AbstractOptions;
-use _JchOptimizeVendor\Laminas\Stdlib\ErrorHandler;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Event;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventsCapableInterface;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\AbstractOptions;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ErrorHandler;
 use Traversable;
+
 use function array_change_key_case;
 use function array_reverse;
 use function array_shift;
@@ -21,8 +22,10 @@ use function preg_replace_callback;
 use function sprintf;
 use function str_replace;
 use function strtolower;
+
 use const CASE_LOWER;
 use const E_WARNING;
+
 /**
  * Unless otherwise marked, all options in this class affect all adapters.
  */

@@ -3,12 +3,15 @@
 /**
  * @see https://github.com/laminas/laminas-serializer for the canonical source repository
  */
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Serializer;
 
-use _JchOptimizeVendor\Laminas\Serializer\Adapter\AdapterInterface as Adapter;
-use _JchOptimizeVendor\Laminas\ServiceManager\ServiceManager;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Serializer;
+
+use _JchOptimizeVendor\V91\Laminas\Serializer\Adapter\AdapterInterface as Adapter;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\ServiceManager;
 use Traversable;
+
 // phpcs:ignore
 abstract class Serializer
 {

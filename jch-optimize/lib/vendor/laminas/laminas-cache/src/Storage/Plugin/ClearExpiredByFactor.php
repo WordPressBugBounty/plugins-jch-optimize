@@ -1,11 +1,13 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\ClearExpiredInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\PostEvent;
-use _JchOptimizeVendor\Laminas\EventManager\EventManagerInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ClearExpiredInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\PostEvent;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventManagerInterface;
+
 use function random_int;
+
 class ClearExpiredByFactor extends AbstractPlugin
 {
     /**

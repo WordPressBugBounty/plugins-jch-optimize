@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Service;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Service;
 
-use _JchOptimizeVendor\Interop\Container\ContainerInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\Factory\AbstractFactoryInterface;
-use _JchOptimizeVendor\Webmozart\Assert\Assert;
+use _JchOptimizeVendor\V91\Interop\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Factory\AbstractFactoryInterface;
+use _JchOptimizeVendor\V91\Webmozart\Assert\Assert;
+
 use function assert;
 use function is_array;
+
 /**
  * Storage cache factory for multiple caches.
  */

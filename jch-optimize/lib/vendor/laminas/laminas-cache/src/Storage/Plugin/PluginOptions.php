@@ -1,17 +1,19 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Serializer\Adapter\AdapterInterface as SerializerAdapter;
-use _JchOptimizeVendor\Laminas\Serializer\Serializer as SerializerFactory;
-use _JchOptimizeVendor\Laminas\Stdlib\AbstractOptions;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Serializer\Adapter\AdapterInterface as SerializerAdapter;
+use _JchOptimizeVendor\V91\Laminas\Serializer\Serializer as SerializerFactory;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\AbstractOptions;
+
 use function get_class;
 use function gettype;
 use function is_callable;
 use function is_object;
 use function is_string;
 use function sprintf;
+
 class PluginOptions extends AbstractOptions
 {
     /**

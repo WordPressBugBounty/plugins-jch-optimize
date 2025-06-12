@@ -1,15 +1,19 @@
 <?php
 
 // phpcs:disable WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use ErrorException;
+
 use function array_pop;
 use function count;
 use function restore_error_handler;
 use function set_error_handler;
+
 use const E_WARNING;
+
 /**
  * ErrorHandler that can be used to catch internal PHP errors
  * and convert to an ErrorException instance.

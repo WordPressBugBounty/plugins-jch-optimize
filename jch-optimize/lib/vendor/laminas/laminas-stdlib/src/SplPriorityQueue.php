@@ -1,17 +1,21 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Serializable;
 use UnexpectedValueException;
+
 use function array_key_exists;
 use function get_debug_type;
 use function is_array;
 use function serialize;
 use function sprintf;
 use function unserialize;
+
 use const PHP_INT_MAX;
+
 /**
  * Serializable version of SplPriorityQueue
  *

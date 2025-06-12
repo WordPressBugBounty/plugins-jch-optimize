@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Json;
+namespace _JchOptimizeVendor\V91\Laminas\Json;
 
 use Stringable;
+
 /**
  * Encode a string to a native JavaScript expression.
  *
@@ -54,7 +55,7 @@ class Expr implements Stringable
      *
      * @return string holded javascript expression.
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->expression;
     }

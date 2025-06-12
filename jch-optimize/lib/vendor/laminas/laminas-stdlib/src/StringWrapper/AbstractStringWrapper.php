@@ -1,10 +1,12 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\StringWrapper;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\StringUtils;
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringUtils;
+
 use function floor;
 use function in_array;
 use function sprintf;
@@ -12,9 +14,11 @@ use function str_pad;
 use function str_repeat;
 use function strtoupper;
 use function wordwrap;
+
 use const STR_PAD_BOTH;
 use const STR_PAD_LEFT;
 use const STR_PAD_RIGHT;
+
 abstract class AbstractStringWrapper implements StringWrapperInterface
 {
     /**

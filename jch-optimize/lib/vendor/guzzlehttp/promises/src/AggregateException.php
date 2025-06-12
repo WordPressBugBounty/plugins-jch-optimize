@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 /**
  * Exception thrown when too many errors occur in the some() or any() methods.

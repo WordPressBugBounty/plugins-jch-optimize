@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
 class Module
 {

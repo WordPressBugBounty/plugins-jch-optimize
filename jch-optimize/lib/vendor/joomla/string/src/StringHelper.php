@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\String;
+
+namespace _JchOptimizeVendor\V91\Joomla\String;
 
 // PHP mbstring and iconv local configuration
 @\ini_set('default_charset', 'UTF-8');
@@ -15,30 +16,30 @@ namespace _JchOptimizeVendor\Joomla\String;
  *
  * @since  1.3.0
  */
-use function _JchOptimizeVendor\utf8_compliant;
-use function _JchOptimizeVendor\utf8_ireplace;
-use function _JchOptimizeVendor\utf8_is_ascii;
-use function _JchOptimizeVendor\utf8_is_valid;
-use function _JchOptimizeVendor\utf8_ltrim;
-use function _JchOptimizeVendor\utf8_ord;
-use function _JchOptimizeVendor\utf8_rtrim;
-use function _JchOptimizeVendor\utf8_str_pad;
-use function _JchOptimizeVendor\utf8_str_split;
-use function _JchOptimizeVendor\utf8_strcasecmp;
-use function _JchOptimizeVendor\utf8_stristr;
-use function _JchOptimizeVendor\utf8_strlen;
-use function _JchOptimizeVendor\utf8_strpos;
-use function _JchOptimizeVendor\utf8_strrev;
-use function _JchOptimizeVendor\utf8_strrpos;
-use function _JchOptimizeVendor\utf8_strscpn;
-use function _JchOptimizeVendor\utf8_strspn;
-use function _JchOptimizeVendor\utf8_strtolower;
-use function _JchOptimizeVendor\utf8_strtoupper;
-use function _JchOptimizeVendor\utf8_substr;
-use function _JchOptimizeVendor\utf8_substr_replace;
-use function _JchOptimizeVendor\utf8_trim;
-use function _JchOptimizeVendor\utf8_ucfirst;
-use function _JchOptimizeVendor\utf8_ucwords;
+use function _JchOptimizeVendor\V91\utf8_compliant;
+use function _JchOptimizeVendor\V91\utf8_ireplace;
+use function _JchOptimizeVendor\V91\utf8_is_ascii;
+use function _JchOptimizeVendor\V91\utf8_is_valid;
+use function _JchOptimizeVendor\V91\utf8_ltrim;
+use function _JchOptimizeVendor\V91\utf8_ord;
+use function _JchOptimizeVendor\V91\utf8_rtrim;
+use function _JchOptimizeVendor\V91\utf8_str_pad;
+use function _JchOptimizeVendor\V91\utf8_str_split;
+use function _JchOptimizeVendor\V91\utf8_strcasecmp;
+use function _JchOptimizeVendor\V91\utf8_stristr;
+use function _JchOptimizeVendor\V91\utf8_strlen;
+use function _JchOptimizeVendor\V91\utf8_strpos;
+use function _JchOptimizeVendor\V91\utf8_strrev;
+use function _JchOptimizeVendor\V91\utf8_strrpos;
+use function _JchOptimizeVendor\V91\utf8_strscpn;
+use function _JchOptimizeVendor\V91\utf8_strspn;
+use function _JchOptimizeVendor\V91\utf8_strtolower;
+use function _JchOptimizeVendor\V91\utf8_strtoupper;
+use function _JchOptimizeVendor\V91\utf8_substr;
+use function _JchOptimizeVendor\V91\utf8_substr_replace;
+use function _JchOptimizeVendor\V91\utf8_trim;
+use function _JchOptimizeVendor\V91\utf8_ucfirst;
+use function _JchOptimizeVendor\V91\utf8_ucwords;
 abstract class StringHelper
 {
     /**

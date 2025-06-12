@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 final class Each
 {

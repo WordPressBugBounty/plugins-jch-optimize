@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,78 +13,94 @@
 
 namespace JchOptimize\Core;
 
-use _JchOptimizeVendor\Joomla\Filesystem\File;
-use JchOptimize\Platform\Paths;
+use _JchOptimizeVendor\V91\Joomla\Filesystem\File;
+use JchOptimize\Core\Platform\PathsInterface;
+
+use function file_exists;
+use function file_get_contents;
+use function preg_quote;
+use function preg_replace;
+
+use const PHP_EOL;
 
 abstract class Htaccess
 {
-    /**
-     * Will add contents to htaccess file within specified line delimiters
-     * If target content already exists, will overwrite the section within delimiters.
-     *
-     * @throws Exception\FileNotFoundException
-     */
-    public static function updateHtaccess(string $content, array $lineDelimiters, string $position = 'prepend'): bool
-    {
-        if (\file_exists(self::getHtaccessFile())) {
-            $delimitedContent = $lineDelimiters[0].\PHP_EOL.$content.\PHP_EOL.$lineDelimiters[1];
-            // Get existing content of file, removing previous contents within delimiters if existing
-            $cleanedContents = self::getCleanedHtaccessContents($lineDelimiters);
+    public static function updateHtaccess(
+        PathsInterface $pathsUtils,
+        string $content,
+        array $lineDelimiters,
+        string $position = 'prepend'
+    ): bool {
+        if (file_exists(self::getHtaccessFile($pathsUtils))) {
+            $delimitedContent = $lineDelimiters[0] . PHP_EOL . $content . PHP_EOL . $lineDelimiters[1];
+
+            //Get existing content of file, removing previous contents within delimiters if existing
+            $cleanedContents = self::getCleanedHtaccessContents($pathsUtils, $lineDelimiters);
 
             switch ($position) {
                 case 'append':
-                    $content = $cleanedContents.\PHP_EOL.\PHP_EOL.$delimitedContent;
-
+                    $content = $cleanedContents . PHP_EOL . PHP_EOL . $delimitedContent;
                     break;
-
                 case 'prepend':
-                    $content = $delimitedContent.\PHP_EOL.\PHP_EOL.$cleanedContents;
-
+                    $content = $delimitedContent . PHP_EOL . PHP_EOL . $cleanedContents;
                     break;
-
                 default:
-                    // If neither 'append' not 'prepend' specified, $position should contain a marker in
-                    // the htaccess file that if existing, the content will be appended to, otherwise,
-                    // it is prepended to the file
-                    $positionRegex = \preg_quote($position, '#').'\\s*?[r\\n]?';
-                    if (\preg_match('#'.$positionRegex.'#', $cleanedContents)) {
-                        $content = \preg_replace('#'.$positionRegex.'#', '\\0'.\PHP_EOL.\PHP_EOL.$delimitedContent.\PHP_EOL, $cleanedContents);
+                    //If neither 'append' not 'prepend' specified, $position should contain a marker in
+                    //the htaccess file that if existing, the content will be appended to, otherwise,
+                    //it is prepended to the file
+                    $positionRegex = preg_quote($position, "#") . '\s*?[r\n]?';
+
+                    if (preg_match('#' . $positionRegex . '#', $cleanedContents)) {
+                        $content = preg_replace(
+                            '#' . $positionRegex . '#',
+                            '\0' . PHP_EOL . PHP_EOL . $delimitedContent . PHP_EOL,
+                            $cleanedContents
+                        );
                     } else {
-                        $content = $delimitedContent.\PHP_EOL.\PHP_EOL.$cleanedContents;
+                        $content = $delimitedContent . PHP_EOL . PHP_EOL . $cleanedContents;
                     }
             }
+
             if ($content) {
-                return File::write(self::getHtaccessFile(), $content);
+                return File::write(self::getHtaccessFile($pathsUtils), $content);
             }
         }
 
-        throw new \JchOptimize\Core\Exception\FileNotFoundException('Htaccess File doesn\'t exist');
+        throw new Exception\FileNotFoundException('Htaccess File doesn\'t exist');
     }
 
     /**
-     * Will remove the target section from the htaccess file.
+     * Will remove the target section from the htaccess file
      */
-    public static function cleanHtaccess(array $lineDelimiters): void
+    public static function cleanHtaccess(PathsInterface $pathsUtils, array $lineDelimiters): void
     {
-        if (\file_exists(self::getHtaccessFile())) {
+        if (file_exists(self::getHtaccessFile($pathsUtils))) {
             $count = null;
-            $cleanedContents = self::getCleanedHtaccessContents($lineDelimiters, $count);
+            $cleanedContents = self::getCleanedHtaccessContents($pathsUtils, $lineDelimiters, $count);
+
             if ($cleanedContents && $count > 0) {
-                File::write(self::getHtaccessFile(), $cleanedContents);
+                File::write(self::getHtaccessFile($pathsUtils), $cleanedContents);
             }
         }
     }
 
-    private static function getCleanedHtaccessContents(array $lineDelimiters, &$count = null): string
-    {
-        $contents = \file_get_contents(self::getHtaccessFile());
-        $regex = '#[\\r\\n]*?\\s*?'.\preg_quote($lineDelimiters[0], '#').'.*?'.\preg_quote($lineDelimiters[1], '#').'\\s*[\\r\\n]*?#s';
+    private static function getCleanedHtaccessContents(
+        PathsInterface $pathsUtils,
+        array $lineDelimiters,
+        &$count = null
+    ): string {
+        $contents = file_get_contents(self::getHtaccessFile($pathsUtils));
 
-        return \preg_replace($regex, \PHP_EOL.\PHP_EOL, $contents, -1, $count);
+        $regex = '#[\r\n]*?\s*?' . preg_quote($lineDelimiters[0], '#') . '.*?' . preg_quote(
+            $lineDelimiters[1],
+            '#'
+        ) . '\s*[\r\n]*?#s';
+
+        return preg_replace($regex, PHP_EOL . PHP_EOL, $contents, -1, $count);
     }
 
-    private static function getHtaccessFile(): string
+    private static function getHtaccessFile(PathsInterface $pathsUtils): string
     {
-        return Paths::rootPath().'/.htaccess';
+        return $pathsUtils->rootPath() . '/.htaccess';
     }
 }

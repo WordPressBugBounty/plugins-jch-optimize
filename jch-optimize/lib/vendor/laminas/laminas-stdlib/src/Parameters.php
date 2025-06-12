@@ -1,12 +1,15 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use ArrayObject as PhpArrayObject;
 use ReturnTypeWillChange;
+
 use function http_build_query;
 use function parse_str;
+
 /**
  * @template TKey of array-key
  * @template TValue

@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\EventManager\AbstractListenerAggregate;
+use _JchOptimizeVendor\V91\Laminas\EventManager\AbstractListenerAggregate;
+
 abstract class AbstractPlugin extends AbstractListenerAggregate implements PluginInterface
 {
     /** @var PluginOptions */

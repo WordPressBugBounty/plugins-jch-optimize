@@ -1,10 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 use function is_string;
 use function method_exists;
+
 /**
  * Lazy listener instance.
  *

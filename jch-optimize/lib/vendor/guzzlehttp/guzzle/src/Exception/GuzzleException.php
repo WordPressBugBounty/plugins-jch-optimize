@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Exception;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Exception;
 
-use _JchOptimizeVendor\Psr\Http\Client\ClientExceptionInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Client\ClientExceptionInterface;
+
 interface GuzzleException extends ClientExceptionInterface
 {
 }

@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use function function_exists;
 use function fwrite;
@@ -10,10 +11,12 @@ use function posix_isatty;
 use function preg_replace;
 use function sprintf;
 use function str_replace;
+
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use const STDERR;
 use const STDOUT;
+
 /**
  * Utilities for console tooling.
  *

@@ -6,14 +6,16 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem\Exception;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Path;
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem\Exception;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Path;
+
 /**
  * Exception class for handling errors in the Filesystem package
  *
  * @since   1.2.0
- * @change  1.6.2  If the message containes a full path, the root path (\_JchOptimizeVendor\JPATH_ROOT) is removed from it
+ * @change  1.6.2  If the message containes a full path, the root path (\_JchOptimizeVendor\V91\JPATH_ROOT) is removed from it
  *          to avoid any full path disclosure. Before 1.6.2, the path was propagated as provided.
  */
 class FilesystemException extends \RuntimeException

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,13 +13,19 @@
 
 namespace JchOptimize\Core\Html\Elements;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
-use JchOptimize\ContainerFactory;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerExceptionInterface;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Psr\Container\NotFoundExceptionInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 use JchOptimize\Core\Helper;
+use JchOptimize\Core\Html\Attribute;
 use JchOptimize\Core\Html\AttributesCollection;
 use JchOptimize\Core\Html\HtmlElementBuilder;
 use JchOptimize\Core\Html\HtmlElementInterface;
-use JchOptimize\Core\Html\Processor;
+use JchOptimize\Core\Html\HtmlProcessor;
+
+use function array_merge;
+use function strtolower;
 
 /**
  * @method BaseElement id(string $value)
@@ -26,68 +33,61 @@ use JchOptimize\Core\Html\Processor;
  * @method BaseElement hidden(string $value)
  * @method BaseElement style(string $value)
  * @method BaseElement title(string $value)
- * @method bool|string getId()
- * @method array|bool  getClass()
- * @method bool|string getHidden()
- * @method bool|string getStyle()
- * @method bool|string getTitle()
+ * @method string|false getId()
+ * @method array|false getClass()
+ * @method string|false getHidden()
+ * @method string|false getStyle()
+ * @method string|false getTitle()
  */
 class BaseElement implements HtmlElementInterface
 {
     protected AttributesCollection $attributes;
+
     protected string $name = '';
-    protected bool $isXhtml;
+
+    protected bool $isXhtml = false;
+
     protected string $parent = '';
 
     /**
      * @var (HtmlElementInterface|string)[]
      */
     protected array $children = [];
-    protected bool $omitClosingTag = \false;
 
-    public function __construct()
+    protected bool $omitClosingTag = false;
+
+    public function __construct(ContainerInterface $container)
     {
-        $container = ContainerFactory::getContainer();
-        $processor = $container->get(Processor::class);
-        $this->isXhtml = Helper::isXhtml($processor->getHtml());
-        $this->attributes = new AttributesCollection($this->isXhtml);
-    }
-
-    /**
-     * @return array|bool|static|string|UriInterface
-     */
-    public function __call(string $name, array $arguments)
-    {
-        if (\str_starts_with($name, 'get')) {
-            $name = \strtolower(\substr($name, 3));
-
-            return $this->attributeValue($name);
+        try {
+            $htmlProcessor = $container->get(HtmlProcessor::class);
+            $this->isXhtml = Helper::isXhtml($htmlProcessor->getHtml());
+        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $e) {
         }
-        $value = $arguments[0] ?? '';
-        $delimiter = $arguments[1] ?? null;
 
-        return $this->attribute($name, $value, $delimiter);
-    }
-
-    public function __toString(): string
-    {
-        return $this->render();
+        $this->attributes = new AttributesCollection($this->isXhtml);
     }
 
     public function render(): string
     {
         $html = "<{$this->name}";
         $html .= $this->attributes->render();
-        $html .= $this->isVoidElement($this->name) && $this->isXhtml ? ' />' : '>';
-        if (!$this->isVoidElement($this->name) && !$this->omitClosingTag) {
+        $html .= ($this->isVoidElement($this->name) && $this->isXhtml) ? ' />' : '>';
+
+        if (
+            $this->hasChildren() ||
+            (!$this->isVoidElement($this->name) && !$this->omitClosingTag)
+        ) {
             $html .= "{$this->renderChildren()}</{$this->name}>";
         }
 
         return $html;
     }
 
-    public function attribute(string $name, string|array|UriInterface|bool $value = '', ?string $delimiter = null): static
-    {
+    public function attribute(
+        string $name,
+        mixed $value = '',
+        ?string $delimiter = null
+    ): static {
         $this->attributes->setAttribute($name, $value, $delimiter);
 
         return $this;
@@ -107,9 +107,28 @@ class BaseElement implements HtmlElementInterface
         return $this;
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return static|array|bool|string|UriInterface
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (str_starts_with($name, 'get')) {
+            $name = strtolower(substr($name, 3));
+
+            return $this->attributeValue($name);
+        }
+
+        $value = $arguments[0] ?? '';
+        $delimiter = $arguments[1] ?? null;
+
+        return $this->attribute($name, $value, $delimiter);
+    }
+
     public function data(string $name, UriInterface|array|string $value = ''): static
     {
-        $this->attribute('data-'.$name, $value);
+        $this->attribute('data-' . $name, $value);
 
         return $this;
     }
@@ -123,7 +142,7 @@ class BaseElement implements HtmlElementInterface
 
     public function addChildren(array $children): static
     {
-        $this->children = \array_merge($this->children, $children);
+        $this->children = array_merge($this->children, $children);
 
         return $this;
     }
@@ -142,37 +161,27 @@ class BaseElement implements HtmlElementInterface
 
     public function attributeValue(string $name): UriInterface|bool|array|string
     {
-        if ($this->attributes->has($name)) {
-            return $this->attributes->getValue($name);
-        }
-
-        return \false;
+        return $this->attributes->getValue($name);
     }
 
     public function hasAttribute(string $name): bool
     {
-        return $this->attributes->has($name);
+        return ($this->attributes->getValue($name) !== false);
     }
 
     public function firstOfAttributes(array $attributes): UriInterface|bool|array|string
     {
         foreach ($attributes as $name => $value) {
-            if ($this->attributes->has($name)) {
+            if (($retrievedValue = $this->attributes->getValue($name)) !== false) {
                 if ($this->attributes->isBoolean($name)) {
                     return $name;
-                }
-                if ($this->attributeValue($name) == $value) {
+                } elseif ($retrievedValue === $value) {
                     return $value;
                 }
             }
         }
 
-        return \false;
-    }
-
-    public function isVoidElement(string $name): bool
-    {
-        return \in_array($name, HtmlElementBuilder::$voidElements);
+        return false;
     }
 
     public function getChildren(): array
@@ -181,7 +190,9 @@ class BaseElement implements HtmlElementInterface
     }
 
     /**
+     * @param int $index
      * @param HtmlElementInterface|string $child
+     * @return static
      */
     public function replaceChild(int $index, $child): static
     {
@@ -193,6 +204,31 @@ class BaseElement implements HtmlElementInterface
     public function hasChildren(): bool
     {
         return !empty($this->children);
+    }
+
+    public function __toString(): string
+    {
+        return $this->render();
+    }
+
+    public function isVoidElement(string $name): bool
+    {
+        return in_array($name, HtmlElementBuilder::$voidElements);
+    }
+
+    private function renderChildren(): string
+    {
+        $contents = '';
+
+        foreach ($this->children as $child) {
+            if ($child instanceof HtmlElementInterface) {
+                $contents .= $child->render();
+            } else {
+                $contents .= $child;
+            }
+        }
+
+        return $contents;
     }
 
     public function setOmitClosingTag(bool $flag): static
@@ -214,17 +250,23 @@ class BaseElement implements HtmlElementInterface
         return $this->parent;
     }
 
-    private function renderChildren(): string
+    public function __clone()
     {
-        $contents = '';
-        foreach ($this->children as $child) {
-            if ($child instanceof HtmlElementInterface) {
-                $contents .= $child->render();
-            } else {
-                $contents .= $child;
+        $attributes = new AttributesCollection($this->isXhtml);
+
+        foreach ($this->attributes as $attribute) {
+            $name = $attribute->getName();
+            $value = $attribute->getValue();
+            $delimiter = $attribute->getDelimiter();
+
+            if ($value instanceof UriInterface) {
+                $value = clone $value;
             }
+
+            $newAttribute = new Attribute($name, $value, $delimiter);
+            $attributes->attach($newAttribute);
         }
 
-        return $contents;
+        $this->attributes = $attributes;
     }
 }

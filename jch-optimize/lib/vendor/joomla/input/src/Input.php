@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2022 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Input;
 
-use _JchOptimizeVendor\Joomla\Filter;
+namespace _JchOptimizeVendor\V91\Joomla\Input;
+
+use _JchOptimizeVendor\V91\Joomla\Filter;
+
 /**
  * Joomla! Input Base Class
  *

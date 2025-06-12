@@ -1,11 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\GuzzleHttp\Promise as P;
-use _JchOptimizeVendor\GuzzleHttp\Promise\PromiseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise as P;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\PromiseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+
 /**
  * Middleware that retries requests based on the boolean result of
  * invoking the provided "decider" function.
@@ -47,11 +48,11 @@ class RetryMiddleware
      *
      * @return int milliseconds.
      */
-    public static function exponentialDelay(int $retries) : int
+    public static function exponentialDelay(int $retries): int
     {
         return (int) \pow(2, $retries - 1) * 1000;
     }
-    public function __invoke(RequestInterface $request, array $options) : PromiseInterface
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         if (!isset($options['retries'])) {
             $options['retries'] = 0;
@@ -62,9 +63,9 @@ class RetryMiddleware
     /**
      * Execute fulfilled closure
      */
-    private function onFulfilled(RequestInterface $request, array $options) : callable
+    private function onFulfilled(RequestInterface $request, array $options): callable
     {
-        return function ($value) use($request, $options) {
+        return function ($value) use ($request, $options) {
             if (!($this->decider)($options['retries'], $request, $value, null)) {
                 return $value;
             }
@@ -74,16 +75,16 @@ class RetryMiddleware
     /**
      * Execute rejected closure
      */
-    private function onRejected(RequestInterface $req, array $options) : callable
+    private function onRejected(RequestInterface $req, array $options): callable
     {
-        return function ($reason) use($req, $options) {
+        return function ($reason) use ($req, $options) {
             if (!($this->decider)($options['retries'], $req, null, $reason)) {
                 return P\Create::rejectionFor($reason);
             }
             return $this->doRetry($req, $options);
         };
     }
-    private function doRetry(RequestInterface $request, array $options, ResponseInterface $response = null) : PromiseInterface
+    private function doRetry(RequestInterface $request, array $options, ResponseInterface $response = null): PromiseInterface
     {
         $options['delay'] = ($this->delay)(++$options['retries'], $response, $request);
         return $this($request, $options);

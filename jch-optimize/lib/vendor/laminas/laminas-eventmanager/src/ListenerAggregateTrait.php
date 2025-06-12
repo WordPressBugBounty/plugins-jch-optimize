@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
 /**
  * Provides logic to easily create aggregate listeners, without worrying about

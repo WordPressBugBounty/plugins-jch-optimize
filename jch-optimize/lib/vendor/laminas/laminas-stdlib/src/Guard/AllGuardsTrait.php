@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\Guard;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\Guard;
 
 /**
  * An aggregate for all guard traits

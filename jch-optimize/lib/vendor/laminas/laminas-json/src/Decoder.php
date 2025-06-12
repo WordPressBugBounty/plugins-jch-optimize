@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Json;
+namespace _JchOptimizeVendor\V91\Laminas\Json;
 
-use _JchOptimizeVendor\Laminas\Json\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\Laminas\Json\Exception\RuntimeException;
+use _JchOptimizeVendor\V91\Laminas\Json\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\Json\Exception\RuntimeException;
 use stdClass;
+
 use function chr;
 use function floatval;
 use function function_exists;
@@ -21,7 +22,9 @@ use function str_replace;
 use function strlen;
 use function strpos;
 use function substr;
+
 use const PREG_OFFSET_CAPTURE;
+
 /**
  * Decode JSON encoded string to PHP variable constructs
  */

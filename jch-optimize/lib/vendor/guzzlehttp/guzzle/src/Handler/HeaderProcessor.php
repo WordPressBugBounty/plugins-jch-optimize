@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Handler;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Handler;
 
-use _JchOptimizeVendor\GuzzleHttp\Utils;
+use _JchOptimizeVendor\V91\GuzzleHttp\Utils;
+
 /**
  * @internal
  */
@@ -17,7 +18,7 @@ final class HeaderProcessor
      *
      * @return array{0:string, 1:int, 2:?string, 3:array}
      */
-    public static function parseHeaders(array $headers) : array
+    public static function parseHeaders(array $headers): array
     {
         if ($headers === []) {
             throw new \RuntimeException('Expected a non-empty array of header data');

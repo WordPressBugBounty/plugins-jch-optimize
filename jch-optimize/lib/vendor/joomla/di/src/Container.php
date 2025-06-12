@@ -6,12 +6,14 @@
  * @copyright  Copyright (C) 2013 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\DI;
 
-use _JchOptimizeVendor\Joomla\DI\Exception\DependencyResolutionException;
-use _JchOptimizeVendor\Joomla\DI\Exception\KeyNotFoundException;
-use _JchOptimizeVendor\Joomla\DI\Exception\ProtectedKeyException;
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+namespace _JchOptimizeVendor\V91\Joomla\DI;
+
+use _JchOptimizeVendor\V91\Joomla\DI\Exception\DependencyResolutionException;
+use _JchOptimizeVendor\V91\Joomla\DI\Exception\KeyNotFoundException;
+use _JchOptimizeVendor\V91\Joomla\DI\Exception\ProtectedKeyException;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 /**
  * The Container class.
  *
@@ -159,7 +161,7 @@ class Container implements ContainerInterface
      *
      * @since   2.0.0
      */
-    public function isShared(string $resourceName) : bool
+    public function isShared(string $resourceName): bool
     {
         return $this->hasFlag($resourceName, 'isShared', \true);
     }
@@ -172,7 +174,7 @@ class Container implements ContainerInterface
      *
      * @since   2.0.0
      */
-    public function isProtected(string $resourceName) : bool
+    public function isProtected(string $resourceName): bool
     {
         return $this->hasFlag($resourceName, 'isProtected', \true);
     }
@@ -188,7 +190,7 @@ class Container implements ContainerInterface
      * @since   2.0.0
      * @throws  KeyNotFoundException
      */
-    private function hasFlag(string $resourceName, string $method, bool $default = \true) : bool
+    private function hasFlag(string $resourceName, string $method, bool $default = \true): bool
     {
         $key = $this->resolveAlias($resourceName);
         if (isset($this->resources[$key])) {
@@ -294,12 +296,12 @@ class Container implements ContainerInterface
         // If there are no parameters, just return a new object.
         if ($constructor === null) {
             // There is no constructor, just return a new object.
-            $callback = function () use($key) {
+            $callback = function () use ($key) {
                 return new $key();
             };
         } else {
             $newInstanceArgs = $this->getMethodArgs($constructor);
-            $callback = function () use($reflection, $newInstanceArgs) {
+            $callback = function () use ($reflection, $newInstanceArgs) {
                 return $reflection->newInstanceArgs($newInstanceArgs);
             };
         }
@@ -351,7 +353,7 @@ class Container implements ContainerInterface
     {
         $key = $this->resolveAlias($resourceName);
         $resource = $this->getResource($key, \true);
-        $closure = function ($c) use($callable, $resource) {
+        $closure = function ($c) use ($callable, $resource) {
             return $callable($resource->getInstance(), $c);
         };
         $this->set($key, $closure, $resource->isShared());
@@ -366,7 +368,7 @@ class Container implements ContainerInterface
      * @since   1.0
      * @throws  DependencyResolutionException
      */
-    private function getMethodArgs(\ReflectionMethod $method) : array
+    private function getMethodArgs(\ReflectionMethod $method): array
     {
         $methodArgs = [];
         foreach ($method->getParameters() as $param) {
@@ -512,7 +514,7 @@ class Container implements ContainerInterface
      * @since   2.0.0
      * @throws  KeyNotFoundException
      */
-    public function getResource(string $key, bool $bail = \false) : ?ContainerResource
+    public function getResource(string $key, bool $bail = \false): ?ContainerResource
     {
         if (isset($this->resources[$key])) {
             return $this->resources[$key];

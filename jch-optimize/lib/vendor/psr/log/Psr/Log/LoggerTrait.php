@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Log;
+namespace _JchOptimizeVendor\V91\Psr\Log;
 
 /**
  * This is a simple Logger trait that classes unable to extend AbstractLogger
@@ -130,5 +130,5 @@ trait LoggerTrait
      *
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public abstract function log($level, $message, array $context = array());
+    abstract public function log($level, $message, array $context = array());
 }

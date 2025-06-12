@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,55 +13,99 @@
 
 namespace JchOptimize\Core;
 
-use _JchOptimizeVendor\GuzzleHttp\Psr7\Uri;
-use _JchOptimizeVendor\GuzzleHttp\Psr7\UriComparator;
-use _JchOptimizeVendor\GuzzleHttp\Psr7\UriResolver;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+use JchOptimize\Core\Uri\UriComparator;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
+use function defined;
+use function htmlentities;
+use function preg_replace;
+use function strlen;
+use function substr;
+
+defined('_JCH_EXEC') or die('Restricted access');
+
 class FileUtils
 {
     /**
-     * Prepare a representation of a file URL or value for display, possibly truncated.
+     * Prepare a representation of a file URL or value for display, possibly truncated
      *
-     * @param null|UriInterface $uri      The string being prepared
-     * @param bool              $truncate If true will be truncated at specified length, prepending with an epsilon
-     * @param int               $length   the length in number of characters
+     * @param UriInterface|null $uri The string being prepared
+     * @param string $content
+     * @param bool $truncate If true will be truncated at specified length, prepending with an epsilon
+     * @param int $length The length in number of characters.
+     *
+     * @return string
+     * @deprecated
      */
-    public function prepareForDisplay(?UriInterface $uri = null, string $content = '', bool $truncate = \true, int $length = 27): string
-    {
-        $eps = '';
+    public function prepareForDisplay(
+        ?UriInterface $uri = null,
+        string $content = '',
+        bool $truncate = true,
+        int $length = 60
+    ): string {
         if ($uri) {
-            /*   $uri = UriResolver::resolve(SystemUri::currentUri(), $uri);
-                 if ( ! UriComparator::isCrossOrigin(SystemUri::currentUri(), $uri)) {
-                     $url = $uri->getPath();
-                 } else {
-                     $url = Uri::composeComponents($uri->getScheme(), $uri->getAuthority(), $uri->getPath(), '', '');
-                 }*/
-            $url = (string) $uri->withQuery('')->withFragment('');
-            if (!$truncate) {
-                return $url;
-            }
-            if (\strlen($url) > $length) {
-                $url = \substr($url, -$length);
-                $url = \preg_replace('#^[^/]*+/#', '/', $url);
-                $eps = '...';
-            }
-
-            return $eps.$url;
+            return self::prepareFileForDisplay($uri, $truncate, $length);
+        } else {
+            return self::prepareContentForDisplay($content, $truncate, $length);
         }
+    }
+
+    public static function prepareFileForDisplay(UriInterface $uri, bool $truncate = true, int $length = 80): string
+    {
+        if (!$truncate) {
+            return (string) $uri;
+        }
+
+        $eps = '';
+        $preEps = '';
+        $url = $uri->getPath();
+
+        if (UriComparator::isCrossOrigin($uri)) {
+            $host  = $uri->getHost();
+            $length -= strlen($host) - 10;
+            $preEps = $host;
+        }
+
+        if (strlen($url) > $length) {
+            $url = substr($url, -$length);
+            $url = preg_replace('#^[^/]*+/#', '/', $url);
+            $preEps = $preEps !== '' ? $preEps . '/' : '';
+            $eps = '...';
+        }
+
+        return $preEps . $eps . $url;
+    }
+
+    public static function prepareContentForDisplay(string $content, bool $truncate = true, int $length = 80): string
+    {
         if (!$truncate) {
             return $content;
         }
-        if (\strlen($content) > 52) {
-            $content = \substr($content, 0, 52);
-            $eps = '...';
-            $content = $content.$eps;
-        }
-        if (\strlen($content) > 26) {
-            $content = \str_replace($content[26], $content[26]."\n", $content);
+
+        if (strlen($content) > $length) {
+            $content = substr($content, 0, $length);
+            $content = $content . '...';
         }
 
-        return $eps.$content;
+        return htmlentities($content);
+    }
+
+    public static function prepareContentValue(string $content, int $length = 60): string
+    {
+        return htmlentities(substr($content, 0, $length));
+    }
+
+    public static function prepareUrlValue(UriInterface $uri): string
+    {
+        if (!UriComparator::isCrossOrigin($uri)) {
+               $uri = $uri->withScheme('')->withHost('')->withPort(null)->withUserInfo('');
+        }
+
+         return (string) $uri->withQuery('')->withFragment('');
+    }
+
+    public static function prepareOriginValue(UriInterface $uri): string
+    {
+        return (string) $uri->withPath('')->withQuery('')->withFragment('');
     }
 }

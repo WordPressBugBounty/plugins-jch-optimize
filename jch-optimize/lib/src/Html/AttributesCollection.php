@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,78 +13,114 @@
 
 namespace JchOptimize\Core\Html;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 use JchOptimize\Core\Uri\Utils;
+use SplObjectStorage;
 
-class AttributesCollection
+use function implode;
+use function in_array;
+use function is_array;
+use function is_string;
+use function md5;
+use function preg_replace;
+use function str_contains;
+
+/**
+ * @template-extends SplObjectStorage<Attribute, null>
+ */
+class AttributesCollection extends SplObjectStorage
 {
-    /**
-     * @var array<string, Attribute>
-     */
-    protected array $attributes = [];
     protected bool $isXhtml;
-    protected array $booleanAttributes = ['allowfullscreen', 'async', 'autofocus', 'autoplay', 'checked', 'controls', 'default', 'defer', 'disabled', 'formnovalidate', 'inert', 'ismap', 'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open', 'playsinline', 'readonly', 'required', 'reversed', 'selected'];
+
+    protected array $booleanAttributes = [
+        'allowfullscreen',
+        'async',
+        'autofocus',
+        'autoplay',
+        'checked',
+        'controls',
+        'default',
+        'defer',
+        'disabled',
+        'formnovalidate',
+        'inert',
+        'ismap',
+        'itemscope',
+        'loop',
+        'multiple',
+        'muted',
+        'nomodule',
+        'novalidate',
+        'open',
+        'playsinline',
+        'readonly',
+        'required',
+        'reversed',
+        'selected'
+    ];
 
     /**
      * @var string[]
      */
-    protected array $enumeratedEmptyStringValue = ['crossorigin' => 'anonymous', 'preload' => 'auto', 'lazy' => 'eager', 'fetchpriority' => 'auto', 'autocomplete' => 'on', 'hidden' => 'hidden', 'contenteditable' => 'true'];
+    protected array $enumeratedEmptyStringValue = [
+        'crossorigin' => 'anonymous',
+    ];
 
     public function __construct(bool $isXhtml)
     {
         $this->isXhtml = $isXhtml;
     }
 
-    public function setAttribute(string $name, UriInterface|string|array|bool|null $value, ?string $delimiter = null): void
+    public function setAttribute(string $name, mixed $value, ?string $delimiter = null): void
     {
-        if ('src' == $name || 'href' == $name || 'poster' == $name) {
-            if (!\is_string($value) && !$value instanceof UriInterface) {
-                $value = '';
+        $this->rewind();
+
+        while ($this->valid()) {
+            $attribute = $this->current();
+
+            if ($attribute->getName() == $name) {
+                $attribute->setValue($this->prepareValue($name, $value, $attribute->getValue()));
+                $attribute->setDelimiter($delimiter ?? $attribute->getDelimiter());
+
+                return;
             }
-            $value = $this->prepareUrlValue($value);
-        } elseif ('class' == $name) {
-            if (!\is_string($value) && !\is_array($value)) {
-                $value = [];
-            }
-            $value = $this->prepareClassValue($value);
-        } else {
-            if ($value instanceof UriInterface) {
-                $value = (string) $value;
-            }
-            if (null !== $value && \true !== $value && !\is_string($value)) {
-                $value = '';
-            }
+
+            $this->next();
         }
-        if ($this->has($name)) {
-            $attribute = $this->attributes[$name];
-            if (null !== $value) {
-                $attribute->setValue($value);
-            }
-            if (null !== $delimiter) {
-                $attribute->setDelimiter($delimiter);
-            }
-        } else {
-            if ($this->isBoolean($name)) {
-                $value = \true;
-            }
-            $value = $value ?? '';
-            $delimiter = $delimiter ?? '"';
-            $attribute = new \JchOptimize\Core\Html\Attribute($name, $value, $delimiter);
-        }
-        $this->attributes[$name] = $attribute;
+
+        $value = $this->prepareValue($name, $value);
+        $delimiter = $this->prepareDelimiter($delimiter);
+
+        $attribute = new Attribute($name, $value, $delimiter);
+
+        $this->attach($attribute);
     }
 
     public function getValue(string $name): UriInterface|bool|array|string
     {
-        return $this->attributes[$name]->getValue();
+        $this->rewind();
+
+        while ($this->valid()) {
+            $attribute = $this->current();
+
+            if ($attribute->getName() == $name) {
+                $this->rewind();
+
+                return $attribute->getValue();
+            }
+
+            $this->next();
+        }
+
+        return false;
     }
 
+    /**
+     * @param array<string, string|array|bool|UriInterface> $attributes
+     * @return void
+     */
     public function setAttributes(array $attributes): void
     {
-        /**
-         * @var string                         $name
-         * @var array|bool|string|UriInterface $value
-         */
         foreach ($attributes as $name => $value) {
             $this->setAttribute($name, $value);
         }
@@ -91,75 +128,142 @@ class AttributesCollection
 
     public function removeAttribute(string $name): void
     {
-        if (isset($this->attributes[$name])) {
-            unset($this->attributes[$name]);
+        $this->rewind();
+
+        while ($this->valid()) {
+            $attribute = $this->current();
+
+            if ($attribute->getName() == $name) {
+                $this->detach($attribute);
+
+                return;
+            }
+
+            $this->next();
         }
+    }
+
+    private function prepareUrlValue(mixed $value): UriInterface
+    {
+        if (!is_string($value) && !$value instanceof UriInterface) {
+            $value = '';
+        }
+
+        return Utils::uriFor($value);
+    }
+
+    private function prepareClassValue(mixed $value, UriInterface|bool|array|string $prevValue = null): array
+    {
+        if (!is_string($value) && !is_array($value)) {
+            $value = [];
+        }
+
+        if (is_string($value)) {
+            $value = explode(' ', $value);
+        }
+
+        if (is_array($prevValue) && !empty($prevValue)) {
+            $value = array_unique(array_filter(array_merge($prevValue, $value)));
+        }
+
+        return $value;
     }
 
     public function render(): string
     {
-        $attributes = '';
-        foreach ($this->attributes as $attribute) {
-            $name = $attribute->getName();
-            $value = $attribute->getValue();
-            $delimiter = $attribute->getDelimiter();
-            if ($this->isXhtml) {
-                // $value is true for boolean attributes
-                if (\true === $value) {
-                    $value = \preg_replace('#^data-#', '', $name);
-                }
-                if (\array_key_exists($name, $this->enumeratedEmptyStringValue) && empty($value)) {
-                    $value = $this->enumeratedEmptyStringValue[$name];
-                }
-                if ('' == $delimiter) {
-                    $delimiter = '"';
-                }
-            }
-            if (\is_array($value)) {
-                if (\count($value) > 1 && '' == $delimiter) {
-                    $delimiter = '"';
-                }
-                $value = \implode(' ', $value);
-            }
-            if ($value instanceof UriInterface) {
-                $value = (string) $value;
-            }
-            if ((\true === $attribute->getValue() || \array_key_exists($name, $this->enumeratedEmptyStringValue) && empty($value)) && !$this->isXhtml) {
-                $attributes .= " {$name}";
-            } else {
-                $attributes .= " {$name}={$delimiter}{$value}{$delimiter}";
-            }
+        $attributeString = '';
+        $this->rewind();
+
+        while ($this->valid()) {
+            $attribute = $this->current();
+            $attributeString .= " {$attribute->getName()}{$this->renderAttributeValue($attribute)}";
+            $this->next();
         }
 
-        return $attributes;
+        return $attributeString;
     }
 
     public function isBoolean(string $name): bool
     {
-        return \in_array(\preg_replace('#^data-#', '', $name), $this->booleanAttributes);
+        return in_array(preg_replace('#^data-#', '', $name), $this->booleanAttributes);
     }
 
-    public function has(string $name): bool
-    {
-        return \array_key_exists($name, $this->attributes);
-    }
-
-    private function prepareUrlValue(string|UriInterface $value): UriInterface
-    {
-        return Utils::uriFor($value);
-    }
-
-    private function prepareClassValue(array|string $value): array
-    {
-        if (\is_string($value)) {
-            $value = \explode(' ', $value);
-        }
-        if (isset($this->attributes['class'])) {
-            /** @var string[] $classes */
-            $classes = $this->attributes['class']->getValue();
-            $value = \array_unique(\array_filter(\array_merge($classes, $value)));
+    private function prepareValue(
+        string $name,
+        mixed $value,
+        UriInterface|bool|array|string $prevValue = null
+    ): UriInterface|bool|array|string {
+        if (array_key_exists($name, $this->enumeratedEmptyStringValue) && empty($value)) {
+            $value = $this->enumeratedEmptyStringValue[$name];
         }
 
-        return $value;
+        if (preg_match('#^(?:data-)?(?:src|href|poster)$#i', $name)) {
+            return $this->prepareUrlValue($value);
+        } elseif ($name == 'class') {
+            return $this->prepareClassValue($value, $prevValue);
+        } elseif ($this->isBoolean($name)) {
+            return true;
+        } else {
+            return (string)$value;
+        }
+    }
+
+    private function prepareDelimiter(?string $delimiter): string
+    {
+        return $delimiter ?? '"';
+    }
+
+    private function renderAttributeValue(Attribute $attribute): string
+    {
+        if (!$this->isXhtml) {
+            if ($attribute->getValue() === true) {
+                return '';
+            }
+
+            if (
+                isset($this->enumeratedEmptyStringValue[$attribute->getName()])
+                && $this->enumeratedEmptyStringValue[$attribute->getName()] == $attribute->getValue()
+            ) {
+                return '';
+            }
+        }
+
+        $value = $this->renderValue($attribute);
+        $delimiter = $this->renderDelimiter($attribute, $value);
+
+        return "={$delimiter}{$value}{$delimiter}";
+    }
+
+    private function renderValue(Attribute $attribute): string
+    {
+        $value = $attribute->getValue();
+
+        if ($this->isXhtml) {
+            if ($value === true) {
+                return (string) preg_replace('#^data-#', '', $attribute->getName());
+            }
+        }
+
+        if (is_array($value)) {
+            return implode(' ', $value);
+        }
+
+        return (string) $value;
+    }
+
+    private function renderDelimiter(Attribute $attribute, string $value): string
+    {
+        $delimiter = $attribute->getDelimiter();
+
+        if (($this->isXhtml || str_contains($value, ' ')) && $delimiter === '') {
+            return '"';
+        }
+
+        return $delimiter;
+    }
+
+    public function getHash($object): string
+    {
+        return md5($object->getName());
     }
 }

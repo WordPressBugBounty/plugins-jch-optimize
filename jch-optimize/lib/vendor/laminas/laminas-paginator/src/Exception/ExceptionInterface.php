@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator\Exception;
 
 interface ExceptionInterface
 {

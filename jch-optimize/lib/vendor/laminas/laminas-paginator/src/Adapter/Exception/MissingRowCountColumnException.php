@@ -1,9 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator\Adapter\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator\Adapter\Exception;
 
 use LogicException;
+
 use function sprintf;
+
 class MissingRowCountColumnException extends LogicException implements ExceptionInterface
 {
     /**

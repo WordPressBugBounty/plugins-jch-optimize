@@ -11,7 +11,7 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Html;
+namespace JchOptimize\WordPress\Html;
 
 use function class_exists;
 use function extension_loaded;

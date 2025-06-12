@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
 
 abstract class AbstractPattern implements PatternInterface
 {

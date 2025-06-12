@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 final class Utils
 {
@@ -43,7 +43,7 @@ final class Utils
     {
         $queue = self::queue();
         $promise = new Promise([$queue, 'run']);
-        $queue->add(function () use($task, $promise) {
+        $queue->add(function () use ($task, $promise) {
             try {
                 if (Is::pending($promise)) {
                     $promise->resolve($task());
@@ -140,16 +140,16 @@ final class Utils
     public static function all($promises, $recursive = \false)
     {
         $results = [];
-        $promise = Each::of($promises, function ($value, $idx) use(&$results) {
+        $promise = Each::of($promises, function ($value, $idx) use (&$results) {
             $results[$idx] = $value;
         }, function ($reason, $idx, Promise $aggregate) {
             $aggregate->reject($reason);
-        })->then(function () use(&$results) {
+        })->then(function () use (&$results) {
             \ksort($results);
             return $results;
         });
         if (\true === $recursive) {
-            $promise = $promise->then(function ($results) use($recursive, &$promises) {
+            $promise = $promise->then(function ($results) use ($recursive, &$promises) {
                 foreach ($promises as $promise) {
                     if (Is::pending($promise)) {
                         return self::all($promises, $recursive);
@@ -180,7 +180,7 @@ final class Utils
     {
         $results = [];
         $rejections = [];
-        return Each::of($promises, function ($value, $idx, PromiseInterface $p) use(&$results, $count) {
+        return Each::of($promises, function ($value, $idx, PromiseInterface $p) use (&$results, $count) {
             if (Is::settled($p)) {
                 return;
             }
@@ -188,9 +188,9 @@ final class Utils
             if (\count($results) >= $count) {
                 $p->resolve(null);
             }
-        }, function ($reason) use(&$rejections) {
+        }, function ($reason) use (&$rejections) {
             $rejections[] = $reason;
-        })->then(function () use(&$results, &$rejections, $count) {
+        })->then(function () use (&$results, &$rejections, $count) {
             if (\count($results) !== $count) {
                 throw new AggregateException('Not enough promises to fulfill count', $rejections);
             }
@@ -227,11 +227,11 @@ final class Utils
     public static function settle($promises)
     {
         $results = [];
-        return Each::of($promises, function ($value, $idx) use(&$results) {
+        return Each::of($promises, function ($value, $idx) use (&$results) {
             $results[$idx] = ['state' => PromiseInterface::FULFILLED, 'value' => $value];
-        }, function ($reason, $idx) use(&$results) {
+        }, function ($reason, $idx) use (&$results) {
             $results[$idx] = ['state' => PromiseInterface::REJECTED, 'reason' => $reason];
-        })->then(function () use(&$results) {
+        })->then(function () use (&$results) {
             \ksort($results);
             return $results;
         });

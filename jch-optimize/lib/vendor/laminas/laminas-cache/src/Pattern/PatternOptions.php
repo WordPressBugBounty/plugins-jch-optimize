@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
 
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\AbstractOptions;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\AbstractOptions;
 use Traversable;
+
 use function array_intersect;
 use function array_map;
 use function array_unique;
@@ -21,8 +22,10 @@ use function realpath;
 use function rtrim;
 use function sprintf;
 use function stripos;
+
 use const DIRECTORY_SEPARATOR;
 use const PHP_OS;
+
 class PatternOptions extends AbstractOptions
 {
     /**

@@ -1,18 +1,20 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
-use _JchOptimizeVendor\Laminas\ServiceManager\AbstractPluginManager;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\InvalidServiceException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Factory\InvokableFactory;
-use _JchOptimizeVendor\Zend\Paginator\ScrollingStyle\All;
-use _JchOptimizeVendor\Zend\Paginator\ScrollingStyle\Elastic;
-use _JchOptimizeVendor\Zend\Paginator\ScrollingStyle\Jumping;
-use _JchOptimizeVendor\Zend\Paginator\ScrollingStyle\Sliding;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\AbstractPluginManager;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\InvalidServiceException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Factory\InvokableFactory;
+use _JchOptimizeVendor\V91\Zend\Paginator\ScrollingStyle\All;
+use _JchOptimizeVendor\V91\Zend\Paginator\ScrollingStyle\Elastic;
+use _JchOptimizeVendor\V91\Zend\Paginator\ScrollingStyle\Jumping;
+use _JchOptimizeVendor\V91\Zend\Paginator\ScrollingStyle\Sliding;
+
 use function get_class;
 use function gettype;
 use function is_object;
 use function sprintf;
+
 /**
  * Plugin manager implementation for scrolling style adapters
  *

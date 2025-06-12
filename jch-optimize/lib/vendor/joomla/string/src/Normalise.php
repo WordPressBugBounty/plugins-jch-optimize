@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\String;
+
+namespace _JchOptimizeVendor\V91\Joomla\String;
 
 /**
  * Joomla Framework String Normalise Class

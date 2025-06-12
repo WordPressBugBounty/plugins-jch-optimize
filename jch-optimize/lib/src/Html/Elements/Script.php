@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,31 +13,31 @@
 
 namespace JchOptimize\Core\Html\Elements;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 
 /**
- * @method Script            async()
- * @method Script            crossorigin(?string $value=null)
- * @method Script            defer()
- * @method Script            fetchpriority(string $value)
- * @method Script            integrity(string $value)
- * @method Script            nomodule(string $value)
- * @method Script            nonce(string $value)
- * @method Script            referrerpolicy(string $value)
- * @method Script            src(string|UriInterface $value)
- * @method Script            type(string $value)
- * @method bool              getAsync()
- * @method bool|string       getCrossorigin()
- * @method bool              getDefer()
- * @method bool|string       getFetchpriority()
- * @method bool|string       getIntegrity()
- * @method bool|string       getNomodule()
- * @method bool|string       getNonce()
- * @method bool|string       getReferrerpolicy()
- * @method null|UriInterface getSrc()
- * @method bool|string       getType()
+ * @method Script async()
+ * @method Script crossorigin(?string $value=null)
+ * @method Script defer()
+ * @method Script fetchpriority(string $value)
+ * @method Script integrity(string $value)
+ * @method Script nomodule(string $value)
+ * @method Script nonce(string $value)
+ * @method Script referrerpolicy(string $value)
+ * @method Script src(string|UriInterface $value)
+ * @method Script type(string $value)
+ * @method bool getAsync()
+ * @method string|false getCrossorigin()
+ * @method bool getDefer()
+ * @method string|false getFetchpriority()
+ * @method string|false getIntegrity()
+ * @method string|false getNomodule()
+ * @method string|false getNonce()
+ * @method string|false getReferrerpolicy()
+ * @method UriInterface|false getSrc()
+ * @method string|false getType()
  */
-final class Script extends \JchOptimize\Core\Html\Elements\BaseElement
+final class Script extends BaseElement
 {
     protected string $name = 'script';
 }

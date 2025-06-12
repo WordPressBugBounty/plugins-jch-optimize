@@ -11,22 +11,24 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Plugin;
+namespace JchOptimize\WordPress\Plugin;
 
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception\ExceptionInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
+use _JchOptimizeVendor\V91\Psr\Log\LogLevel;
 use Exception;
-use JchOptimize\ContainerFactory;
-use JchOptimize\Core\Container\ContainerAwareInterface;
-use JchOptimize\Core\Container\ContainerAwareTrait;
+use JchOptimize\Core\Platform\UtilityInterface;
+use JchOptimize\WordPress\Container\ContainerFactory;
 use JchOptimize\Core\Helper;
-use JchOptimize\Core\Input;
 use JchOptimize\Core\Optimize;
 use JchOptimize\Core\PageCache\PageCache;
-use JchOptimize\Core\Psr\Log\LoggerAwareInterface;
-use JchOptimize\Core\Psr\Log\LoggerAwareTrait;
-use JchOptimize\Core\Psr\Log\LogLevel;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
-use JchOptimize\Platform\Utility;
+use JchOptimize\WordPress\Platform\Utility;
 use WP_Admin_Bar;
 
 use function add_action;
@@ -35,7 +37,9 @@ use function apply_filters;
 use function current_user_can;
 use function defined;
 use function delete_option;
+use function do_action;
 use function get_option;
+use function http_response_code;
 use function is_admin;
 use function load_plugin_textdomain;
 use function plugin_basename;
@@ -44,7 +48,6 @@ use function register_uninstall_hook;
 use function update_option;
 use function wp_is_mobile;
 
-use const DOING_AJAX;
 use const JCH_PRO;
 use const SHORTINIT;
 use const WP_USE_THEMES;
@@ -55,45 +58,14 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
     use LoggerAwareTrait;
     use ContainerAwareTrait;
 
-    /**
-     * @var Registry
-     */
-    private Registry $params;
-    /**
-     * @var Admin
-     */
-    private Admin $admin;
-    /**
-     * @var PageCache
-     */
-    private PageCache $pageCache;
-    /**
-     * @var Installer
-     */
-    private Installer $installer;
-    /**
-     * @var Updater|null
-     */
-    private ?Updater $updater;
-    /**
-     * @var Optimize
-     */
-    private Optimize $optimize;
-
     public function __construct(
-        Registry  $params,
-        Admin     $admin,
-        Installer $installer,
-        ?Updater  $updater,
-        Optimize  $optimize,
-        PageCache $pageCache
+        private Registry $params,
+        private Admin $admin,
+        private Installer $installer,
+        private PageCache $pageCache,
+        private UtilityInterface $utility,
+        private ?Updater $updater = null,
     ) {
-        $this->params = $params;
-        $this->admin = $admin;
-        $this->installer = $installer;
-        $this->updater = $updater;
-        $this->optimize = $optimize;
-        $this->pageCache = $pageCache;
     }
 
     /**
@@ -101,10 +73,10 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
      *
      * @return void
      */
-    public static function runUninstallRoutines()
+    public static function runUninstallRoutines(): void
     {
         /** @var Installer $installer */
-        $installer = ContainerFactory::getContainer()->get(Installer::class);
+        $installer = ContainerFactory::create()->get(Installer::class);
         $installer->deactivate();
     }
 
@@ -121,7 +93,6 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
         $this->runActivationRoutines();
 
         if (is_admin()) {
-
             if (defined('DOING_AJAX')) { //Ajax functions
                 add_action('wp_ajax_filetree', [$this->admin, 'doAjaxFileTree']);
                 add_action('wp_ajax_multiselect', [$this->admin, 'doAjaxMultiSelect']);
@@ -130,6 +101,8 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
                 add_action('wp_ajax_configuresettings', [$this->admin, 'doAjaxConfigureSettings']);
                 add_action('wp_ajax_getcacheinfo', [$this->admin, 'doAjaxGetCacheInfo']);
                 add_action('wp_ajax_onclickicon', [$this->admin, 'doAjaxOnClickIcon']);
+                add_action('wp_ajax_jch_configure_js_table_body', [$this->admin, 'doAjaxJchConfigureJsTableBody']);
+                add_action('wp_ajax_jch_configure_js_auto_save', [$this->admin, 'doAjaxJchConfigureJsAutoSave']);
             } else {
                 add_action('admin_menu', [$this->admin, 'addAdminMenu']);
                 add_action('admin_init', [$this->admin, 'registerOptions']);
@@ -145,7 +118,8 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
             /** @var string|null $nooptimize */
             $nooptimize = $input->get('jchnooptimize');
 
-            if (defined('WP_USE_THEMES')
+            if (
+                defined('WP_USE_THEMES')
                 && WP_USE_THEMES
                 && $jch_backend != '1'
                 && is_null($nooptimize)
@@ -156,7 +130,8 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
                 && !defined('XMLRPC_REQUEST')
                 && (!defined('SHORTINIT') || (defined('SHORTINIT') && !SHORTINIT))
                 && !Helper::findExcludes($url_exclude, SystemUri::toString())
-                && $input->server->getString('HTTP_SEC_FETCH_DEST') != 'iframe') {
+                && $input->server->getString('HTTP_SEC_FETCH_DEST') != 'iframe'
+            ) {
                 //Disable NextGen Resource Manager; incompatible with plugin
                 //add_filter( 'run_ngg_resource_manager', '__return_false' );
                 add_action('init', [$this, 'initializeCache'], 0);
@@ -182,15 +157,7 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
             $this->loadProUpdater();
 
             if ($this->params->get('pro_cache_platform', '0')) {
-                add_filter(
-                    'jch_optimize_get_page_cache_id',
-                    [
-                        $this,
-                        'getPageCacheHash'
-                    ],
-                    10,
-                    2
-                );
+                add_filter('jch_optimize_get_page_cache_id', [$this, 'getPageCacheHash'], 10, 2);
             }
         }
     }
@@ -206,9 +173,11 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
             $mu_folder = WPMU_PLUGIN_DIR;
         }
 
-        if (!file_exists(JCH_PLUGIN_DIR . 'dir.php')
+        if (
+            !file_exists(JCH_PLUGIN_DIR . 'dir.php')
             || (JCH_PRO && is_admin()
-                && !file_exists($mu_folder . '/jch-optimize-mode-switcher.php'))) {
+                && !file_exists($mu_folder . '/jch-optimize-mode-switcher.php'))
+        ) {
             $this->installer->activate();
         }
     }
@@ -218,10 +187,13 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
         $this->updater->load();
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     public function initializeCache(): void
     {
         $this->pageCache->initialize();
-        $this->pageCache->setCaching();
+        $this->pageCache->outputPageCache();
     }
 
     public function runOptimize(string $html): string
@@ -230,27 +202,32 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
             return $html;
         }
 
-        //need to check this here, it could be set dynamically
-        global $jch_no_optimize;
-
-        /** @var string $disable_logged_in */
-        $disable_logged_in = $this->params->get('disable_logged_in_users', '1');
+        $disableOptimizing = apply_filters('jch_optimize_no_optimize', false);
+        $disableLoggedInUsers = (bool) $this->params->get('disable_logged_in_users', '1');
 
         //Need to call Utility::isGuest after init has been called
-        if ($jch_no_optimize || ($disable_logged_in && !Utility::isGuest())) {
+        if ($disableOptimizing || ($disableLoggedInUsers && !$this->utility->isGuest())) {
             return $html;
         }
 
         try {
-            $this->optimize->setHtml($html);
+            gc_collect_cycles();
+            $container = ContainerFactory::create();
+            $optimize = $container->get(Optimize::class);
+            $pageCache = $container->get(PageCache::class);
+            $pageCache->initialize();
 
-            $optimizedHtml = $this->optimize->process();
+            $optimizedHtml = $optimize->process($html);
 
-            //required for compatibility with Hide My WP Ghost https://wordpress.org/support/topic/compatibility-with-hide-my-wp-ghost/
+            //required for compatibility with Hide My WP Ghost
+            /** @see https://wordpress.org/support/topic/compatibility-with-hide-my-wp-ghost/ */
             /** @var string $optimizedHtml */
             $optimizedHtml = apply_filters('jch_optimize_save_content', $optimizedHtml);
+            do_action('jch_optimize_send_headers');
 
-            $this->pageCache->store($optimizedHtml);
+            if (http_response_code() === 200) {
+                $pageCache->store($optimizedHtml);
+            }
         } catch (Exception $e) {
             $this->logger->log(LogLevel::ERROR, (string)$e);
 

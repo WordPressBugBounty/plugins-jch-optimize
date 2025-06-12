@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 /**
  * PSR-7 URI implementation.
  *
@@ -554,7 +555,7 @@ class Uri implements UriInterface
             return [];
         }
         $decodedKeys = \array_map('rawurldecode', $keys);
-        return \array_filter(\explode('&', $current), function ($part) use($decodedKeys) {
+        return \array_filter(\explode('&', $current), function ($part) use ($decodedKeys) {
             return !\in_array(\rawurldecode(\explode('=', $part)[0]), $decodedKeys, \true);
         });
     }

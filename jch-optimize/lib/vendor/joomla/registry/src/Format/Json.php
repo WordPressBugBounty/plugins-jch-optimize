@@ -6,11 +6,13 @@
  * @copyright  Copyright (C) 2013 Open Source Matters, Inc.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Registry\Format;
 
-use _JchOptimizeVendor\Joomla\Registry\Factory;
-use _JchOptimizeVendor\Joomla\Registry\FormatInterface;
+namespace _JchOptimizeVendor\V91\Joomla\Registry\Format;
+
+use _JchOptimizeVendor\V91\Joomla\Registry\Factory;
+use _JchOptimizeVendor\V91\Joomla\Registry\FormatInterface;
 use RuntimeException;
+
 /**
  * JSON format handler for Registry.
  *

@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 /**
  * Provides methods to normalize and compare URIs.
  *

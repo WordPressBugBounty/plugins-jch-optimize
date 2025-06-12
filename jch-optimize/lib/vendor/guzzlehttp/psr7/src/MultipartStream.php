@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+
 /**
  * Stream that when read returns bytes for a streaming multipart or
  * multipart/form-data stream.
@@ -12,6 +13,7 @@ use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
 class MultipartStream implements StreamInterface
 {
     use StreamDecoratorTrait;
+
     private $boundary;
     /**
      * @param array  $elements Array of associative arrays, each containing a

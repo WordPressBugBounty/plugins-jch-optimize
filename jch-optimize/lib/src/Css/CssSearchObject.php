@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,16 +13,22 @@
 
 namespace JchOptimize\Core\Css;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
+use function defined;
+
+defined('_JCH_EXEC') or die('Restricted access');
+
 class CssSearchObject
 {
     protected array $aCssRuleCriteria = [];
-    protected array $aCssAtRuleCriteria = [];
-    protected array $aCssNestedRuleNames = [];
-    protected array $aCssCustomRule = [];
-    protected bool $bIsCssCommentSet = \false;
 
-    public function setCssRuleCriteria(string $sCriteria): void
+    protected array $aCssAtRuleCriteria = [];
+
+    protected string $cssMatch = '';
+
+    protected array $cssMatchCriteria = [];
+
+
+    public function setCssRuleCriteria(string|array $sCriteria): void
     {
         $this->aCssRuleCriteria[] = $sCriteria;
     }
@@ -31,7 +38,7 @@ class CssSearchObject
         return $this->aCssRuleCriteria;
     }
 
-    public function setCssAtRuleCriteria(string $sCriteria): void
+    public function setCssAtRuleCriteria(string|array $sCriteria): void
     {
         $this->aCssAtRuleCriteria[] = $sCriteria;
     }
@@ -41,40 +48,23 @@ class CssSearchObject
         return $this->aCssAtRuleCriteria;
     }
 
-    public function setCssNestedRuleName(string $sNestedRule, bool $bRecurse = \false, bool $bEmpty = \false): void
+    public function setCssMatch(string $cssMatch): void
     {
-        $this->aCssNestedRuleNames[] = ['name' => $sNestedRule, 'recurse' => $bRecurse, 'empty-value' => $bEmpty];
+        $this->cssMatch = $cssMatch;
     }
 
-    public function getCssNestedRuleNames(): array
+    public function getCssMatch(): string
     {
-        return $this->aCssNestedRuleNames;
+        return $this->cssMatch;
     }
 
-    public function setCssCustomRule(string $sCssCustomRule): void
+    public function setCssMatchCriteria(string $cssMatchCriteria): void
     {
-        $this->aCssCustomRule[] = $sCssCustomRule;
+        $this->cssMatchCriteria[] = $cssMatchCriteria;
     }
 
-    public function getCssCustomRule(): array
+    public function getCssMatchCriteria(): array
     {
-        return $this->aCssCustomRule;
-    }
-
-    public function setCssComment(): void
-    {
-        $this->bIsCssCommentSet = \true;
-    }
-
-    /**
-     * @return false|string
-     */
-    public function getCssComment()
-    {
-        if ($this->bIsCssCommentSet) {
-            return \JchOptimize\Core\Css\Parser::blockCommentToken();
-        }
-
-        return \false;
+        return $this->cssMatchCriteria;
     }
 }

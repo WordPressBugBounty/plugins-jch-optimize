@@ -1,11 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage;
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\Plugin\PluginInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Plugin\PluginOptions;
-use _JchOptimizeVendor\Laminas\ServiceManager\AbstractPluginManager;
-use _JchOptimizeVendor\Laminas\ServiceManager\Factory\InvokableFactory;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin\PluginInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin\PluginOptions;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\AbstractPluginManager;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Factory\InvokableFactory;
+
 /**
  * Plugin manager implementation for cache plugins
  *

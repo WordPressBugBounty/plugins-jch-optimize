@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 /**
  * Represents data at the point after it was transferred either successfully
  * or after a network error.
@@ -46,21 +47,21 @@ final class TransferStats
         $this->handlerErrorData = $handlerErrorData;
         $this->handlerStats = $handlerStats;
     }
-    public function getRequest() : RequestInterface
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
     /**
      * Returns the response that was received (if any).
      */
-    public function getResponse() : ?ResponseInterface
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }
     /**
      * Returns true if a response was received.
      */
-    public function hasResponse() : bool
+    public function hasResponse(): bool
     {
         return $this->response !== null;
     }
@@ -80,7 +81,7 @@ final class TransferStats
     /**
      * Get the effective URI the request was sent to.
      */
-    public function getEffectiveUri() : UriInterface
+    public function getEffectiveUri(): UriInterface
     {
         return $this->request->getUri();
     }
@@ -89,14 +90,14 @@ final class TransferStats
      *
      * @return float|null Time in seconds.
      */
-    public function getTransferTime() : ?float
+    public function getTransferTime(): ?float
     {
         return $this->transferTime;
     }
     /**
      * Gets an array of all of the handler specific transfer data.
      */
-    public function getHandlerStats() : array
+    public function getHandlerStats(): array
     {
         return $this->handlerStats;
     }

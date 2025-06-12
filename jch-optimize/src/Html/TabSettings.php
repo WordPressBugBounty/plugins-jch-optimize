@@ -11,7 +11,7 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Html;
+namespace JchOptimize\WordPress\Html;
 
 use function __;
 use function array_merge;
@@ -158,6 +158,23 @@ abstract class TabSettings
                     )
                 ],
             ],
+            /**
+             * Recache settings
+             */
+            'recacheSection' => [
+                'recache_crawl_limit' => [
+                    __('Crawl limit', 'jch-optimize'),
+                    __('The maximum number of URLs that will be crawled'),
+                ],
+                'recache_concurrency' => [
+                    __('Concurrency', 'jch-optimize'),
+                    __('The number of URLs that will be crawled simultaneously')
+                ],
+                'recache_max_depth' => [
+                    __('Maximum depth', 'jch-optimize'),
+                    __('Starting from the base URL, all the URLs found on that page will be cralwed then all the URLs found on the crawled pages, and so on. This sets how deep the crawl will extend')
+                ]
+            ]
 
         ];
     }
@@ -172,12 +189,16 @@ abstract class TabSettings
                 'combine_files_enable' => [
                     __('Enable', 'jch-optimize'),
                 ],
-                'pro_smart_combine'    => [
-                    __('Smart combine', 'jch-optimize'),
+                'combine_files'    => [
+                    __('Combine files', 'jch-optimize'),
                     __(
-                        'Will try to combine system and template files together respectively that are consistent across pages. <p>This produces several smaller combined files promoting browser caching across page loads; reduces chances of excessive cache generation and takes advantages of better files delivery offered by Http/2 servers',
+                        'Will combine CSS and JavaScript files into one respectively, except where intermediate files were excluded while preserving execution order. Not recommended in production, but may be useful for troubleshooting',
                         'jch-optimize'
                     )
+                ],
+                'try_catch' => [
+                    __('Use try-catch', 'jch-optimize'),
+                    __('If you\'re seeing JavaScript errors in the console, you can try enabling this option to wrap each JavaScript file in a \'try-catch\' block to prevent the errors from one file affecting the combined file. This setting is only used if Combine Files is enabled.')
                 ],
                 'html_minify_level'    => [
                     __('HTML Minification level', 'jch-optimize'),
@@ -189,17 +210,10 @@ abstract class TabSettings
                 'htaccess'             => [
                     __('Combined files delivery', 'jch-optimize'),
                     __(
-                        'By default, the combined files will be loaded as static CSS and JavaScript files. You would need to include directives in your .htaccess file to gzip these files. <p>You can use PHP files instead that will be gzipped if that option is set. PHP files can be loaded with a query attached with the information to find the combined files, or you can use url rewrite if it\'s available on the server so the files can be masked as static files. If your server prohibits the use of the Options +FollowSymLinks directive in .htaccess files use the respective option.',
+                        'By default, the generated files will be loaded as static CSS and JavaScript files. You would need to include directives in your .htaccess file to gzip these files. <p>You can use PHP files instead that will be gzipped if that option is set. PHP files can be loaded with a query attached with the information to find the optimized files, or you can use url rewrite if it\'s available on the server so the files can be masked as static files. If your server prohibits the use of the Options +FollowSymLinks directive in .htaccess files use the respective option.',
                         'jch-optimize'
                     )
                 ],
-                'try_catch'            => [
-                    __('Use try-catch', 'jch-optimize'),
-                    __(
-                        'If you\'re seeing JavaScript errors in the console, you can try enabling this option to wrap each JavaScript file in a \'try-catch\' block to prevent the errors from one file affecting the combined file.',
-                        'jch-optimize'
-                    )
-                ]
             ],
 
             /**
@@ -209,7 +223,7 @@ abstract class TabSettings
                 'gzip'                 => [
                     __('GZip JavaScript and CSS', 'jch-optimize'),
                     __(
-                        'The plugin will compress the combined JavaScript and CSS file respectively using gzip, if you\'ve selected one of the PHP options for \'Combined files delivery\'. This can decrease file size dramatically.',
+                        'The plugin will compress the optimized JavaScript and CSS file respectively using gzip, if you\'ve selected one of the PHP options for \'Combined files delivery\'. This can decrease file size dramatically.',
                         'jch-optimize'
                     )
                 ],
@@ -230,7 +244,7 @@ abstract class TabSettings
                 'phpAndExternal'       => [
                     __('Include PHP and external files', 'jch-optimize'),
                     __(
-                        'JavaScript and CSS files with \'.php\' file extensions, and files from external domains will be included in the combined file. <p> This option requires that either cURL is installed on your server or your php option \'allow_url_fopen\' is enabled.'
+                        'JavaScript and CSS files with \'.php\' file extensions, and files from external domains will be included in the generated file. <p> This option requires that either cURL is installed on your server or your php option \'allow_url_fopen\' is enabled.'
                     )
                 ]
             ]
@@ -247,14 +261,14 @@ abstract class TabSettings
                 'css'            => [
                     __('Combine CSS files', 'jch-optimize'),
                     __(
-                        'This will combine all CSS files into one file and remove all the links to the individual files from the page, replacing them with a link generated by the plugin to the combined file.',
+                        'This will process all CSS files removing all the links to the individual files from the page, replacing them with a link to the generated file.',
                         'jch-optimize'
                     )
                 ],
                 'css_minify'     => [
                     __('Minify CSS', 'jch-optimize'),
                     __(
-                        'The plugin will remove all unnecessary whitespaces and comments from the combined CSS file to reduce the total file size.',
+                        'The plugin will remove all unnecessary whitespaces and comments from the CSS file to reduce the total file size.',
                         'jch-optimize'
                     )
                 ],
@@ -272,7 +286,7 @@ abstract class TabSettings
                     __('Include in-page &lt;style&gt;\'s'),
                     sprintf(
                         __(
-                            'In-page CSS inside %s tags will be included in the aggregated file in the order they appear on the page.',
+                            'In-page CSS inside %s tags will be processed in the order they appear on the page.',
                             'jch-optimize'
                         ),
                         '&lt;style$gt;'
@@ -305,7 +319,7 @@ abstract class TabSettings
                     sprintf(__('Exclude all in-page %s', 'jch-optimize'), '&lt;style&gt;s'),
                     sprintf(
                         __(
-                            'This is useful if you are generating an excess amount of cache files due to the file name of the combined CSS file keeps changing and you can\'t identify which %s declaration is responsible',
+                            'This is useful if you are generating an excess amount of cache files due to the file name of the generated CSS file keeps changing and you can\'t identify which %s declaration is responsible',
                             'jch-optimize'
                         ),
                         '&lt;style&gt;'
@@ -334,7 +348,7 @@ abstract class TabSettings
                 'pro_reduce_unused_css'      => [
                     __('Reduce unused CSS', 'jch-optimize'),
                     __(
-                        'When enabled, the plugin will \'lazy-load\' the combined CSS file only after the page is interacted with to prevent unnecessary processing of unused CSS before the page is loaded.',
+                        'When enabled, the plugin will defer the loading of the CSS file until after the page is interacted with to prevent unnecessary processing of unused CSS before the page is loaded.',
                         'jch-optimize'
                     )
                 ],
@@ -344,12 +358,23 @@ abstract class TabSettings
                         'In some cases when Reduce Unused CSS is enabled, you may need to add the CSS for some dynamic elements to the critical CSS for them to load properly. Add any substring from the CSS declaration here to have them included.',
                         'jch-optimize'
                     )
+                ],
+                'critical_css_configure_helper' => [
+                    __('Configure helper', 'jch-optimize'),
+                    __('Prints the CSS Dynamic Selectors in the browser console. Copy each to the settings above as a start. DO NOT LEAVE ENABLED IN PRODUCTION!!')
                 ]
             ],
             /**
              * Custom CSS
              */
             'customCssSection'           => [
+                'custom_css_enable' => [
+                    __('Enable', 'jch-optimize'),
+                ],
+                'custom_css' => [
+                    __('Global CSS', 'jch-optimize'),
+                    __('Use this setting to add CSS for both mobile and desktop views.', 'jch-optimize')
+                ],
                 'mobile_css'  => [
                     __('Mobile', 'jch-optimize'),
                     __(
@@ -384,14 +409,14 @@ abstract class TabSettings
                 'javascript'       => [
                     __('Combine JavaScript files', 'jch-optimize'),
                     __(
-                        'This will combine all JavaScript files into one file and remove all the links to the individual files from the page, replacing them with a link generated by the plugin to the combined file.',
+                        'This will process JavaScript files, removing all the links to the individual files from the page, replacing them with a link to the file.',
                         'jch-optimize'
                     )
                 ],
                 'js_minify'        => [
                     __('Minify JavaScript', 'jch-optimize'),
                     __(
-                        'The plugin will remove all unnecessary whitespaces and comments from the combined JavaScript file to reduce the total file size.',
+                        'The plugin will remove all unnecessary whitespaces and comments from the JavaScript file to reduce the total file size.',
                         'jch-optimize'
                     )
                 ],
@@ -399,7 +424,7 @@ abstract class TabSettings
                     sprintf(__('Include in-page %s declarations', 'jch-optimize'), '&lt;script&gt;'),
                     sprintf(
                         __(
-                            'In-page JavaScript inside %s tags will be included in the combined file in the order they appear on the page.',
+                            'In-page JavaScript inside %s tags will be processed in the order they appear on the page.',
                             'jch-optimize'
                         ),
                         '&lt;script&gt;'
@@ -409,7 +434,7 @@ abstract class TabSettings
                     __('Position JavaScript files at bottom of page', 'jch-optimize'),
                     sprintf(
                         __(
-                            'Place combined JavaScript file at bottom of the page just before the ending %1$s tag.<p> If some JavaScript files are excluded while preserving execution order, only the last combined JavaScript file will be placed at the bottom of the page.<p> If this is disabled, the plugin only combines files found in the %2$s section of the HTML. This option extends the search to the %3$s section.',
+                            'Place JavaScript files at bottom of the page just before the ending %1$s tag.<p> If some JavaScript files are excluded while preserving execution order, only the files below the one(s) excluded will be placed at the bottom of the page.<p> If this is disabled, the plugin only processes files found in the %2$s section of the HTML. This option extends the search to the %3$s section.',
                             'jch-optimize'
                         ),
                         '&lt;/body&gt;',
@@ -420,7 +445,7 @@ abstract class TabSettings
                 'loadAsynchronous' => [
                     __('Defer or load JavaScript asychronously', 'jch-optimize'),
                     __(
-                        'The \'asnyc\' attribute is added to the combined JavaScript file, so it will be loaded asynchronously to avoid render blocking and speed up download of the web page. <p> If other files/scripts are excluded while preserving execution order, the \'defer\' attribute is instead used and is added to the last combined file(s) following an excluded file/script. <p>This option only works when the combined JavaScript file is placed at the bottom of the page. '
+                        'The \'defer\' attribute is added to the generated JavaScript file to avoid render blocking and speed up download of the web page. <p> If other files/scripts are excluded while preserving execution order, the \'defer\' attribute is only added to the generated file(s) following the last excluded file/script. <p>This option only works when the combined JavaScript file is placed at the bottom of the page.'
                     )
                 ]
             ],
@@ -449,7 +474,7 @@ abstract class TabSettings
                 'excludeAllScripts'       => [
                     __('Exclude all internal &lt;script&gt; declarations', 'jch-optimize'),
                     __(
-                        'This is useful if you are generating an excess amount of cache files due to the file name of the combined JavaScript file keeps changing and you can\'t identify which SCRIPT declaration is responsible',
+                        'This is useful if you are generating an excess amount of cache files due to the file name of the generated JavaScript file keeps changing and you can\'t identify which SCRIPT declaration is responsible',
                         'jch-optimize'
                     )
                 ]
@@ -498,10 +523,14 @@ abstract class TabSettings
                     __('You can exclude inline modules in a similar manner as outlined above.')
                 ],
                 'pro_defer_criticalJs'        => [
-                    __('Defer critical js'),
+                    __('Defer critical js', 'jch-optimize'),
                     __(
                         'The critical JavaScript will be deferred or loaded asynchronously by default to avoid render-blocking. However, if your template uses JavaScript to perform any of the initial render above the fold, you may want to disable this to ensure the critical JavaScript loads before the page starts rendering.'
                     )
+                ],
+                'critical_js_configure_helper'  => [
+                    __('Configure helper', 'jch-optimize'),
+                    __('Open the modal to help configure the Critical JavaScript')
                 ]
             ],
         ];
@@ -537,7 +566,7 @@ abstract class TabSettings
                 'page_cache_lifetime'            => [
                     __('Cache lifetime', 'jch-optimize'),
                     __(
-                        'The period of time for which the page cache will be valid. Be sure to set this lower that the cache lifetime of combined files at all times.',
+                        'The period of time for which the page cache will be valid. Be sure to set this lower that the cache lifetime of the processed files at all times.',
                         'jch-optimize'
                     )
                 ],
@@ -665,14 +694,26 @@ abstract class TabSettings
                     __('Exclude all the images in the selected folders.', 'jch-optimize')
                 ],
                 'pro_excludeLazyLoadClass'   => [
-                    __('Exclude these classes', 'jch-optimize'),
+                    __('Exclude these classes/id', 'jch-optimize'),
                     sprintf(
                         __(
-                            'Exclude all images that has these classes declared on the %s element',
+                            'Exclude all images that has these classes or id declared on the %s element',
                             'jch-optimize'
                         ),
                         '&lt;img&gt;'
                     )
+                ],
+                'includeLazyLoad' => [
+                    __('Include hidden images', 'jch-optimize'),
+                    __('Add URLs to lazy load images above the fold that are hidden on page load, e.g, secondary images in sliders and submenu icons.', 'jch-optimize')
+                ],
+                'includeLazyLoadFolders' => [
+                    __('Include by folders', 'jch-optimize'),
+                    __('Lazy load all hidden images above the fold that are under these folders.', 'jch-optimize')
+                ],
+                'includeLazyLoadClass' => [
+                    __('Include by class/id', 'jch-optimize'),
+                    __('Lazy load all hidden images above the fold with the selected class or id on the &lt;img&gt; element.', 'jch-optimize')
                 ]
             ]
         ];
@@ -766,6 +807,10 @@ abstract class TabSettings
                         'Add external domains you want preconnected here. Be sure to include the scheme also, eg., \'https://example.com\'.',
                         'jch-optimize'
                     )
+                ],
+                'dns_prefetch_domains' => [
+                    __('DNS-Prefetch domains', 'jch-optimize'),
+                    __('JCH Optimize will add \'dns-prefetch\' hints for the origins entered here so the browser can improve the user experience by preemptively performing DNS resolution for these origins.')
                 ]
             ]
         ];
@@ -856,21 +901,27 @@ abstract class TabSettings
                         'jch-optimize'
                     )
                 ],
+            ],
+            /**
+             * Next Generation Images Section
+             */
+            'nextGenImages' => [
                 'pro_next_gen_images'        => [
-                    __('Next-Gen images', 'jch-optimize'),
+                    __('Generate WEBP images', 'jch-optimize'),
                     __(
                         'When enabled the plugin will convert the images that are optimized to webp format and load these instead.',
                         'jch-optimize'
                     )
                 ],
-                /*	'pro_web_old_browsers' => [
-                                __( 'Support old browsers', 'jch-optimize' ),
-                                sprintf( __( 'Plugin will wrap WEBP image in a %s element along with original image so browsers without WEBP support can fall back to the original image.', 'jch-optimize' ), '&lt;picture&gt;' )
-                        ], */
                 'pro_load_webp_images'       => [
                     __('Load WEBP images', 'jch-optimize'),
                     __('Loads available WEBP images in place of the original ones on your web pages.', 'jch-optimize')
                 ],
+            ],
+            /**
+             * Responsive Images Section
+             */
+            'responsiveImages' => [
                 'pro_gen_responsive_images'  => [
                     __('Generate responsive images', 'jch-optimize'),
                     __(
@@ -883,6 +934,15 @@ abstract class TabSettings
                         'Use responsive images where available by adding srcset attributes on image elements and creating CSS breakpoints for background images.'
                     )
                 ],
+                'cropgravity' => [
+                    __('Crop these images', 'jch-optimize'),
+                    __('By default, the component will resize the mobile images preserving aspect ratio. In some cases, you may want to crop the image vertically instead. Add the names of the images you want cropped and set the crop position and width.')
+                ]
+            ],
+            /**
+             * Optimization Configuration Section
+             */
+            'optimizationConfigurations' => [
                 'lossy'                      => [
                     __('Lossy optimization', 'jch-optimize'),
                     __(
@@ -897,6 +957,27 @@ abstract class TabSettings
                         'jch-optimize'
                     )
                 ]
+            ],
+            /**
+             * Upload Settings Section
+             */
+            'uploadSettings' => [
+                'pro_api_concurrency' => [
+                    __('File upload concurrency', 'jch-optimize'),
+                    __('Image files are packages and posted the the API server. The plugin will try to send packages concurrently. You can increase this to speed up the optimization process, if your server and network can accomodate it, or lower this number if your network is slow or having connection issues.', 'jch-optimize'),
+                ],
+                'pro_api_num_files' => [
+                    __('No. of files per package', 'jch-optimize'),
+                    __('The plugin will package files based on your system\'s \'upload_max_filesize\' and \'max_file_uploads\' configuration values, but if uploads are timing out, you can limit the number per package. Leave blank or put 0 to have the plugin automatically calculate the package size for you.', 'jch-optimize'),
+                ],
+                'pro_api_max_size' => [
+                    __('Max file size', 'jch-optimize'),
+                    __('Maximum file size that would be uploaded. Eg., 3K, 2G, 5M. The default is 2M'),
+                ],
+                'api_connection_timeout' => [
+                   __('Connection timeout', 'jch-optimize'),
+                   __('Maximum time in seconds that the plugin will wait to get a response from the API server.')
+                ],
             ],
             /**
              * Automatically Optimize Section
@@ -943,6 +1024,27 @@ abstract class TabSettings
                 'pro_html_sections' => [
                     __('HTML sections', 'jch-optimize'),
                     __('Select which HTML sections you would like to load asynchronously.')
+                ],
+                'reduce_dom_identifiers' => [
+                    __('DIV id/class', 'jch-optimize'),
+                    __(
+                        'Add the id or class of any &lt;div&gt; element you want to be lazy loaded.',
+                        'jch-optimize'
+                    )
+                ],
+                'reduce_dom_exclude_identifiers' => [
+                    __('Exclude id/class', 'jch-optimize'),
+                    __(
+                        'Add the id or class of any section you want to be excluded from the Reduce DOM feature',
+                        'jch-optimize'
+                    )
+                ],
+                'reduce_dom_above_fold_identifiers' => [
+                    __('Above fold id/class', 'jch-optimize'),
+                    __(
+                        'Use this setting to target HTML5 sections and DIVs that are hidden above the fold, for instance, submenus.',
+                        'jch-optimize'
+                    )
                 ]
             ],
             /**

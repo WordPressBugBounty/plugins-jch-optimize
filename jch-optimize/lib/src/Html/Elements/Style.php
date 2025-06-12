@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -13,14 +14,16 @@
 namespace JchOptimize\Core\Html\Elements;
 
 /**
- * @method Style       media(string $value)
- * @method Style       nonce(string $value)
- * @method Style       title(string $value)
- * @method bool|string getMedia()
- * @method bool|string getNonce()
- * @method bool|string getTitle()
+ * @method Style media(string $value)
+ * @method Style nonce(string $value)
+ * @method Style title(string $value)
+ * @method Style type(string $value)
+ * @method string|false getMedia()
+ * @method string|false getNonce()
+ * @method string|false getTitle()
+ * @method string|false getType()
  */
-final class Style extends \JchOptimize\Core\Html\Elements\BaseElement
+final class Style extends BaseElement
 {
     protected string $name = 'style';
 }

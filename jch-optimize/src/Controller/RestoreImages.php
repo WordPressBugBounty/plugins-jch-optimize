@@ -11,23 +11,28 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Admin\Tasks;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+use JchOptimize\Core\Admin\AdminTasks;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
 
 use function __;
 use function wp_redirect;
 
 class RestoreImages extends Controller
 {
+    public function __construct(private AdminTasks $tasks, ?Input $input = null)
+    {
+        parent::__construct($input);
+    }
 
     public function execute(): bool
     {
         /** @var WordpressNoticeLogger $logger */
         $logger = $this->logger;
-        $mResult = Tasks::restoreBackupImages();
+        $mResult = $this->tasks->restoreBackupImages();
 
 
         if ($mResult === 'SOMEIMAGESDIDNTRESTORE') {

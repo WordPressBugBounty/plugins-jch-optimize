@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager\Exception;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception;
 
 use function array_filter;
 use function array_keys;
@@ -12,13 +13,14 @@ use function reset;
 use function serialize;
 use function sort;
 use function sprintf;
+
 class CyclicAliasException extends InvalidArgumentException
 {
     /**
      * @param string   $alias conflicting alias key
      * @param string[] $aliases map of referenced services, indexed by alias name (string)
      */
-    public static function fromCyclicAlias(string $alias, array $aliases) : self
+    public static function fromCyclicAlias(string $alias, array $aliases): self
     {
         $cycle = $alias;
         $cursor = $alias;

@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\String;
 
-use _JchOptimizeVendor\Doctrine\Common\Inflector\Inflector as DoctrineInflector;
+namespace _JchOptimizeVendor\V91\Joomla\String;
+
+use _JchOptimizeVendor\V91\Doctrine\Common\Inflector\Inflector as DoctrineInflector;
+
 /**
  * Joomla Framework String Inflector Class
  *

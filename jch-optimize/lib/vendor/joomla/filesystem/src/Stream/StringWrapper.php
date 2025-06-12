@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem\Stream;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Support\StringController;
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem\Stream;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Support\StringController;
+
 /**
  * String Stream Wrapper
  *
@@ -235,6 +237,6 @@ class StringWrapper
         return \true;
     }
 }
-if (!\stream_wrapper_register('string', '_JchOptimizeVendor\\Joomla\\Filesystem\\Stream\\StringWrapper')) {
+if (!\stream_wrapper_register('string', '_JchOptimizeVendor\\V91\\Joomla\\Filesystem\\Stream\\StringWrapper')) {
     die('\\Joomla\\Filesystem\\Stream\\StringWrapper Wrapper Registration Failed');
 }

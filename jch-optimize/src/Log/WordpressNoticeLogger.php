@@ -11,10 +11,9 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Log;
+namespace JchOptimize\WordPress\Log;
 
-
-use JchOptimize\Core\Psr\Log\AbstractLogger;
+use _JchOptimizeVendor\V91\Psr\Log\AbstractLogger;
 
 use function array_merge;
 use function array_unique;

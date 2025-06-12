@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Http\Client;
+namespace _JchOptimizeVendor\V91\Psr\Http\Client;
 
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+
 /**
  * Exception for when a request failed.
  *
@@ -19,5 +20,5 @@ interface RequestExceptionInterface extends ClientExceptionInterface
      *
      * @return RequestInterface
      */
-    public function getRequest() : RequestInterface;
+    public function getRequest(): RequestInterface;
 }

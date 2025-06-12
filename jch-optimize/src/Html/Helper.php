@@ -11,10 +11,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Html;
+namespace JchOptimize\WordPress\Html;
 
-use JchOptimize\ContainerFactory;
 use JchOptimize\Core\Admin\MultiSelectItems;
+use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
+use JchOptimize\WordPress\Container\ContainerFactory;
 
 use function __;
 use function array_key_exists;
@@ -39,7 +40,7 @@ class Helper
      * @return void
      * @psalm-suppress InvalidGlobal
      */
-    public static function _(string $key, string $settingName, $defaultValue, ...$args): void
+    public static function _(string $key, string $settingName, array|string $defaultValue, ...$args): void
     {
         if (defined('JCH_OPTIMIZE_GET_WORDPRESS_SETTINGS')) {
             global $jchParams;
@@ -79,11 +80,6 @@ class Helper
         call_user_func_array($callable, $args);
     }
 
-    /**
-     * @param   string  $key
-     *
-     * @return array
-     */
     protected static function extract(string $key): array
     {
         $parts = explode('.', $key);
@@ -94,13 +90,6 @@ class Helper
         return [$function, $proOnly];
     }
 
-    /**
-     * @param   string  $title
-     * @param   string  $description
-     * @param   bool    $new
-     *
-     * @return string
-     */
     public static function description(string $title, string $description, bool $new = false): string
     {
         $html = '<div class="title">' . $title;
@@ -120,11 +109,6 @@ class Helper
         return $html;
     }
 
-    /**
-     * @param   string  $settingName
-     * @param   string  $activeValue
-     * @param   string  $class
-     */
     public static function radio(string $settingName, string $activeValue, string $class = ''): void
     {
         $disabled = ($settingName == 'pro_capture_cache_enable' && is_multisite()) ? 'disabled' : '';
@@ -145,13 +129,42 @@ class Helper
         <?php
     }
 
-    /**
-     * @param   string  $settingName
-     * @param   string  $activeValue
-     * @param   array   $options
-     * @param   string  $class
-     * @param   array   $conditions
-     */
+    public static function switch(string $settingName, string $activeValue, string $class = ''): void
+    {
+        $disabled = ($settingName == 'pro_capture_cache_enable' && is_multisite()) ? 'disabled' : '';
+        ?>
+        <div class="form-check form-switch d-flex align-items-center <?= $class ?>">
+            <input class="form-check-input me-2" type="checkbox" role="switch" id="jch-optimize_settings_<?= $settingName; ?>"
+            name="<?= "jch-optimize_settings[{$settingName}]"; ?>" <?= $activeValue == '1' ? 'checked' : ''; ?> value="1" <?= $disabled; ?>>
+            <label class="form-check-label" for="jch-optimize_settings_<?= $settingName; ?>">
+                <?php $activeValue == '1' ? _e('Yes', 'jch-optimize') : _e('No', 'jch-optimize'); ?>
+             </label>
+            <?php if ($activeValue != '1') : ?>
+            <input type="hidden" name="<?= "jch-optimize_settings[{$settingName}]"; ?>" value="0" >
+            <?php endif; ?>
+            <script>
+    document.getElementById('jch-optimize_settings_<?=  $settingName; ?>').addEventListener('click', (e) => {
+        const label = document.querySelector('label[for="jch-optimize_settings_<?= $settingName; ?>"]');
+        if (e.target.checked) {
+            label.innerText = "<?php _e('Yes', 'jch-optimize'); ?>";
+            const input = document.querySelector('input[type="hidden"][name="jch-optimize_settings[<?= $settingName; ?>]"]');
+            if (input) {
+                input.remove();
+            }
+        } else {
+            label.innerText = "<?php _e('No', 'jch-optimize'); ?>";
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'jch-optimize_settings[<?= $settingName; ?>]';
+            input.value = '0';
+            label.after(input);
+        }
+    });
+            </script>
+        </div>
+
+            <?php
+    }
     public static function select(
         string $settingName,
         string $activeValue,
@@ -168,13 +181,6 @@ class Helper
         <?php
     }
 
-    /**
-     * @param   array<string|int, string>  $options
-     * @param   string|null                $activeValue
-     * @param   array                      $conditions
-     *
-     * @return string
-     */
     public static function option(array $options, ?string $activeValue, array $conditions = []): string
     {
         $html = '';
@@ -198,13 +204,6 @@ class Helper
         return $html;
     }
 
-    /**
-     * @param   string  $settingName
-     * @param   array   $activeValues
-     * @param   string  $type
-     * @param   string  $group
-     * @param   string  $class
-     */
     public static function multiselect(
         string $settingName,
         array $activeValues,
@@ -212,7 +211,7 @@ class Helper
         string $group,
         string $class = ''
     ): void {
-        $container = ContainerFactory::getContainer();
+        $container = ContainerFactory::getInstance();
         $multiSelect = $container->buildObject(MultiSelectItems::class);
         ?>
         <select id="jch-optimize_settings_<?= $settingName; ?>"
@@ -241,43 +240,50 @@ class Helper
         <?php
     }
 
-    /**
-     * @param   string  $settingName
-     * @param   array   $activeValues
-     * @param   string  $type
-     * @param   string  $group
-     * @param   string  $valueType
-     * @param   string  $class
-     */
     public static function multiselectjs(
         string $settingName,
         array $activeValues,
         string $type,
         string $group,
         string $valueType,
-        string $class = ''
+        string $option1 = 'ieo',
+        string $option2 = 'dontmove',
+        string $title1 = 'Ignore execution order',
+        string $title2 = 'Don\'t move to bottom',
+        string $option1Obj = '',
+        string $option2Obj = '',
+        string $subFieldClass = '',
+        string $class = '',
+        string $option1SubField = 'checkbox',
+        string $option2SubField = 'checkbox',
+        string $option1ParentClass = 'jch-js-ieo',
+        string $option2ParentClass = 'jch-js-dontmove',
     ): void {
-        $container = ContainerFactory::getContainer();
+        $container = ContainerFactory::getInstance();
         $multiSelect = $container->buildObject(MultiSelectItems::class);
         $nextIndex = count($activeValues);
         $i = 0;
+        static $incrementor = 0;
+        $inc1 = ++ $incrementor;
+        $inc2 = ++ $incrementor;
+        $option1Obj = $option1Obj ?: "{type: \"checkbox\", name: \"{$option1}\", class: \"{$subFieldClass}\"}";
+        $option2Obj = $option2Obj ?: "{type: \"checkbox\", name: \"{$option2}\", class: \"{$subFieldClass}\"}";
         ?>
+<script>
+    let optionObj<?= $inc1 ?> = <?= $option1Obj; ?>;
+    let optionObj<?= $inc2 ?> = <?= $option2Obj ?>;
+</script>
         <fieldset id="fieldset-<?= $settingName; ?>" data-index="<?= $nextIndex; ?>">
             <div class="jch-js-fieldset-children jch-js-excludes-header">
-                <span class="jch-js-ieo-header">&nbsp;&nbsp;Ignore execution order&nbsp;&nbsp;&nbsp;</span>
-                <span class="jch-js-dontmove-header">&nbsp;&nbsp;&nbsp;Don't move to bottom&nbsp;&nbsp;</span>
+                <span class="jch-js-ieo-header">&nbsp;&nbsp;<?= $title1 ?>&nbsp;&nbsp;&nbsp;</span>
+                <span class="jch-js-dontmove-header">&nbsp;&nbsp;&nbsp;<?= $title2 ?>&nbsp;&nbsp;</span>
             </div>
+            <?php foreach ($activeValues as $value) : ?>
+                <?php if (isset($value[$valueType]) && is_string($value[$valueType])) : ?>
             <?php
-            foreach ($activeValues as $value) {
-                if (!isset($value[$valueType]) || !is_string($value[$valueType])) {
-                    continue;
-                }
-
-                $ieoChecked = isset($value['ieo']) ? 'checked' : '';
-                $dontMoveChecked = isset($value['dontmove']) ? 'checked' : '';
                 /** @var string $dataValue */
                 $dataValue = $multiSelect->{'prepare' . ucfirst($group) . 'Values'}($value[$valueType]);
-                ?>
+                    ?>
                 <div id="div-<?= $settingName; ?>-<?= $i; ?>"
                      class="jch-js-fieldset-children jch-js-excludes-container">
                         <span class="jch-js-excludes">
@@ -289,19 +295,12 @@ class Helper
                                         onmouseup="jchMultiselect.removeJchJsOption('div-<?= $settingName; ?>-<?= $i; ?>', 'jch-optimize_settings_<?= $settingName; ?>')"></button>
                             </span>
                         </span>
-                    <span class="jch-js-ieo">
-                            <input type="checkbox"
-                                   name="<?= "jch-optimize_settings[{$settingName}][{$i}][ieo]"; ?>" <?= $ieoChecked; ?>>
-                        </span>
-                    <span class="jch-js-dontmove">
-                            <input type="checkbox"
-                                   name="<?= "jch-optimize_settings[{$settingName}][{$i}][dontmove]"; ?>" <?= $dontMoveChecked; ?>>
-                        </span>
+                    <?php self::subFormField($option1SubField, $option1ParentClass, $subFieldClass, $value, $settingName, $i, $option1); ?>
+                    <?php self::subFormField($option2SubField, $option2ParentClass, $subFieldClass, $value, $settingName, $i, $option2); ?>
                 </div>
-                <?php
-                $i++;
-            }
-        ?>
+                <?php $i++; ?>
+           <?php endif; ?>
+        <?php endforeach; ?>
         </fieldset>
         <select id="jch-optimize_settings_<?= $settingName; ?>"
                 name="<?= "jch-optimize_settings[{$settingName}]"; ?>[]"
@@ -313,24 +312,55 @@ class Helper
              src="<?= JCH_PLUGIN_URL . 'media/core/images/exclude-loader.gif'; ?>"/>
         <button id="btn-<?= $settingName; ?>" style="display: none;"
                 class="btn btn-secondary btn-sm jch-multiselect-add-button" type="button"
-                onmousedown="jchMultiselect.addJchJsOption('jch-optimize_settings_<?= $settingName; ?>', '<?= $settingName; ?>', '<?= $valueType; ?>')"><?php _e(
+                onmousedown="jchMultiselect.addJchJsOption('jch-optimize_settings_<?= $settingName; ?>', '<?= $settingName; ?>', '<?= $valueType; ?>', optionObj<?= $inc1; ?>, optionObj<?= $inc2; ?>)"><?php _e(
                     'Add item',
                     'jch-optimize'
                 ); ?></button>
-        <script>
-            jQuery('#jch-optimize_settings_<?= $settingName; ?>').on('change', function (evt, params) {
-                jchMultiselect.appendJchJsOption('jch-optimize_settings_<?= $settingName; ?>', '<?= $settingName; ?>', params, '<?= $valueType; ?>')
-            })
-        </script>
+<script>
+    jQuery('#jch-optimize_settings_<?= $settingName; ?>').on('change', function (evt, params) {
+        jchMultiselect.appendJchJsOption('jch-optimize_settings_<?= $settingName; ?>', '<?= $settingName; ?>', params, '<?= $valueType; ?>', optionObj<?= $inc1 ?>, optionObj<?= $inc2 ?>)
+    })
+</script>
         <?php
     }
 
-    /**
-     * @param   string  $settingName
-     * @param   string  $activeValue
-     * @param   string  $size
-     * @param   string  $class
-     */
+    private static function subFormField(
+        string $type,
+        string $parentClass,
+        string $subFieldClass,
+        array $value,
+        string $settingName,
+        int $index,
+        string $option
+    ): void {
+        if ($type == 'checkbox') :
+            ?>
+        <span class="<?= $parentClass ?>">
+            <input type="checkbox" class="<?= $subFieldClass ?>"
+                   name="<?= "jch-optimize_settings[{$settingName}][{$index}][{$option}]" ?>"
+                   <?= isset($value[$option]) ? 'checked' : ''?>>
+        </span>
+            <?php
+        elseif ($type == 'text'):
+            ?>
+        <span class="<?= $parentClass ?> has-text-input">
+           <input type="text" name="jch-optimize_settings[<?= $settingName ?>][<?= $index ?>][<?= $option ?>]"
+                  value="<?= $value[$option] ?? ResponsiveImages::$breakpoints[0] ?>" >
+        </span>
+            <?php
+        elseif ($type == 'select') :
+            ?>
+        <span class="<?= $parentClass ?> has-select">
+            <select name="jch-optimize_settings[<?=  $settingName ?>][<?= $index ?>][<?= $option ?>]">
+                <option value="West" <?= $value[$option] == 'West' ? 'selected' : '' ?>>Left</option>
+                <option value="Center" <?= $value[$option] == 'Center' ? 'selected' : '' ?>>Center</option>
+                <option value="East" <?= $value[$option] == 'East' ? 'selected' : '' ?>>Right</option>
+            </select>
+        </span>
+        <?php
+        endif;
+    }
+
     public static function text(string $settingName, string $activeValue, string $size = '30', string $class = ''): void
     {
         ?>
@@ -376,11 +406,6 @@ class Helper
         return $attrString;
     }
 
-    /**
-     * @param   string  $settingName
-     * @param   string  $activeValue
-     * @param   string  $class
-     */
     public static function checkbox(string $settingName, string $activeValue, string $class = ''): void
     {
         $checked = $activeValue == '1' ? 'checked="checked"' : '';
@@ -392,12 +417,6 @@ class Helper
         <?php
     }
 
-    /**
-     * @param   string                 $settingName
-     * @param   array                  $activeValues
-     * @param   array<string, string>  $options
-     * @param   string                 $class
-     */
     public static function checkboxes(
         string $settingName,
         array $activeValues,
@@ -405,14 +424,19 @@ class Helper
         string $class = ''
     ): void {
         $i = '0';
+        $cols = count($options);
+        if ($cols > 7) {
+            $cols = ceil($cols / 2);
+        }
+
         ?>
-        <fieldset id="jch-optimize_settings_<?= $settingName; ?>" class="<?= $class; ?>">
-            <ul>
+        <fieldset id="jch-optimize_settings_<?= $settingName; ?>" class="<?= $class; ?> float-start">
+            <ul class="grid" style="--jch-bs-columns: <?= $cols ?>">
                 <?php
-                foreach ($options as $key => $value) {
+                foreach ($options as $key => $value):
                     $checked = (in_array($key, $activeValues)) ? 'checked' : '';
                     ?>
-                    <li>
+                    <li class="g-col-1">
                         <input type="checkbox" id="jch-optimize_settings_<?= $settingName . $i; ?>"
                                name="<?= "jch-optimize_settings[{$settingName}]"; ?>[]"
                                value="<?php esc_attr_e($key); ?>" <?= $checked; ?>>
@@ -423,7 +447,7 @@ class Helper
                     </li>
                     <?php
                     $i++;
-                }
+                endforeach;
         ?>
             </ul>
         </fieldset>
@@ -437,5 +461,15 @@ class Helper
         <?= $activeValues ?>
         </textarea>
         <?php
+    }
+
+    public static function criticaljsmodalbutton(string $settingName, $activeValue): void
+    {
+        ?>
+<button type="button" class="button button-primary button-large" id="criticalJsModalLaunchButton">
+Open
+</button>
+</div>
+<?php
     }
 }

@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
 use Iterator;
 use OuterIterator;
+
 use function assert;
 use function count;
 use function is_int;
+
 /**
  * Class allowing for the continuous iteration of a Laminas\Paginator\Paginator instance.
  * Useful for representing remote paginated data sources as a single Iterator

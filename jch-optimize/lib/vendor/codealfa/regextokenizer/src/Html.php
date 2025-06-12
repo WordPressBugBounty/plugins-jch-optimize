@@ -8,79 +8,63 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\RegexTokenizer;
 
 trait Html
 {
     use \CodeAlfa\RegexTokenizer\Base;
-    /**
-     * Regex token for a string
-     *
-     * @return string
-     */
+
+    private static string $cgName = 'cgName';
+    private static int $cgIndex = 0;
     //language=RegExp
-    public static function htmlCommentToken() : string
+    public static function htmlCommentToken(): string
     {
-        return '<!--(?>-?[^-]*+)*?--!?>';
-        //return '(?:(?:<!--|(?<=[\s/^])-->)[^\r\n]*+)';
+        return '<!--(?>[^>!]++|[!>]++)*?(?<=--)!?>';
     }
-    /**
-     * Regex token for an array of HTML elements
-     *
-     * @param string[] $elements Array of names of HTML elements
-     *
-     * @return string
-     */
     //language=RegExp
-    public static function htmlElementsToken(array $elements) : string
+    public static function htmlElementsToken(array $elements, bool $voidElements = \false): string
     {
         $result = [];
         foreach ($elements as $element) {
-            $result[] = self::htmlElementToken($element);
+            $result[] = $voidElements ? self::htmlVoidElementToken($element) : self::htmlElementToken($element);
         }
         return '(?:' . \implode('|', $result) . ')';
     }
-    /**
-     * Regex token for an HTML element
-     *
-     * @param string $element Name of HTML element
-     * @param bool $isSelfClosing Whether element is self-closing
-     *
-     * @return string
-     */
     //language=RegExp
-    public static function htmlElementToken(string $element = '', bool $isSelfClosing = \false) : string
+    public static function htmlElementToken(string $name = null): string
     {
-        $name = $element != '' ? $element : self::htmlGenericElementToken();
-        $tag = '<' . $name . '\\b(?:\\s++' . self::parseAttributesStatic() . ')?\\s*+>';
-        if (!$isSelfClosing) {
-            $tag .= '(?><?[^<]*+)*?</' . $name . '\\s*+>';
-        }
-        return $tag;
+        $startTag = self::htmlStartTagToken($name);
+        $textContent = self::htmlTextContentToken();
+        $endTag = self::htmlEndTagToken();
+        return "{$startTag}{$textContent}?{$endTag}";
+    }
+    public static function htmlVoidElementToken(string $name = null): string
+    {
+        $element = $name ?? '(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)';
+        $attributes = self::htmlAttributesListToken();
+        return "<{$element}\\b(\\s++{$attributes}+)?/?>";
     }
     //language=RegExp
-    public static function htmlNestedElementToken(string $element) : string
+    public static function htmlNestedElementToken(string $name): string
     {
-        $attributes = self::parseAttributesStatic();
-        return "(?<{$element}><{$element}\\b(?:\\s++{$attributes})?\\s*+>" . "(?>(?>(?:<(?!/?{$element}[^<>]*>))?[^<]++)++|(?&{$element}))*+</{$element}\\s*+>)";
+        $startTag = self::htmlStartTagToken($name);
+        $endTag = self::htmlEndTagToken($name);
+        return "(?<{$name}>{$startTag}(?>(?:[^<]++|(?!</?{$name})<)++|(?&{$name}))*+{$endTag})";
     }
-    /**
-     * Regex token for any valid HTML element name
-     *
-     * @return string
-     */
     //language=RegExp
-    public static function htmlGenericElementToken() : string
+    public static function htmlGenericElementNameToken(): string
     {
-        return '[a-z0-9]++';
+        return '[a-zA-Z0-9-]++';
     }
     /**
      * Regex for parsing an HTML attribute
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    protected static function parseAttributesStatic() : string
+    protected static function parseAttributesStatic(): string
     {
         return '(?>' . self::htmlAttributeWithCaptureValueToken() . '\\s*+)*?';
     }
@@ -93,11 +77,12 @@ trait Html
      * @param string $matchedValue
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function htmlAttributeWithCaptureValueToken(string $attrName = '', bool $captureValue = \false, bool $captureDelimiter = \false, string $matchedValue = '') : string
+    public static function htmlAttributeWithCaptureValueToken(string $attrName = '', bool $captureValue = \false, bool $captureDelimiter = \false, string $matchedValue = ''): string
     {
-        $name = $attrName != '' ? $attrName : '[^\\s/"\'=<>]++';
+        $name = $attrName != '' ? $attrName : '[^\\s/"\'=>]++';
         $delimiter = $captureDelimiter ? '([\'"]?)' : '[\'"]?';
         //If we don't need to match a value then the value of attribute is optional
         if ($matchedValue == '') {
@@ -111,9 +96,10 @@ trait Html
      * Regex token for an HTML attribute value
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function htmlAttributeValueToken() : string
+    public static function htmlAttributeValueToken(): string
     {
         return '(?:' . self::stringValueToken() . '|' . self::htmlUnquotedAttributeValueToken() . ')';
     }
@@ -121,9 +107,10 @@ trait Html
      * Regex token for an unquoted HTML attribute value
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function htmlUnquotedAttributeValueToken() : string
+    public static function htmlUnquotedAttributeValueToken(): string
     {
         return '(?<==)[^\\s*+>]++';
     }
@@ -133,9 +120,56 @@ trait Html
      * @param string $element Name of element
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
-    public static function htmlSelfClosingElementToken(string $element = '') : string
+    public static function htmlSelfClosingElementToken(string $element = ''): string
     {
-        return self::htmlElementToken($element, \true);
+        return self::htmlElementToken($element);
+    }
+    public static function htmlAttributeToken(): string
+    {
+        $ds = self::doubleQuoteStringToken();
+        $ss = self::singleQuoteStringToken();
+        $bs = self::backTickStringToken();
+        return "[^\\s/\"'=>`]++(?:\\s*+=\\s*+(?>{$ds}|{$ss}|{$bs}|(?<==)[^\\s>'\"`]++))?";
+    }
+    public static function htmlAttributesListToken(): string
+    {
+        $a = self::htmlAttributeToken();
+        return "(?>{$a}|\\s++)*";
+    }
+    public static function htmlStartTagToken(string $name = null): string
+    {
+        $element = $name ?? self::htmlGenericElementNameToken();
+        $attributes = self::htmlAttributesListToken();
+        $gName = self::$cgName . ++self::$cgIndex;
+        return "<(?<{$gName}>{$element})\\b(\\s++{$attributes}+)?>";
+    }
+    public static function htmlEndTagToken(string $name = null): string
+    {
+        $gName = $name ?? '(?&' . self::$cgName . self::$cgIndex . ')';
+        return "</{$gName}\\s*+>";
+    }
+    public static function htmlTextContentToken(string $name = null): string
+    {
+        $et = self::htmlEndTagToken($name);
+        return "(?>[^<]++|(?!{$et}})<)*";
+    }
+    public static function htmlStringToken(array $excludes = []): string
+    {
+        $c = self::htmlCommentToken();
+        $e = self::htmlGenericStartTagToken();
+        $ex = '';
+        if ($excludes !== []) {
+            $excludedElements = self::htmlElementsToken($excludes);
+            $ex = "|{$excludedElements}";
+        }
+        return "(?>[^<]++|{$c}{$ex}|{$e}|<)*";
+    }
+    public static function htmlGenericStartTagToken(): string
+    {
+        $name = self::htmlGenericElementNameToken();
+        $attributes = self::htmlAttributesListToken();
+        return "<{$name}\\b(\\s++{$attributes}+)?/?>";
     }
 }

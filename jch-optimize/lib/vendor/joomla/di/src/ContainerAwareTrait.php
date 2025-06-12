@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2013 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\DI;
 
-use _JchOptimizeVendor\Joomla\DI\Exception\ContainerNotFoundException;
+namespace _JchOptimizeVendor\V91\Joomla\DI;
+
+use _JchOptimizeVendor\V91\Joomla\DI\Exception\ContainerNotFoundException;
+
 /**
  * Defines the trait for a Container Aware Class.
  *

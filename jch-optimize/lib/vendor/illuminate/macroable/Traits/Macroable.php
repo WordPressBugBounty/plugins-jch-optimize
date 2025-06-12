@@ -1,11 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support\Traits;
+namespace _JchOptimizeVendor\V91\Illuminate\Support\Traits;
 
 use BadMethodCallException;
 use Closure;
 use ReflectionClass;
 use ReflectionMethod;
+
 trait Macroable
 {
     /**

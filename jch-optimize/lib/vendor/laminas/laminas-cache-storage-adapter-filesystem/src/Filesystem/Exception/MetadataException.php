@@ -1,12 +1,15 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\Exception;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\Exception;
 
 use ErrorException;
-use _JchOptimizeVendor\Laminas\Cache\Exception\RuntimeException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception\RuntimeException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem;
+
 use function sprintf;
+
 final class MetadataException extends RuntimeException
 {
     public const METADATA_ATIME = Filesystem::METADATA_ATIME;
@@ -23,19 +26,19 @@ final class MetadataException extends RuntimeException
         parent::__construct(sprintf('Could not detected metadata "%s"', $metadata), 0, $error);
         $this->error = $error;
     }
-    public function getErrorSeverity() : int
+    public function getErrorSeverity(): int
     {
         return $this->error->getSeverity();
     }
-    public function getErrorMessage() : string
+    public function getErrorMessage(): string
     {
         return $this->error->getMessage();
     }
-    public function getErrorFile() : string
+    public function getErrorFile(): string
     {
         return $this->error->getFile();
     }
-    public function getErrorLine() : int
+    public function getErrorLine(): int
     {
         return $this->error->getLine();
     }

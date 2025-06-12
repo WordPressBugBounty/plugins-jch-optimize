@@ -11,27 +11,20 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Log\WordpressNoticeLogger;
-use JchOptimize\Plugin\Loader;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Plugin\Loader;
 
 use function __;
 use function wp_redirect;
 
 class OrderPlugins extends Controller
 {
-    /**
-     * @var Loader
-     */
-    private Loader $loader;
-
-    public function __construct(Loader $loader, ?Input $input = null)
+    public function __construct(private Loader $loader, ?Input $input = null)
     {
-        $this->loader = $loader;
-
         parent::__construct($input);
     }
 

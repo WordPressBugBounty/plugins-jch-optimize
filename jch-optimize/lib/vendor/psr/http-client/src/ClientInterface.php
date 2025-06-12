@@ -1,9 +1,10 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Http\Client;
+namespace _JchOptimizeVendor\V91\Psr\Http\Client;
 
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+
 interface ClientInterface
 {
     /**
@@ -15,5 +16,5 @@ interface ClientInterface
      *
      * @throws \Psr\Http\Client\ClientExceptionInterface If an error happens while processing the request.
      */
-    public function sendRequest(RequestInterface $request) : ResponseInterface;
+    public function sendRequest(RequestInterface $request): ResponseInterface;
 }

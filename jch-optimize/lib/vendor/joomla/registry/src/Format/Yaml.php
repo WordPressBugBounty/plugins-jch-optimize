@@ -6,13 +6,16 @@
  * @copyright  Copyright (C) 2013 Open Source Matters, Inc.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Registry\Format;
 
-use _JchOptimizeVendor\Joomla\Registry\FormatInterface;
-use _JchOptimizeVendor\Symfony\Component\Yaml\Dumper as SymfonyYamlDumper;
-use _JchOptimizeVendor\Symfony\Component\Yaml\Parser as SymfonyYamlParser;
-use _JchOptimizeVendor\Symfony\Component\Yaml\Yaml as SymfonyYaml;
+namespace _JchOptimizeVendor\V91\Joomla\Registry\Format;
+
+use _JchOptimizeVendor\V91\Joomla\Registry\FormatInterface;
+use _JchOptimizeVendor\V91\Symfony\Component\Yaml\Dumper as SymfonyYamlDumper;
+use _JchOptimizeVendor\V91\Symfony\Component\Yaml\Parser as SymfonyYamlParser;
+use _JchOptimizeVendor\V91\Symfony\Component\Yaml\Yaml as SymfonyYaml;
+
 use function sprintf;
+
 /**
  * YAML format handler for Registry.
  *

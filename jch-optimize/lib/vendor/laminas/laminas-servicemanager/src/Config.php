@@ -1,10 +1,13 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\ArrayUtils;
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ArrayUtils;
+
 use function array_keys;
+
 /**
  * Object for defining configuration and configuring an existing service manager instance.
  *

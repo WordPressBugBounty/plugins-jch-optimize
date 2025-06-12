@@ -1,13 +1,16 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter;
 
 use GlobIterator;
-use _JchOptimizeVendor\Laminas\Cache\Storage\IteratorInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IteratorInterface;
 use ReturnTypeWillChange;
+
 use function strlen;
 use function substr;
+
 final class FilesystemIterator implements IteratorInterface
 {
     /**
@@ -105,7 +108,7 @@ final class FilesystemIterator implements IteratorInterface
     /**
      * Get current key
      */
-    public function key() : string
+    public function key(): string
     {
         $filename = $this->globIterator->key();
         // return without namespace prefix and file suffix
@@ -114,21 +117,21 @@ final class FilesystemIterator implements IteratorInterface
     /**
      * Move forward to next element
      */
-    public function next() : void
+    public function next(): void
     {
         $this->globIterator->next();
     }
     /**
      * Checks if current position is valid
      */
-    public function valid() : bool
+    public function valid(): bool
     {
         return $this->globIterator->valid();
     }
     /**
      * Rewind the Iterator to the first element.
      */
-    public function rewind() : void
+    public function rewind(): void
     {
         $this->globIterator->rewind();
     }

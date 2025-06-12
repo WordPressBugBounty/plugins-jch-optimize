@@ -1,12 +1,14 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Cache\Exception\RuntimeException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\Exception\MetadataException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\Exception\UnlinkException;
-use _JchOptimizeVendor\Laminas\Stdlib\ErrorHandler;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem;
+
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception\RuntimeException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\Exception\MetadataException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\Exception\UnlinkException;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ErrorHandler;
+
 use function assert;
 use function chmod;
 use function clearstatcache;
@@ -33,16 +35,18 @@ use function strlen;
 use function touch;
 use function umask;
 use function unlink;
+
 use const LOCK_EX;
 use const LOCK_NB;
 use const LOCK_SH;
 use const LOCK_UN;
+
 /**
  * @internal
  */
 final class LocalFilesystemInteraction implements FilesystemInteractionInterface
 {
-    public function delete(string $file) : bool
+    public function delete(string $file): bool
     {
         ErrorHandler::start();
         $res = @unlink($file);
@@ -53,7 +57,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return \true;
     }
-    public function write(string $file, string $contents, ?int $umask, ?int $permissions, bool $lock, bool $block, ?bool &$wouldBlock) : bool
+    public function write(string $file, string $contents, ?int $umask, ?int $permissions, bool $lock, bool $block, ?bool &$wouldBlock): bool
     {
         $nonBlocking = $lock && $block;
         $wouldBlock = null;
@@ -126,7 +130,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         ErrorHandler::stop();
         return \true;
     }
-    public function read(string $file, bool $lock, bool $block, ?bool &$wouldBlock) : string
+    public function read(string $file, bool $lock, bool $block, ?bool &$wouldBlock): string
     {
         $wouldBlock = null;
         ErrorHandler::start();
@@ -174,11 +178,11 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         ErrorHandler::stop();
         return $res;
     }
-    public function exists(string $file) : bool
+    public function exists(string $file): bool
     {
         return file_exists($file);
     }
-    public function lastModifiedTime(string $file) : int
+    public function lastModifiedTime(string $file): int
     {
         ErrorHandler::start();
         $mtime = filemtime($file);
@@ -189,7 +193,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return $mtime;
     }
-    public function lastAccessedTime(string $file) : int
+    public function lastAccessedTime(string $file): int
     {
         ErrorHandler::start();
         $atime = fileatime($file);
@@ -200,7 +204,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return $atime;
     }
-    public function createdTime(string $file) : int
+    public function createdTime(string $file): int
     {
         ErrorHandler::start();
         $ctime = filectime($file);
@@ -211,7 +215,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return $ctime;
     }
-    public function filesize(string $file) : int
+    public function filesize(string $file): int
     {
         ErrorHandler::start();
         $filesize = filesize($file);
@@ -222,11 +226,11 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return $filesize;
     }
-    public function clearStatCache() : void
+    public function clearStatCache(): void
     {
         clearstatcache();
     }
-    public function availableBytes(string $directory) : int
+    public function availableBytes(string $directory): int
     {
         ErrorHandler::start();
         $bytes = disk_free_space($directory);
@@ -236,7 +240,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return (int) $bytes;
     }
-    public function totalBytes(string $directory) : int
+    public function totalBytes(string $directory): int
     {
         ErrorHandler::start();
         $bytes = disk_total_space($directory);
@@ -246,7 +250,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return (int) $bytes;
     }
-    public function touch(string $file) : bool
+    public function touch(string $file): bool
     {
         ErrorHandler::start();
         $touch = touch($file);
@@ -256,11 +260,11 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         }
         return \true;
     }
-    public function umask(int $umask) : int
+    public function umask(int $umask): int
     {
         return umask($umask);
     }
-    public function createDirectory(string $directory, int $permissions, bool $recursive = \false, ?int $umask = null) : void
+    public function createDirectory(string $directory, int $permissions, bool $recursive = \false, ?int $umask = null): void
     {
         $umaskToRestore = null;
         if ($umask) {

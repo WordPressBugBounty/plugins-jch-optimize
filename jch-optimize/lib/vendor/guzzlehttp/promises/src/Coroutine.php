@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 use Exception;
 use Generator;
 use Throwable;
+
 /**
  * Creates a promise that is resolved using a generator that yields values or
  * promises (somewhat similar to C#'s async keyword).

@@ -1,9 +1,11 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
+
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+
 abstract class AbstractStorageCapablePattern extends AbstractPattern implements StorageCapableInterface
 {
     /** @var StorageInterface */
@@ -13,7 +15,7 @@ abstract class AbstractStorageCapablePattern extends AbstractPattern implements 
         parent::__construct($options);
         $this->storage = $storage;
     }
-    public function getStorage() : StorageInterface
+    public function getStorage(): StorageInterface
     {
         return $this->storage;
     }

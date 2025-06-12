@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Cookie;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Cookie;
 
 /**
  * Set-Cookie object
@@ -20,7 +20,7 @@ class SetCookie
      *
      * @param string $cookie Set-Cookie header string
      */
-    public static function fromString(string $cookie) : self
+    public static function fromString(string $cookie): self
     {
         // Create the default return array
         $data = self::$defaults;
@@ -116,7 +116,7 @@ class SetCookie
         }
         return \rtrim($str, '; ');
     }
-    public function toArray() : array
+    public function toArray(): array
     {
         return $this->data;
     }
@@ -134,7 +134,7 @@ class SetCookie
      *
      * @param string $name Cookie name
      */
-    public function setName($name) : void
+    public function setName($name): void
     {
         if (!\is_string($name)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a string to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -155,7 +155,7 @@ class SetCookie
      *
      * @param string $value Cookie value
      */
-    public function setValue($value) : void
+    public function setValue($value): void
     {
         if (!\is_string($value)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a string to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -176,7 +176,7 @@ class SetCookie
      *
      * @param string|null $domain
      */
-    public function setDomain($domain) : void
+    public function setDomain($domain): void
     {
         if (!\is_string($domain) && null !== $domain) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a string or null to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -197,7 +197,7 @@ class SetCookie
      *
      * @param string $path Path of the cookie
      */
-    public function setPath($path) : void
+    public function setPath($path): void
     {
         if (!\is_string($path)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a string to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -218,7 +218,7 @@ class SetCookie
      *
      * @param int|null $maxAge Max age of the cookie in seconds
      */
-    public function setMaxAge($maxAge) : void
+    public function setMaxAge($maxAge): void
     {
         if (!\is_int($maxAge) && null !== $maxAge) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing an int or null to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -239,7 +239,7 @@ class SetCookie
      *
      * @param int|string|null $timestamp Unix timestamp or any English textual datetime description.
      */
-    public function setExpires($timestamp) : void
+    public function setExpires($timestamp): void
     {
         if (!\is_int($timestamp) && !\is_string($timestamp) && null !== $timestamp) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing an int, string or null to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -260,7 +260,7 @@ class SetCookie
      *
      * @param bool $secure Set to true or false if secure
      */
-    public function setSecure($secure) : void
+    public function setSecure($secure): void
     {
         if (!\is_bool($secure)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a bool to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -281,7 +281,7 @@ class SetCookie
      *
      * @param bool $discard Set to true or false if this is a session cookie
      */
-    public function setDiscard($discard) : void
+    public function setDiscard($discard): void
     {
         if (!\is_bool($discard)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a bool to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -302,7 +302,7 @@ class SetCookie
      *
      * @param bool $httpOnly Set to true or false if this is HTTP only
      */
-    public function setHttpOnly($httpOnly) : void
+    public function setHttpOnly($httpOnly): void
     {
         if (!\is_bool($httpOnly)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a bool to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
@@ -324,7 +324,7 @@ class SetCookie
      *
      * @param string $requestPath Path to check against
      */
-    public function matchesPath(string $requestPath) : bool
+    public function matchesPath(string $requestPath): bool
     {
         $cookiePath = $this->getPath();
         // Match on exact matches or when path is the default empty "/"
@@ -347,7 +347,7 @@ class SetCookie
      *
      * @param string $domain Domain to check against
      */
-    public function matchesDomain(string $domain) : bool
+    public function matchesDomain(string $domain): bool
     {
         $cookieDomain = $this->getDomain();
         if (null === $cookieDomain) {
@@ -371,7 +371,7 @@ class SetCookie
     /**
      * Check if the cookie is expired.
      */
-    public function isExpired() : bool
+    public function isExpired(): bool
     {
         return $this->getExpires() !== null && \time() > $this->getExpires();
     }

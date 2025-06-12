@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
 use ArrayAccess;
+
 /**
  * Representation of an event
  *

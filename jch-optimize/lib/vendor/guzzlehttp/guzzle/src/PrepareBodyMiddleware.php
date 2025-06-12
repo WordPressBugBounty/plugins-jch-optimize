@@ -1,9 +1,10 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\GuzzleHttp\Promise\PromiseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\PromiseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+
 /**
  * Prepares requests that contain a body, adding the Content-Length,
  * Content-Type, and Expect headers.
@@ -23,7 +24,7 @@ class PrepareBodyMiddleware
     {
         $this->nextHandler = $nextHandler;
     }
-    public function __invoke(RequestInterface $request, array $options) : PromiseInterface
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         $fn = $this->nextHandler;
         // Don't do anything if the request has no body.
@@ -55,7 +56,7 @@ class PrepareBodyMiddleware
     /**
      * Add expect header
      */
-    private function addExpectHeader(RequestInterface $request, array $options, array &$modify) : void
+    private function addExpectHeader(RequestInterface $request, array $options, array &$modify): void
     {
         // Determine if the Expect header should be used
         if ($request->hasHeader('Expect')) {

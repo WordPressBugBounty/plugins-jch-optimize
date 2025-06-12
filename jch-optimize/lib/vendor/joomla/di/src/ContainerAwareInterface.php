@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2013 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\DI;
+
+namespace _JchOptimizeVendor\V91\Joomla\DI;
 
 /**
  * Defines the interface for a Container Aware class.

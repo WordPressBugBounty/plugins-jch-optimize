@@ -1,9 +1,11 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager\Exception;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Psr\Container\ContainerExceptionInterface;
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception;
+
+use _JchOptimizeVendor\V91\Psr\Container\ContainerExceptionInterface;
+
 /**
  * Base exception for all Laminas\ServiceManager exceptions.
  */

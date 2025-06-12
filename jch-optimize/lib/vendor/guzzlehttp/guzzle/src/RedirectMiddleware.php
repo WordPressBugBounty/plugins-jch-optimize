@@ -1,13 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\GuzzleHttp\Exception\BadResponseException;
-use _JchOptimizeVendor\GuzzleHttp\Exception\TooManyRedirectsException;
-use _JchOptimizeVendor\GuzzleHttp\Promise\PromiseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\BadResponseException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\TooManyRedirectsException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\PromiseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 /**
  * Request redirect middleware.
  *
@@ -35,7 +36,7 @@ class RedirectMiddleware
     {
         $this->nextHandler = $nextHandler;
     }
-    public function __invoke(RequestInterface $request, array $options) : PromiseInterface
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         $fn = $this->nextHandler;
         if (empty($options['allow_redirects'])) {
@@ -52,7 +53,7 @@ class RedirectMiddleware
         if (empty($options['allow_redirects']['max'])) {
             return $fn($request, $options);
         }
-        return $fn($request, $options)->then(function (ResponseInterface $response) use($request, $options) {
+        return $fn($request, $options)->then(function (ResponseInterface $response) use ($request, $options) {
             return $this->checkRedirect($request, $options, $response);
         });
     }
@@ -83,9 +84,9 @@ class RedirectMiddleware
     /**
      * Enable tracking on promise.
      */
-    private function withTracking(PromiseInterface $promise, string $uri, int $statusCode) : PromiseInterface
+    private function withTracking(PromiseInterface $promise, string $uri, int $statusCode): PromiseInterface
     {
-        return $promise->then(static function (ResponseInterface $response) use($uri, $statusCode) {
+        return $promise->then(static function (ResponseInterface $response) use ($uri, $statusCode) {
             // Note that we are pushing to the front of the list as this
             // would be an earlier response than what is currently present
             // in the history header.
@@ -101,7 +102,7 @@ class RedirectMiddleware
      *
      * @throws TooManyRedirectsException Too many redirects.
      */
-    private function guardMax(RequestInterface $request, ResponseInterface $response, array &$options) : void
+    private function guardMax(RequestInterface $request, ResponseInterface $response, array &$options): void
     {
         $current = $options['__redirect_count'] ?? 0;
         $options['__redirect_count'] = $current + 1;
@@ -110,7 +111,7 @@ class RedirectMiddleware
             throw new TooManyRedirectsException("Will not follow more than {$max} redirects", $request, $response);
         }
     }
-    public function modifyRequest(RequestInterface $request, array $options, ResponseInterface $response) : RequestInterface
+    public function modifyRequest(RequestInterface $request, array $options, ResponseInterface $response): RequestInterface
     {
         // Request modifications to apply.
         $modify = [];
@@ -150,7 +151,7 @@ class RedirectMiddleware
     /**
      * Set the appropriate URL on the request based on the location header.
      */
-    private static function redirectUri(RequestInterface $request, ResponseInterface $response, array $protocols) : UriInterface
+    private static function redirectUri(RequestInterface $request, ResponseInterface $response, array $protocols): UriInterface
     {
         $location = Psr7\UriResolver::resolve($request->getUri(), new Psr7\Uri($response->getHeaderLine('Location')));
         // Ensure that the redirect URI is allowed based on the protocols.

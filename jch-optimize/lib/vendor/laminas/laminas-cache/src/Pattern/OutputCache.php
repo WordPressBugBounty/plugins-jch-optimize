@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
 
-use _JchOptimizeVendor\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+
 use function array_pop;
 use function ob_get_flush;
 use function ob_implicit_flush;
 use function ob_start;
+
 class OutputCache extends AbstractStorageCapablePattern
 {
     /**

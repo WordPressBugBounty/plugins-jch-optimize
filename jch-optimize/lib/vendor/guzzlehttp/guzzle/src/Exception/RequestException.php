@@ -1,13 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Exception;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Exception;
 
-use _JchOptimizeVendor\GuzzleHttp\BodySummarizer;
-use _JchOptimizeVendor\GuzzleHttp\BodySummarizerInterface;
-use _JchOptimizeVendor\Psr\Http\Client\RequestExceptionInterface;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\BodySummarizer;
+use _JchOptimizeVendor\V91\GuzzleHttp\BodySummarizerInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Client\RequestExceptionInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 /**
  * HTTP Request exception
  */
@@ -37,7 +38,7 @@ class RequestException extends TransferException implements RequestExceptionInte
     /**
      * Wrap non-RequestExceptions with a RequestException
      */
-    public static function wrapException(RequestInterface $request, \Throwable $e) : RequestException
+    public static function wrapException(RequestInterface $request, \Throwable $e): RequestException
     {
         return $e instanceof RequestException ? $e : new RequestException($e->getMessage(), $request, null, $e);
     }
@@ -50,7 +51,7 @@ class RequestException extends TransferException implements RequestExceptionInte
      * @param array                        $handlerContext Optional handler context
      * @param BodySummarizerInterface|null $bodySummarizer Optional body summarizer
      */
-    public static function create(RequestInterface $request, ResponseInterface $response = null, \Throwable $previous = null, array $handlerContext = [], BodySummarizerInterface $bodySummarizer = null) : self
+    public static function create(RequestInterface $request, ResponseInterface $response = null, \Throwable $previous = null, array $handlerContext = [], BodySummarizerInterface $bodySummarizer = null): self
     {
         if (!$response) {
             return new self('Error completing request', $request, null, $previous, $handlerContext);
@@ -80,7 +81,7 @@ class RequestException extends TransferException implements RequestExceptionInte
     /**
      * Obfuscates URI if there is a username and a password present
      */
-    private static function obfuscateUri(UriInterface $uri) : UriInterface
+    private static function obfuscateUri(UriInterface $uri): UriInterface
     {
         $userInfo = $uri->getUserInfo();
         if (\false !== ($pos = \strpos($userInfo, ':'))) {
@@ -91,21 +92,21 @@ class RequestException extends TransferException implements RequestExceptionInte
     /**
      * Get the request that caused the exception
      */
-    public function getRequest() : RequestInterface
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
     /**
      * Get the associated response
      */
-    public function getResponse() : ?ResponseInterface
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }
     /**
      * Check if a response was received
      */
-    public function hasResponse() : bool
+    public function hasResponse(): bool
     {
         return $this->response !== null;
     }
@@ -117,7 +118,7 @@ class RequestException extends TransferException implements RequestExceptionInte
      * couple you to a specific handler, but can give more debug information
      * when needed.
      */
-    public function getHandlerContext() : array
+    public function getHandlerContext(): array
     {
         return $this->handlerContext;
     }

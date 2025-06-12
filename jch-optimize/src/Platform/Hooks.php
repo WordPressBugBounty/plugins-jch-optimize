@@ -11,17 +11,19 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
+
+use JchOptimize\Core\Platform\HooksInterface;
+use SplObjectStorage;
 
 use function apply_filters;
 
-class Hooks implements \JchOptimize\Core\Interfaces\Hooks
+class Hooks implements HooksInterface
 {
-
     /**
      * @inheritDoc
      */
-    public static function onPageCacheSetCaching(): bool
+    public function onPageCacheSetCaching(): bool
     {
         return apply_filters('jch_optimize_page_cache_set_caching', true);
     }
@@ -29,17 +31,17 @@ class Hooks implements \JchOptimize\Core\Interfaces\Hooks
     /**
      * @inheritDoc
      */
-    public static function onPageCacheGetKey(array $parts): array
+    public function onPageCacheGetKey(array $parts): array
     {
         return apply_filters('jch_optimize_get_page_cache_id', $parts);
     }
 
-    public static function onUserPostForm(): void
+    public function onUserPostForm(): void
     {
         // TODO: Implement onUserPostForm() method.
     }
 
-    public static function onUserPostFormDeleteCookie(): void
+    public function onUserPostFormDeleteCookie(): void
     {
         // TODO: Implement onUserPostFormDeleteCookie() method.
     }
@@ -47,7 +49,7 @@ class Hooks implements \JchOptimize\Core\Interfaces\Hooks
     /**
      * @inheritDoc
      */
-    public static function onHttp2GetPreloads(array $preloads): array
+    public function onHttp2GetPreloads(SplObjectStorage $preloads): mixed
     {
         return apply_filters('jch_optimize_get_http2_preloads', $preloads);
     }

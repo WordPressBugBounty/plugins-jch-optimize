@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * Tools for validing a UTF-8 string is well formed.

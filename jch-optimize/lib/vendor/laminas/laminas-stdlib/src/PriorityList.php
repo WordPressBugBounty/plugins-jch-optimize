@@ -1,18 +1,21 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Countable;
 use Exception;
 use Iterator;
 use ReturnTypeWillChange;
+
 use function array_map;
 use function current;
 use function key;
 use function next;
 use function reset;
 use function uasort;
+
 /**
  * @template TKey of string
  * @template TValue of mixed

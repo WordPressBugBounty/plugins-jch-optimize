@@ -1,25 +1,65 @@
 {
     "packages": [
         {
+            "name": "codealfa\/css2xpath",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/codealfa\/css2xpath.git",
+                "reference": "ade3af40849d7e3c708e5fec9b2496e368621da2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/css2xpath\/zipball\/ade3af40849d7e3c708e5fec9b2496e368621da2",
+                "reference": "ade3af40849d7e3c708e5fec9b2496e368621da2",
+                "shasum": ""
+            },
+            "time": "2024-06-09T12:31:13+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "CodeAlfa\\Css2Xpath\\": "src\/"
+                }
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "codealfa",
+                    "email": "email@example.com"
+                }
+            ],
+            "description": "description",
+            "support": {
+                "source": "https:\/\/github.com\/codealfa\/css2xpath\/tree\/main",
+                "issues": "https:\/\/github.com\/codealfa\/css2xpath\/issues"
+            },
+            "install-path": "..\/codealfa\/css2xpath"
+        },
+        {
             "name": "codealfa\/minify",
             "version": "dev-master",
             "version_normalized": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/codealfa\/minify.git",
-                "reference": "a11d3fc4da27e170ca8cb9f966915ff9cfdc519d"
+                "reference": "b9ef88228675bf0d9ea583ec60ecf8c7a4932901"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/codealfa\/minify\/zipball\/a11d3fc4da27e170ca8cb9f966915ff9cfdc519d",
-                "reference": "a11d3fc4da27e170ca8cb9f966915ff9cfdc519d",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/minify\/zipball\/b9ef88228675bf0d9ea583ec60ecf8c7a4932901",
+                "reference": "b9ef88228675bf0d9ea583ec60ecf8c7a4932901",
                 "shasum": ""
             },
             "require": {
                 "codealfa\/regextokenizer": "dev-master",
                 "php": ">=7.0"
             },
-            "time": "2023-10-22T18:28:00+00:00",
+            "time": "2024-03-20T19:40:57+00:00",
             "default-branch": true,
             "type": "library",
             "installation-source": "dist",
@@ -52,25 +92,33 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/codealfa\/regextokenizer.git",
-                "reference": "b660bf5d561078f40bcbf1a68eeb63428a14b17d"
+                "reference": "b207ba48fd88bca2e1e78d5fbb86433b33aa8cd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/codealfa\/regextokenizer\/zipball\/b660bf5d561078f40bcbf1a68eeb63428a14b17d",
-                "reference": "b660bf5d561078f40bcbf1a68eeb63428a14b17d",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/regextokenizer\/zipball\/b207ba48fd88bca2e1e78d5fbb86433b33aa8cd0",
+                "reference": "b207ba48fd88bca2e1e78d5fbb86433b33aa8cd0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0",
                 "psr\/log": "^1"
             },
-            "time": "2023-07-25T23:50:35+00:00",
+            "require-dev": {
+                "phpunit\/phpunit": "^9.6"
+            },
+            "time": "2025-06-03T18:32:42+00:00",
             "default-branch": true,
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "CodeAlfa\\RegexTokenizer\\": "src\/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CodeAlfa\\RegexTokenizer\\Tests\\": "tests"
                 }
             },
             "license": [
@@ -82,7 +130,7 @@
                     "email": "sdmarshall73@gmail.com"
                 }
             ],
-            "description": "description",
+            "description": "A collection of regex tokens for use with Regex Parsing.",
             "support": {
                 "source": "https:\/\/github.com\/codealfa\/regextokenizer\/tree\/master",
                 "issues": "https:\/\/github.com\/codealfa\/regextokenizer\/issues"
@@ -96,26 +144,26 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/composer\/ca-bundle.git",
-                "reference": "4d0ae9807cf38e759b6f10b09195b3addd7d8685"
+                "reference": "0c5ccfcfea312b5c5a190a21ac5cef93f74baf99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/composer\/ca-bundle\/zipball\/4d0ae9807cf38e759b6f10b09195b3addd7d8685",
-                "reference": "4d0ae9807cf38e759b6f10b09195b3addd7d8685",
+                "url": "https:\/\/api.github.com\/repos\/composer\/ca-bundle\/zipball\/0c5ccfcfea312b5c5a190a21ac5cef93f74baf99",
+                "reference": "0c5ccfcfea312b5c5a190a21ac5cef93f74baf99",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
                 "ext-pcre": "*",
-                "php": "^5.3.2 || ^7.0 || ^8.0"
+                "php": "^7.2 || ^8.0"
             },
             "require-dev": {
-                "phpstan\/phpstan": "^0.12.55",
+                "phpstan\/phpstan": "^1.10",
                 "psr\/log": "^1.0",
                 "symfony\/phpunit-bridge": "^4.2 || ^5",
-                "symfony\/process": "^2.5 || ^3.0 || ^4.0 || ^5.0 || ^6.0"
+                "symfony\/process": "^4.0 || ^5.0 || ^6.0 || ^7.0"
             },
-            "time": "2023-10-11T09:24:02+00:00",
+            "time": "2024-03-15T14:00:32+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
@@ -126,7 +174,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Composer\\CaBundle\\": "src"
+                    "_JchOptimizeVendor\\V91\\Composer\\CaBundle\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -151,7 +199,7 @@
             "support": {
                 "irc": "irc:\/\/irc.freenode.org\/composer",
                 "issues": "https:\/\/github.com\/composer\/ca-bundle\/issues",
-                "source": "https:\/\/github.com\/composer\/ca-bundle\/tree\/main"
+                "source": "https:\/\/github.com\/composer\/ca-bundle\/tree\/1.5.0"
             },
             "funding": [
                 {
@@ -221,7 +269,7 @@
                     "src\/functions_include.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\GuzzleHttp\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\GuzzleHttp\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -327,7 +375,7 @@
                     "src\/functions_include.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\GuzzleHttp\\Promise\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\GuzzleHttp\\Promise\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -418,7 +466,7 @@
                     "src\/functions_include.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\GuzzleHttp\\Psr7\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -524,7 +572,7 @@
                     "helpers.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\Illuminate\\Support\\": ""
+                    "_JchOptimizeVendor\\V91\\Illuminate\\Support\\": ""
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -575,7 +623,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Illuminate\\Contracts\\": ""
+                    "_JchOptimizeVendor\\V91\\Illuminate\\Contracts\\": ""
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -624,7 +672,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Illuminate\\Support\\": ""
+                    "_JchOptimizeVendor\\V91\\Illuminate\\Support\\": ""
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -647,17 +695,17 @@
         },
         {
             "name": "intervention\/image",
-            "version": "2.7.2",
-            "version_normalized": "2.7.2.0",
+            "version": "2.7.x-dev",
+            "version_normalized": "2.7.9999999.9999999-dev",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/Intervention\/image.git",
-                "reference": "04be355f8d6734c826045d02a1079ad658322dad"
+                "reference": "54934ae8ea3661fd189437df90fb09ec3b679c74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/Intervention\/image\/zipball\/04be355f8d6734c826045d02a1079ad658322dad",
-                "reference": "04be355f8d6734c826045d02a1079ad658322dad",
+                "url": "https:\/\/api.github.com\/repos\/Intervention\/image\/zipball\/54934ae8ea3661fd189437df90fb09ec3b679c74",
+                "reference": "54934ae8ea3661fd189437df90fb09ec3b679c74",
                 "shasum": ""
             },
             "require": {
@@ -674,7 +722,7 @@
                 "ext-imagick": "to use Imagick based image processing.",
                 "intervention\/imagecache": "Caching extension for the Intervention Image library"
             },
-            "time": "2022-05-21T17:30:32+00:00",
+            "time": "2022-07-05T13:51:54+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -682,7 +730,7 @@
                 },
                 "laravel": {
                     "providers": [
-                        "_JchOptimizeVendor\\Intervention\\Image\\ImageServiceProvider"
+                        "_JchOptimizeVendor\\V91\\Intervention\\Image\\ImageServiceProvider"
                     ],
                     "aliases": {
                         "Image": "Intervention\\Image\\Facades\\Image"
@@ -692,7 +740,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Intervention\\Image\\": "src\/Intervention\/Image"
+                    "_JchOptimizeVendor\\V91\\Intervention\\Image\\": "src\/Intervention\/Image"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -718,7 +766,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/Intervention\/image\/issues",
-                "source": "https:\/\/github.com\/Intervention\/image\/tree\/2.7.2"
+                "source": "https:\/\/github.com\/Intervention\/image\/tree\/master"
             },
             "funding": [
                 {
@@ -771,7 +819,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Controller\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Controller\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -840,7 +888,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\DI\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\DI\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -911,7 +959,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Filesystem\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Filesystem\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -948,12 +996,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/joomla-framework\/filter.git",
-                "reference": "9102630f9069351c1259b6f585a704fde7029d2a"
+                "reference": "3539f6dcc8d4e9db7194db8f90bf60550a804d04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/filter\/zipball\/9102630f9069351c1259b6f585a704fde7029d2a",
-                "reference": "9102630f9069351c1259b6f585a704fde7029d2a",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/filter\/zipball\/3539f6dcc8d4e9db7194db8f90bf60550a804d04",
+                "reference": "3539f6dcc8d4e9db7194db8f90bf60550a804d04",
                 "shasum": ""
             },
             "require": {
@@ -971,8 +1019,7 @@
             "suggest": {
                 "joomla\/language": "Required only if you want to use `OutputFilter::stringURLSafe`."
             },
-            "time": "2023-08-26T07:57:54+00:00",
-            "default-branch": true,
+            "time": "2024-02-20T16:35:20+00:00",
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -982,7 +1029,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Filter\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Filter\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -998,7 +1045,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/joomla-framework\/filter\/issues",
-                "source": "https:\/\/github.com\/joomla-framework\/filter\/tree\/2.0.3"
+                "source": "https:\/\/github.com\/joomla-framework\/filter\/tree\/2.0-dev"
             },
             "funding": [
                 {
@@ -1048,7 +1095,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Input\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Input\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1117,7 +1164,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Model\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Model\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1190,7 +1237,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Registry\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Registry\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1273,7 +1320,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Renderer\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Renderer\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1363,7 +1410,7 @@
                     "src\/phputf8\/utils\/validation.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\String\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\String\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1427,7 +1474,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\Utilities\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\Utilities\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1494,7 +1541,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Joomla\\View\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Joomla\\View\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1595,7 +1642,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Cache\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Cache\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1668,7 +1715,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1736,7 +1783,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1808,7 +1855,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1882,7 +1929,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -1954,7 +2001,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Cache\\Storage\\Adapter\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2022,7 +2069,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\EventManager\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\EventManager\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2089,7 +2136,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Json\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Json\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2117,94 +2164,6 @@
                 }
             ],
             "install-path": "..\/laminas\/laminas-json"
-        },
-        {
-            "name": "laminas\/laminas-log",
-            "version": "2.14.x-dev",
-            "version_normalized": "2.14.9999999.9999999-dev",
-            "source": {
-                "type": "git",
-                "url": "https:\/\/github.com\/laminas\/laminas-log.git",
-                "reference": "39f3dcbd77fd0d84b190ff1332f5d3d28d56527e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/laminas\/laminas-log\/zipball\/39f3dcbd77fd0d84b190ff1332f5d3d28d56527e",
-                "reference": "39f3dcbd77fd0d84b190ff1332f5d3d28d56527e",
-                "shasum": ""
-            },
-            "require": {
-                "laminas\/laminas-servicemanager": "^3.3.0",
-                "laminas\/laminas-stdlib": "^3.0",
-                "php": "^7.3 || ~8.0.0",
-                "psr\/log": "^1.1.2"
-            },
-            "conflict": {
-                "zendframework\/zend-log": "*"
-            },
-            "provide": {
-                "psr\/log-implementation": "1.0.0"
-            },
-            "require-dev": {
-                "laminas\/laminas-coding-standard": "~1.0.0",
-                "laminas\/laminas-db": "^2.6",
-                "laminas\/laminas-escaper": "^2.5",
-                "laminas\/laminas-filter": "^2.5",
-                "laminas\/laminas-mail": "^2.6.1",
-                "laminas\/laminas-validator": "^2.10.1",
-                "mikey179\/vfsstream": "^1.6.7",
-                "phpspec\/prophecy-phpunit": "^2.0",
-                "phpunit\/phpunit": "^9.4.1"
-            },
-            "suggest": {
-                "ext-mongo": "mongo extension to use Mongo writer",
-                "ext-mongodb": "mongodb extension to use MongoDB writer",
-                "laminas\/laminas-db": "Laminas\\Db component to use the database log writer",
-                "laminas\/laminas-escaper": "Laminas\\Escaper component, for use in the XML log formatter",
-                "laminas\/laminas-mail": "Laminas\\Mail component to use the email log writer",
-                "laminas\/laminas-validator": "Laminas\\Validator component to block invalid log messages"
-            },
-            "time": "2021-12-03T10:30:27+00:00",
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "laminas": {
-                    "component": "Laminas\\Log",
-                    "config-provider": "Laminas\\Log\\ConfigProvider"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Log\\": "src\/"
-                }
-            },
-            "notification-url": "https:\/\/packagist.org\/downloads\/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Robust, composite logger with filtering, formatting, and PSR-3 support",
-            "homepage": "https:\/\/laminas.dev",
-            "keywords": [
-                "laminas",
-                "log",
-                "logging"
-            ],
-            "support": {
-                "chat": "https:\/\/laminas.dev\/chat",
-                "docs": "https:\/\/docs.laminas.dev\/laminas-log\/",
-                "forum": "https:\/\/discourse.laminas.dev",
-                "issues": "https:\/\/github.com\/laminas\/laminas-log\/issues",
-                "rss": "https:\/\/github.com\/laminas\/laminas-log\/releases.atom",
-                "source": "https:\/\/github.com\/laminas\/laminas-log"
-            },
-            "funding": [
-                {
-                    "url": "https:\/\/funding.communitybridge.org\/projects\/laminas-project",
-                    "type": "community_bridge"
-                }
-            ],
-            "install-path": "..\/laminas\/laminas-log"
         },
         {
             "name": "laminas\/laminas-paginator",
@@ -2259,7 +2218,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Paginator\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Paginator\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2332,7 +2291,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Serializer\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Serializer\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2421,7 +2380,7 @@
                     "src\/autoload.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\ServiceManager\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\ServiceManager\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2488,7 +2447,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Laminas\\Stdlib\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Laminas\\Stdlib\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2559,7 +2518,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\League\\Flysystem\\": "src"
+                    "_JchOptimizeVendor\\V91\\League\\Flysystem\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2637,7 +2596,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\League\\Glide\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\League\\Glide\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2676,17 +2635,17 @@
         },
         {
             "name": "league\/mime-type-detection",
-            "version": "1.14.0",
-            "version_normalized": "1.14.0.0",
+            "version": "1.15.0",
+            "version_normalized": "1.15.0.0",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/thephpleague\/mime-type-detection.git",
-                "reference": "b6a5854368533df0295c5761a0253656a2e52d9e"
+                "reference": "ce0f4d1e8a6f4eb0ddff33f57c69c50fd09f4301"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/thephpleague\/mime-type-detection\/zipball\/b6a5854368533df0295c5761a0253656a2e52d9e",
-                "reference": "b6a5854368533df0295c5761a0253656a2e52d9e",
+                "url": "https:\/\/api.github.com\/repos\/thephpleague\/mime-type-detection\/zipball\/ce0f4d1e8a6f4eb0ddff33f57c69c50fd09f4301",
+                "reference": "ce0f4d1e8a6f4eb0ddff33f57c69c50fd09f4301",
                 "shasum": ""
             },
             "require": {
@@ -2698,12 +2657,12 @@
                 "phpstan\/phpstan": "^0.12.68",
                 "phpunit\/phpunit": "^8.5.8 || ^9.3 || ^10.0"
             },
-            "time": "2023-10-17T14:13:20+00:00",
+            "time": "2024-01-28T23:22:08+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\League\\MimeTypeDetection\\": "src"
+                    "_JchOptimizeVendor\\V91\\League\\MimeTypeDetection\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2719,7 +2678,7 @@
             "description": "Mime-type detection for Flysystem",
             "support": {
                 "issues": "https:\/\/github.com\/thephpleague\/mime-type-detection\/issues",
-                "source": "https:\/\/github.com\/thephpleague\/mime-type-detection\/tree\/1.14.0"
+                "source": "https:\/\/github.com\/thephpleague\/mime-type-detection\/tree\/1.15.0"
             },
             "funding": [
                 {
@@ -2732,6 +2691,111 @@
                 }
             ],
             "install-path": "..\/league\/mime-type-detection"
+        },
+        {
+            "name": "monolog\/monolog",
+            "version": "2.x-dev",
+            "version_normalized": "2.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/Seldaek\/monolog.git",
+                "reference": "cd82b5069148dd811ef54b4b92ce1b3aad84209b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/Seldaek\/monolog\/zipball\/cd82b5069148dd811ef54b4b92ce1b3aad84209b",
+                "reference": "cd82b5069148dd811ef54b4b92ce1b3aad84209b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr\/log": "^1.0.1 || ^2.0 || ^3.0"
+            },
+            "provide": {
+                "psr\/log-implementation": "1.0.0 || 2.0.0 || 3.0.0"
+            },
+            "require-dev": {
+                "aws\/aws-sdk-php": "^2.4.9 || ^3.0",
+                "doctrine\/couchdb": "~1.0@dev",
+                "elasticsearch\/elasticsearch": "^7 || ^8",
+                "ext-json": "*",
+                "graylog2\/gelf-php": "^1.4.2 || ^2@dev",
+                "guzzlehttp\/guzzle": "^7.4",
+                "guzzlehttp\/psr7": "^2.2",
+                "mongodb\/mongodb": "^1.8",
+                "php-amqplib\/php-amqplib": "~2.4 || ^3",
+                "phpspec\/prophecy": "^1.15",
+                "phpstan\/phpstan": "^1.10",
+                "phpunit\/phpunit": "^8.5.38 || ^9.6.19",
+                "predis\/predis": "^1.1 || ^2.0",
+                "rollbar\/rollbar": "^1.3 || ^2 || ^3",
+                "ruflin\/elastica": "^7",
+                "swiftmailer\/swiftmailer": "^5.3|^6.0",
+                "symfony\/mailer": "^5.4 || ^6",
+                "symfony\/mime": "^5.4 || ^6"
+            },
+            "suggest": {
+                "aws\/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine\/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch\/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "ext-openssl": "Required to send log messages using SSL",
+                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+                "graylog2\/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb\/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib\/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "rollbar\/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin\/elastica": "Allow sending log messages to an Elastic Search server"
+            },
+            "time": "2025-03-20T09:26:28+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\V91\\Monolog\\": "src\/Monolog"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https:\/\/seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "https:\/\/github.com\/Seldaek\/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/Seldaek\/monolog\/issues",
+                "source": "https:\/\/github.com\/Seldaek\/monolog\/tree\/2.x"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/github.com\/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/monolog\/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/monolog\/monolog"
         },
         {
             "name": "nicmart\/tree",
@@ -2762,7 +2826,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Tree\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Tree\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2807,7 +2871,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Paragi\\PhpWebsocket\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Paragi\\PhpWebsocket\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2849,7 +2913,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Psr\\Cache\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Psr\\Cache\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2896,7 +2960,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Psr\\Container\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Psr\\Container\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -2954,7 +3018,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Psr\\Http\\Client\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Psr\\Http\\Client\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3008,7 +3072,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Psr\\Http\\Message\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3064,7 +3128,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Psr\\Log\\": "Psr\/Log\/"
+                    "_JchOptimizeVendor\\V91\\Psr\\Log\\": "Psr\/Log\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3117,7 +3181,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Psr\\SimpleCache\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Psr\\SimpleCache\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3219,12 +3283,12 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Slim\\Views\\": "src"
+                    "_JchOptimizeVendor\\V91\\Slim\\Views\\": "src"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Slim\\Tests\\": "tests"
+                    "_JchOptimizeVendor\\V91\\Slim\\Tests\\": "tests"
                 }
             },
             "scripts": {
@@ -3261,17 +3325,17 @@
         },
         {
             "name": "spatie\/browsershot",
-            "version": "3.60.1",
-            "version_normalized": "3.60.1.0",
+            "version": "v3.x-dev",
+            "version_normalized": "3.9999999.9999999.9999999-dev",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/spatie\/browsershot.git",
-                "reference": "8779b2cd10dcd9dab4abd0127429e5578da3f9ab"
+                "reference": "360da4f4968bff07d4b914689c0f0ffd907d4bb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/spatie\/browsershot\/zipball\/8779b2cd10dcd9dab4abd0127429e5578da3f9ab",
-                "reference": "8779b2cd10dcd9dab4abd0127429e5578da3f9ab",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/browsershot\/zipball\/360da4f4968bff07d4b914689c0f0ffd907d4bb9",
+                "reference": "360da4f4968bff07d4b914689c0f0ffd907d4bb9",
                 "shasum": ""
             },
             "require": {
@@ -3279,18 +3343,18 @@
                 "php": "^8.0",
                 "spatie\/image": "^1.5.3|^2.0",
                 "spatie\/temporary-directory": "^1.1|^2.0",
-                "symfony\/process": "^4.2|^5.0|^6.0"
+                "symfony\/process": "^4.2|^5.0|^6.0|^7.0"
             },
             "require-dev": {
                 "pestphp\/pest": "^1.20",
                 "spatie\/phpunit-snapshot-assertions": "^4.2.3"
             },
-            "time": "2023-11-28T10:50:45+00:00",
+            "time": "2023-12-29T12:51:22+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Spatie\\Browsershot\\": "src"
+                    "_JchOptimizeVendor\\V91\\Spatie\\Browsershot\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3318,7 +3382,7 @@
                 "webpage"
             ],
             "support": {
-                "source": "https:\/\/github.com\/spatie\/browsershot\/tree\/3.60.1"
+                "source": "https:\/\/github.com\/spatie\/browsershot\/tree\/main"
             },
             "funding": [
                 {
@@ -3361,7 +3425,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Spatie\\Crawler\\": "src"
+                    "_JchOptimizeVendor\\V91\\Spatie\\Crawler\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3396,17 +3460,17 @@
         },
         {
             "name": "spatie\/image",
-            "version": "2.2.7",
-            "version_normalized": "2.2.7.0",
+            "version": "v2.x-dev",
+            "version_normalized": "2.9999999.9999999.9999999-dev",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/spatie\/image.git",
-                "reference": "2f802853aab017aa615224daae1588054b5ab20e"
+                "reference": "c3f6290af80791482b81913702767a69b570f37a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/spatie\/image\/zipball\/2f802853aab017aa615224daae1588054b5ab20e",
-                "reference": "2f802853aab017aa615224daae1588054b5ab20e",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/image\/zipball\/c3f6290af80791482b81913702767a69b570f37a",
+                "reference": "c3f6290af80791482b81913702767a69b570f37a",
                 "shasum": ""
             },
             "require": {
@@ -3425,12 +3489,12 @@
                 "symfony\/var-dumper": "^4.0|^5.0|^6.0",
                 "vimeo\/psalm": "^4.6"
             },
-            "time": "2023-07-24T13:54:13+00:00",
+            "time": "2023-12-14T12:03:32+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Spatie\\Image\\": "src"
+                    "_JchOptimizeVendor\\V91\\Spatie\\Image\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3452,7 +3516,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https:\/\/github.com\/spatie\/image\/tree\/2.2.7"
+                "source": "https:\/\/github.com\/spatie\/image\/tree\/main"
             },
             "funding": [
                 {
@@ -3468,17 +3532,17 @@
         },
         {
             "name": "spatie\/image-optimizer",
-            "version": "1.7.2",
-            "version_normalized": "1.7.2.0",
+            "version": "1.7.5",
+            "version_normalized": "1.7.5.0",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/spatie\/image-optimizer.git",
-                "reference": "62f7463483d1bd975f6f06025d89d42a29608fe1"
+                "reference": "43aff6725cd87bb78ccd8532633cfa8bdc962505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/spatie\/image-optimizer\/zipball\/62f7463483d1bd975f6f06025d89d42a29608fe1",
-                "reference": "62f7463483d1bd975f6f06025d89d42a29608fe1",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/image-optimizer\/zipball\/43aff6725cd87bb78ccd8532633cfa8bdc962505",
+                "reference": "43aff6725cd87bb78ccd8532633cfa8bdc962505",
                 "shasum": ""
             },
             "require": {
@@ -3492,12 +3556,12 @@
                 "phpunit\/phpunit": "^8.5.21|^9.4.4",
                 "symfony\/var-dumper": "^4.2|^5.0|^6.0|^7.0"
             },
-            "time": "2023-11-03T10:08:02+00:00",
+            "time": "2024-05-16T08:48:33+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Spatie\\ImageOptimizer\\": "src"
+                    "_JchOptimizeVendor\\V91\\Spatie\\ImageOptimizer\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3520,23 +3584,23 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/spatie\/image-optimizer\/issues",
-                "source": "https:\/\/github.com\/spatie\/image-optimizer\/tree\/1.7.2"
+                "source": "https:\/\/github.com\/spatie\/image-optimizer\/tree\/1.7.5"
             },
             "install-path": "..\/spatie\/image-optimizer"
         },
         {
             "name": "spatie\/robots-txt",
-            "version": "2.0.3",
-            "version_normalized": "2.0.3.0",
+            "version": "2.1.0",
+            "version_normalized": "2.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/spatie\/robots-txt.git",
-                "reference": "dacba2ba159364987392aa1b0002e196c5923970"
+                "reference": "d44c05859c3e6f6a6602bcf27ee653b60a4e8764"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/spatie\/robots-txt\/zipball\/dacba2ba159364987392aa1b0002e196c5923970",
-                "reference": "dacba2ba159364987392aa1b0002e196c5923970",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/robots-txt\/zipball\/d44c05859c3e6f6a6602bcf27ee653b60a4e8764",
+                "reference": "d44c05859c3e6f6a6602bcf27ee653b60a4e8764",
                 "shasum": ""
             },
             "require": {
@@ -3546,12 +3610,12 @@
                 "larapack\/dd": "^1.0",
                 "phpunit\/phpunit": "^8.0 || ^9.0"
             },
-            "time": "2023-11-22T12:57:35+00:00",
+            "time": "2024-04-19T11:44:41+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Spatie\\Robots\\": "src"
+                    "_JchOptimizeVendor\\V91\\Spatie\\Robots\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3574,7 +3638,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/spatie\/robots-txt\/issues",
-                "source": "https:\/\/github.com\/spatie\/robots-txt\/tree\/2.0.3"
+                "source": "https:\/\/github.com\/spatie\/robots-txt\/tree\/2.1.0"
             },
             "funding": [
                 {
@@ -3590,17 +3654,17 @@
         },
         {
             "name": "spatie\/temporary-directory",
-            "version": "2.2.0",
-            "version_normalized": "2.2.0.0",
+            "version": "2.2.1",
+            "version_normalized": "2.2.1.0",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/spatie\/temporary-directory.git",
-                "reference": "efc258c9f4da28f0c7661765b8393e4ccee3d19c"
+                "reference": "76949fa18f8e1a7f663fd2eaa1d00e0bcea0752a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/spatie\/temporary-directory\/zipball\/efc258c9f4da28f0c7661765b8393e4ccee3d19c",
-                "reference": "efc258c9f4da28f0c7661765b8393e4ccee3d19c",
+                "url": "https:\/\/api.github.com\/repos\/spatie\/temporary-directory\/zipball\/76949fa18f8e1a7f663fd2eaa1d00e0bcea0752a",
+                "reference": "76949fa18f8e1a7f663fd2eaa1d00e0bcea0752a",
                 "shasum": ""
             },
             "require": {
@@ -3609,12 +3673,12 @@
             "require-dev": {
                 "phpunit\/phpunit": "^9.5"
             },
-            "time": "2023-09-25T07:13:36+00:00",
+            "time": "2023-12-25T11:46:58+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Spatie\\TemporaryDirectory\\": "src"
+                    "_JchOptimizeVendor\\V91\\Spatie\\TemporaryDirectory\\": "src"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3638,7 +3702,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/spatie\/temporary-directory\/issues",
-                "source": "https:\/\/github.com\/spatie\/temporary-directory\/tree\/2.2.0"
+                "source": "https:\/\/github.com\/spatie\/temporary-directory\/tree\/2.2.1"
             },
             "funding": [
                 {
@@ -3659,18 +3723,18 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/symfony\/deprecation-contracts.git",
-                "reference": "80d075412b557d41002320b96a096ca65aa2c98d"
+                "reference": "d36279a5a4bc7f3ca2c412839f10d7c0aa2c1a02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/symfony\/deprecation-contracts\/zipball\/80d075412b557d41002320b96a096ca65aa2c98d",
-                "reference": "80d075412b557d41002320b96a096ca65aa2c98d",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/deprecation-contracts\/zipball\/d36279a5a4bc7f3ca2c412839f10d7c0aa2c1a02",
+                "reference": "d36279a5a4bc7f3ca2c412839f10d7c0aa2c1a02",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
             },
-            "time": "2023-01-24T14:02:46+00:00",
+            "time": "2024-04-18T08:26:06+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -3729,12 +3793,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/symfony\/dom-crawler.git",
-                "reference": "728f1fc136252a626ba5a69c02bd66a3697ff201"
+                "reference": "2ad469c3e07fdba677b278d0e266071a51aa0dac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/symfony\/dom-crawler\/zipball\/728f1fc136252a626ba5a69c02bd66a3697ff201",
-                "reference": "728f1fc136252a626ba5a69c02bd66a3697ff201",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/dom-crawler\/zipball\/2ad469c3e07fdba677b278d0e266071a51aa0dac",
+                "reference": "2ad469c3e07fdba677b278d0e266071a51aa0dac",
                 "shasum": ""
             },
             "require": {
@@ -3754,12 +3818,12 @@
             "suggest": {
                 "symfony\/css-selector": ""
             },
-            "time": "2023-11-17T20:43:48+00:00",
+            "time": "2024-05-31T14:33:22+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Symfony\\Component\\DomCrawler\\": ""
+                    "_JchOptimizeVendor\\V91\\Symfony\\Component\\DomCrawler\\": ""
                 },
                 "exclude-from-classmap": [
                     "\/Tests\/"
@@ -3807,12 +3871,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/symfony\/polyfill-ctype.git",
-                "reference": "ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb"
+                "reference": "0424dff1c58f028c451efff2045f5d92410bd540"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-ctype\/zipball\/ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb",
-                "reference": "ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-ctype\/zipball\/0424dff1c58f028c451efff2045f5d92410bd540",
+                "reference": "0424dff1c58f028c451efff2045f5d92410bd540",
                 "shasum": ""
             },
             "require": {
@@ -3824,13 +3888,10 @@
             "suggest": {
                 "ext-ctype": "For best performance"
             },
-            "time": "2023-01-26T09:26:14+00:00",
+            "time": "2024-05-31T15:07:36+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-main": "1.28-dev"
-                },
                 "thanks": {
                     "name": "symfony\/polyfill",
                     "url": "https:\/\/github.com\/symfony\/polyfill"
@@ -3842,7 +3903,7 @@
                     "bootstrap.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\Symfony\\Polyfill\\Ctype\\": ""
+                    "_JchOptimizeVendor\\V91\\Symfony\\Polyfill\\Ctype\\": ""
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3868,7 +3929,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-ctype\/tree\/v1.28.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-ctype\/tree\/1.x"
             },
             "funding": [
                 {
@@ -3893,12 +3954,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/symfony\/polyfill-mbstring.git",
-                "reference": "42292d99c55abe617799667f454222c54c60e229"
+                "reference": "098e36a5b73de12beeb5ac17e80abf3696f7ad5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-mbstring\/zipball\/42292d99c55abe617799667f454222c54c60e229",
-                "reference": "42292d99c55abe617799667f454222c54c60e229",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-mbstring\/zipball\/098e36a5b73de12beeb5ac17e80abf3696f7ad5f",
+                "reference": "098e36a5b73de12beeb5ac17e80abf3696f7ad5f",
                 "shasum": ""
             },
             "require": {
@@ -3910,13 +3971,10 @@
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
-            "time": "2023-07-28T09:04:16+00:00",
+            "time": "2024-05-31T15:07:36+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-main": "1.28-dev"
-                },
                 "thanks": {
                     "name": "symfony\/polyfill",
                     "url": "https:\/\/github.com\/symfony\/polyfill"
@@ -3928,7 +3986,7 @@
                     "bootstrap.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\Symfony\\Polyfill\\Mbstring\\": ""
+                    "_JchOptimizeVendor\\V91\\Symfony\\Polyfill\\Mbstring\\": ""
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
@@ -3955,7 +4013,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-mbstring\/tree\/v1.28.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-mbstring\/tree\/1.x"
             },
             "funding": [
                 {
@@ -3980,24 +4038,21 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/symfony\/polyfill-php80.git",
-                "reference": "6caa57379c4aec19c0a12a38b59b26487dcfe4b5"
+                "reference": "77fa7995ac1b21ab60769b7323d600a991a90433"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-php80\/zipball\/6caa57379c4aec19c0a12a38b59b26487dcfe4b5",
-                "reference": "6caa57379c4aec19c0a12a38b59b26487dcfe4b5",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-php80\/zipball\/77fa7995ac1b21ab60769b7323d600a991a90433",
+                "reference": "77fa7995ac1b21ab60769b7323d600a991a90433",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
             },
-            "time": "2023-01-26T09:26:14+00:00",
+            "time": "2024-05-31T15:07:36+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-main": "1.28-dev"
-                },
                 "thanks": {
                     "name": "symfony\/polyfill",
                     "url": "https:\/\/github.com\/symfony\/polyfill"
@@ -4009,7 +4064,7 @@
                     "bootstrap.php"
                 ],
                 "psr-4": {
-                    "_JchOptimizeVendor\\Symfony\\Polyfill\\Php80\\": ""
+                    "_JchOptimizeVendor\\V91\\Symfony\\Polyfill\\Php80\\": ""
                 },
                 "classmap": [
                     "Resources\/stubs"
@@ -4042,7 +4097,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-php80\/tree\/v1.28.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-php80\/tree\/1.x"
             },
             "funding": [
                 {
@@ -4061,30 +4116,113 @@
             "install-path": "..\/symfony\/polyfill-php80"
         },
         {
+            "name": "symfony\/polyfill-uuid",
+            "version": "1.x-dev",
+            "version_normalized": "1.9999999.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/polyfill-uuid.git",
+                "reference": "21533be36c24be3f4b1669c4725c7d1d2bab4ae2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-uuid\/zipball\/21533be36c24be3f4b1669c4725c7d1d2bab4ae2",
+                "reference": "21533be36c24be3f4b1669c4725c7d1d2bab4ae2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "provide": {
+                "ext-uuid": "*"
+            },
+            "suggest": {
+                "ext-uuid": "For best performance"
+            },
+            "time": "2024-09-09T11:45:10+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https:\/\/github.com\/symfony\/polyfill",
+                    "name": "symfony\/polyfill"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "_JchOptimizeVendor\\V91\\Symfony\\Polyfill\\Uuid\\": ""
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gr\u00e9goire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for uuid functions",
+            "homepage": "https:\/\/symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "uuid"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/polyfill-uuid\/tree\/v1.32.0"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/polyfill-uuid"
+        },
+        {
             "name": "symfony\/process",
             "version": "5.4.x-dev",
             "version_normalized": "5.4.9999999.9999999-dev",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/symfony\/process.git",
-                "reference": "8fa22178dfc368911dbd513b431cd9b06f9afe7a"
+                "reference": "deedcb3bb4669cae2148bc920eafd2b16dc7c046"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/symfony\/process\/zipball\/8fa22178dfc368911dbd513b431cd9b06f9afe7a",
-                "reference": "8fa22178dfc368911dbd513b431cd9b06f9afe7a",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/process\/zipball\/deedcb3bb4669cae2148bc920eafd2b16dc7c046",
+                "reference": "deedcb3bb4669cae2148bc920eafd2b16dc7c046",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
                 "symfony\/polyfill-php80": "^1.16"
             },
-            "time": "2023-12-02T08:41:43+00:00",
+            "time": "2024-05-31T14:33:22+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Symfony\\Component\\Process\\": ""
+                    "_JchOptimizeVendor\\V91\\Symfony\\Component\\Process\\": ""
                 },
                 "exclude-from-classmap": [
                     "\/Tests\/"
@@ -4126,6 +4264,83 @@
             "install-path": "..\/symfony\/process"
         },
         {
+            "name": "symfony\/uid",
+            "version": "5.4.x-dev",
+            "version_normalized": "5.4.9999999.9999999-dev",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/symfony\/uid.git",
+                "reference": "512de7894f93ad63a7d5e33f590a83e054f571bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/symfony\/uid\/zipball\/512de7894f93ad63a7d5e33f590a83e054f571bc",
+                "reference": "512de7894f93ad63a7d5e33f590a83e054f571bc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony\/polyfill-uuid": "^1.15"
+            },
+            "require-dev": {
+                "symfony\/console": "^4.4|^5.0|^6.0"
+            },
+            "time": "2024-09-25T14:11:13+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "_JchOptimizeVendor\\V91\\Symfony\\Component\\Uid\\": ""
+                },
+                "exclude-from-classmap": [
+                    "\/Tests\/"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gr\u00e9goire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https:\/\/symfony.com\/contributors"
+                }
+            ],
+            "description": "Provides an object-oriented API to generate and represent UIDs",
+            "homepage": "https:\/\/symfony.com",
+            "keywords": [
+                "UID",
+                "ulid",
+                "uuid"
+            ],
+            "support": {
+                "source": "https:\/\/github.com\/symfony\/uid\/tree\/5.4"
+            },
+            "funding": [
+                {
+                    "url": "https:\/\/symfony.com\/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https:\/\/github.com\/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "..\/symfony\/uid"
+        },
+        {
             "name": "webmozart\/assert",
             "version": "1.11.0",
             "version_normalized": "1.11.0.0",
@@ -4161,7 +4376,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "_JchOptimizeVendor\\Webmozart\\Assert\\": "src\/"
+                    "_JchOptimizeVendor\\V91\\Webmozart\\Assert\\": "src\/"
                 }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",

@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache;
+namespace _JchOptimizeVendor\V91\Laminas\Cache;
 
 class Module
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 // Don't redefine the functions if included multiple times.
-if (!\function_exists('_JchOptimizeVendor\\GuzzleHttp\\Psr7\\str')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\str')) {
     require __DIR__ . '/functions.php';
 }

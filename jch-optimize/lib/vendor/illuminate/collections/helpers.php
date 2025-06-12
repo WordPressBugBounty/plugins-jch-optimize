@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
-use _JchOptimizeVendor\Illuminate\Support\Arr;
-use _JchOptimizeVendor\Illuminate\Support\Collection;
-if (!\function_exists('_JchOptimizeVendor\\collect')) {
+use _JchOptimizeVendor\V91\Illuminate\Support\Arr;
+use _JchOptimizeVendor\V91\Illuminate\Support\Collection;
+
+if (!\function_exists('_JchOptimizeVendor\\V91\\collect')) {
     /**
      * Create a collection from the given value.
      *
@@ -16,7 +17,7 @@ if (!\function_exists('_JchOptimizeVendor\\collect')) {
         return new Collection($value);
     }
 }
-if (!\function_exists('_JchOptimizeVendor\\data_fill')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\data_fill')) {
     /**
      * Fill in data where it's missing.
      *
@@ -30,7 +31,7 @@ if (!\function_exists('_JchOptimizeVendor\\data_fill')) {
         return data_set($target, $key, $value, \false);
     }
 }
-if (!\function_exists('_JchOptimizeVendor\\data_get')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
      *
@@ -73,7 +74,7 @@ if (!\function_exists('_JchOptimizeVendor\\data_get')) {
         return $target;
     }
 }
-if (!\function_exists('_JchOptimizeVendor\\data_set')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\data_set')) {
     /**
      * Set an item on an array or object using dot notation.
      *
@@ -128,7 +129,7 @@ if (!\function_exists('_JchOptimizeVendor\\data_set')) {
         return $target;
     }
 }
-if (!\function_exists('_JchOptimizeVendor\\head')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\head')) {
     /**
      * Get the first element of an array. Useful for method chaining.
      *
@@ -140,7 +141,7 @@ if (!\function_exists('_JchOptimizeVendor\\head')) {
         return \reset($array);
     }
 }
-if (!\function_exists('_JchOptimizeVendor\\last')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\last')) {
     /**
      * Get the last element from an array.
      *
@@ -152,7 +153,7 @@ if (!\function_exists('_JchOptimizeVendor\\last')) {
         return \end($array);
     }
 }
-if (!\function_exists('_JchOptimizeVendor\\value')) {
+if (!\function_exists('_JchOptimizeVendor\\V91\\value')) {
     /**
      * Return the default value of the given value.
      *

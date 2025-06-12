@@ -14,9 +14,9 @@
 // Protect from unauthorized access
 defined('_JCH_EXEC') or die;
 
-const JCH_VERSION  = '4.2.1';
-const JCH_DATE     = '2024-05-15';
+const JCH_VERSION  = '5.0.0';
+const JCH_DATE     = '2025-06-11';
 const JCH_PRO      = '0';
 const JCH_DEVELOP  = '0';
 const JCH_PLATFORM = 'WordPress';
-define('_JchOptimizeVendor\JPATH_ROOT', rtrim(ABSPATH, '/\\'));
+define('_JchOptimizeVendor\V91\JPATH_ROOT', rtrim(ABSPATH, '/\\'));

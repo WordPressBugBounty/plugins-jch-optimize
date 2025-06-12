@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License Version 2.1 or Later
  */
-namespace _JchOptimizeVendor\Joomla\Renderer;
+
+namespace _JchOptimizeVendor\V91\Joomla\Renderer;
 
 /**
  * Abstract class for templates renderer

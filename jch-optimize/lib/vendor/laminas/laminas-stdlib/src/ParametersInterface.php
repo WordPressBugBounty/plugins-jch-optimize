@@ -1,12 +1,14 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use ArrayAccess;
 use Countable;
 use Serializable;
 use Traversable;
+
 /**
  * Basically, an ArrayObject. You could simply define something like:
  *     class QueryParams extends ArrayObject implements Parameters {}

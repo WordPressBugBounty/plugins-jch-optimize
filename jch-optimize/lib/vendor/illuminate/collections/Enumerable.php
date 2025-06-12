@@ -1,12 +1,13 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support;
+namespace _JchOptimizeVendor\V91\Illuminate\Support;
 
 use Countable;
-use _JchOptimizeVendor\Illuminate\Contracts\Support\Arrayable;
-use _JchOptimizeVendor\Illuminate\Contracts\Support\Jsonable;
+use _JchOptimizeVendor\V91\Illuminate\Contracts\Support\Arrayable;
+use _JchOptimizeVendor\V91\Illuminate\Contracts\Support\Jsonable;
 use IteratorAggregate;
 use JsonSerializable;
+
 interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, JsonSerializable
 {
     /**

@@ -1,9 +1,10 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Handler;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Handler;
 
-use _JchOptimizeVendor\GuzzleHttp\Promise\PromiseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\PromiseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+
 /**
  * HTTP handler that uses cURL easy handles as a transport layer.
  *
@@ -30,7 +31,7 @@ class CurlHandler
     {
         $this->factory = $options['handle_factory'] ?? new CurlFactory(3);
     }
-    public function __invoke(RequestInterface $request, array $options) : PromiseInterface
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         if (isset($options['delay'])) {
             \usleep($options['delay'] * 1000);

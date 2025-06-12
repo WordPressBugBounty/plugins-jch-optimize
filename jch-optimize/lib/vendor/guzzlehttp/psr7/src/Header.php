@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
 final class Header
 {

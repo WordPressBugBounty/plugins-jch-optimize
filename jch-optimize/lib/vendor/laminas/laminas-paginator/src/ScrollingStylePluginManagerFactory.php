@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
-use _JchOptimizeVendor\Interop\Container\ContainerInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\FactoryInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\ServiceLocatorInterface;
+use _JchOptimizeVendor\V91\Interop\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\FactoryInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\ServiceLocatorInterface;
+
 class ScrollingStylePluginManagerFactory implements FactoryInterface
 {
     /**

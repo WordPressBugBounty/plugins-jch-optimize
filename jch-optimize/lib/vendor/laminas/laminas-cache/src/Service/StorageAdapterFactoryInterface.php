@@ -1,10 +1,12 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Service;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Cache\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Service;
+
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+
 /**
  * @psalm-type InternalOptionalPriorityConfigurationType = array{priority?:int}
  * NOTE: have to re-declare this here until https://github.com/vimeo/psalm/issues/5148 is fixed.
@@ -22,17 +24,17 @@ interface StorageAdapterFactoryInterface
     /**
      * @psalm-param StorageAdapterArrayConfigurationType $configuration
      */
-    public function createFromArrayConfiguration(array $configuration) : StorageInterface;
+    public function createFromArrayConfiguration(array $configuration): StorageInterface;
     /**
      * @psalm-param non-empty-string $storage
      * @param array<string,mixed>  $options
      * @psalm-param list<PluginArrayConfigurationWithPriorityType> $plugins
      */
-    public function create(string $storage, array $options = [], array $plugins = []) : StorageInterface;
+    public function create(string $storage, array $options = [], array $plugins = []): StorageInterface;
     /**
      * @param array<mixed> $configuration
      * @psalm-assert StorageAdapterArrayConfigurationType $configuration
      * @throws InvalidArgumentException If the provided configuration is invalid.
      */
-    public function assertValidConfigurationStructure(array $configuration) : void;
+    public function assertValidConfigurationStructure(array $configuration): void;
 }

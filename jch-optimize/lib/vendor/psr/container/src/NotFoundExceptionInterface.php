@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Container;
+namespace _JchOptimizeVendor\V91\Psr\Container;
 
 /**
  * No entry was found in the container.

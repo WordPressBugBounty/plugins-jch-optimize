@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
 /**
  * Interface to automate setter injection for an EventManager instance

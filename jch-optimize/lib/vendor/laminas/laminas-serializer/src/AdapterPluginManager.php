@@ -3,17 +3,21 @@
 /**
  * @see https://github.com/laminas/laminas-serializer for the canonical source repository
  */
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Serializer;
 
-use _JchOptimizeVendor\Laminas\ServiceManager\AbstractPluginManager;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\InvalidServiceException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Factory\InvokableFactory;
-use _JchOptimizeVendor\Zend\Serializer\Adapter as ZendAdapter;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Serializer;
+
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\AbstractPluginManager;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\InvalidServiceException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Factory\InvokableFactory;
+use _JchOptimizeVendor\V91\Zend\Serializer\Adapter as ZendAdapter;
+
 use function get_class;
 use function gettype;
 use function is_object;
 use function sprintf;
+
 /**
  * Plugin manager implementation for serializer adapters.
  *

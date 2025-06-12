@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * Locate a byte index given a UTF-8 character index

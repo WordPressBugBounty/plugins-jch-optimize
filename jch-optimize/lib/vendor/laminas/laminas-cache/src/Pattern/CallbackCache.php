@@ -1,9 +1,10 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
 
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\ErrorHandler;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ErrorHandler;
+
 use function array_key_exists;
 use function array_values;
 use function is_callable;
@@ -16,6 +17,7 @@ use function ob_start;
 use function serialize;
 use function sprintf;
 use function strtolower;
+
 class CallbackCache extends AbstractStorageCapablePattern
 {
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support;
+namespace _JchOptimizeVendor\V91\Illuminate\Support;
 
 /**
  * @mixin \Illuminate\Support\Enumerable

@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Cookie;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Cookie;
 
-use _JchOptimizeVendor\GuzzleHttp\Utils;
+use _JchOptimizeVendor\V91\GuzzleHttp\Utils;
+
 /**
  * Persists non-session cookies using a JSON formatted file
  */
@@ -48,7 +49,7 @@ class FileCookieJar extends CookieJar
      *
      * @throws \RuntimeException if the file cannot be found or created
      */
-    public function save(string $filename) : void
+    public function save(string $filename): void
     {
         $json = [];
         /** @var SetCookie $cookie */
@@ -71,7 +72,7 @@ class FileCookieJar extends CookieJar
      *
      * @throws \RuntimeException if the file cannot be loaded.
      */
-    public function load(string $filename) : void
+    public function load(string $filename): void
     {
         $json = \file_get_contents($filename);
         if (\false === $json) {

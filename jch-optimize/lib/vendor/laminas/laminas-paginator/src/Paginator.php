@@ -1,26 +1,27 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use _JchOptimizeVendor\Laminas\Cache\Storage\IteratorInterface as CacheIterator;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface as CacheStorage;
-use _JchOptimizeVendor\Laminas\Db\ResultSet\AbstractResultSet;
-use _JchOptimizeVendor\Laminas\Filter\FilterInterface;
-use _JchOptimizeVendor\Laminas\Paginator\Adapter\AdapterInterface;
-use _JchOptimizeVendor\Laminas\Paginator\Adapter\DbSelect;
-use _JchOptimizeVendor\Laminas\Paginator\ScrollingStyle\ScrollingStyleInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\ServiceManager;
-use _JchOptimizeVendor\Laminas\Stdlib\ArrayUtils;
-use _JchOptimizeVendor\Laminas\View;
-use _JchOptimizeVendor\Laminas\View\Renderer\RendererInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IteratorInterface as CacheIterator;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface as CacheStorage;
+use _JchOptimizeVendor\V91\Laminas\Db\ResultSet\AbstractResultSet;
+use _JchOptimizeVendor\V91\Laminas\Filter\FilterInterface;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Adapter\AdapterInterface;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Adapter\DbSelect;
+use _JchOptimizeVendor\V91\Laminas\Paginator\ScrollingStyle\ScrollingStyleInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\ServiceManager;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ArrayUtils;
+use _JchOptimizeVendor\V91\Laminas\View;
+use _JchOptimizeVendor\V91\Laminas\View\Renderer\RendererInterface;
 use ReturnTypeWillChange;
 // phpcs:ignore
 use stdClass;
 use Throwable;
 use Traversable;
+
 use function ceil;
 use function class_exists;
 use function count;
@@ -40,11 +41,13 @@ use function strpos;
 use function strtolower;
 use function substr;
 use function trigger_error;
+
 use const E_USER_WARNING;
 use const JSON_HEX_AMP;
 use const JSON_HEX_APOS;
 use const JSON_HEX_QUOT;
 use const JSON_HEX_TAG;
+
 class Paginator implements Countable, IteratorAggregate
 {
     /**
@@ -835,7 +838,7 @@ class Paginator implements Countable, IteratorAggregate
         switch (strtolower(gettype($scrollingStyle))) {
             case 'object':
                 if (!$scrollingStyle instanceof ScrollingStyleInterface) {
-                    throw new Exception\InvalidArgumentException('_JchOptimizeVendor\\Scrolling style must implement Laminas\\Paginator\\ScrollingStyle\\ScrollingStyleInterface');
+                    throw new Exception\InvalidArgumentException('_JchOptimizeVendor\\V91\\Scrolling style must implement Laminas\\Paginator\\ScrollingStyle\\ScrollingStyleInterface');
                 }
                 return $scrollingStyle;
             case 'string':

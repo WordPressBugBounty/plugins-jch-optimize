@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Http\Client;
+namespace _JchOptimizeVendor\V91\Psr\Http\Client;
 
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+
 /**
  * Thrown when the request cannot be completed because of network issues.
  *
@@ -19,5 +20,5 @@ interface NetworkExceptionInterface extends ClientExceptionInterface
      *
      * @return RequestInterface
      */
-    public function getRequest() : RequestInterface;
+    public function getRequest(): RequestInterface;
 }

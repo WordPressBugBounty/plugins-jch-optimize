@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,9 +13,14 @@
 
 namespace JchOptimize\Core;
 
-use JchOptimize\Platform\Utility;
+use JchOptimize\Core\Platform\UtilityInterface;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
+use function defined;
+use function md5;
+use function trim;
+
+defined('_JCH_EXEC') or die('Restricted access');
+
 class Browser
 {
     /**
@@ -27,19 +33,21 @@ class Browser
      */
     protected object $oClient;
 
-    public function __construct(string $userAgent)
+    public function __construct(UtilityInterface $utility, string $userAgent)
     {
-        $this->oClient = Utility::userAgent($userAgent);
+        $this->oClient = $utility->userAgent($userAgent);
     }
 
-    public static function getInstance(string $userAgent = ''): Browser
+    public static function getInstance(UtilityInterface $utility, string $userAgent = ''): Browser
     {
-        if ('' == $userAgent && isset($_SERVER['HTTP_USER_AGENT'])) {
-            $userAgent = \trim($_SERVER['HTTP_USER_AGENT']);
+        if ($userAgent == '' && isset($_SERVER['HTTP_USER_AGENT'])) {
+            $userAgent = trim($_SERVER['HTTP_USER_AGENT']);
         }
-        $signature = \md5($userAgent);
+
+        $signature = md5($userAgent);
+
         if (!isset(self::$instances[$signature])) {
-            self::$instances[$signature] = new \JchOptimize\Core\Browser($userAgent);
+            self::$instances[$signature] = new Browser($utility, $userAgent);
         }
 
         return self::$instances[$signature];
@@ -47,11 +55,11 @@ class Browser
 
     public function getBrowser(): string
     {
-        return $this->oClient->browser;
+        return $this->oClient->browser ?? '';
     }
 
     public function getVersion(): string
     {
-        return $this->oClient->browserVersion;
+        return $this->oClient->browserVersion ?? '';
     }
 }

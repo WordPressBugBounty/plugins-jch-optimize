@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+
 /**
  * Decorator used to return only a subset of a stream.
  *
@@ -11,6 +12,7 @@ use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
 class LimitStream implements StreamInterface
 {
     use StreamDecoratorTrait;
+
     /** @var int Offset to start reading from */
     private $offset;
     /** @var int Limit the number of bytes that can be read */

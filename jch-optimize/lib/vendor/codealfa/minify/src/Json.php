@@ -8,19 +8,22 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\Minify;
 
 use Exception;
+
 class Json extends \CodeAlfa\Minify\Base
 {
     use \CodeAlfa\RegexTokenizer\Js;
+
     public string $json;
     /**
      * @param   string  $json
      *
      * @return string
      */
-    public static function optimize(string $json) : string
+    public static function optimize(string $json): string
     {
         $obj = new \CodeAlfa\Minify\Json($json);
         try {
@@ -40,7 +43,7 @@ class Json extends \CodeAlfa\Minify\Base
      *
      * @throws Exception
      */
-    private function _optimize() : string
+    private function _optimize(): string
     {
         //regex for double-quoted strings
         $s1 = self::doubleQuoteStringToken();
@@ -53,8 +56,8 @@ class Json extends \CodeAlfa\Minify\Base
         //regex for HTML comments
         $h = self::jsHtmlCommentToken();
         //remove all comments
-        $rx = "#(?>[^/\"'<]*+(?:{$s1}|{$s2})?)*?\\K(?>{$b}|{$c}|{$h}|\$)#si";
-        $this->json = $this->_replace($rx, '', $this->json, '1');
+        /*$rx          = "#(?>[^/\"'<]++$s1|$s2)?)*?\K(?>{$b}|{$c}|{$h}|$)#si";
+          $this->json = $this->_replace($rx, '', $this->json, '1');*/
         //remove whitespaces around :,{}
         $rx = "#(?>[^\"'\\s]*+(?:{$s1}|{$s2})?)*?\\K(?>\\s++(?=[:,{}\\[\\]])|(?<=[:,{}\\[\\]])\\s++|\$)#s";
         $this->json = $this->_replace($rx, '', $this->json, '2');

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,20 +13,19 @@
 
 namespace JchOptimize\Core\Html;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
-use JchOptimize\Core\Html\Elements\BaseElement;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 
 /**
- * @method BaseElement id(string $value)
- * @method BaseElement class(string $value)
- * @method BaseElement hidden(string $value)
- * @method BaseElement style(string $value)
- * @method BaseElement title(string $value)
- * @method bool|string getId()
- * @method array|bool  getClass()
- * @method bool|string getHidden()
- * @method bool|string getStyle()
- * @method bool|string getTitle()
+ * @method static id(string $value)
+ * @method static class(string $value)
+ * @method static hidden(string $value)
+ * @method static style(string $value)
+ * @method static title(string $value)
+ * @method string|false getId()
+ * @method array|false getClass()
+ * @method string|false getHidden()
+ * @method string|false getStyle()
+ * @method string|false getTitle()
  */
 interface HtmlElementInterface
 {
@@ -56,4 +56,6 @@ interface HtmlElementInterface
     public function setParent(string $name): static;
 
     public function getParent(): string;
+
+    public function __toString(): string;
 }

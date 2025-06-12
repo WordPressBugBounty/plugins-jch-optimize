@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace _JchOptimizeVendor\Webmozart\Assert;
+namespace _JchOptimizeVendor\V91\Webmozart\Assert;
 
 use ArrayAccess;
 use BadMethodCallException;
@@ -21,6 +21,7 @@ use ResourceBundle;
 use SimpleXMLElement;
 use Throwable;
 use Traversable;
+
 /**
  * Efficient assertions to validate the input/output of your methods.
  *
@@ -31,6 +32,7 @@ use Traversable;
 class Assert
 {
     use Mixin;
+
     /**
      * @psalm-pure
      * @psalm-assert string $value

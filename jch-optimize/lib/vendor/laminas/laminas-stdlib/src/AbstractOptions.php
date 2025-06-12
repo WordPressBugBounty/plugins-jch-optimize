@@ -1,9 +1,11 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Traversable;
+
 use function array_shift;
 use function is_array;
 use function is_callable;
@@ -13,6 +15,7 @@ use function sprintf;
 use function str_replace;
 use function strtolower;
 use function ucwords;
+
 abstract class AbstractOptions implements ParameterObjectInterface
 {
     // phpcs:disable PSR2.Classes.PropertyDeclaration.Underscore,WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCapsProperty
@@ -64,7 +67,7 @@ abstract class AbstractOptions implements ParameterObjectInterface
     {
         $array = [];
         /** @param string[] $letters */
-        $transform = static function (array $letters) : string {
+        $transform = static function (array $letters): string {
             $letter = array_shift($letters);
             return '_' . strtolower($letter);
         };

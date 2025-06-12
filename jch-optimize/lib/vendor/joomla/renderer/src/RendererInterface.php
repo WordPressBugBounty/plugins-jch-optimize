@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License Version 2.1 or Later
  */
-namespace _JchOptimizeVendor\Joomla\Renderer;
+
+namespace _JchOptimizeVendor\V91\Joomla\Renderer;
 
 /**
  * Rendering interface.
@@ -24,7 +25,7 @@ interface RendererInterface
      *
      * @since   2.0.0
      */
-    public function pathExists(string $path) : bool;
+    public function pathExists(string $path): bool;
     /**
      * Get the rendering engine
      *
@@ -43,7 +44,7 @@ interface RendererInterface
      *
      * @since   2.0.0
      */
-    public function render(string $template, array $data = []) : string;
+    public function render(string $template, array $data = []): string;
     /**
      * Sets a piece of data
      *

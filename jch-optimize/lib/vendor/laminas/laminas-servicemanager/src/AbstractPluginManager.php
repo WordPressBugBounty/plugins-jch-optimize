@@ -1,18 +1,22 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\InvalidServiceException;
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager;
+
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\InvalidServiceException;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 use function class_exists;
 use function gettype;
 use function is_object;
 use function method_exists;
 use function sprintf;
 use function trigger_error;
+
 use const E_USER_DEPRECATED;
+
 /**
  * Abstract plugin manager.
  *

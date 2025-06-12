@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Psr\Log;
+namespace _JchOptimizeVendor\V91\Psr\Log;
 
 /**
  * This Logger can be used to avoid conditional log calls.

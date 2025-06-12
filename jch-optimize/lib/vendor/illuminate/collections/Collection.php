@@ -1,16 +1,19 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support;
+namespace _JchOptimizeVendor\V91\Illuminate\Support;
 
 use ArrayAccess;
 use ArrayIterator;
-use _JchOptimizeVendor\Illuminate\Contracts\Support\CanBeEscapedWhenCastToString;
-use _JchOptimizeVendor\Illuminate\Support\Traits\EnumeratesValues;
-use _JchOptimizeVendor\Illuminate\Support\Traits\Macroable;
+use _JchOptimizeVendor\V91\Illuminate\Contracts\Support\CanBeEscapedWhenCastToString;
+use _JchOptimizeVendor\V91\Illuminate\Support\Traits\EnumeratesValues;
+use _JchOptimizeVendor\V91\Illuminate\Support\Traits\Macroable;
 use stdClass;
+
 class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable
 {
-    use EnumeratesValues, Macroable;
+    use EnumeratesValues;
+    use Macroable;
+
     /**
      * The items contained in the collection.
      *
@@ -65,7 +68,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     public function avg($callback = null)
     {
         $callback = $this->valueRetriever($callback);
-        $items = $this->map(function ($value) use($callback) {
+        $items = $this->map(function ($value) use ($callback) {
             return $callback($value);
         })->filter(function ($value) {
             return !\is_null($value);
@@ -108,12 +111,12 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
         }
         $collection = isset($key) ? $this->pluck($key) : $this;
         $counts = new static();
-        $collection->each(function ($value) use($counts) {
+        $collection->each(function ($value) use ($counts) {
             $counts[$value] = isset($counts[$value]) ? $counts[$value] + 1 : 1;
         });
         $sorted = $counts->sort();
         $highestValue = $sorted->last();
-        return $sorted->filter(function ($value) use($highestValue) {
+        return $sorted->filter(function ($value) use ($highestValue) {
             return $value == $highestValue;
         })->sort()->keys()->all();
     }
@@ -890,7 +893,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     public function sliding($size = 2, $step = 1)
     {
         $chunks = \floor(($this->count() - $size) / $step) + 1;
-        return static::times($chunks, function ($number) use($size, $step) {
+        return static::times($chunks, function ($number) use ($size, $step) {
             return $this->slice(($number - 1) * $step, $size);
         });
     }
@@ -1105,7 +1108,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     protected function sortByMany(array $comparisons = [])
     {
         $items = $this->items;
-        \usort($items, function ($a, $b) use($comparisons) {
+        \usort($items, function ($a, $b) use ($comparisons) {
             foreach ($comparisons as $comparison) {
                 $comparison = Arr::wrap($comparison);
                 $prop = $comparison[0];
@@ -1256,7 +1259,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
         }
         $callback = $this->valueRetriever($key);
         $exists = [];
-        return $this->reject(function ($item, $key) use($callback, $strict, &$exists) {
+        return $this->reject(function ($item, $key) use ($callback, $strict, &$exists) {
             if (\in_array($id = $callback($item, $key), $exists, $strict)) {
                 return \true;
             }

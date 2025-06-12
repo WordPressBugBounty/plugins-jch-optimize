@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager\Filter;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager\Filter;
 
-use _JchOptimizeVendor\Laminas\EventManager\ResponseCollection;
+use _JchOptimizeVendor\V91\Laminas\EventManager\ResponseCollection;
+
 /**
  * Interface for intercepting filter chains
  */

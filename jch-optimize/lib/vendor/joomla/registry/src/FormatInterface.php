@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2015 Open Source Matters, Inc.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Registry;
+
+namespace _JchOptimizeVendor\V91\Joomla\Registry;
 
 /**
  * Interface defining a format object

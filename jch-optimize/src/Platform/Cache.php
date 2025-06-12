@@ -11,28 +11,29 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
 
-
+use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Registry;
 
 use function get_current_blog_id;
 use function header;
 use function is_multisite;
 
-class Cache implements \JchOptimize\Core\Interfaces\Cache
+class Cache implements CacheInterface
 {
-    public static function cleanThirdPartyPageCache(): void
+    public function cleanThirdPartyPageCache(): void
     {
         // Not currently used on this platform.
     }
 
-    public static function prepareDataFromCache(?array $data): ?array
+    public function prepareDataFromCache(?array $data): ?array
     {
         return $data;
     }
 
-    public static function outputData(array $data): void
+    #[NoReturn]
+    public function outputData(array $data): void
     {
         /** @psalm-var array{headers:string[], body:string} $data */
         if (!empty($data['headers'])) {
@@ -58,7 +59,7 @@ class Cache implements \JchOptimize\Core\Interfaces\Cache
     }
 
 
-    public static function isPageCacheEnabled(Registry $params, bool $nativeCache = false): bool
+    public function isPageCacheEnabled(Registry $params, bool $nativeCache = false): bool
     {
         return (bool)$params->get('cache_enable', '0');
     }
@@ -69,7 +70,7 @@ class Cache implements \JchOptimize\Core\Interfaces\Cache
      * @return string
      * @deprecated
      */
-    public static function getCacheNamespace(bool $pageCache = false): string
+    public function getCacheNamespace(bool $pageCache = false): string
     {
         $id = '';
 
@@ -84,27 +85,27 @@ class Cache implements \JchOptimize\Core\Interfaces\Cache
         return 'jchoptimizecache' . $id;
     }
 
-    public static function isCaptureCacheIncompatible(): bool
+    public function isCaptureCacheIncompatible(): bool
     {
         return is_multisite();
     }
 
-    public static function getPageCacheNamespace(): string
+    public function getPageCacheNamespace(): string
     {
-        return 'jchoptimizepagecache' . self::getCurrentSiteId();
+        return 'jchoptimizepagecache' . $this->getCurrentSiteId();
     }
 
-    public static function getGlobalCacheNamespace(): string
+    public function getGlobalCacheNamespace(): string
     {
-        return 'jchoptimizecache' . self::getCurrentSiteId();
+        return 'jchoptimizecache' . $this->getCurrentSiteId();
     }
 
-    public static function getTaggableCacheNamespace(): string
+    public function getTaggableCacheNamespace(): string
     {
-        return 'jchoptimizetags' . self::getCurrentSiteId();
+        return 'jchoptimizetags' . $this->getCurrentSiteId();
     }
 
-    private static function getCurrentSiteId(): string
+    private function getCurrentSiteId(): string
     {
         if (is_multisite()) {
             return (string) get_current_blog_id();

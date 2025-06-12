@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Exception\FilesystemException;
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Exception\FilesystemException;
+
 /**
  * A File handling class
  *

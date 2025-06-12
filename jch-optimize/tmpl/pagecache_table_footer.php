@@ -11,8 +11,14 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
+use _JchOptimizeVendor\V91\Laminas\Paginator\Paginator;
+
 defined('_JCH_EXEC') or die('Restricted Access');
 
+/**
+ * @var stdClass $paginator
+ * @var string $pageLink
+ */
 ?>
 
 <tr>

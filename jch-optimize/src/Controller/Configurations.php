@@ -11,35 +11,24 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\View\ConfigurationsHtml;
+use JchOptimize\Core\Platform\PathsInterface;
+use JchOptimize\WordPress\View\ConfigurationsHtml;
 
 class Configurations extends Controller
 {
-    /**
-     * @var ConfigurationsHtml
-     */
-    private ConfigurationsHtml $view;
-
-    /**
-     * Constructor
-     *
-     * @param   ConfigurationsHtml  $view
-     * @param   Input|null          $input
-     */
-    public function __construct(ConfigurationsHtml $view, ?Input $input = null)
+    public function __construct(private ConfigurationsHtml $view, private PathsInterface $paths, ?Input $input = null)
     {
-        $this->view = $view;
-
         parent::__construct($input);
     }
 
     public function execute(): bool
     {
         $this->view->addData('tab', 'configurations');
+        $this->view->addData('pathsUtils', $this->paths);
         $this->view->loadResources();
 
         echo $this->view->render();

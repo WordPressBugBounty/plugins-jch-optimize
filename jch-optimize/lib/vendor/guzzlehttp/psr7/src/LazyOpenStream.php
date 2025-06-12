@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+
 /**
  * Lazily reads or writes to a file that is opened only after an IO operation
  * take place on the stream.
@@ -12,6 +13,7 @@ use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
 class LazyOpenStream implements StreamInterface
 {
     use StreamDecoratorTrait;
+
     /** @var string File to open */
     private $filename;
     /** @var string */

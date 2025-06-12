@@ -1,22 +1,23 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support\Traits;
+namespace _JchOptimizeVendor\V91\Illuminate\Support\Traits;
 
 use CachingIterator;
 use Closure;
 use Exception;
-use _JchOptimizeVendor\Illuminate\Contracts\Support\Arrayable;
-use _JchOptimizeVendor\Illuminate\Contracts\Support\Jsonable;
-use _JchOptimizeVendor\Illuminate\Support\Arr;
-use _JchOptimizeVendor\Illuminate\Support\Collection;
-use _JchOptimizeVendor\Illuminate\Support\Enumerable;
-use _JchOptimizeVendor\Illuminate\Support\HigherOrderCollectionProxy;
-use _JchOptimizeVendor\Illuminate\Support\HigherOrderWhenProxy;
+use _JchOptimizeVendor\V91\Illuminate\Contracts\Support\Arrayable;
+use _JchOptimizeVendor\V91\Illuminate\Contracts\Support\Jsonable;
+use _JchOptimizeVendor\V91\Illuminate\Support\Arr;
+use _JchOptimizeVendor\V91\Illuminate\Support\Collection;
+use _JchOptimizeVendor\V91\Illuminate\Support\Enumerable;
+use _JchOptimizeVendor\V91\Illuminate\Support\HigherOrderCollectionProxy;
+use _JchOptimizeVendor\V91\Illuminate\Support\HigherOrderWhenProxy;
 use JsonSerializable;
-use _JchOptimizeVendor\Symfony\Component\VarDumper\VarDumper;
+use _JchOptimizeVendor\V91\Symfony\Component\VarDumper\VarDumper;
 use Traversable;
 use UnexpectedValueException;
 use UnitEnum;
+
 /**
  * @property-read HigherOrderCollectionProxy $average
  * @property-read HigherOrderCollectionProxy $avg
@@ -144,7 +145,7 @@ trait EnumeratesValues
     public function containsStrict($key, $value = null)
     {
         if (\func_num_args() === 2) {
-            return $this->contains(function ($item) use($key, $value) {
+            return $this->contains(function ($item) use ($key, $value) {
                 return data_get($item, $key) === $value;
             });
         }
@@ -204,7 +205,7 @@ trait EnumeratesValues
      */
     public function eachSpread(callable $callback)
     {
-        return $this->each(function ($chunk, $key) use($callback) {
+        return $this->each(function ($chunk, $key) use ($callback) {
             $chunk[] = $key;
             return $callback(...$chunk);
         });
@@ -259,7 +260,7 @@ trait EnumeratesValues
      */
     public function mapSpread(callable $callback)
     {
-        return $this->map(function ($chunk, $key) use($callback) {
+        return $this->map(function ($chunk, $key) use ($callback) {
             $chunk[] = $key;
             return $callback(...$chunk);
         });
@@ -295,7 +296,7 @@ trait EnumeratesValues
      */
     public function mapInto($class)
     {
-        return $this->map(function ($value, $key) use($class) {
+        return $this->map(function ($value, $key) use ($class) {
             return new $class($value, $key);
         });
     }
@@ -308,7 +309,7 @@ trait EnumeratesValues
     public function min($callback = null)
     {
         $callback = $this->valueRetriever($callback);
-        return $this->map(function ($value) use($callback) {
+        return $this->map(function ($value) use ($callback) {
             return $callback($value);
         })->filter(function ($value) {
             return !\is_null($value);
@@ -327,7 +328,7 @@ trait EnumeratesValues
         $callback = $this->valueRetriever($callback);
         return $this->filter(function ($value) {
             return !\is_null($value);
-        })->reduce(function ($result, $item) use($callback) {
+        })->reduce(function ($result, $item) use ($callback) {
             $value = $callback($item);
             return \is_null($result) || $value > $result ? $value : $result;
         });
@@ -375,7 +376,7 @@ trait EnumeratesValues
     public function sum($callback = null)
     {
         $callback = \is_null($callback) ? $this->identity() : $this->valueRetriever($callback);
-        return $this->reduce(function ($result, $item) use($callback) {
+        return $this->reduce(function ($result, $item) use ($callback) {
             return $result + $callback($item);
         }, 0);
     }
@@ -509,7 +510,7 @@ trait EnumeratesValues
     public function whereIn($key, $values, $strict = \false)
     {
         $values = $this->getArrayableItems($values);
-        return $this->filter(function ($item) use($key, $values, $strict) {
+        return $this->filter(function ($item) use ($key, $values, $strict) {
             return \in_array(data_get($item, $key), $values, $strict);
         });
     }
@@ -544,7 +545,7 @@ trait EnumeratesValues
      */
     public function whereNotBetween($key, $values)
     {
-        return $this->filter(function ($item) use($key, $values) {
+        return $this->filter(function ($item) use ($key, $values) {
             return data_get($item, $key) < \reset($values) || data_get($item, $key) > \end($values);
         });
     }
@@ -559,7 +560,7 @@ trait EnumeratesValues
     public function whereNotIn($key, $values, $strict = \false)
     {
         $values = $this->getArrayableItems($values);
-        return $this->reject(function ($item) use($key, $values, $strict) {
+        return $this->reject(function ($item) use ($key, $values, $strict) {
             return \in_array(data_get($item, $key), $values, $strict);
         });
     }
@@ -582,7 +583,7 @@ trait EnumeratesValues
      */
     public function whereInstanceOf($type)
     {
-        return $this->filter(function ($value) use($type) {
+        return $this->filter(function ($value) use ($type) {
             if (\is_array($type)) {
                 foreach ($type as $classType) {
                     if ($value instanceof $classType) {
@@ -707,7 +708,7 @@ trait EnumeratesValues
     public function reject($callback = \true)
     {
         $useAsCallable = $this->useAsCallable($callback);
-        return $this->filter(function ($value, $key) use($callback, $useAsCallable) {
+        return $this->filter(function ($value, $key) use ($callback, $useAsCallable) {
             return $useAsCallable ? !$callback($value, $key) : $value != $callback;
         });
     }
@@ -868,7 +869,7 @@ trait EnumeratesValues
             $value = $operator;
             $operator = '=';
         }
-        return function ($item) use($key, $operator, $value) {
+        return function ($item) use ($key, $operator, $value) {
             $retrieved = data_get($item, $key);
             $strings = \array_filter([$retrieved, $value], function ($value) {
                 return \is_string($value) || \is_object($value) && \method_exists($value, '__toString');
@@ -920,7 +921,7 @@ trait EnumeratesValues
         if ($this->useAsCallable($value)) {
             return $value;
         }
-        return function ($item) use($value) {
+        return function ($item) use ($value) {
             return data_get($item, $value);
         };
     }
@@ -932,7 +933,7 @@ trait EnumeratesValues
      */
     protected function equality($value)
     {
-        return function ($item) use($value) {
+        return function ($item) use ($value) {
             return $item === $value;
         };
     }
@@ -944,7 +945,7 @@ trait EnumeratesValues
      */
     protected function negate(Closure $callback)
     {
-        return function (...$params) use($callback) {
+        return function (...$params) use ($callback) {
             return !$callback(...$params);
         };
     }

@@ -1,16 +1,18 @@
 <?php
 
-namespace _JchOptimizeVendor\Illuminate\Support;
+namespace _JchOptimizeVendor\V91\Illuminate\Support;
 
 use ArrayAccess;
-use _JchOptimizeVendor\Illuminate\Support\Traits\Macroable;
+use _JchOptimizeVendor\V91\Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
-use function _JchOptimizeVendor\data_get;
-use function _JchOptimizeVendor\value;
+
+use function _JchOptimizeVendor\V91\data_get;
+use function _JchOptimizeVendor\V91\value;
 
 class Arr
 {
     use Macroable;
+
     /**
      * Determine whether the given value is array accessible.
      *

@@ -1,10 +1,12 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\InvalidServiceException;
-use _JchOptimizeVendor\Psr\Container\ContainerExceptionInterface;
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager;
+
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\InvalidServiceException;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerExceptionInterface;
+
 /**
  * Interface for a plugin manager
  *

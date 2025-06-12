@@ -11,30 +11,22 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Admin\Icons;
-use JchOptimize\Core\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\View\MainHtml;
+use JchOptimize\WordPress\Model\NotificationIcons;
+use JchOptimize\WordPress\View\MainHtml;
 
 class Main extends Controller
 {
-    /**
-     * @var MainHtml
-     */
-    private MainHtml $view;
-
-    /**
-     * @var Icons
-     */
-    private Icons $icons;
-
-    public function __construct(MainHtml $view, Icons $icons, ?Input $input)
-    {
-        $this->view  = $view;
-        $this->icons = $icons;
-
+    public function __construct(
+        private MainHtml $view,
+        private Icons $icons,
+        private NotificationIcons $notificationIcons,
+        ?Input $input
+    ) {
         parent::__construct($input);
     }
 
@@ -42,7 +34,8 @@ class Main extends Controller
     {
         $this->view->setData([
                 'tab'      => 'main',
-                'icons'    => $this->icons
+                'icons'    => $this->icons,
+                'notifications' => $this->notificationIcons->getNotificationIcons(),
         ]);
 
         $this->view->loadResources();

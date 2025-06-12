@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Utilities;
 
-use _JchOptimizeVendor\Joomla\String\StringHelper;
+namespace _JchOptimizeVendor\V91\Joomla\Utilities;
+
+use _JchOptimizeVendor\V91\Joomla\String\StringHelper;
+
 /**
  * ArrayHelper is an array utility class for doing all sorts of odds and ends with arrays.
  *
@@ -235,7 +237,7 @@ final class ArrayHelper
      */
     public static function getColumn(array $array, $valueCol, $keyCol = null)
     {
-        return \array_reduce($array, function ($result, $item) use($keyCol, $valueCol) {
+        return \array_reduce($array, function ($result, $item) use ($keyCol, $valueCol) {
             $array = \is_object($item) ? \get_object_vars($item) : $item;
             if ($valueCol === null) {
                 $value = $item;
@@ -457,7 +459,7 @@ final class ArrayHelper
         $sortDirection = (array) $direction;
         $key = (array) $k;
         $sortLocale = $locale;
-        \usort($a, function ($a, $b) use($sortCase, $sortDirection, $key, $sortLocale) {
+        \usort($a, function ($a, $b) use ($sortCase, $sortDirection, $key, $sortLocale) {
             for ($i = 0, $count = \count($key); $i < $count; $i++) {
                 if (isset($sortDirection[$i])) {
                     $direction = $sortDirection[$i];
@@ -565,7 +567,7 @@ final class ArrayHelper
      * @since   2.0.0
      * @throws  \InvalidArgumentException
      */
-    public static function mergeRecursive(...$args) : array
+    public static function mergeRecursive(...$args): array
     {
         $result = [];
         foreach ($args as $i => $array) {

@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager\Exception;
 
 use Throwable;
+
 /**
  * Base exception interface
  */

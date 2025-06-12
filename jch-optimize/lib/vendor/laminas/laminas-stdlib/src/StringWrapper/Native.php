@@ -1,15 +1,18 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\StringWrapper;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\StringUtils;
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringUtils;
+
 use function in_array;
 use function strlen;
 use function strpos;
 use function strtoupper;
 use function substr;
+
 class Native extends AbstractStringWrapper
 {
     /**

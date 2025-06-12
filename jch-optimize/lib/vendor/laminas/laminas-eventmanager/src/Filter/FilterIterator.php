@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager\Filter;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager\Filter;
 
-use _JchOptimizeVendor\Laminas\EventManager\Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\FastPriorityQueue;
+use _JchOptimizeVendor\V91\Laminas\EventManager\Exception;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\FastPriorityQueue;
+
 use function get_debug_type;
 use function is_callable;
 use function sprintf;
+
 /**
  * Specialized priority queue implementation for use with an intercepting
  * filter chain.

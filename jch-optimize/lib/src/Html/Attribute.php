@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,12 +13,14 @@
 
 namespace JchOptimize\Core\Html;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 
 class Attribute
 {
     private string $name;
+
     private bool|string|array|UriInterface $value;
+
     private string $delimiter;
 
     public function __construct(string $name, string|array|UriInterface|bool $value, string $delimiter)

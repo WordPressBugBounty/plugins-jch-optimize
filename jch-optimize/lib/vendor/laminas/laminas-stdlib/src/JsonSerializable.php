@@ -1,8 +1,9 @@
 <?php
 
 // phpcs:disable WebimpressCodingStandard.NamingConventions.Interface.Suffix
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 /**
  * @deprecated Since 3.1.0; use the native JsonSerializable interface

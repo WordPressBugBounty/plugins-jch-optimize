@@ -1,10 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * @package utf8
 */
+
 /**
 * Define UTF8_CORE as required
 */

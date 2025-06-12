@@ -8,13 +8,17 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\Minify;
 
 use Exception;
+
 use function is_string;
+
 abstract class Base
 {
     use \CodeAlfa\RegexTokenizer\Base;
+
     protected function __construct()
     {
         if (!\defined('CODEALFA_MINIFY_CONFIGURED')) {
@@ -35,7 +39,7 @@ abstract class Base
      * @return string
      * @throws Exception
      */
-    protected function _replace(string $regex, string $replacement, string $code, $regexNum, ?callable $callback = null) : string
+    protected function _replace(string $regex, string $replacement, string $code, $regexNum, ?callable $callback = null): string
     {
         static $tm = \false;
         if ($tm === \false) {

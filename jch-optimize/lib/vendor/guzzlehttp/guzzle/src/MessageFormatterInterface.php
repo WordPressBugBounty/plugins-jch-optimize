@@ -1,9 +1,10 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+
 interface MessageFormatterInterface
 {
     /**
@@ -13,5 +14,5 @@ interface MessageFormatterInterface
      * @param ResponseInterface|null $response Response that was received
      * @param \Throwable|null        $error    Exception that was received
      */
-    public function format(RequestInterface $request, ?ResponseInterface $response = null, ?\Throwable $error = null) : string;
+    public function format(RequestInterface $request, ?ResponseInterface $response = null, ?\Throwable $error = null): string;
 }

@@ -6,10 +6,12 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Controller;
 
-use _JchOptimizeVendor\Joomla\Application\AbstractApplication;
-use _JchOptimizeVendor\Joomla\Input\Input;
+namespace _JchOptimizeVendor\V91\Joomla\Controller;
+
+use _JchOptimizeVendor\V91\Joomla\Application\AbstractApplication;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+
 /**
  * Joomla Framework Base Controller Class
  *

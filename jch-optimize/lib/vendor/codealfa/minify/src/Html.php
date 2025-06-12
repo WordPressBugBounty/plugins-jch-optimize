@@ -8,14 +8,18 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\Minify;
 
 use Exception;
+
 use function call_user_func;
 use function is_callable;
+
 class Html extends \CodeAlfa\Minify\Base
 {
     use \CodeAlfa\RegexTokenizer\Html;
+
     public string $html = '';
     /**
      * @psalm-var array{isXhtml: bool, isHtml5: bool, jsMinifier: callable|null, minifyLevel: int, jsonMinifier: callable|null, cssMinifier: callable|null}
@@ -27,7 +31,7 @@ class Html extends \CodeAlfa\Minify\Base
      *
      * @return string
      */
-    public static function cleanScript(string $content, string $type) : string
+    public static function cleanScript(string $content, string $type): string
     {
         $s1 = self::doubleQuoteStringToken();
         $s2 = self::singleQuoteStringToken();
@@ -49,7 +53,7 @@ class Html extends \CodeAlfa\Minify\Base
      *
      * @return string
      */
-    public static function optimize(string $html, $options = null) : string
+    public static function optimize(string $html, $options = null): string
     {
         $min = new \CodeAlfa\Minify\Html($html, $options);
         try {
@@ -79,12 +83,12 @@ class Html extends \CodeAlfa\Minify\Base
      * @return string
      * @throws Exception
      */
-    private function _optimize() : string
+    private function _optimize(): string
     {
         $x = self::htmlCommentToken();
         $s1 = self::doubleQuoteStringToken();
         $s2 = self::singleQuoteStringToken();
-        $a = self::htmlAttributeWithCaptureValueToken();
+        $a = self::htmlAttributeToken();
         //Regex for escape elements
         $pr = self::htmlElementToken('pre');
         $sc = self::htmlElementToken('script');
@@ -100,10 +104,10 @@ class Html extends \CodeAlfa\Minify\Base
         $this->html = $this->_replace($rx, '', $this->html, 'html2');
         //Minify scripts
         //invalid scripts
-        $nsc = "<script\\b(?=(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?(?:text|application)/(?:javascript|[^'\"\\s>]*?json)))[^<>]*+>(?><?[^<]*+)*?</\\s*+script\\s*+>";
+        $nsc = "<script\\b(?=(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?(?:module|(?:text|application)/(?:javascript|[^'\"\\s>]*?json))))[^<>]*+>(?><?[^<]*+)*?</\\s*+script\\s*+>";
         //invalid styles
         $nst = "<style\\b(?=(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?(?:text|(?:css|stylesheet))))[^<>]*+>(?><?[^<]*+)*?</\\s*+style\\s*>";
-        $rx = "#(?><?[^<]*+(?:{$x}|{$nsc}|{$nst})?)*?\\K" . "(?:(<script\\b(?!(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?(?:text|application)/(?:javascript|[^'\"\\s>]*?json)))[^<>]*+>)((?><?[^<]*+)*?)(</\\s*+script\\s*+>)|" . "(<style\\b(?!(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?text/(?:css|stylesheet)))[^<>]*+>)((?><?[^<]*+)*?)(</\\s*+style\\s*+>)|\$)#i";
+        $rx = "#(?><?[^<]*+(?:{$x}|{$nsc}|{$nst})?)*?\\K" . "(?:(<script\\b(?!(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?(?:module|(?:text|application)/(?:javascript|[^'\"\\s>]*?json))))[^<>]*+>)((?><?[^<]*+)*?)(</\\s*+script\\s*+>)|" . "(<style\\b(?!(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?text/(?:css|stylesheet)))[^<>]*+>)((?><?[^<]*+)*?)(</\\s*+style\\s*+>)|\$)#i";
         $this->html = $this->_replace($rx, '', $this->html, 'html3', array($this, '_minifyCB'));
         if ($this->options['minifyLevel'] < 1) {
             return \trim($this->html);
@@ -155,7 +159,7 @@ class Html extends \CodeAlfa\Minify\Base
      *
      * @return string
      */
-    protected function _minifyCB(array $m) : string
+    protected function _minifyCB(array $m): string
     {
         if ($m[0] == '') {
             return $m[0];
@@ -186,7 +190,7 @@ class Html extends \CodeAlfa\Minify\Base
      *
      * @return string
      */
-    protected function _callMinifier(callable $minifier, string $content) : string
+    protected function _callMinifier(callable $minifier, string $content): string
     {
         return (string) call_user_func($minifier, $content);
     }
@@ -197,7 +201,7 @@ class Html extends \CodeAlfa\Minify\Base
      *
      * @return bool
      */
-    protected function _needsCdata(string $str, string $type) : bool
+    protected function _needsCdata(string $str, string $type): bool
     {
         return $this->options['isXhtml'] && $type == 'js' && \preg_match('#(?:[<&]|\\-\\-|\\]\\]>)#', $str);
     }

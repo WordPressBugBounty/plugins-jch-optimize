@@ -8,12 +8,15 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\Minify;
 
 use Exception;
+
 class Css extends \CodeAlfa\Minify\Base
 {
     use \CodeAlfa\RegexTokenizer\Css;
+
     public string $css;
     /**
      * Minify a CSS string
@@ -22,7 +25,7 @@ class Css extends \CodeAlfa\Minify\Base
      *
      * @return string
      */
-    public static function optimize(string $css) : string
+    public static function optimize(string $css): string
     {
         $obj = new \CodeAlfa\Minify\Css($css);
         try {
@@ -42,13 +45,13 @@ class Css extends \CodeAlfa\Minify\Base
      * @return string
      * @throws Exception
      */
-    private function _optimize() : string
+    private function _optimize(): string
     {
         $s1 = self::doubleQuoteStringToken();
         $s2 = self::singleQuoteStringToken();
         $es = $s1 . '|' . $s2;
         $s = '(?<!\\\\)(?:' . $es . ')|[\'"]';
-        $u = self::cssUrlWithCaptureValueToken();
+        $u = self::cssUrlToken();
         $e = '(?<!\\\\)(?:' . $es . '|' . $u . ')|[\'"(]';
         $b = self::blockCommentToken();
         //$c = self::LINE_COMMENT();
@@ -56,7 +59,7 @@ class Css extends \CodeAlfa\Minify\Base
         $rx = "#(?>/?[^/\"'(]*+(?:{$e})?)*?\\K(?>{$b}|\$)#s";
         $this->css = $this->_replace($rx, '', $this->css, 'css1');
         // remove ws around , ; : { } in CSS Declarations and media queries
-        $rx = "#(?>(?:[{};]|^)[^{}@;]*+{|(?:(?<![,;:{}])\\s++(?![,;:{}]))?[^\\s{};\"'(]*+(?:{$e}|[{};])?)+?\\K" . "(?:\\s++(?=[,;:{}])|(?<=[,;:{}])\\s++|\\K\$)#s";
+        $rx = "#(?>(?:[{};]|^)[^{}@;]*+{|(?:(?<![,;:{}])\\s++(?![,;:{}]))|[^\\s{};\"'(]++|{$e}|[{};])*?\\K" . "(?:\\s++(?=[,;:{}])|(?<=[,;:{}])\\s++|\\K\$)#s";
         $this->css = $this->_replace($rx, '', $this->css, 'css2');
         //remove ws around , + > ~ { } in selectors
         $rx = "#(?>(?:(?<![,+>~{}])\\s++(?![,+>~{}]))?[^\\s{\"'(]*+(?:{[^{}]++}|{|{$e})?)*?\\K" . "(?:\\s++(?=[,+>~{}])|(?<=[,+>~{};])\\s++|\$\\K)#s";

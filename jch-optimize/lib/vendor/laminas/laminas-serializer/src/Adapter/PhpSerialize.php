@@ -3,12 +3,15 @@
 /**
  * @see https://github.com/laminas/laminas-serializer for the canonical source repository
  */
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Serializer\Adapter;
 
-use _JchOptimizeVendor\Laminas\Serializer\Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\ErrorHandler;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Serializer\Adapter;
+
+use _JchOptimizeVendor\V91\Laminas\Serializer\Exception;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ErrorHandler;
 use Traversable;
+
 use function get_class;
 use function gettype;
 use function is_object;
@@ -17,8 +20,10 @@ use function preg_match;
 use function serialize;
 use function sprintf;
 use function unserialize;
+
 use const E_NOTICE;
 use const PHP_MAJOR_VERSION;
+
 class PhpSerialize extends AbstractAdapter
 {
     /**

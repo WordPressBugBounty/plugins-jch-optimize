@@ -11,17 +11,17 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Laminas\ArrayPaginator;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Log\WordpressNoticeLogger;
-use JchOptimize\Model\PageCache as PageCacheModel;
-use JchOptimize\Model\ReCache;
-use JchOptimize\Platform\Plugin;
-use JchOptimize\Plugin\Admin;
-use JchOptimize\View\PageCacheHtml;
+use JchOptimize\Core\Registry;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Model\PageCache as PageCacheModel;
+use JchOptimize\WordPress\Model\ReCache;
+use JchOptimize\WordPress\Plugin\Admin;
+use JchOptimize\WordPress\View\PageCacheHtml;
 
 use function __;
 use function check_admin_referer;
@@ -29,21 +29,12 @@ use function wp_redirect;
 
 class PageCache extends Controller
 {
-    /**
-     * @var PageCacheHtml
-     */
-    private PageCacheHtml $view;
-
-    /**
-     * @var PageCacheModel
-     */
-    private PageCacheModel $model;
-
-    public function __construct(PageCacheHtml $view, PageCacheModel $model, ?Input $input = null)
-    {
-        $this->view = $view;
-        $this->model = $model;
-
+    public function __construct(
+        private Registry $params,
+        private PageCacheHtml $view,
+        private PageCacheModel $model,
+        ?Input $input = null
+    ) {
         parent::__construct($input);
     }
 
@@ -90,7 +81,7 @@ class PageCache extends Controller
             exit();
         }
 
-        if (!Plugin::getPluginParams()->get('cache_enable', '0')) {
+        if (!$this->params->get('cache_enable', '0')) {
             $logger->warning(
                 __(
                     'Page Cache is not enabled. Please enable it on the Dashboard or Configurations tab. You may also want to disable other page cache plugins.'

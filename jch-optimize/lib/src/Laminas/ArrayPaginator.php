@@ -2,8 +2,8 @@
 
 namespace JchOptimize\Core\Laminas;
 
-use _JchOptimizeVendor\Laminas\Paginator\Adapter\ArrayAdapter;
-use _JchOptimizeVendor\Laminas\Paginator\Paginator;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Adapter\ArrayAdapter;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Paginator;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor

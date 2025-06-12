@@ -1,12 +1,15 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use ArrayIterator;
 use ArrayObject as PhpArrayObject;
 use ReturnTypeWillChange;
+
 use function array_reverse;
+
 /**
  * ArrayObject that acts as a stack with regards to iteration
  *

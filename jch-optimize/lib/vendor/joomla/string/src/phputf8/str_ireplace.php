@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * @package utf8
@@ -20,7 +20,7 @@ namespace _JchOptimizeVendor;
 * @see utf8_strtolower
 * @package utf8
 */
-function utf8_ireplace($search, $replace, $str, $count = NULL)
+function utf8_ireplace($search, $replace, $str, $count = null)
 {
     if (!\is_array($search)) {
         $slen = \strlen($search);

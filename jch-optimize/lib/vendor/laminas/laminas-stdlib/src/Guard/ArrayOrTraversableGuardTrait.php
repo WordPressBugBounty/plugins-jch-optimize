@@ -1,14 +1,17 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\Guard;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\Guard;
 
 use Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception\InvalidArgumentException;
 use Traversable;
+
 use function get_debug_type;
 use function is_array;
 use function sprintf;
+
 /**
  * Provide a guard method for array or Traversable data
  */

@@ -1,10 +1,12 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager;
 
 use ArrayAccess;
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 /**
  * @see ContainerInterface
  * @see ArrayAccess

@@ -11,11 +11,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Model;
+namespace JchOptimize\WordPress\Model;
 
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use Exception;
-use JchOptimize\Core\Container\Container;
-use JchOptimize\Core\Input;
 use JchOptimize\Core\Mvc\Model;
 use JchOptimize\Core\PageCache\CaptureCache;
 use JchOptimize\Core\PageCache\PageCache as CorePageCache;

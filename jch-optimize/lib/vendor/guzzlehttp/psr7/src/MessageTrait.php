@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+
 /**
  * Trait implementing functionality common to requests and responses.
  */

@@ -1,20 +1,26 @@
 <?php
 
-namespace JchOptimize\Service;
+namespace JchOptimize\WordPress\Service;
 
-use JchOptimize\ControllerResolver;
-use JchOptimize\Core\Container\Container;
-use JchOptimize\Core\Container\ServiceProviderInterface;
-use JchOptimize\Core\Optimize;
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Joomla\DI\ServiceProviderInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerInterface;
+use JchOptimize\Core\Admin\AdminHelper;
+use JchOptimize\Core\Admin\AdminTasks;
+use JchOptimize\Core\Model\CacheMaintainer;
 use JchOptimize\Core\PageCache\PageCache;
-use JchOptimize\Plugin\Admin;
-use JchOptimize\Plugin\Installer;
-use JchOptimize\Plugin\Loader;
-use JchOptimize\Plugin\Updater;
+use JchOptimize\Core\Platform\PathsInterface;
+use JchOptimize\Core\Platform\UtilityInterface;
+use JchOptimize\Core\Registry;
+use JchOptimize\WordPress\ControllerResolver;
+use JchOptimize\WordPress\Plugin\Admin;
+use JchOptimize\WordPress\Plugin\Installer;
+use JchOptimize\WordPress\Plugin\Loader;
+use JchOptimize\WordPress\Plugin\Updater;
 
 class PluginProvider implements ServiceProviderInterface
 {
-    public function register(Container $container)
+    public function register(Container $container): void
     {
         $container->share(Loader::class, [$this, 'getLoaderService'], true);
         $container->share(Admin::class, [$this, 'getAdminService'], true);
@@ -25,15 +31,15 @@ class PluginProvider implements ServiceProviderInterface
     public function getLoaderService(Container $container): Loader
     {
         $loader = new Loader(
-            $container->get('params'),
+            $container->get(Registry::class),
             $container->get(Admin::class),
             $container->get(Installer::class),
+            $container->get(PageCache::class),
+            $container->get(UtilityInterface::class),
             $container->get(Updater::class),
-            $container->get(Optimize::class),
-            $container->get(PageCache::class)
         );
         $loader->setContainer($container)
-               ->setLogger($container->get('logger'));
+               ->setLogger($container->get(LoggerInterface::class));
 
         return $loader;
     }
@@ -42,23 +48,23 @@ class PluginProvider implements ServiceProviderInterface
     {
         return new Admin(
             $container->get('params'),
-            $container->get(ControllerResolver::class)
+            $container->get(ControllerResolver::class),
+            $container->get(PathsInterface::class)
         );
     }
 
     public function getUpdaterService(Container $container): ?Updater
     {
-        if (JCH_PRO) {
-            return new Updater(
-                $container->get('params')
-            );
-        } else {
-            return null;
-        }
+        return new Updater($container->get('params'));
     }
 
-    public function getInstallerService(): Installer
+    public function getInstallerService(Container $container): Installer
     {
-        return new Installer();
+        return new Installer(
+            $container->get(Registry::class),
+            $container->get(AdminTasks::class),
+            $container->get(AdminHelper::class),
+            $container->get(CacheMaintainer::class)
+        );
     }
 }

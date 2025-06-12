@@ -11,13 +11,13 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Admin\Icons;
-use JchOptimize\Core\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Core\Mvc\View;
-use JchOptimize\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\View\OptimizeImageHtml;
 
 use function __;
 use function is_null;
@@ -26,21 +26,8 @@ use function wp_redirect;
 
 class OptimizeImages extends Controller
 {
-    /**
-     * @var View
-     */
-    private View $view;
-
-    /**
-     * @var Icons
-     */
-    private Icons $icons;
-
-    public function __construct(View $view, Icons $icons, ?Input $input)
+    public function __construct(private OptimizeImageHtml $view, private Icons $icons, ?Input $input)
     {
-        $this->view = $view;
-        $this->icons = $icons;
-
         parent::__construct($input);
     }
 
@@ -54,6 +41,7 @@ class OptimizeImages extends Controller
         $status = $input->get('status');
 
         if (is_null($status)) {
+            $this->view->loadResources();
             $this->view->setData([
                 'tab'   => 'optimizeimages',
                 'icons' => $this->icons

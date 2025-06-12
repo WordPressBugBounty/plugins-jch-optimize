@@ -11,10 +11,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\View;
+namespace JchOptimize\WordPress\View;
 
 use JchOptimize\Core\Mvc\View;
 
+use function wp_add_inline_style;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
 use function wp_register_script;
@@ -32,9 +33,11 @@ class ConfigurationsHtml extends View
                 'jquery',
                 'jch-bootstrap-js'
         ], JCH_VERSION, true);
+        wp_register_script('jch-sticky-overlap-observer', JCH_PLUGIN_URL . 'media/js/sticky-overlap-observer.js', [], JCH_VERSION, true);
 
         wp_enqueue_style('jch-excludesjs-css');
         wp_enqueue_script('jch-tabstate-js');
+        wp_enqueue_script('jch-sticky-overlap-observer');
 
         if (JCH_PRO) {
             wp_register_script(
@@ -47,5 +50,7 @@ class ConfigurationsHtml extends View
 
             wp_enqueue_script('jch-pagecacheformcontrol-js');
         }
+
+        wp_add_inline_style('jch-wordpress-css', '*{overflow-anchor: none}');
     }
 }

@@ -1,10 +1,12 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
+
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+
 interface StorageCapableInterface extends PatternInterface
 {
-    public function getStorage() : ?StorageInterface;
+    public function getStorage(): ?StorageInterface;
 }

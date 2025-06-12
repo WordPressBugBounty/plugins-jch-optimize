@@ -11,28 +11,21 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+use JchOptimize\Core\Model\CacheMaintainer;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Log\WordpressNoticeLogger;
-use JchOptimize\Model\Cache;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
 
 use function __;
-use function JchOptimize\base64_decode_url;
+use function JchOptimize\WordPress\base64_decode_url;
 use function wp_redirect;
 
 class CleanCache extends Controller
 {
-    /**
-     * @var Cache
-     */
-    private Cache $model;
-
-    public function __construct(Cache $model, ?Input $input)
+    public function __construct(private CacheMaintainer $cacheMaintainer, ?Input $input)
     {
-        $this->model = $model;
-
         parent::__construct($input);
     }
 
@@ -43,7 +36,7 @@ class CleanCache extends Controller
         /** @var Input $input */
         $input = $this->getInput();
 
-        if ($this->model->cleanCache()) {
+        if ($this->cacheMaintainer->cleanCache()) {
             $logger->success(__('Cache deleted successfully!', 'jch-optimize'));
 
             $result = true;

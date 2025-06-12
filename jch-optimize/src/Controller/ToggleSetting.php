@@ -11,13 +11,13 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Admin\Icons;
-use JchOptimize\Core\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Model\Configure;
-use JchOptimize\Platform\Utility;
+use JchOptimize\Core\Platform\CacheInterface;
+use JchOptimize\WordPress\Model\Configure;
 
 use function array_column;
 use function array_intersect_key;
@@ -29,15 +29,8 @@ use function json_encode;
 
 class ToggleSetting extends Controller
 {
-    /**
-     * @var Configure
-     */
-    private Configure $model;
-
-    public function __construct(Configure $model, ?Input $input)
+    public function __construct(private Configure $model, private CacheInterface $cache, ?Input $input)
     {
-        $this->model = $model;
-
         parent::__construct($input);
     }
 
@@ -56,7 +49,7 @@ class ToggleSetting extends Controller
         $currentSettingValue = $this->model->getState()->get($setting);
 
         if ($setting == 'integrated_page_cache_enable') {
-            $currentSettingValue = Utility::isPageCacheEnabled($this->model->getState());
+            $currentSettingValue = $this->cache->isPageCacheEnabled($this->model->getState());
         }
 
         $class = $currentSettingValue ? 'enabled' : 'disabled';

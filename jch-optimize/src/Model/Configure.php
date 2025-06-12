@@ -11,32 +11,26 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Model;
+namespace JchOptimize\WordPress\Model;
 
-use JchOptimize\Core\Admin\Ajax\Ajax;
 use JchOptimize\Core\Admin\Icons;
 use JchOptimize\Core\Mvc\Model;
-use JchOptimize\Core\Admin\Json;
 use JchOptimize\Core\PageCache\CaptureCache;
-use JchOptimize\Platform\Cache;
+use JchOptimize\Core\Platform\CacheInterface;
 
 use function abs;
 use function array_column;
 use function array_combine;
 use function array_keys;
-use function array_merge;
 use function in_array;
 use function is_null;
-use function json_encode;
-use function rawurlencode;
 
 class Configure extends Model
 {
-    /**
-     * @param $autoSetting
-     *
-     * @return bool
-     */
+    public function __construct(private CacheInterface $cache)
+    {
+    }
+
     public function applyAutoSetting(string $autoSetting): bool
     {
         $autoSettingsMap = Icons::autoSettingsArrayMap();
@@ -64,11 +58,6 @@ class Configure extends Model
         return update_option('jch-optimize_settings', $this->state->toArray());
     }
 
-    /**
-     * @param string|null $setting
-     *
-     * @return bool
-     */
     public function toggleSetting(?string $setting): bool
     {
         if (is_null($setting)) {
@@ -90,7 +79,7 @@ class Configure extends Model
         }
 
         if ($setting == 'integrated_page_cache_enable') {
-            $bCurrentSetting = Cache::isPageCacheEnabled($this->state);
+            $bCurrentSetting = $this->cache->isPageCacheEnabled($this->state);
             $newSetting      = (string)(! $bCurrentSetting);
 
             $this->state->set('cache_enable', $newSetting);

@@ -1,11 +1,14 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\Guard;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\Guard;
 
 use Exception;
-use _JchOptimizeVendor\Laminas\Stdlib\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception\InvalidArgumentException;
+
 use function sprintf;
+
 /**
  * Provide a guard method against empty data
  */

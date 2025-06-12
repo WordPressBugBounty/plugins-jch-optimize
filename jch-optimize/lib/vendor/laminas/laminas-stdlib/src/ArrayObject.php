@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use AllowDynamicProperties;
 use ArrayAccess;
@@ -12,6 +13,7 @@ use IteratorAggregate;
 use ReturnTypeWillChange;
 use Serializable;
 use UnexpectedValueException;
+
 use function array_key_exists;
 use function array_keys;
 use function asort;
@@ -34,6 +36,7 @@ use function str_starts_with;
 use function uasort;
 use function uksort;
 use function unserialize;
+
 /**
  * Custom framework ArrayObject implementation
  *

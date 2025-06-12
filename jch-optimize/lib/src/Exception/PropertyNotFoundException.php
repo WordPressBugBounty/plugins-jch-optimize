@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,6 +13,6 @@
 
 namespace JchOptimize\Core\Exception;
 
-class PropertyNotFoundException extends \JchOptimize\Core\Exception\RuntimeException implements \JchOptimize\Core\Exception\ExceptionInterface
+class PropertyNotFoundException extends RuntimeException implements ExceptionInterface
 {
 }

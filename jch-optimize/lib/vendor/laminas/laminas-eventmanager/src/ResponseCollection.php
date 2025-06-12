@@ -1,9 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
 use SplStack;
+
 use function count;
+
 /**
  * Collection of signal handler return values
  *

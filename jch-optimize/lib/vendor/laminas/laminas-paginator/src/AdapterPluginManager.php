@@ -1,20 +1,22 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
-use _JchOptimizeVendor\Laminas\ServiceManager\AbstractPluginManager;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\InvalidServiceException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Factory\InvokableFactory;
-use _JchOptimizeVendor\Zend\Paginator\Adapter\ArrayAdapter;
-use _JchOptimizeVendor\Zend\Paginator\Adapter\Callback;
-use _JchOptimizeVendor\Zend\Paginator\Adapter\DbSelect;
-use _JchOptimizeVendor\Zend\Paginator\Adapter\DbTableGateway;
-use _JchOptimizeVendor\Zend\Paginator\Adapter\Iterator;
-use _JchOptimizeVendor\Zend\Paginator\Adapter\NullFill;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\AbstractPluginManager;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\InvalidServiceException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Factory\InvokableFactory;
+use _JchOptimizeVendor\V91\Zend\Paginator\Adapter\ArrayAdapter;
+use _JchOptimizeVendor\V91\Zend\Paginator\Adapter\Callback;
+use _JchOptimizeVendor\V91\Zend\Paginator\Adapter\DbSelect;
+use _JchOptimizeVendor\V91\Zend\Paginator\Adapter\DbTableGateway;
+use _JchOptimizeVendor\V91\Zend\Paginator\Adapter\Iterator;
+use _JchOptimizeVendor\V91\Zend\Paginator\Adapter\NullFill;
+
 use function get_class;
 use function gettype;
 use function is_object;
 use function sprintf;
+
 /**
  * Plugin manager implementation for paginator adapters.
  *

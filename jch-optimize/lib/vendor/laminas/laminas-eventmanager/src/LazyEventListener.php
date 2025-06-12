@@ -1,9 +1,11 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 use function is_string;
+
 /**
  * Lazy listener instance for use with LazyListenerAggregate.
  *

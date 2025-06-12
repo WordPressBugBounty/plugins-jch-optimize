@@ -11,23 +11,16 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Mvc\Controller;
 use JchOptimize\Core\Mvc\View;
 
 class Help extends Controller
 {
-    /**
-     * @var View
-     */
-    private View $view;
-
-    public function __construct(View $view, ?Input $input)
+    public function __construct(private View $view, ?Input $input)
     {
-        $this->view = $view;
-
         parent::__construct($input);
     }
 

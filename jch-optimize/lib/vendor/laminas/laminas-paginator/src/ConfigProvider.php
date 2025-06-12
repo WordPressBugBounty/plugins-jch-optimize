@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
 class ConfigProvider
 {
@@ -22,7 +22,7 @@ class ConfigProvider
     {
         return [
             // Legacy Zend Framework aliases
-            'aliases' => [\_JchOptimizeVendor\Zend\Paginator\AdapterPluginManager::class => AdapterPluginManager::class, \_JchOptimizeVendor\Zend\Paginator\ScrollingStylePluginManager::class => ScrollingStylePluginManager::class],
+            'aliases' => [\_JchOptimizeVendor\V91\Zend\Paginator\AdapterPluginManager::class => AdapterPluginManager::class, \_JchOptimizeVendor\V91\Zend\Paginator\ScrollingStylePluginManager::class => ScrollingStylePluginManager::class],
             'factories' => [AdapterPluginManager::class => AdapterPluginManagerFactory::class, ScrollingStylePluginManager::class => ScrollingStylePluginManagerFactory::class],
         ];
     }

@@ -11,11 +11,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Log\WordpressNoticeLogger;
-use JchOptimize\Model\BulkSettings;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Model\BulkSettings;
 
 use function __;
 use function check_admin_referer;
@@ -23,11 +23,9 @@ use function wp_redirect;
 
 class SetDefaultSettings extends Controller
 {
-    private BulkSettings $bulkSettings;
-
-    public function __construct(BulkSettings $bulkSettings)
+    public function __construct(private BulkSettings $bulkSettings)
     {
-        $this->bulkSettings = $bulkSettings;
+        parent::__construct();
     }
 
     public function execute(): bool

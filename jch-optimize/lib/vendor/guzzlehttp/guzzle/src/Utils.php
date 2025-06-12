@@ -1,13 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\GuzzleHttp\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\GuzzleHttp\Handler\CurlHandler;
-use _JchOptimizeVendor\GuzzleHttp\Handler\CurlMultiHandler;
-use _JchOptimizeVendor\GuzzleHttp\Handler\Proxy;
-use _JchOptimizeVendor\GuzzleHttp\Handler\StreamHandler;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Handler\CurlHandler;
+use _JchOptimizeVendor\V91\GuzzleHttp\Handler\CurlMultiHandler;
+use _JchOptimizeVendor\V91\GuzzleHttp\Handler\Proxy;
+use _JchOptimizeVendor\V91\GuzzleHttp\Handler\StreamHandler;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 final class Utils
 {
     /**
@@ -18,7 +19,7 @@ final class Utils
      * @return string Returns a string containing the type of the variable and
      *                if a class is provided, the class name.
      */
-    public static function describeType($input) : string
+    public static function describeType($input): string
     {
         switch (\gettype($input)) {
             case 'object':
@@ -40,7 +41,7 @@ final class Utils
      * @param iterable $lines Header lines array of strings in the following
      *                        format: "Name: Value"
      */
-    public static function headersFromLines(iterable $lines) : array
+    public static function headersFromLines(iterable $lines): array
     {
         $headers = [];
         foreach ($lines as $line) {
@@ -64,7 +65,7 @@ final class Utils
         if (\defined('STDOUT')) {
             return \STDOUT;
         }
-        return \_JchOptimizeVendor\GuzzleHttp\Psr7\Utils::tryFopen('php://output', 'w');
+        return \_JchOptimizeVendor\V91\GuzzleHttp\Psr7\Utils::tryFopen('php://output', 'w');
     }
     /**
      * Chooses and creates a default handler to use based on the environment.
@@ -75,7 +76,7 @@ final class Utils
      *
      * @return callable(\Psr\Http\Message\RequestInterface, array): \GuzzleHttp\Promise\PromiseInterface Returns the best handler for the given system.
      */
-    public static function chooseHandler() : callable
+    public static function chooseHandler(): callable
     {
         $handler = null;
         if (\defined('CURLOPT_CUSTOMREQUEST')) {
@@ -97,7 +98,7 @@ final class Utils
     /**
      * Get the default User-Agent string to use with Guzzle.
      */
-    public static function defaultUserAgent() : string
+    public static function defaultUserAgent(): string
     {
         return \sprintf('GuzzleHttp/%d', ClientInterface::MAJOR_VERSION);
     }
@@ -116,7 +117,7 @@ final class Utils
      *
      * @deprecated Utils::defaultCaBundle will be removed in guzzlehttp/guzzle:8.0. This method is not needed in PHP 5.6+.
      */
-    public static function defaultCaBundle() : string
+    public static function defaultCaBundle(): string
     {
         static $cached = null;
         static $cafiles = [
@@ -164,13 +165,13 @@ ini setting to point to the path to the file, allowing you to omit the 'verify'
 request option. See https://curl.haxx.se/docs/sslcerts.html for more
 information.
 EOT
-);
+        );
     }
     /**
      * Creates an associative array of lowercase header names to the actual
      * header casing.
      */
-    public static function normalizeHeaderKeys(array $headers) : array
+    public static function normalizeHeaderKeys(array $headers): array
     {
         $result = [];
         foreach (\array_keys($headers) as $key) {
@@ -197,7 +198,7 @@ EOT
      *
      * @throws InvalidArgumentException
      */
-    public static function isHostInNoProxy(string $host, array $noProxyArray) : bool
+    public static function isHostInNoProxy(string $host, array $noProxyArray): bool
     {
         if (\strlen($host) === 0) {
             throw new InvalidArgumentException('Empty host provided');
@@ -260,7 +261,7 @@ EOT
      *
      * @link https://www.php.net/manual/en/function.json-encode.php
      */
-    public static function jsonEncode($value, int $options = 0, int $depth = 512) : string
+    public static function jsonEncode($value, int $options = 0, int $depth = 512): string
     {
         $json = \json_encode($value, $options, $depth);
         if (\JSON_ERROR_NONE !== \json_last_error()) {
@@ -277,7 +278,7 @@ EOT
      *
      * @internal
      */
-    public static function currentTime() : float
+    public static function currentTime(): float
     {
         return (float) \function_exists('hrtime') ? \hrtime(\true) / 1000000000.0 : \microtime(\true);
     }
@@ -286,13 +287,13 @@ EOT
      *
      * @internal
      */
-    public static function idnUriConvert(UriInterface $uri, int $options = 0) : UriInterface
+    public static function idnUriConvert(UriInterface $uri, int $options = 0): UriInterface
     {
         if ($uri->getHost()) {
             $asciiHost = self::idnToAsci($uri->getHost(), $options, $info);
             if ($asciiHost === \false) {
                 $errorBitSet = $info['errors'] ?? 0;
-                $errorConstants = \array_filter(\array_keys(\get_defined_constants()), static function (string $name) : bool {
+                $errorConstants = \array_filter(\array_keys(\get_defined_constants()), static function (string $name): bool {
                     return \substr($name, 0, 11) === 'IDNA_ERROR_';
                 });
                 $errors = [];
@@ -317,7 +318,7 @@ EOT
     /**
      * @internal
      */
-    public static function getenv(string $name) : ?string
+    public static function getenv(string $name): ?string
     {
         if (isset($_SERVER[$name])) {
             return (string) $_SERVER[$name];

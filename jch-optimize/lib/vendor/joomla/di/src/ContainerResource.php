@@ -6,7 +6,8 @@
  * @copyright  Copyright (C) 2013 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\DI;
+
+namespace _JchOptimizeVendor\V91\Joomla\DI;
 
 /**
  * Defines the representation of a resource.
@@ -100,11 +101,11 @@ final class ContainerResource
                 $this->instance = $value;
             }
             if (\is_object($value)) {
-                $this->factory = function () use($value) {
+                $this->factory = function () use ($value) {
                     return clone $value;
                 };
             } else {
-                $this->factory = function () use($value) {
+                $this->factory = function () use ($value) {
                     return $value;
                 };
             }
@@ -117,7 +118,7 @@ final class ContainerResource
      *
      * @since   2.0.0
      */
-    public function isShared() : bool
+    public function isShared(): bool
     {
         return $this->shared;
     }
@@ -128,7 +129,7 @@ final class ContainerResource
      *
      * @since   2.0.0
      */
-    public function isProtected() : bool
+    public function isProtected(): bool
     {
         return $this->protected;
     }
@@ -160,7 +161,7 @@ final class ContainerResource
      *
      * @since   2.0.0
      */
-    public function getFactory() : callable
+    public function getFactory(): callable
     {
         return $this->factory;
     }
@@ -174,7 +175,7 @@ final class ContainerResource
      *
      * @since   2.0.0
      */
-    public function reset() : bool
+    public function reset(): bool
     {
         if ($this->isShared() && !$this->isProtected()) {
             $this->instance = null;

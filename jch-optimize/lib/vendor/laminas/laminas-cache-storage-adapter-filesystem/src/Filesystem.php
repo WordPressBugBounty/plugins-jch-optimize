@@ -1,29 +1,31 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter;
 
 use ArrayObject;
 use Exception as BaseException;
 use GlobIterator;
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\Exception\MetadataException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\Exception\UnlinkException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\FilesystemInteractionInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Adapter\Filesystem\LocalFilesystemInteraction;
-use _JchOptimizeVendor\Laminas\Cache\Storage\AvailableSpaceCapableInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Capabilities;
-use _JchOptimizeVendor\Laminas\Cache\Storage\ClearByNamespaceInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\ClearByPrefixInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\ClearExpiredInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\FlushableInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\IterableInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\OptimizableInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\TaggableInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\TotalSpaceCapableInterface;
-use _JchOptimizeVendor\Laminas\Stdlib\ErrorHandler;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\Exception\MetadataException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\Exception\UnlinkException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\FilesystemInteractionInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem\LocalFilesystemInteraction;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\AvailableSpaceCapableInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Capabilities;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ClearByNamespaceInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ClearByPrefixInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ClearExpiredInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\FlushableInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IterableInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\OptimizableInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\TaggableInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\TotalSpaceCapableInterface;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ErrorHandler;
 use stdClass;
 use Traversable;
+
 use function array_diff;
 use function array_search;
 use function array_unshift;
@@ -45,10 +47,12 @@ use function str_repeat;
 use function strlen;
 use function substr;
 use function time;
+
 use const DIRECTORY_SEPARATOR;
 use const GLOB_NOESCAPE;
 use const GLOB_NOSORT;
 use const GLOB_ONLYDIR;
+
 final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableInterface, ClearByNamespaceInterface, ClearByPrefixInterface, ClearExpiredInterface, FlushableInterface, IterableInterface, OptimizableInterface, TaggableInterface, TotalSpaceCapableInterface
 {
     public const METADATA_ATIME = 'atime';
@@ -87,10 +91,10 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
         $this->filesystem = $filesystem ?? new LocalFilesystemInteraction();
         // clean total space buffer on change cache_dir
         $events = $this->getEventManager();
-        $handle = function () : void {
+        $handle = function (): void {
         };
         $totalSpace =& $this->totalSpace;
-        $callback = function ($event) use(&$events, &$handle, &$totalSpace) {
+        $callback = function ($event) use (&$events, &$handle, &$totalSpace) {
             $params = $event->getParams();
             if (isset($params['cache_dir'])) {
                 $totalSpace = null;
@@ -140,7 +144,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
         $flags = GlobIterator::SKIP_DOTS | GlobIterator::CURRENT_AS_PATHNAME;
         $dir = $this->getOptions()->getCacheDir();
         $clearFolder = null;
-        $clearFolder = function ($dir) use(&$clearFolder, $flags) : void {
+        $clearFolder = function ($dir) use (&$clearFolder, $flags): void {
             $it = new GlobIterator($dir . DIRECTORY_SEPARATOR . '*', $flags);
             foreach ($it as $pathname) {
                 if ($it->isDir()) {
@@ -398,7 +402,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
      *
      * @return FilesystemIterator
      */
-    public function getIterator() : Traversable
+    public function getIterator(): Traversable
     {
         $options = $this->getOptions();
         $namespace = $options->getNamespace();
@@ -1047,7 +1051,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
             }
             $capabilities = new Capabilities($this, $marker, ['supportedDatatypes' => ['NULL' => 'string', 'boolean' => 'string', 'integer' => 'string', 'double' => 'string', 'string' => \true, 'array' => \false, 'object' => \false, 'resource' => \false], 'supportedMetadata' => $metadata, 'minTtl' => 1, 'maxTtl' => 0, 'staticTtl' => \false, 'ttlPrecision' => 1, 'maxKeyLength' => $maxKeyLength, 'namespaceIsPrefix' => \true, 'namespaceSeparator' => $options->getNamespaceSeparator()]);
             // update capabilities on change options
-            $this->getEventManager()->attach('option', function ($event) use($capabilities, $marker) {
+            $this->getEventManager()->attach('option', function ($event) use ($capabilities, $marker) {
                 $params = $event->getParams();
                 if (isset($params['namespace_separator'])) {
                     $capabilities->setNamespaceSeparator($marker, $params['namespace_separator']);
@@ -1076,7 +1080,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
     /**
      * Removes directories recursive by namespace
      */
-    private function clearAndDeleteDirectory(string $dir, string $prefix) : bool
+    private function clearAndDeleteDirectory(string $dir, string $prefix): bool
     {
         $glob = glob($dir . DIRECTORY_SEPARATOR . $prefix . '*', GLOB_ONLYDIR | GLOB_NOESCAPE | GLOB_NOSORT);
         if (!$glob) {
@@ -1100,7 +1104,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
     /**
      * Get file spec of the given key and namespace
      */
-    private function getFileSpec(string $normalizedKey) : string
+    private function getFileSpec(string $normalizedKey): string
     {
         $options = $this->getOptions();
         $namespace = $options->getNamespace();
@@ -1129,7 +1133,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
      * @param  bool $wouldblock  The optional argument is set to TRUE if the lock would block
      * @throws Exception\RuntimeException
      */
-    private function getFileContent(string $file, bool $nonBlocking = \false, ?bool &$wouldblock = null) : string
+    private function getFileContent(string $file, bool $nonBlocking = \false, ?bool &$wouldblock = null): string
     {
         $options = $this->getOptions();
         $locking = $options->getFileLocking();
@@ -1141,7 +1145,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
      *
      * @throws Exception\RuntimeException
      */
-    private function prepareDirectoryStructure(string $file) : void
+    private function prepareDirectoryStructure(string $file): void
     {
         $options = $this->getOptions();
         $level = $options->getDirLevel();
@@ -1193,7 +1197,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
      * @param  bool|null $wouldblock  The optional argument is set to true if the lock would block
      * @throws Exception\RuntimeException
      */
-    private function putFileContent(string $file, string $data, bool $nonBlocking = \false, ?bool &$wouldblock = null) : void
+    private function putFileContent(string $file, string $data, bool $nonBlocking = \false, ?bool &$wouldblock = null): void
     {
         $options = $this->getOptions();
         $umask = $options->getUmask();
@@ -1203,14 +1207,14 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
     /**
      * Formats the filename, appending the suffix option
      */
-    private function formatFilename(string $filename) : string
+    private function formatFilename(string $filename): string
     {
         return sprintf('%s.%s', $filename, $this->getOptions()->getSuffix());
     }
     /**
      * Formats the filename, appending the tag suffix option
      */
-    private function formatTagFilename(string $filename) : string
+    private function formatTagFilename(string $filename): string
     {
         return sprintf('%s.%s', $filename, $this->getOptions()->getTagSuffix());
     }
@@ -1219,7 +1223,7 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
      *
      * Wraps any of *, ?, or [ characters within [] brackets.
      */
-    private function escapeSuffixForGlob(string $suffix) : string
+    private function escapeSuffixForGlob(string $suffix): string
     {
         return preg_replace('#([*?\\[])#', '[$1]', $suffix);
     }

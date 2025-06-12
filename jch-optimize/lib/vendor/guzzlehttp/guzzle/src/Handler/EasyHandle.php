@@ -1,12 +1,13 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Handler;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Handler;
 
-use _JchOptimizeVendor\GuzzleHttp\Psr7\Response;
-use _JchOptimizeVendor\GuzzleHttp\Utils;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\Response;
+use _JchOptimizeVendor\V91\GuzzleHttp\Utils;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+
 /**
  * Represents a cURL easy handle and the data it populates.
  *
@@ -56,7 +57,7 @@ final class EasyHandle
      * @throws \RuntimeException if no headers have been received or the first
      *                           header line is invalid.
      */
-    public function createResponse() : void
+    public function createResponse(): void
     {
         [$ver, $status, $reason, $headers] = HeaderProcessor::parseHeaders($this->headers);
         $normalizedKeys = Utils::normalizeHeaderKeys($headers);

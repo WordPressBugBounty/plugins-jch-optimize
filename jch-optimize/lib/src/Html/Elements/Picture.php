@@ -2,7 +2,7 @@
 
 namespace JchOptimize\Core\Html\Elements;
 
-final class Picture extends \JchOptimize\Core\Html\Elements\BaseElement
+final class Picture extends BaseElement
 {
     protected string $name = 'picture';
 }

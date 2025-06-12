@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 /**
  * A promise that has been rejected.
@@ -27,7 +27,7 @@ class RejectedPromise implements PromiseInterface
         $queue = Utils::queue();
         $reason = $this->reason;
         $p = new Promise([$queue, 'run']);
-        $queue->add(static function () use($p, $reason, $onRejected) {
+        $queue->add(static function () use ($p, $reason, $onRejected) {
             if (Is::pending($p)) {
                 try {
                     // Return a resolved promise if onRejected does not throw.

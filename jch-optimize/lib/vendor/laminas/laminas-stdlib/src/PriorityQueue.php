@@ -1,19 +1,22 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Countable;
 use IteratorAggregate;
 use ReturnTypeWillChange;
 use Serializable;
 use UnexpectedValueException;
+
 use function array_map;
 use function count;
 use function is_array;
 use function serialize;
 use function sprintf;
 use function unserialize;
+
 /**
  * Re-usable, serializable priority queue implementation
  *

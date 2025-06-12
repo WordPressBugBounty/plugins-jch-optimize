@@ -1,13 +1,15 @@
 <?php
 
 // phpcs:disable WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Iterator;
-use _JchOptimizeVendor\Laminas\Stdlib\ArrayUtils\MergeRemoveKey;
-use _JchOptimizeVendor\Laminas\Stdlib\ArrayUtils\MergeReplaceKeyInterface;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ArrayUtils\MergeRemoveKey;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ArrayUtils\MergeReplaceKeyInterface;
 use Traversable;
+
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -23,6 +25,7 @@ use function is_string;
 use function iterator_to_array;
 use function method_exists;
 use function sprintf;
+
 /**
  * Utility class for testing and manipulation of PHP arrays.
  *

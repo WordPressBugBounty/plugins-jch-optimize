@@ -11,13 +11,13 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize;
+namespace JchOptimize\WordPress;
 
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use InvalidArgumentException;
-use JchOptimize\Core\Container\Container;
-use JchOptimize\Core\Container\ContainerAwareInterface;
-use JchOptimize\Core\Container\ContainerAwareTrait;
-use JchOptimize\Core\Input;
 
 use function call_user_func;
 use function is_null;

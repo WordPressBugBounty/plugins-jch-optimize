@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace _JchOptimizeVendor\Symfony\Polyfill\Ctype;
+namespace _JchOptimizeVendor\V91\Symfony\Polyfill\Ctype;
 
 /**
  * Ctype implementation through regex.

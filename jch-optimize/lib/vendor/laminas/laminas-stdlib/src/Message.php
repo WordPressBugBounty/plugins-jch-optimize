@@ -1,14 +1,17 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use Traversable;
+
 use function array_key_exists;
 use function get_debug_type;
 use function is_array;
 use function is_scalar;
 use function sprintf;
+
 class Message implements MessageInterface
 {
     /** @var array */

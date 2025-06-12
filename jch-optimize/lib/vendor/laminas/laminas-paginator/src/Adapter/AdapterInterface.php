@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator\Adapter;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator\Adapter;
 
 use Countable;
+
 /**
  * Interface for pagination adapters.
  */

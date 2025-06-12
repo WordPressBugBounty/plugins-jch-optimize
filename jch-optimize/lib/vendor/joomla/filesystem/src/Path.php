@@ -6,11 +6,13 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Exception\FilesystemException;
-if (!\defined('\_JchOptimizeVendor\JPATH_ROOT')) {
-    throw new \LogicException('The "\_JchOptimizeVendor\JPATH_ROOT" constant must be defined for your application.');
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Exception\FilesystemException;
+
+if (!\defined('\_JchOptimizeVendor\V91\JPATH_ROOT')) {
+    throw new \LogicException('The "\_JchOptimizeVendor\V91\JPATH_ROOT" constant must be defined for your application.');
 }
 /**
  * A Path handling class
@@ -135,8 +137,8 @@ class Path
             throw new FilesystemException(\sprintf('%s() - Use of relative paths not permitted', __METHOD__), 20);
         }
         $path = static::clean($path);
-        if (\_JchOptimizeVendor\JPATH_ROOT != '' && \strpos($path, static::clean(\_JchOptimizeVendor\JPATH_ROOT)) !== 0) {
-            throw new FilesystemException(\sprintf('%1$s() - Snooping out of bounds @ %2$s (root %3$s)', __METHOD__, $path, \_JchOptimizeVendor\JPATH_ROOT), 20);
+        if (\_JchOptimizeVendor\V91\JPATH_ROOT != '' && \strpos($path, static::clean(\_JchOptimizeVendor\V91\JPATH_ROOT)) !== 0) {
+            throw new FilesystemException(\sprintf('%1$s() - Snooping out of bounds @ %2$s (root %3$s)', __METHOD__, $path, \_JchOptimizeVendor\V91\JPATH_ROOT), 20);
         }
         return $path;
     }
@@ -165,7 +167,7 @@ class Path
         }
         $path = \trim($path);
         if (empty($path)) {
-            $path = \_JchOptimizeVendor\JPATH_ROOT;
+            $path = \_JchOptimizeVendor\V91\JPATH_ROOT;
         } elseif ($ds == '\\' && $path[0] == '\\' && $path[1] == '\\') {
             // Remove double slashes and backslashes and convert all slashes and backslashes to DIRECTORY_SEPARATOR
             // If dealing with a UNC path don't forget to prepend the path with a backslash.
@@ -188,7 +190,7 @@ class Path
     {
         $tmp = \md5(\random_bytes(16));
         $ssp = \ini_get('session.save_path');
-        $jtp = \_JchOptimizeVendor\JPATH_ROOT;
+        $jtp = \_JchOptimizeVendor\V91\JPATH_ROOT;
         // Try to find a writable directory
         $dir = \is_writable('/tmp') ? '/tmp' : \false;
         $dir = !$dir && \is_writable($ssp) ? $ssp : $dir;
@@ -285,7 +287,7 @@ class Path
      * Remove all references to root directory path and the system tmp path from a message
      *
      * @param   string  $message        The message to be cleaned
-     * @param   string  $rootDirectory  Optional root directory, defaults to \_JchOptimizeVendor\JPATH_ROOT
+     * @param   string  $rootDirectory  Optional root directory, defaults to \_JchOptimizeVendor\V91\JPATH_ROOT
      *
      * @return  string
      *
@@ -294,7 +296,7 @@ class Path
     public static function removeRoot($message, $rootDirectory = null)
     {
         if (empty($rootDirectory)) {
-            $rootDirectory = \_JchOptimizeVendor\JPATH_ROOT;
+            $rootDirectory = \_JchOptimizeVendor\V91\JPATH_ROOT;
         }
         $replacements = array(self::makePattern(static::clean($rootDirectory)) => '[ROOT]', self::makePattern(\sys_get_temp_dir()) => '[TMP]');
         return \preg_replace(\array_keys($replacements), \array_values($replacements), $message);

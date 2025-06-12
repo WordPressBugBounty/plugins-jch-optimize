@@ -11,20 +11,19 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Plugin;
+namespace JchOptimize\WordPress\Plugin;
 
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use Exception;
-use JchOptimize\ContainerFactory;
-use JchOptimize\ControllerResolver;
 use JchOptimize\Core\Admin\Ajax\Ajax;
-use JchOptimize\Core\Admin\Ajax\Ajax as AdminAjax;
-use JchOptimize\Core\Input;
-use JchOptimize\Core\Psr\Log\LoggerAwareInterface;
-use JchOptimize\Core\Psr\Log\LoggerAwareTrait;
+use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Registry;
-use JchOptimize\Html\Helper;
-use JchOptimize\Html\TabSettings;
-use JchOptimize\Platform\Paths;
+use JchOptimize\WordPress\Container\ContainerFactory;
+use JchOptimize\WordPress\ControllerResolver;
+use JchOptimize\WordPress\Html\Helper;
+use JchOptimize\WordPress\Html\TabSettings;
 use WP_Admin_Bar;
 
 use function __;
@@ -34,13 +33,12 @@ use function add_query_arg;
 use function add_settings_field;
 use function add_settings_section;
 use function admin_url;
-use function array_merge;
 use function check_admin_referer;
 use function current_user_can;
 use function delete_transient;
 use function esc_url_raw;
 use function get_transient;
-use function JchOptimize\base64_encode_url;
+use function JchOptimize\WordPress\base64_encode_url;
 use function plugin_basename;
 use function register_setting;
 use function wp_add_inline_script;
@@ -51,24 +49,17 @@ use function wp_register_script;
 use function wp_register_style;
 
 use const JCH_PRO;
+use const JCH_VERSION;
 
 class Admin implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var Registry
-     */
-    private Registry $params;
-    /**
-     * @var ControllerResolver
-     */
-    private ControllerResolver $controllerResolver;
-
-    public function __construct(Registry $params, ControllerResolver $controllerResolver)
-    {
-        $this->params = $params;
-        $this->controllerResolver = $controllerResolver;
+    public function __construct(
+        private Registry $params,
+        private ControllerResolver $controllerResolver,
+        private PathsInterface $paths
+    ) {
     }
 
     public static function publishAdminNotices(): void
@@ -152,7 +143,8 @@ HTML;
         wp_enqueue_style('jch-fonts-css');
         wp_enqueue_style('jch-chosen-css');
         wp_enqueue_style('jch-wordpress-css');
-        wp_enqueue_style('jch-filetree-css');
+        wp_enqueue_style('jch-dashicons-wordpress');
+        wp_enqueue_style('jch-dashicons-css');
 
         wp_enqueue_script('jch-platformwordpress-js');
         wp_enqueue_script('jch-bootstrap-js');
@@ -161,14 +153,7 @@ HTML;
 
         wp_enqueue_script('jch-chosen-js');
         wp_enqueue_script('jch-collapsible-js');
-        wp_enqueue_script('jch-filetree-js');
 
-        if (JCH_PRO) {
-            wp_enqueue_style('jch-progressbar-css');
-            wp_enqueue_script('jquery-ui-progressbar');
-            wp_enqueue_script('jch-optimizeimage-js');
-            wp_enqueue_script('jch-smartcombine-js');
-        }
     }
 
     public function addScriptsToHead(): void
@@ -202,29 +187,7 @@ HTML;
                 admin_url('options-general.php')
             );
 
-            $paramsArray = $this->params->toArray();
-            $aApiParams = [
-                'pro_downloadid'      => '',
-                'hidden_api_secret'   => '11e603aa',
-                'ignore_optimized'    => '1',
-                'recursive'           => '1',
-                'pro_api_resize_mode' => '1',
-                'pro_next_gen_images' => '1',
-                'lossy'               => '1',
-                'save_metadata'       => '0'
-            ];
 
-
-            $jch_message = __('Please open a directory to optimize images.', 'jch-optimize');
-            $jch_noproid = __('Please enter your Download ID on the Configurations tab.', 'jch-optimize');
-            $jch_params = json_encode(array_intersect_key(array_merge($aApiParams, $paramsArray), $aApiParams));
-            echo <<<HTML
-		<script>
-                    const jch_message = '{$jch_message}'
-                    const jch_noproid = '{$jch_noproid}'
-                    const jch_params = JSON.parse('{$jch_params}')
-		</script>
-HTML;
         }
     }
 
@@ -242,7 +205,9 @@ HTML;
         wp_register_style('jch-fonts-css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
         wp_register_style('jch-chosen-css', JCH_PLUGIN_URL . 'media/chosen-js/chosen.css', [], JCH_VERSION);
         wp_register_style('jch-wordpress-css', JCH_PLUGIN_URL . 'media/css/wordpress.css', [], JCH_VERSION);
-        wp_register_style('jch-filetree-css', JCH_PLUGIN_URL . 'media/filetree/jquery.filetree.css', [], JCH_VERSION);
+        wp_register_style('jch-dashicons-wordpress', JCH_PLUGIN_URL . 'media/css/dashicons-wordpress.css', [], JCH_VERSION);
+        wp_register_style('jch-dashicons-css', JCH_PLUGIN_URL . 'media/core/css/dashicons.css', ['jch-dashicons-wordpress'], JCH_VERSION);
+
 
         //JavaScript files
         wp_register_script(
@@ -278,86 +243,53 @@ HTML;
             JCH_VERSION,
             true
         );
-        wp_register_script(
-            'jch-filetree-js',
-            JCH_PLUGIN_URL . 'media/filetree/jquery.filetree.js',
-            ['jquery'],
-            JCH_VERSION,
-            true
-        );
 
-        $loader_image = Paths::mediaUrl() . '/core/images/loader.gif';
-        $optimize_image_nonce = wp_create_nonce('jch_optimize_image');
+        $loader_image = $this->paths->mediaUrl() . '/core/images/loader.gif';
         $multiselect_nonce = wp_create_nonce('jch_optimize_multiselect');
-        $filetree_nonce = wp_create_nonce('jch_optimize_filetree');
+        $optimize_image_nonce = wp_create_nonce('jch_optimize_image');
         $imageLoaderJs = <<<JS
-const jch_loader_image_url = "{$loader_image}";
 const jch_optimize_image_url_nonce = '{$optimize_image_nonce}';
+const jch_loader_image_url = "{$loader_image}";
 const jch_multiselect_url_nonce = '{$multiselect_nonce}';
-const jch_filetree_url_nonce = '{$filetree_nonce}';
 JS;
 
         wp_add_inline_script('jch-platformwordpress-js', $imageLoaderJs, 'before');
-
         $chosenJs = <<<JS
-		(function($){
-                   $(document).ready(function () {
-                        $(".chzn-custom-value").chosen({
-                             disable_search_threshold: 10,
-                             width: "300px",
-                             placeholder_text_multiple: "Select some options or add items to select"
-                         });
-                   });
-                })(jQuery);
+(function($){
+  $(document).ready(function () {
+       $(".chzn-custom-value").chosen({
+            disable_search_threshold: 10,
+            width: "400px",
+            placeholder_text_multiple: "Select some options or add items to select"
+        });
+  });
+})(jQuery);
 JS;
 
         wp_add_inline_script('jch-chosen-js', $chosenJs);
 
         $popoverJs = <<<JS
-		window.onload = function(){
-			var popoverTriggerList = [].slice.call(document.querySelectorAll('.hasPopover'));
-            		var popoverList = popoverTriggerList.map(function(popoverTriggerEl){
-		     		return new bootstrap.Popover(popoverTriggerEl, {
-					html: true,
-					container: 'body',
-					placement: 'right',
-					trigger: 'hover focus'
-				});
-			});
-            	}
+window.onload = function(){
+	var popoverTriggerList = [].slice.call(document.querySelectorAll('.hasPopover'));
+   		var popoverList = popoverTriggerList.map(function(popoverTriggerEl){
+    		return new bootstrap.Popover(popoverTriggerEl, {
+			html: true,
+			container: 'body',
+			placement: 'right',
+			trigger: 'hover focus'
+		});
+	});
+}
 JS;
 
         wp_add_inline_script('jch-bootstrap-js', $popoverJs);
-
-        if (JCH_PRO) {
-            wp_register_style('jch-progressbar-css', JCH_PLUGIN_URL . 'media/jquery-ui/jquery-ui.css', [], JCH_VERSION);
-
-            wp_register_script('jch-optimizeimage-js', JCH_PLUGIN_URL . 'media/core/js/optimize-image.js', [
-                'jquery',
-                'jch-adminutility-js',
-                'jch-platformwordpress-js',
-                'jch-bootstrap-js'
-            ], JCH_VERSION, true);
-            wp_register_script(
-                'jch-progressbar-js',
-                JCH_PLUGIN_URL . 'media/jquery-ui/jquery-ui.js',
-                ['jquery'],
-                JCH_VERSION,
-                true
-            );
-            wp_register_script('jch-smartcombine-js', JCH_PLUGIN_URL . 'media/core/js/smart-combine.js', [
-                'jquery',
-                'jch-adminutility-js',
-                'jch-platformwordpress-js'
-            ], JCH_VERSION, true);
-        }
 
         /** @psalm-var array<string, array<string, array{0:string, 1:string, 2?:bool}>> $aSettingsArray */
         $aSettingsArray = TabSettings::getSettingsArray();
 
         foreach ($aSettingsArray as $section => $aSettings) {
             add_settings_section('jch-optimize_' . $section . '_section', '', [
-                '\\JchOptimize\\Html\\Renderer\\Section',
+                '\\JchOptimize\\WordPress\\Html\\Renderer\\Section',
                 $section
             ], 'jchOptimizeOptionsPage');
 
@@ -376,7 +308,7 @@ JS;
                 }
 
                 add_settings_field($id, $title, [
-                    '\\JchOptimize\\Html\\Renderer\\Setting',
+                    '\\JchOptimize\\WordPress\\Html\\Renderer\\Setting',
                     $setting
                 ], 'jchOptimizeOptionsPage', 'jch-optimize_' . $section . '_section', $args);
             }
@@ -391,18 +323,12 @@ JS;
     private function getSettingsClassMap(): array
     {
         return [
-            'pro_http2_file_types'     => 'jch-wp-checkboxes-grid-wrapper columns-4',
-            'staticfiles'              => 'jch-wp-checkboxes-grid-wrapper columns-5',
-            'pro_staticfiles_2'        => 'jch-wp-checkboxes-grid-wrapper columns-5',
-            'pro_staticfiles_3'        => 'jch-wp-checkboxes-grid-wrapper columns-5',
-            'pro_html_sections'        => 'jch-wp-checkboxes-grid-wrapper columns-5 width-400',
             'memcached_server_host'    => 'jch-memcached-wrapper d-none',
             'memcached_server_port'    => 'jch-memcached-wrapper d-none',
             'redis_server_host'        => 'jch-redis-wrapper d-none',
             'redis_server_port'        => 'jch-redis-wrapper d-none',
             'redis_server_password'    => 'jch-redis-wrapper d-none',
             'redis_server_database'    => 'jch-redis-wrapper d-none',
-            'pro_smart_combine_values' => 'd-none'
         ];
     }
 
@@ -486,10 +412,7 @@ JS;
         return $actionLinks;
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxFileTree()
+    #[NoReturn] public function doAjaxFileTree(): void
     {
         check_admin_referer('jch_optimize_filetree');
 
@@ -500,10 +423,7 @@ JS;
         die();
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxMultiSelect()
+    #[NoReturn] public function doAjaxMultiSelect(): void
     {
         check_admin_referer('jch_optimize_multiselect');
 
@@ -514,40 +434,31 @@ JS;
         die();
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxOptimizeImages()
+    #[NoReturn] public function doAjaxOptimizeImages(): void
     {
         check_admin_referer('jch_optimize_image');
 
         if (current_user_can('manage_options')) {
-            AdminAjax::getInstance('OptimizeImage')->run();
+            Ajax::getInstance('OptimizeImage')->run();
         }
 
         die();
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxConfigureSettings()
+    #[NoReturn] public function doAjaxConfigureSettings(): void
     {
         if (current_user_can('manage_options')) {
-            $container = ContainerFactory::getContainer();
+            $container = ContainerFactory::getInstance();
             $container->get(ControllerResolver::class)->resolve();
         }
 
         die();
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxOnClickIcon()
+    #[NoReturn] public function doAjaxOnClickIcon(): void
     {
         if (current_user_can('manage_options')) {
-            $container = ContainerFactory::getContainer();
+            $container = ContainerFactory::getInstance();
             check_admin_referer($container->get(Input::class)->get('task'));
             $container->get(ControllerResolver::class)->resolve();
         }
@@ -555,10 +466,7 @@ JS;
         die();
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxSmartCombine()
+    #[NoReturn] public function doAjaxSmartCombine(): void
     {
         if (current_user_can('manage_options')) {
             echo Ajax::getInstance('SmartCombine')->run();
@@ -567,13 +475,28 @@ JS;
         die();
     }
 
-    /**
-     * @return never-return
-     */
-    public function doAjaxGetCacheInfo()
+    #[NoReturn] public function doAjaxGetCacheInfo(): void
     {
-        $container = ContainerFactory::getContainer();
+        $container = ContainerFactory::getInstance();
         $container->get(Input::class)->def('task', 'getcacheinfo');
+        $container->get(ControllerResolver::class)->resolve();
+
+        die();
+    }
+
+    #[NoReturn] public function doAjaxJchConfigureJsTableBody(): void
+    {
+        $container = ContainerFactory::getInstance();
+        $container->get(Input::class)->def('task', 'criticaljstablebody');
+        $container->get(ControllerResolver::class)->resolve();
+
+        die();
+    }
+
+    #[NoReturn] public function doAjaxJchConfigureJsAutoSave(): void
+    {
+        $container = ContainerFactory::getInstance();
+        $container->get(Input::class)->def('task', 'criticaljsautosave');
         $container->get(ControllerResolver::class)->resolve();
 
         die();

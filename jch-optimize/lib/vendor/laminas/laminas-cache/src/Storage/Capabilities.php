@@ -1,16 +1,18 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage;
 
 use ArrayObject;
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\EventManager\EventsCapableInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventsCapableInterface;
 use stdClass;
+
 use function array_diff;
 use function array_keys;
 use function in_array;
 use function is_string;
 use function strtolower;
+
 class Capabilities
 {
     public const UNKNOWN_KEY_LENGTH = -1;

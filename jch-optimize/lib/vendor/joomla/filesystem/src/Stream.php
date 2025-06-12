@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Exception\FilesystemException;
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Exception\FilesystemException;
+
 /**
  * Joomla! Stream Interface
  *
@@ -167,7 +169,7 @@ class Stream
         // Set the UA for HTTP
         $context['http']['user_agent'] = $ua ?: 'Joomla! Framework Stream';
         if ($usePrefix) {
-            return new Stream(\_JchOptimizeVendor\JPATH_ROOT . '/', \_JchOptimizeVendor\JPATH_ROOT, $context);
+            return new Stream(\_JchOptimizeVendor\V91\JPATH_ROOT . '/', \_JchOptimizeVendor\V91\JPATH_ROOT, $context);
         }
         return new Stream('', '', $context);
     }
@@ -181,7 +183,7 @@ class Stream
      * @param   boolean   $useIncludePath        Use the PHP include path
      * @param   resource  $context               Context to use when opening
      * @param   boolean   $usePrefix             Use a prefix to open the file
-     * @param   boolean   $relative              Filename is a relative path (if false, strips \_JchOptimizeVendor\JPATH_ROOT to make it relative)
+     * @param   boolean   $relative              Filename is a relative path (if false, strips \_JchOptimizeVendor\V91\JPATH_ROOT to make it relative)
      * @param   boolean   $detectprocessingmode  Detect the processing method for the file and use the appropriate function
      *                                           to handle output automatically
      *
@@ -1043,7 +1045,7 @@ class Stream
      * @param   string    $dest       The file path to copy to.
      * @param   resource  $context    A valid context resource (optional) created with stream_context_create.
      * @param   boolean   $usePrefix  Controls the use of a prefix (optional).
-     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\JPATH_ROOT stripped.
+     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\V91\JPATH_ROOT stripped.
      *
      * @return  boolean
      *
@@ -1096,7 +1098,7 @@ class Stream
      * @param   string    $dest       The file path to move to.
      * @param   resource  $context    A valid context resource (optional) created with stream_context_create.
      * @param   boolean   $usePrefix  Controls the use of a prefix (optional).
-     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\JPATH_ROOT stripped.
+     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\V91\JPATH_ROOT stripped.
      *
      * @return  boolean
      *
@@ -1146,7 +1148,7 @@ class Stream
      * @param   string    $filename   The file path to delete.
      * @param   resource  $context    A valid context resource (optional) created with stream_context_create.
      * @param   boolean   $usePrefix  Controls the use of a prefix (optional).
-     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\JPATH_ROOT stripped.
+     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\V91\JPATH_ROOT stripped.
      *
      * @return  boolean
      *
@@ -1195,7 +1197,7 @@ class Stream
      * @param   string    $dest       The file path to copy to.
      * @param   resource  $context    A valid context resource (optional) created with stream_context_create.
      * @param   boolean   $usePrefix  Controls the use of a prefix (optional).
-     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\JPATH_ROOT stripped.
+     * @param   boolean   $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\V91\JPATH_ROOT stripped.
      *
      * @return  boolean
      *
@@ -1242,7 +1244,7 @@ class Stream
      * @param   string   $filename   Original filename of the file
      * @param   string   $mode       Mode string to retrieve the filename
      * @param   boolean  $usePrefix  Controls the use of a prefix
-     * @param   boolean  $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\JPATH_ROOT stripped.
+     * @param   boolean  $relative   Determines if the filename given is relative. Relative paths do not have \_JchOptimizeVendor\V91\JPATH_ROOT stripped.
      *
      * @return  string
      *
@@ -1266,11 +1268,11 @@ class Stream
             } else {
                 $prefixToUse = $this->readprefix;
             }
-            // Get rid of \_JchOptimizeVendor\JPATH_ROOT (legacy compat)
+            // Get rid of \_JchOptimizeVendor\V91\JPATH_ROOT (legacy compat)
             if (!$relative && $prefixToUse) {
-                $pos = \strpos($filename, \_JchOptimizeVendor\JPATH_ROOT);
+                $pos = \strpos($filename, \_JchOptimizeVendor\V91\JPATH_ROOT);
                 if ($pos !== \false) {
-                    $filename = \substr_replace($filename, '', $pos, \strlen(\_JchOptimizeVendor\JPATH_ROOT));
+                    $filename = \substr_replace($filename, '', $pos, \strlen(\_JchOptimizeVendor\V91\JPATH_ROOT));
                 }
             }
             $filename = ($prefixToUse ? $prefixToUse : '') . $filename;

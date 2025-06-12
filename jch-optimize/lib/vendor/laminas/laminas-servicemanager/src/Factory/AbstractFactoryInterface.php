@@ -1,9 +1,11 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager\Factory;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager\Factory;
+
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 /**
  * Interface for an abstract factory.
  *

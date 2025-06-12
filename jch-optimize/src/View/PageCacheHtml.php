@@ -11,11 +11,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\View;
+namespace JchOptimize\WordPress\View;
 
 use JchOptimize\Core\Mvc\View;
 use JchOptimize\Core\Registry;
-use JchOptimize\Html\Helper;
+use JchOptimize\WordPress\Html\Helper;
 
 use function wp_add_inline_script;
 

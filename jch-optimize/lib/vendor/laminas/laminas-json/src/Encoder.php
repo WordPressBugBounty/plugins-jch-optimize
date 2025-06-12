@@ -1,13 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Json;
+namespace _JchOptimizeVendor\V91\Laminas\Json;
 
 use Iterator;
 use IteratorAggregate;
 use JsonSerializable;
-use _JchOptimizeVendor\Laminas\Json\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\Laminas\Json\Exception\RecursionException;
+use _JchOptimizeVendor\V91\Laminas\Json\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\Json\Exception\RecursionException;
 use ReflectionClass;
+
 use function array_keys;
 use function bin2hex;
 use function chr;
@@ -32,6 +33,7 @@ use function range;
 use function sprintf;
 use function str_replace;
 use function strlen;
+
 /**
  * Encode PHP constructs to JSON.
  */

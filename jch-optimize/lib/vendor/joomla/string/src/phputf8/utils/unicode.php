@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * Tools for conversion between UTF-8 and unicode

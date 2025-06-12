@@ -11,9 +11,9 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
 
-use JchOptimize\Core\Interfaces\Utility as UtilityInterface;
+use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Registry;
 use stdClass;
 
@@ -24,6 +24,7 @@ use function count;
 use function function_exists;
 use function header;
 use function headers_list;
+use function headers_sent;
 use function is_admin;
 use function is_user_logged_in;
 use function preg_match_all;
@@ -41,7 +42,7 @@ class Utility implements UtilityInterface
      *
      * @return string
      */
-    public static function translate(string $text): string
+    public function translate(string $text): string
     {
         return __($text, 'jch-optimize');
     }
@@ -50,7 +51,7 @@ class Utility implements UtilityInterface
      * Checks if user is not logged in
      *
      */
-    public static function isGuest(): bool
+    public function isGuest(): bool
     {
         if (defined('TEST_SITE_ROOT')) {
             return true;
@@ -68,17 +69,19 @@ class Utility implements UtilityInterface
      *
      * @return void
      */
-    public static function sendHeaders(array $headers): void
+    public function sendHeaders(array $headers): void
     {
         /** @psalm-var array<string, string> $headers */
         if (!empty($headers)) {
             foreach ($headers as $header => $value) {
-                header($header . ': ' . $value, false);
+                add_action('jch_optimize_send_headers', function () use ($header, $value) {
+                    header($header . ': ' . $value, false);
+                });
             }
         }
     }
 
-    public static function userAgent($userAgent): stdClass
+    public function userAgent($userAgent): stdClass
     {
         global $is_chrome, $is_IE, $is_edge, $is_safari, $is_opera, $is_gecko, $is_winIE, $is_macIE, $is_iphone;
 
@@ -143,7 +146,7 @@ class Utility implements UtilityInterface
         return $oUA;
     }
 
-    public static function bsTooltipContentAttribute(): string
+    public function bsTooltipContentAttribute(): string
     {
         return 'data-bs-content';
     }
@@ -155,12 +158,12 @@ class Utility implements UtilityInterface
      * @return bool
      * @deprecated Use Cache::isPageCacheEnabled()
      */
-    public static function isPageCacheEnabled(Registry $params, bool $nativeCache = false): bool
+    public function isPageCacheEnabled(Registry $params, bool $nativeCache = false): bool
     {
         return (bool)$params->get('cache_enable', '0');
     }
 
-    public static function isMobile(): bool
+    public function isMobile(): bool
     {
         return wp_is_mobile();
     }
@@ -171,17 +174,17 @@ class Utility implements UtilityInterface
      * @return string
      * @deprecated Use Cache::getCacheStorage()
      */
-    public static function getCacheStorage(Registry $params): string
+    public function getCacheStorage(Registry $params): string
     {
         return $params->get('pro_cache_storage_adapter', 'filesystem');
     }
 
-    public static function getHeaders(): array
+    public function getHeaders(): array
     {
         return headers_list();
     }
 
-    public static function publishAdminMessages(string $message, string $messageType): void
+    public function publishAdminMessages(string $message, string $messageType): void
     {
         add_action('admin_notices', function () use ($message, $messageType) {
             echo <<<HTML
@@ -190,12 +193,12 @@ HTML;
         });
     }
 
-    public static function getLogsPath(): string
+    public function getLogsPath(): string
     {
         return JCH_PLUGIN_DIR . 'logs';
     }
 
-    public static function isSiteGzipEnabled(): bool
+    public function isSiteGzipEnabled(): bool
     {
         return false;
     }
@@ -206,7 +209,8 @@ HTML;
      * @return void
      * @deprecated  Use Cache::outputData()
      */
-    public static function outputData(array $data): void
+    #[NoReturn]
+    public function outputData(array $data): void
     {
         /** @psalm-var array{headers:array<array-key, string>, body: string} $data */
         if (!empty($data['headers'])) {
@@ -226,17 +230,17 @@ HTML;
      * @return array|null
      * @deprecated Use Cache::prepareDataFromCache()
      */
-    public static function prepareDataFromCache(?array $data): ?array
+    public function prepareDataFromCache(?array $data): ?array
     {
         return $data;
     }
 
-    public static function isAdmin(): bool
+    public function isAdmin(): bool
     {
         return is_admin();
     }
 
-    public static function getNonce(string $id): string
+    public function getNonce(string $id): string
     {
         return wp_create_nonce($id);
     }

@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Pattern;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Pattern;
 
-use _JchOptimizeVendor\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+
 use function array_shift;
 use function array_unshift;
 use function func_get_args;
@@ -11,6 +12,7 @@ use function md5;
 use function method_exists;
 use function property_exists;
 use function strtolower;
+
 class ObjectCache extends CallbackCache
 {
     /**

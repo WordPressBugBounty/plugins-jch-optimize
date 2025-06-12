@@ -7,7 +7,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @note        This file has been modified by the Joomla! Project and no longer reflects the original work of its author.
  */
-namespace _JchOptimizeVendor\Joomla\Utilities;
+
+namespace _JchOptimizeVendor\V91\Joomla\Utilities;
 
 /**
  * IpHelper is a utility class for processing IP addresses

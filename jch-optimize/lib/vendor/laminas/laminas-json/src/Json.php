@@ -1,9 +1,10 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Json;
+namespace _JchOptimizeVendor\V91\Laminas\Json;
 
-use _JchOptimizeVendor\Laminas\Json\Exception\RuntimeException;
+use _JchOptimizeVendor\V91\Laminas\Json\Exception\RuntimeException;
 use SplQueue;
+
 use function array_pop;
 use function count;
 use function end;
@@ -21,6 +22,7 @@ use function str_repeat;
 use function str_replace;
 use function strlen;
 use function trim;
+
 use const JSON_ERROR_CTRL_CHAR;
 use const JSON_ERROR_DEPTH;
 use const JSON_ERROR_NONE;
@@ -30,6 +32,7 @@ use const JSON_HEX_APOS;
 use const JSON_HEX_QUOT;
 use const JSON_HEX_TAG;
 use const JSON_PRETTY_PRINT;
+
 /**
  * Class for encoding to and decoding from JSON.
  */

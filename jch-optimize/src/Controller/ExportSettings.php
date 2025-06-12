@@ -11,32 +11,26 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Filesystem\File;
+use _JchOptimizeVendor\V91\Joomla\Filesystem\File;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Model\BulkSettings;
+use JchOptimize\WordPress\Model\BulkSettings;
 
 use function basename;
 use function check_admin_referer;
 use function file_exists;
-use function flush;
 use function header;
 use function nocache_headers;
-use function ob_clean;
 
 class ExportSettings extends Controller
 {
-    private BulkSettings $bulkSettings;
-
-    public function __construct(BulkSettings $bulkSettings)
+    public function __construct(private BulkSettings $bulkSettings)
     {
-        $this->bulkSettings = $bulkSettings;
-
         parent::__construct();
     }
 
-    public function execute(): bool
+    #[NoReturn] public function execute(): bool
     {
         check_admin_referer('jch_bulksettings');
 
@@ -48,11 +42,14 @@ class ExportSettings extends Controller
             header('Content-Disposition: attachment; filename="' . basename($file) . '"');
             nocache_headers();
             header('Content-Length: ' . filesize($file));
-            ob_clean();
-            flush();
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
             readfile($file);
 
             File::delete($file);
+
+            die();
         }
 
         return true;

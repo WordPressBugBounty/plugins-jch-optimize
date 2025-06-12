@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\View;
 
-use _JchOptimizeVendor\Joomla\Renderer\RendererInterface;
+namespace _JchOptimizeVendor\V91\Joomla\View;
+
+use _JchOptimizeVendor\V91\Joomla\Renderer\RendererInterface;
+
 /**
  * Joomla Framework HTML View Class
  *
@@ -63,7 +65,7 @@ class HtmlView extends AbstractView
      *
      * @since   2.0.0
      */
-    public function getLayout() : string
+    public function getLayout(): string
     {
         return $this->layout;
     }
@@ -74,7 +76,7 @@ class HtmlView extends AbstractView
      *
      * @since   2.0.0
      */
-    public function getRenderer() : RendererInterface
+    public function getRenderer(): RendererInterface
     {
         return $this->renderer;
     }

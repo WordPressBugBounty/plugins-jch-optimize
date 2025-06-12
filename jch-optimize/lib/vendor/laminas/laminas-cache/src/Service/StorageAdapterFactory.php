@@ -1,17 +1,20 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Service;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Service;
 
 use InvalidArgumentException;
-use _JchOptimizeVendor\Laminas\Cache\Exception;
-use _JchOptimizeVendor\Laminas\Cache\Storage\PluginAwareInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\PluginManagerInterface;
-use _JchOptimizeVendor\Webmozart\Assert\Assert;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\PluginAwareInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\PluginManagerInterface;
+use _JchOptimizeVendor\V91\Webmozart\Assert\Assert;
+
 use function assert;
 use function get_class;
 use function sprintf;
+
 /**
  * @psalm-import-type PluginArrayConfigurationWithPriorityType from StorageAdapterFactoryInterface
  */
@@ -27,14 +30,14 @@ final class StorageAdapterFactory implements StorageAdapterFactoryInterface
         $this->adapters = $adapters;
         $this->pluginFactory = $pluginFactory;
     }
-    public function createFromArrayConfiguration(array $configuration) : StorageInterface
+    public function createFromArrayConfiguration(array $configuration): StorageInterface
     {
         $adapterName = $configuration['name'];
         $adapterOptions = $configuration['options'] ?? [];
         $plugins = $configuration['plugins'] ?? [];
         return $this->create($adapterName, $adapterOptions, $plugins);
     }
-    public function create(string $storage, array $options = [], array $plugins = []) : StorageInterface
+    public function create(string $storage, array $options = [], array $plugins = []): StorageInterface
     {
         $adapter = $this->adapters->build($storage, $options);
         assert($adapter instanceof StorageInterface);
@@ -53,7 +56,7 @@ final class StorageAdapterFactory implements StorageAdapterFactoryInterface
         }
         return $adapter;
     }
-    public function assertValidConfigurationStructure(array $configuration) : void
+    public function assertValidConfigurationStructure(array $configuration): void
     {
         try {
             Assert::isNonEmptyMap($configuration, 'Configuration must be a non-empty array.');
@@ -73,7 +76,7 @@ final class StorageAdapterFactory implements StorageAdapterFactoryInterface
      * @psalm-param list<mixed> $plugins
      * @psalm-assert list<PluginArrayConfigurationWithPriorityType> $plugins
      */
-    private function assertValidPluginConfigurationStructure(string $adapter, array $plugins) : void
+    private function assertValidPluginConfigurationStructure(string $adapter, array $plugins): void
     {
         Assert::allIsArray($plugins, 'All plugin configurations are expected to be an array.');
         foreach ($plugins as $pluginConfiguration) {
@@ -82,7 +85,7 @@ final class StorageAdapterFactory implements StorageAdapterFactoryInterface
                 if (isset($pluginConfiguration['priority'])) {
                     Assert::integer($pluginConfiguration['priority'], 'Plugin priority has to be integer.');
                 }
-            } catch (Exception\InvalidArgumentException|InvalidArgumentException $exception) {
+            } catch (Exception\InvalidArgumentException | InvalidArgumentException $exception) {
                 throw new Exception\InvalidArgumentException(sprintf('Plugin configuration for adapter "%s" is invalid: %s', $adapter, $exception->getMessage()), 0, $exception);
             }
         }

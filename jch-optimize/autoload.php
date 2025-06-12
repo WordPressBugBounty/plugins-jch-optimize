@@ -11,17 +11,16 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
+use JchOptimize\WordPress\Container\ContainerFactory;
+
 if (! defined('_JCH_EXEC')) {
     define('_JCH_EXEC', 1);
 }
 
 require_once __DIR__ . '/version.php';
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/lib/vendor/scoper-autoload.php';
 
-if (JCH_DEVELOP) {
-    require_once __DIR__ . '/lib-dev/vendor/autoload.php';
-    require_once __DIR__ . '/lib-dev/src/class_map.php';
-} else {
-    require_once __DIR__ . '/lib/vendor/scoper-autoload.php';
-    require_once __DIR__ . '/lib/src/class_map.php';
+if (!class_exists('\JchOptimize\Container\ContainerFactory', false)) {
+    class_alias(ContainerFactory::class, '\\JchOptimize\\Container\\ContainerFactory');
 }

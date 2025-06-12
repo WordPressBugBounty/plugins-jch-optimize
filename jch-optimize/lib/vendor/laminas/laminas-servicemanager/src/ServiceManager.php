@@ -1,23 +1,25 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\ServiceManager;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\ServiceManager;
 
 use Exception;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\CyclicAliasException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\ServiceNotCreatedException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use _JchOptimizeVendor\Laminas\ServiceManager\Proxy\LazyServiceFactory;
-use _JchOptimizeVendor\Laminas\Stdlib\ArrayUtils;
-use _JchOptimizeVendor\ProxyManager\Configuration as ProxyConfiguration;
-use _JchOptimizeVendor\ProxyManager\Factory\LazyLoadingValueHolderFactory;
-use _JchOptimizeVendor\ProxyManager\FileLocator\FileLocator;
-use _JchOptimizeVendor\ProxyManager\GeneratorStrategy\EvaluatingGeneratorStrategy;
-use _JchOptimizeVendor\ProxyManager\GeneratorStrategy\FileWriterGeneratorStrategy;
-use _JchOptimizeVendor\Psr\Container\ContainerExceptionInterface;
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\CyclicAliasException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\Proxy\LazyServiceFactory;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\ArrayUtils;
+use _JchOptimizeVendor\V91\ProxyManager\Configuration as ProxyConfiguration;
+use _JchOptimizeVendor\V91\ProxyManager\Factory\LazyLoadingValueHolderFactory;
+use _JchOptimizeVendor\V91\ProxyManager\FileLocator\FileLocator;
+use _JchOptimizeVendor\V91\ProxyManager\GeneratorStrategy\EvaluatingGeneratorStrategy;
+use _JchOptimizeVendor\V91\ProxyManager\GeneratorStrategy\FileWriterGeneratorStrategy;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerExceptionInterface;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 use function array_intersect;
 use function array_key_exists;
 use function array_keys;
@@ -31,7 +33,9 @@ use function spl_autoload_register;
 use function spl_object_hash;
 use function sprintf;
 use function trigger_error;
+
 use const E_USER_DEPRECATED;
+
 /**
  * Service Manager.
  *
@@ -449,7 +453,7 @@ class ServiceManager implements ServiceLocatorInterface
      *
      * @psalm-param InitializersConfigurationType $initializers
      */
-    private function resolveInitializers(array $initializers) : void
+    private function resolveInitializers(array $initializers): void
     {
         foreach ($initializers as $initializer) {
             if (is_string($initializer) && class_exists($initializer)) {
@@ -468,7 +472,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @psalm-return (callable(ContainerInterface,string,array<mixed>|null):object)|Factory\FactoryInterface
      * @throws ServiceNotFoundException
      */
-    private function getFactory(string $name) : callable
+    private function getFactory(string $name): callable
     {
         $factory = $this->factories[$name] ?? null;
         $lazyLoaded = \false;
@@ -495,7 +499,7 @@ class ServiceManager implements ServiceLocatorInterface
      */
     private function createDelegatorFromName(string $name, ?array $options = null)
     {
-        $creationCallback = function () use($name, $options) {
+        $creationCallback = function () use ($name, $options) {
             // Code is inlined for performance reason, instead of abstracting the creation
             $factory = $this->getFactory($name);
             return $factory($this->creationContext, $name, $options);
@@ -552,7 +556,7 @@ class ServiceManager implements ServiceLocatorInterface
      *
      * @throws ServiceNotCreatedException When the lazy service class_map configuration is missing.
      */
-    private function createLazyServiceDelegatorFactory() : LazyServiceFactory
+    private function createLazyServiceDelegatorFactory(): LazyServiceFactory
     {
         if ($this->lazyServicesDelegator) {
             return $this->lazyServicesDelegator;
@@ -584,7 +588,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @psalm-param DelegatorsConfigurationType $config
      * @psalm-return DelegatorsConfigurationType
      */
-    private function mergeDelegators(array $config) : array
+    private function mergeDelegators(array $config): array
     {
         foreach ($config as $key => $delegators) {
             if (!array_key_exists($key, $this->delegators)) {
@@ -609,7 +613,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @param array<string,string> $invokables
      * @return array<string,string>
      */
-    private function createAliasesAndFactoriesForInvokables(array $invokables) : array
+    private function createAliasesAndFactoriesForInvokables(array $invokables): array
     {
         $newAliases = [];
         foreach ($invokables as $name => $class) {
@@ -635,7 +639,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @throws ContainerModificationsNotAllowedException If any
      *     service key is invalid.
      */
-    private function validateServiceNames(array $config) : void
+    private function validateServiceNames(array $config): void
     {
         if ($this->allowOverride || !$this->configured) {
             return;
@@ -697,7 +701,7 @@ class ServiceManager implements ServiceLocatorInterface
      * algorithms for mapping a single item efficiently are different from those of mapping
      * many.
      */
-    private function mapAliasToTarget(string $alias, string $target) : void
+    private function mapAliasToTarget(string $alias, string $target): void
     {
         // $target is either an alias or something else
         // if it is an alias, resolve it
@@ -732,7 +736,7 @@ class ServiceManager implements ServiceLocatorInterface
      *
      * @see mapAliasToTarget above
      */
-    private function mapAliasesToTargets() : void
+    private function mapAliasesToTargets(): void
     {
         $tagged = [];
         foreach ($this->aliases as $alias => $target) {
@@ -772,7 +776,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @param string|Factory\AbstractFactoryInterface $abstractFactory
      * @psalm-param class-string<Factory\AbstractFactoryInterface>|Factory\AbstractFactoryInterface $abstractFactory
      */
-    private function resolveAbstractFactoryInstance($abstractFactory) : void
+    private function resolveAbstractFactoryInstance($abstractFactory): void
     {
         if (is_string($abstractFactory) && class_exists($abstractFactory)) {
             // Cached string factory name
@@ -790,7 +794,7 @@ class ServiceManager implements ServiceLocatorInterface
     /**
      * Check if a static service or factory exists for the given name.
      */
-    private function staticServiceOrFactoryCanCreate(string $name) : bool
+    private function staticServiceOrFactoryCanCreate(string $name): bool
     {
         if (isset($this->services[$name]) || isset($this->factories[$name])) {
             return \true;
@@ -804,7 +808,7 @@ class ServiceManager implements ServiceLocatorInterface
     /**
      * Check if an abstract factory exists that can create a service for the given name.
      */
-    private function abstractFactoryCanCreate(string $name) : bool
+    private function abstractFactoryCanCreate(string $name): bool
     {
         foreach ($this->abstractFactories as $abstractFactory) {
             if ($abstractFactory->canCreate($this->creationContext, $name)) {
@@ -821,7 +825,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @psalm-param mixed $delegatorFactory
      * @psalm-assert callable(ContainerInterface,string,callable():object,array<mixed>|null):object $delegatorFactory
      */
-    private function assertCallableDelegatorFactory($delegatorFactory) : void
+    private function assertCallableDelegatorFactory($delegatorFactory): void
     {
         if ($delegatorFactory instanceof Factory\DelegatorFactoryInterface || is_callable($delegatorFactory)) {
             return;

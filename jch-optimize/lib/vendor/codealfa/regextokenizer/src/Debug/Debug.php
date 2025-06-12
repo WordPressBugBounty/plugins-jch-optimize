@@ -8,11 +8,13 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\RegexTokenizer\Debug;
 
-use _JchOptimizeVendor\Psr\Log\LoggerAwareTrait;
-use _JchOptimizeVendor\Psr\Log\LoggerInterface;
-use _JchOptimizeVendor\Psr\Log\NullLogger;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerInterface;
+use _JchOptimizeVendor\V91\Psr\Log\NullLogger;
+
 /**
  * Trait Debug  - To use the Debug trait you must add a PSR-3 compliant Logger to the class using this trait
  *
@@ -21,6 +23,7 @@ use _JchOptimizeVendor\Psr\Log\NullLogger;
 trait Debug
 {
     use LoggerAwareTrait;
+
     /**DO NOT ENABLE on production sites!! **/
     public $_debug = \false;
     public $_limit = 10.0;
@@ -31,7 +34,7 @@ trait Debug
      * @param mixed $regexNum
      * @return void
      */
-    public function _debug(string $regex, string $code, $regexNum = 0) : void
+    public function _debug(string $regex, string $code, $regexNum = 0): void
     {
         if (!$this->_debug) {
             return;

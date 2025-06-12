@@ -1,11 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\Webmozart\Assert;
+namespace _JchOptimizeVendor\V91\Webmozart\Assert;
 
 use ArrayAccess;
 use Closure;
 use Countable;
 use Throwable;
+
 /**
  * This trait provides nurllOr*, all* and allNullOr* variants of assertion base methods.
  * Do not use this trait directly: it will change, and is not designed for reuse.

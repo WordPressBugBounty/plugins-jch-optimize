@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter;
 
 use Countable;
-use _JchOptimizeVendor\Laminas\Cache\Storage\IteratorInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IteratorInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
 use ReturnTypeWillChange;
+
 use function count;
+
 /**
  * @see ReturnTypeWillChange
  */

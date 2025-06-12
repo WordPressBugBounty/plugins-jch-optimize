@@ -2,9 +2,12 @@
 
 namespace JchOptimize\Core\Mvc;
 
-use _JchOptimizeVendor\GuzzleHttp\Psr7\Response;
-use _JchOptimizeVendor\Joomla\Renderer\AbstractRenderer;
-use _JchOptimizeVendor\Slim\Views\PhpRenderer;
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\Response;
+use _JchOptimizeVendor\V91\Joomla\Renderer\AbstractRenderer;
+use _JchOptimizeVendor\V91\Slim\Views\PhpRenderer;
+use Throwable;
+
+use function array_merge;
 
 class Renderer extends AbstractRenderer
 {
@@ -26,11 +29,12 @@ class Renderer extends AbstractRenderer
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function render(string $template, array $data = []): string
     {
-        $data = \array_merge($this->data, $data);
+        $data = array_merge($this->data, $data);
+
         $response = $this->getRenderer()->render(new Response(), $template, $data);
 
         return $response->getBody();

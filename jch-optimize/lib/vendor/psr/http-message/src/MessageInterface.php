@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Psr\Http\Message;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Psr\Http\Message;
 
 /**
  * HTTP messages consist of requests from a client to a server and responses

@@ -4,11 +4,13 @@
  * Plugin Name: JCH Optimize
  * Plugin URI: http://www.jch-optimize.net/
  * Description: Boost your WordPress site's performance with JCH Optimize as measured on PageSpeed
- * Version: 4.2.1
+ * Version: 5.0.0
  * Author: Samuel Marshall
  * License: GNU/GPLv3
  * Text Domain: jch-optimize
  * Domain Path: /languages
+ * Requires PHP: 8.0
+ * Requires at least: 5.0
  */
 
 /**
@@ -22,11 +24,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-use JchOptimize\ContainerFactory;
-use JchOptimize\Plugin\Loader;
+use JchOptimize\WordPress\Container\ContainerFactory;
+use JchOptimize\WordPress\Plugin\Loader;
 
 if (version_compare(PHP_VERSION, '8.0', 'lt')) {
-    function jchoptimize_update_php_message()
+    function jchoptimize_update_php_message(): void
     {
         $message = sprintf(
             __(
@@ -69,7 +71,7 @@ define('JCH_CACHE_URL', content_url() . '/cache/jch-optimize/');
 require_once(JCH_PLUGIN_DIR . 'autoload.php');
 
 try {
-    $container = ContainerFactory::getContainer();
+    $container = ContainerFactory::getInstance();
     $loader = $container->get(Loader::class);
     /**
      * Upgrade settings from versions less than 3.0.0
@@ -80,7 +82,7 @@ try {
      */
     $loader->init();
 } catch (Exception $e) {
-    function jchoptimize_initialize_error()
+    function jchoptimize_initialize_error(): void
     {
         $message = __(
             'An error occurred while trying to initialize the JCH Optimize plugin. Please deactivate the plugin and report all errors to the developer.',

@@ -11,7 +11,7 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\View;
+namespace JchOptimize\WordPress\View;
 
 use JchOptimize\Core\Mvc\View;
 
@@ -27,20 +27,6 @@ class MainHtml extends View
     public function loadResources(): void
     {
         wp_register_script(
-            'jch-resizesensor-lib-js',
-            JCH_PLUGIN_URL . 'media/css-element-queries/ResizeSensor.js',
-            ['jquery'],
-            JCH_VERSION,
-            true
-        );
-        wp_register_script(
-            'jch-resizesensor-js',
-            JCH_PLUGIN_URL . 'media/core/js/resize-sensor.js',
-            ['jch-resizesensor-lib-js'],
-            JCH_VERSION,
-            true
-        );
-        wp_register_script(
             'jch-fileupload-js',
             JCH_PLUGIN_URL . 'media/core/js/file_upload.js',
             ['jch-bootstrap-js'],
@@ -48,17 +34,6 @@ class MainHtml extends View
             true
         );
 
-
-        wp_enqueue_script('jch-resizesensor-lib-js');
-        wp_enqueue_script('jch-resizesensor-js');
         wp_enqueue_script('jch-fileupload-js');
-
-        $js = <<<JS
-window.addEventListener('DOMContentLoaded', (event) => {
-    jchPlatform.getCacheInfo();
-});
-JS;
-        wp_add_inline_script('jch-platformwordpress-js', $js);
-
     }
 }

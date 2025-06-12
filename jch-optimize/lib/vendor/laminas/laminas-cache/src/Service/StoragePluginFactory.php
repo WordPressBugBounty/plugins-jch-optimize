@@ -1,14 +1,17 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Service;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Service;
 
 use InvalidArgumentException as PhpInvalidArgumentException;
-use _JchOptimizeVendor\Laminas\Cache\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Plugin\PluginInterface;
-use _JchOptimizeVendor\Laminas\ServiceManager\PluginManagerInterface;
-use _JchOptimizeVendor\Webmozart\Assert\Assert;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin\PluginInterface;
+use _JchOptimizeVendor\V91\Laminas\ServiceManager\PluginManagerInterface;
+use _JchOptimizeVendor\V91\Webmozart\Assert\Assert;
+
 use function assert;
+
 final class StoragePluginFactory implements StoragePluginFactoryInterface
 {
     /** @var PluginManagerInterface */
@@ -17,19 +20,19 @@ final class StoragePluginFactory implements StoragePluginFactoryInterface
     {
         $this->plugins = $plugins;
     }
-    public function createFromArrayConfiguration(array $configuration) : PluginInterface
+    public function createFromArrayConfiguration(array $configuration): PluginInterface
     {
         $name = $configuration['name'];
         $options = $configuration['options'] ?? [];
         return $this->create($name, $options);
     }
-    public function create(string $plugin, array $options = []) : PluginInterface
+    public function create(string $plugin, array $options = []): PluginInterface
     {
         $instance = $this->plugins->build($plugin, $options);
         assert($instance instanceof PluginInterface);
         return $instance;
     }
-    public function assertValidConfigurationStructure(array $configuration) : void
+    public function assertValidConfigurationStructure(array $configuration): void
     {
         try {
             Assert::isNonEmptyMap($configuration, 'Configuration must be a non-empty array.');

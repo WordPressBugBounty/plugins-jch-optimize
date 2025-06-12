@@ -6,9 +6,11 @@
  * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filesystem;
 
-use _JchOptimizeVendor\Joomla\Filesystem\Exception\FilesystemException;
+namespace _JchOptimizeVendor\V91\Joomla\Filesystem;
+
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Exception\FilesystemException;
+
 /**
  * A Folder handling class
  *
@@ -391,7 +393,7 @@ abstract class Folder
             foreach ($folders as $name) {
                 $id = ++$GLOBALS['_JFolder_folder_tree_index'];
                 $fullName = Path::clean($path . '/' . $name);
-                $dirs[] = array('id' => $id, 'parent' => $parent, 'name' => $name, 'fullname' => $fullName, 'relname' => \str_replace(\_JchOptimizeVendor\JPATH_ROOT, '', $fullName));
+                $dirs[] = array('id' => $id, 'parent' => $parent, 'name' => $name, 'fullname' => $fullName, 'relname' => \str_replace(\_JchOptimizeVendor\V91\JPATH_ROOT, '', $fullName));
                 $dirs2 = self::listFolderTree($fullName, $filter, $maxLevel, $level + 1, $id);
                 $dirs = \array_merge($dirs, $dirs2);
             }

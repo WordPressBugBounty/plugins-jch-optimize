@@ -11,25 +11,18 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Model\Configure;
+use JchOptimize\WordPress\Model\Configure;
 
 use function json_encode;
 
 class ApplyAutoSetting extends Controller
 {
-    /**
-     * @var Configure
-     */
-    private Configure $model;
-
-    public function __construct(Configure $model, ?Input $input)
+    public function __construct(private Configure $model, ?Input $input)
     {
-        $this->model = $model;
-
         parent::__construct($input);
     }
 

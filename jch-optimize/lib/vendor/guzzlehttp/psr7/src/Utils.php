@@ -1,11 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ServerRequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ServerRequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 final class Utils
 {
     /**
@@ -277,7 +278,7 @@ final class Utils
                 if ($resource instanceof StreamInterface) {
                     return $resource;
                 } elseif ($resource instanceof \Iterator) {
-                    return new PumpStream(function () use($resource) {
+                    return new PumpStream(function () use ($resource) {
                         if (!$resource->valid()) {
                             return \false;
                         }
@@ -313,7 +314,7 @@ final class Utils
     public static function tryFopen($filename, $mode)
     {
         $ex = null;
-        \set_error_handler(function () use($filename, $mode, &$ex) {
+        \set_error_handler(function () use ($filename, $mode, &$ex) {
             $ex = new \RuntimeException(\sprintf('Unable to open "%s" using mode "%s": %s', $filename, $mode, \func_get_args()[1]));
             return \true;
         });

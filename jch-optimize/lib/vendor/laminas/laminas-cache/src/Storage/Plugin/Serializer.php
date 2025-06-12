@@ -1,15 +1,17 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\Capabilities;
-use _JchOptimizeVendor\Laminas\Cache\Storage\Event;
-use _JchOptimizeVendor\Laminas\Cache\Storage\PostEvent;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
-use _JchOptimizeVendor\Laminas\EventManager\EventManagerInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Capabilities;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Event;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\PostEvent;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventManagerInterface;
 use stdClass;
+
 use function array_keys;
 use function spl_object_hash;
+
 class Serializer extends AbstractPlugin
 {
     /** @var array */

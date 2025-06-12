@@ -2,12 +2,12 @@
 
 namespace JchOptimize\Core\Mvc;
 
-use _JchOptimizeVendor\Joomla\DI\ContainerAwareInterface;
-use _JchOptimizeVendor\Joomla\Model\DatabaseModelInterface;
-use _JchOptimizeVendor\Joomla\Model\DatabaseModelTrait;
-use _JchOptimizeVendor\Joomla\Model\StatefulModelInterface;
-use _JchOptimizeVendor\Joomla\Model\StatefulModelTrait;
-use JchOptimize\Core\Container\ContainerAwareTrait;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
+use _JchOptimizeVendor\V91\Joomla\Model\DatabaseModelInterface;
+use _JchOptimizeVendor\V91\Joomla\Model\DatabaseModelTrait;
+use _JchOptimizeVendor\V91\Joomla\Model\StatefulModelInterface;
+use _JchOptimizeVendor\V91\Joomla\Model\StatefulModelTrait;
 
 class Model implements ContainerAwareInterface, DatabaseModelInterface, StatefulModelInterface
 {

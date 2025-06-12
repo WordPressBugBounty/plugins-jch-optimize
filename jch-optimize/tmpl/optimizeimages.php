@@ -25,15 +25,13 @@ $page = wp_nonce_url(add_query_arg(
 ), 'jch_optimize_image');
 
 $aAutoOptimize = [
-    [
         'link'    => '',
-        'icon'    => 'auto_optimize.png',
+        'icon'    => 'fa fa-crop',
         'name'    => __('Optimize Images', 'jch-optimize'),
         'script'  => 'onclick="jchOptimizeImageApi.optimizeImages(\'' . $page . '\', \'auto\'); return false;"',
         'id'      => 'auto-optimize-images',
-        'class'   => '',
+        'class'   => [],
         'proonly' => true
-    ]
 ];
 
 $page = wp_nonce_url(add_query_arg(
@@ -45,89 +43,119 @@ $page = wp_nonce_url(add_query_arg(
 ), 'jch_optimize_image');
 
 $aManualOptimize = [
-    [
         'link'    => '',
-        'icon'    => 'manual_optimize.png',
+        'icon'    => 'fa fa-crop-alt',
         'name'    => __('Optimize Images', 'jch-optimize'),
         'script'  => 'onclick="jchOptimizeImageApi.optimizeImages(\'' . $page . '\', \'manual\'); return false;"',
         'id'      => 'manual-optimize-images',
-        'class'   => '',
+        'class'   => [],
         'proonly' => true
-    ]
 ];
+
+$iconsRenderer = clone $this;
+$iconsRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/dashicons');
 
 /** @var Icons $icons */
 ?>
 
-<div class="grid">
-    <div class="g-col-12 g-col-lg-6">
-        <div id="api2-utilities-block" class="admin-panel-block">
-            <h4><?= __('Optimize Image Utility Settings', 'jch-optimize') ?></h4>
-            <p class="alert alert-secondary"><?= __('Hover over each title for additional description') ?></p>
-            <div class="icons-container">
-                <?= $icons->printIconsHTML($icons->compileUtilityIcons($icons->getApi2utilityArray())) ?>
-            </div>
-        </div>
-    </div>
-    <div class="g-col-12 g-col-lg-6">
-        <div id="auto-optimize-block" class="admin-panel-block">
-            <h4><?= __('Optimize Images By URLs', 'jch-optimize') ?></h4>
-            <p class="alert alert-secondary"><?= __(
-                'JCH Optimize will scan the pages of your site for images to optimize.',
-                'jch-optimize'
-            ) ?></p>
-            <div class="icons-container">
-                <?= $icons->printIconsHTML($aAutoOptimize) ?>
-            </div>
-        </div>
-    </div>
-    <div class="g-col-12">
-        <script>
-            jQuery(document).ready(function () {
-                jQuery('#file-tree-container').fileTree(
-                    {
-                        root: '',
-                        script: ajaxurl + '?action=filetree&_wpnonce=' + jch_filetree_url_nonce,
-                        expandSpeed: 1000,
-                        collapseSpeed: 1000,
-                        multiFolder: false
-                    }, function (file) {
+<div class="jch-bs-container-fluid box-sizing-border-box">
+    <div class="row g-3 box-sizing-border-box">
+        <div class="col-12 col-md-8 box-sizing-border-box">
+            <div class="bg-white p-4" style="min-height: 470px">
+                <script>
+                    jQuery(document).ready(function () {
+                        jQuery('#file-tree-container').fileTree(
+                            {
+                                root: '',
+                                script: ajaxurl + '?action=filetree&_wpnonce=' + jch_filetree_url_nonce,
+                                expandSpeed: 1000,
+                                collapseSpeed: 1000,
+                                multiFolder: false
+                            }, function (file) {
+                            })
                     })
-            })
-        </script>
-        <div id="manual-optimize-block" class="admin-panel-block">
-            <div id="optimize-images-container">
-                <h4><?= __('Optimize Images By Folders', 'jch-optimize') ?></h4>
-                <p class="alert alert-secondary"><?= __(
-                    'Use the file tree to select the subfolders and files you want to optimize. Files will be optimized in subfolders recursively by default, you can disable this. If you want to rescale your images while optimizing, enter the new width and height in the respective columns beside each image on the right hand side.',
-                    'jch-optimize'
-                ) ?></p>
-                <div class="grid">
-                    <div class="g-col-12 g-col-lg-3 g-col-xl-4">
-                        <div id="file-tree-container"></div>
+                </script>
+                <div id="optimize-images-container">
+                        <div class="jch-bs-container-fluid box-sizing-border-box">
+                            <div class="row box-sizing-border-box">
+                                <div class="col-12 col-md-4 box-sizing-border-box">
+                                    <div id="file-tree-container">
+                                        <img class="ms-3" src="<?= JCH_PLUGIN_URL . '/media/core/images/loader.gif' ?>">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-8 box-sizing-border-box">
+                                    <div id="files-container">
+                                        <img class="ms-3" src="<?= JCH_PLUGIN_URL . '/media/core/images/loader.gif' ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear:both"></div>
                     </div>
-                    <div class="g-col-12 g-col-lg-6 g-col-xl-6">
-                        <div id="files-container"></div>
-                    </div>
-                    <div class="g-col-12 g-col-lg-3 g-col-xl-2">
-                        <div class="icons-container">
-                            <div class=""><?= $icons->printIconsHTML($aManualOptimize) ?></div>
+            </div>
+            <div id="optimize-images-modal-container" class="modal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Optimizing Images</h5>
+                        </div>
+                        <div class="modal-body">
+
                         </div>
                     </div>
                 </div>
-                <div style="clear:both"></div>
             </div>
         </div>
-    </div>
-</div>
-<div id="optimize-images-modal-container" class="modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Optimizing Images</h5>
+        <div class="col box-sizing-border-box">
+            <div class="jch-bs-card mb-3">
+                <div class="jch-bs-card-header">
+                    <h2>
+                        <span class="fa fa-folder-open"></span>
+                        <?php _e('Optimize By Folders', 'jch-optimize') ?>
+                    </h2>
+                </div>
+                <div class="jch-bs-card-body">
+                    <nav class="jch-dash-icons px-3 pb-3">
+                        <ul class="nav flex-wrap">
+                            <?= $iconsRenderer->fetch('icon.php', ['displayData' => $aManualOptimize]) ?>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-            <div class="modal-body">
-
+        </div>
+        <div class="col box-sizing-border-box">
+            <div class="jch-bs-card mb-3">
+                <div class="jch-bs-card-header">
+                    <h2>
+                        <span class="fa fa-external-link-square-alt"></span>
+                        <?php _e('Optimize By URLs', 'jch-optimize') ?>
+                    </h2>
+                </div>
+                <div class="jch-bs-card-body">
+                    <nav class="jch-dash-icons px-3 pb-3">
+                        <ul class="nav flex-wrap">
+                            <?= $iconsRenderer->fetch('icon.php', ['displayData' => $aAutoOptimize]) ?>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="jch-bs-card mb-3">
+                <div class="jch-bs-card-header">
+                    <h2>
+                        <span class="fa fa-tools"></span>
+                        <?php _e('Utility Settings', 'jch-optimize') ?>
+                    </h2>
+                </div>
+                <div class="jch-bs-card-body">
+                    <nav class="jch-dash-icons px-3 pb-3">
+                        <ul class="nav flex-wrap">
+                            <?php $buttons = $icons->compileUtilityIcons($icons->getApi2UtilityArray()) ?>
+                            <?php foreach ($buttons as $button): ?>
+                            <?= $iconsRenderer->fetch('icon.php', ['displayData' => $button]) ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>

@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator\ScrollingStyle;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator\ScrollingStyle;
 
-use _JchOptimizeVendor\Laminas\Paginator\Paginator;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Paginator;
+
 interface ScrollingStyleInterface
 {
     /**

@@ -1,10 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator\ScrollingStyle;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator\ScrollingStyle;
 
-use _JchOptimizeVendor\Laminas\Paginator\Paginator;
+use _JchOptimizeVendor\V91\Laminas\Paginator\Paginator;
+
 use function ceil;
 use function count;
+
 /**
  * A Yahoo! Search-like scrolling style.  The cursor will advance to
  * the middle of the range, then remain there until the user reaches

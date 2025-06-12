@@ -8,32 +8,34 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
+
 namespace CodeAlfa\RegexTokenizer;
 
 use CodeAlfa\RegexTokenizer\Debug\Debug;
 use Exception;
-use Throwable;
-use function assert;
+
 trait Base
 {
     use Debug;
+
     /**
      * Regex token for a string inside double quotes
      *
      * @return string
      */
     //language=RegExp
-    public static function doubleQuoteStringToken() : string
+    public static function doubleQuoteStringToken(): string
     {
-        return '"' . self::doubleQuoteStringValueToken() . '(?:"|(?=$))';
+        return '"(?>[^"\\\\]++|\\\\.)*+(?>"|$)';
     }
     /**
      * Regex token for the value of a string inside double quotes
      *
      * @return string
+     * @deprecated  Will be removed in 3.0
      */
     //language=RegExp
-    public static function doubleQuoteStringValueToken() : string
+    public static function doubleQuoteStringValueToken(): string
     {
         return '(?<=")(?>(?:\\\\.)?[^\\\\"]*+)++';
     }
@@ -43,17 +45,18 @@ trait Base
      * @return string
      */
     //language=RegExp
-    public static function singleQuoteStringToken() : string
+    public static function singleQuoteStringToken(): string
     {
-        return "'" . self::singleQuoteStringValueToken() . "(?:'|(?=\$))";
+        return "'(?>[^'\\\\]++|\\\\.)*+(?>'|\$)";
     }
     /**
      * Regex token for the value of a string inside single quotes
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function singleQuoteStringValueToken() : string
+    public static function singleQuoteStringValueToken(): string
     {
         return "(?<=')(?>(?:\\\\.)?[^\\\\']*+)++";
     }
@@ -63,17 +66,18 @@ trait Base
      * @return string
      */
     //language=RegExp
-    public static function backTickStringToken() : string
+    public static function backTickStringToken(): string
     {
-        return '`' . self::backTickStringValueToken() . '(?:`|(?=$))';
+        return '`(?>[^`\\\\]++|\\\\.)*+(?>`|$)';
     }
     /**
      * Regex token for the value of a string inside back ticks
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function backTickStringValueToken() : string
+    public static function backTickStringValueToken(): string
     {
         return '(?<=`)(?>(?:\\\\.)?[^\\\\`]*+)++';
     }
@@ -83,9 +87,10 @@ trait Base
      * @param bool $shouldCaptureValue Whether value should be captured in a capture group
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function stringWithCaptureValueToken(bool $shouldCaptureValue = \false) : string
+    public static function stringWithCaptureValueToken(bool $shouldCaptureValue = \false): string
     {
         $string = '[\'"`]<<' . self::stringValueToken() . '>>[\'"`]';
         return self::prepare($string, $shouldCaptureValue);
@@ -94,9 +99,10 @@ trait Base
      * Regex token for the value of a string regardless of which quotes are used
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    public static function stringValueToken() : string
+    public static function stringValueToken(): string
     {
         return '(?:' . self::doubleQuoteStringValueToken() . '|' . self::singleQuoteStringValueToken() . '|' . self::backTickStringValueToken() . ')';
     }
@@ -105,9 +111,10 @@ trait Base
      * @param bool $shouldCaptureValue Whether value should be captured
      *
      * @return string
+     * @deprecated Will be removed in 3.0
      */
     //language=RegExp
-    private static function prepare(string $regex, bool $shouldCaptureValue) : string
+    private static function prepare(string $regex, bool $shouldCaptureValue): string
     {
         $searchArray = ['<<<', '>>>', '<<', '>>'];
         if ($shouldCaptureValue) {
@@ -122,9 +129,9 @@ trait Base
      * @return string
      */
     //language=RegExp
-    public static function commentToken() : string
+    public static function commentToken(): string
     {
-        return '(?:' . self::blockCommentToken() . '|' . self::lineCommentToken() . ')';
+        return '(?>' . self::blockCommentToken() . '|' . self::lineCommentToken() . ')';
     }
     /**
      * Regex token for block comment
@@ -132,16 +139,16 @@ trait Base
      * @return string
      */
     //language=RegExp
-    public static function blockCommentToken() : string
+    public static function blockCommentToken(): string
     {
-        return '/\\*(?>\\*?[^*]*+)*?\\*/';
+        return '/\\*(?>[^*]++|\\*)*?\\*/';
     }
     /**
      * Regex token for line comment
      *
      * @return string
      */
-    public static function lineCommentToken() : string
+    public static function lineCommentToken(): string
     {
         return '//[^\\r\\n]*+';
     }
@@ -151,10 +158,10 @@ trait Base
      * @return void
      * @throws Exception
      */
-    protected static function throwExceptionOnPregError()
+    protected static function throwExceptionOnPregError(): void
     {
         $error = \array_flip(\array_filter(\get_defined_constants(\true)['pcre'], function (string $value) {
-            return \substr($value, -6) === '_ERROR';
+            return \str_ends_with($value, '_ERROR');
         }, \ARRAY_FILTER_USE_KEY))[\preg_last_error()];
         if (\preg_last_error() != \PREG_NO_ERROR) {
             throw new Exception($error);

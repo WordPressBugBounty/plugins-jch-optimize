@@ -1,14 +1,16 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator;
 
 use ArrayAccess;
 use Iterator;
 use LimitIterator;
 use OutOfBoundsException;
 use Serializable;
+
 use function serialize;
 use function unserialize;
+
 class SerializableLimitIterator extends LimitIterator implements Serializable, ArrayAccess
 {
     /**

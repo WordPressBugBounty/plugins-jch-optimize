@@ -2,25 +2,25 @@
 
 namespace JchOptimize\Core\Html\Elements;
 
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 
 /**
- * @method Audio             autoplay(string $value)
- * @method Audio             controls(string $value)
- * @method Audio             crossorigin(?string $value=null)
- * @method Audio             loop(string $value)
- * @method Audio             muted(string $value)
- * @method Audio             preload(string $value)
- * @method Audio             src(string|UriInterface $value)
- * @method bool|string       getAutoplay()
- * @method bool|string       getControls()
- * @method bool|string       getCrossorigin()
- * @method bool|string       getLoop()
- * @method bool|string       getMuted()
- * @method bool|string       getPreload()
- * @method bool|UriInterface getSrc()
+ * @method Audio autoplay(string $value)
+ * @method Audio controls(string $value)
+ * @method Audio crossorigin(?string $value=null)
+ * @method Audio loop(string $value)
+ * @method Audio muted(string $value)
+ * @method Audio preload(string $value)
+ * @method Audio src(string|UriInterface $value)
+ * @method string|false getAutoplay()
+ * @method string|false getControls()
+ * @method string|false getCrossorigin()
+ * @method string|false getLoop()
+ * @method string|false getMuted()
+ * @method string|false getPreload()
+ * @method UriInterface|false getSrc()
  */
-final class Audio extends \JchOptimize\Core\Html\Elements\BaseElement
+final class Audio extends BaseElement
 {
     protected string $name = 'audio';
 }

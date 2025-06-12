@@ -1,12 +1,14 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager;
 
-use _JchOptimizeVendor\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+
 use function gettype;
 use function is_array;
 use function is_object;
 use function sprintf;
+
 /**
  * Aggregate listener for attaching lazy listeners.
  *
@@ -27,6 +29,7 @@ use function sprintf;
 class LazyListenerAggregate implements ListenerAggregateInterface
 {
     use ListenerAggregateTrait;
+
     // phpcs:disable SlevomatCodingStandard.Classes.UnusedPrivateElements.WriteOnlyProperty
     /** @var ContainerInterface Container from which to pull lazy listeners. */
     private $container;

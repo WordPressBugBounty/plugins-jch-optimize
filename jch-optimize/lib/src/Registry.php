@@ -1,17 +1,18 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2023 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
 namespace JchOptimize\Core;
 
-class Registry extends \_JchOptimizeVendor\Joomla\Registry\Registry
+class Registry extends \_JchOptimizeVendor\V91\Joomla\Registry\Registry
 {
 }

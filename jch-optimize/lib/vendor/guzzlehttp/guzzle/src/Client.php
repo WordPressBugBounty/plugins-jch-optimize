@@ -1,21 +1,23 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\GuzzleHttp\Cookie\CookieJar;
-use _JchOptimizeVendor\GuzzleHttp\Exception\GuzzleException;
-use _JchOptimizeVendor\GuzzleHttp\Exception\InvalidArgumentException;
-use _JchOptimizeVendor\GuzzleHttp\Promise as P;
-use _JchOptimizeVendor\GuzzleHttp\Promise\PromiseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\RequestInterface;
-use _JchOptimizeVendor\Psr\Http\Message\ResponseInterface;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\GuzzleHttp\Cookie\CookieJar;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\GuzzleException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\InvalidArgumentException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise as P;
+use _JchOptimizeVendor\V91\GuzzleHttp\Promise\PromiseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\RequestInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\ResponseInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+
 /**
  * @final
  */
-class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\ClientInterface
+class Client implements ClientInterface, \_JchOptimizeVendor\V91\Psr\Http\Client\ClientInterface
 {
     use ClientTrait;
+
     /**
      * @var array Default request options
      */
@@ -87,7 +89,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      * @param array $options Request options to apply to the given
      *                       request and to the transfer. See \GuzzleHttp\RequestOptions.
      */
-    public function sendAsync(RequestInterface $request, array $options = []) : PromiseInterface
+    public function sendAsync(RequestInterface $request, array $options = []): PromiseInterface
     {
         // Merge the base URI into the request URI if needed.
         $options = $this->prepareDefaults($options);
@@ -101,7 +103,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      *
      * @throws GuzzleException
      */
-    public function send(RequestInterface $request, array $options = []) : ResponseInterface
+    public function send(RequestInterface $request, array $options = []): ResponseInterface
     {
         $options[RequestOptions::SYNCHRONOUS] = \true;
         return $this->sendAsync($request, $options)->wait();
@@ -111,7 +113,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      *
      * @inheritDoc
      */
-    public function sendRequest(RequestInterface $request) : ResponseInterface
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $options[RequestOptions::SYNCHRONOUS] = \true;
         $options[RequestOptions::ALLOW_REDIRECTS] = \false;
@@ -130,7 +132,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply. See \GuzzleHttp\RequestOptions.
      */
-    public function requestAsync(string $method, $uri = '', array $options = []) : PromiseInterface
+    public function requestAsync(string $method, $uri = '', array $options = []): PromiseInterface
     {
         $options = $this->prepareDefaults($options);
         // Remove request modifying parameter because it can be done up-front.
@@ -160,7 +162,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      *
      * @throws GuzzleException
      */
-    public function request(string $method, $uri = '', array $options = []) : ResponseInterface
+    public function request(string $method, $uri = '', array $options = []): ResponseInterface
     {
         $options[RequestOptions::SYNCHRONOUS] = \true;
         return $this->requestAsync($method, $uri, $options)->wait();
@@ -182,7 +184,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
     {
         return $option === null ? $this->config : $this->config[$option] ?? null;
     }
-    private function buildUri(UriInterface $uri, array $config) : UriInterface
+    private function buildUri(UriInterface $uri, array $config): UriInterface
     {
         if (isset($config['base_uri'])) {
             $uri = Psr7\UriResolver::resolve(Psr7\Utils::uriFor($config['base_uri']), $uri);
@@ -196,7 +198,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
     /**
      * Configures the default options for a client.
      */
-    private function configureDefaults(array $config) : void
+    private function configureDefaults(array $config): void
     {
         $defaults = ['allow_redirects' => RedirectMiddleware::$defaultSettings, 'http_errors' => \true, 'decode_content' => \true, 'verify' => \true, 'cookies' => \false, 'idn_conversion' => \false];
         // Use the standard Linux HTTP_PROXY and HTTPS_PROXY if set.
@@ -235,7 +237,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      *
      * @param array $options Options to modify by reference
      */
-    private function prepareDefaults(array $options) : array
+    private function prepareDefaults(array $options): array
     {
         $defaults = $this->config;
         if (!empty($defaults['headers'])) {
@@ -272,7 +274,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
      *
      * @param array $options See \GuzzleHttp\RequestOptions.
      */
-    private function transfer(RequestInterface $request, array $options) : PromiseInterface
+    private function transfer(RequestInterface $request, array $options): PromiseInterface
     {
         $request = $this->applyOptions($request, $options);
         /** @var HandlerStack $handler */
@@ -286,7 +288,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
     /**
      * Applies the array of request options to a request.
      */
-    private function applyOptions(RequestInterface $request, array &$options) : RequestInterface
+    private function applyOptions(RequestInterface $request, array &$options): RequestInterface
     {
         $modify = ['set_headers' => []];
         if (isset($options['headers'])) {
@@ -392,7 +394,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\Psr\Http\Client\Cli
     /**
      * Return an InvalidArgumentException with pre-set message.
      */
-    private function invalidBody() : InvalidArgumentException
+    private function invalidBody(): InvalidArgumentException
     {
         return new InvalidArgumentException('Passing in the "body" request ' . 'option as an array to send a request is not supported. ' . 'Please use the "form_params" request option to send a ' . 'application/x-www-form-urlencoded request, or the "multipart" ' . 'request option to send a multipart/form-data request.');
     }

@@ -8,7 +8,24 @@ div.jch-js-fieldset-children:only-child {
     display: flex;
     flex-direction: row;
     clear: both;
-    width: 310px;
+    width: 400px;
+
+    #fieldset-cropgravity & {
+        width: 450px;
+        .jch-js-excludes {
+            width: 72%;
+        }
+        .jch-js-ieo {
+            width: 18%;
+        }
+
+        .jch-js-ieo-header {
+            width: 90%;
+        }
+        .jch-js-dontmove, .jch-js-dontmove-header {
+            width: 10%;
+        }
+    }
 }
 
 .jch-js-excludes-header {
@@ -95,4 +112,30 @@ div.jch-js-fieldset-children:only-child {
 
 .jch-js-excludes .jch-multiselect-remove-button:hover {
     background-position: -42px -10px;
+}
+
+.jch-js-excludes-container span.has-select select {
+     margin: 0 0 3px 0;
+    height: 21px;
+    min-height: 20px;
+    line-height: 1;
+    width: 70px;
+    font-size: 12px;
+    padding: 1px 0px 0px 2px;
+}
+
+.jch-js-excludes-container span.has-text-input:last-child {
+    text-align: left;
+}
+
+.jch-js-excludes-container span.has-text-input input[type="text"] {
+    margin: 0 0 3px 5px;
+    padding: 0 2px;
+    border-radius: 3px;
+    border: 1px solid #aaaaaa;
+    width: 70%;
+    height: 21px;
+    font-size: 12px;
+    min-height: 20px;
+
 }

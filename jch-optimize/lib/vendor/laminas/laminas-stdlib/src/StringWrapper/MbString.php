@@ -1,9 +1,11 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\StringWrapper;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception;
+
 use function array_map;
 use function array_search;
 use function extension_loaded;
@@ -12,6 +14,7 @@ use function mb_list_encodings;
 use function mb_strlen;
 use function mb_strpos;
 use function mb_substr;
+
 class MbString extends AbstractStringWrapper
 {
     /**

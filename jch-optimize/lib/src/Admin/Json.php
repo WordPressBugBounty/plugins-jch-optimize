@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -13,45 +14,62 @@
 namespace JchOptimize\Core\Admin;
 
 // No direct access
-\defined('_JCH_EXEC') or exit('Restricted access');
+use Exception;
 
+use function defined;
+use function header;
+use function json_encode;
+use function version_compare;
+
+defined('_JCH_EXEC') or die('Restricted access');
+
+/**
+ *
+ */
 class Json
 {
     /**
-     * Determines whether the request was successful.
+     * Determines whether the request was successful
+     *
+     * @var    bool
      */
-    public bool $success = \true;
+    public bool $success = true;
 
     /**
-     * The response message.
+     * The response message
+     *
+     * @var    string
      */
     public string $message = '';
 
     /**
-     * The error code.
+     * The error code
+     *
      */
     public int $code = 0;
 
     /**
-     * The response data.
+     * The response data
      *
-     * @var mixed
+     * @var    mixed
      */
     public $data = '';
 
     /**
-     * Constructor.
+     * Constructor
      *
-     * @param mixed  $response The Response data
-     * @param string $message  The response message
+     * @param mixed $response The Response data
+     * @param string $message The response message
+     *
      */
     public function __construct($response = null, $message = '')
     {
         $this->message = $message;
+
         // Check if we are dealing with an error
-        if ($response instanceof \Exception) {
+        if ($response instanceof Exception) {
             // Prepare the error response
-            $this->success = \false;
+            $this->success = false;
             $this->message = $response->getMessage();
             $this->code = $response->getCode();
         } else {
@@ -60,17 +78,18 @@ class Json
     }
 
     /**
-     * Magic toString method for sending the response in JSON format.
+     * Magic toString method for sending the response in JSON format
      *
-     * @return string The response in JSON format
+     * @return  string  The response in JSON format
      */
     public function __toString()
     {
-        @\header('Content-Type: application/json; charset=utf-8');
-        if (\version_compare(\PHP_VERSION, '7.2', '>=')) {
-            return \json_encode($this, \JSON_INVALID_UTF8_SUBSTITUTE);
-        }
+        @header('Content-Type: application/json; charset=utf-8');
 
-        return \json_encode($this);
+        if (version_compare(PHP_VERSION, '7.2', '>=')) {
+            return json_encode($this, JSON_INVALID_UTF8_SUBSTITUTE);
+        } else {
+            return json_encode($this);
+        }
     }
 }

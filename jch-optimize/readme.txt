@@ -1,9 +1,9 @@
 === JCH Optimize ===
 
 Contributors: codealfa
-Tags: performance, pagespeed, cache, optimize, seo
-Tested up to: 6.5.3
-Stable tag: 4.2.1
+Tags: performance, pagespeed, cache, optimize, seo, core web vitals
+Tested up to: 6.8.1
+Stable tag: 5.0.0
 License: GPLv3 or later
 Requires at least: 5.0
 Requires PHP: 8.0
@@ -79,6 +79,16 @@ The combined files are accessed by the browser via a jscss.php file in the `/wp-
 Simply deactivate or uninstall the plugin to reverse any changes it has made. The plugin doesn't modify any existing file or code but merely manipulates the HTML before it is sent to the browser. Any apparent persistent change after the plugin is deactivated is due to caching so ensure to flush all your WordPress, third party or browser cache.
 
 == Changelog ==
+
+= 5.0.0 =
+* Implemented new design for Dashboard.
+* Separate Image features from CSS features on Dashboard
+* Settings 'Include files' in the HTTP/2 Preload and 'Preconnect domains' in Preconnect 3rd part Origins no accept crossorigin attribute values.
+* Added settings to lazy load selected images above the fold such as hidden slider images and submenu icons.
+* Added settings to exclude sections from the Reduce DOM feature and to include selected DIVs above the fold using id or class.
+* Modify default HTML sections in Reduce DOM feature.
+* Improvements in fht Image Optimization feature and API.
+* Limit the amount of font files and images preloaded by the HTTP/2 feature automatically to avoid overloading the critical path.
 
 = 4.2.1 =
 * Fixed security vulnerability on path traversal. Unprivileged users could access directory information on the Optimize Image page

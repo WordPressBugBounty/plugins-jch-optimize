@@ -5,8 +5,10 @@
  *
  * @license https://github.com/slimphp/PHP-View/blob/3.x/LICENSE.md (MIT License)
  */
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Slim\Views\Exception;
+
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Slim\Views\Exception;
 
 final class PhpTemplateNotFoundException extends \RuntimeException
 {

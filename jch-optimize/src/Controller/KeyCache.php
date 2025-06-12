@@ -11,26 +11,26 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
-use JchOptimize\Core\Admin\Tasks;
-use JchOptimize\Core\Input;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+use JchOptimize\Core\Admin\AdminTasks;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
 
 use function __;
 use function wp_redirect;
 
 class KeyCache extends Controller
 {
-    public function __construct(?Input $input = null)
+    public function __construct(private AdminTasks $tasks, ?Input $input = null)
     {
         parent::__construct($input);
     }
 
     public function execute(): bool
     {
-        Tasks::generateNewCacheKey();
+        $this->tasks->generateNewCacheKey();
 
         /** @var WordpressNoticeLogger $logger */
         $logger = $this->logger;

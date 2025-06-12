@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Exception;
 
 class MissingKeyException extends RuntimeException
 {

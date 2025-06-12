@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\EventManager\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\EventManager\Exception;
 
 /**
  * Invalid callback exception

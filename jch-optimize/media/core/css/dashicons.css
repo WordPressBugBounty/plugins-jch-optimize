@@ -1,0 +1,169 @@
+/**
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
+ *
+ *  @package   jchoptimize/core
+ *  @author    Samuel Marshall <samuel@jch-optimize.net>
+ *  @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
+ *  @license   GNU/GPLv3, or later. See LICENSE file
+ *
+ *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
+ */
+.jch-dash-icons .nav {
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    display: grid;
+}
+
+.jch-dash-icons a {
+    color: var(--jch-dashicon-text-color);
+    background-color: var(--jch-dashicon-bg-color);
+}
+
+.jch-dash-icons a:hover {
+    color: #fff;
+    background: var(--jch-dashicon-bg-color-hvr);
+}
+
+.jch-dash-icons .pro-only a,
+.jch-dash-icons .pro-only a:hover {
+    color: var(--secondary);
+    background-color: var(--gray-400);
+}
+
+.jch-dash-icons a:hover .dashicon-help {
+    color: var(--jch-dashicon-bg-color);
+}
+
+.jch-dash-icons .dashicon-wrapper {
+    /*border: 1px solid hsl(var(--hue), 50%, 93%);*/
+    border: 1px solid var(--jch-dashicon-border-color);
+    border-radius: 4px;
+    min-height: 6rem;
+    display: flex;
+    overflow: hidden;
+box-shadow: rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset;
+    &.disabled {
+        border-color: #ccc;
+    }
+}
+
+.jch-dash-icons .dashicon-start {
+    flex-grow: 1;
+    display: flex;
+}
+
+.jch-dash-icons .dashicon-inner {
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-end;
+    transition: all .25s;
+    display: flex;
+}
+
+.jch-dash-icons .dashicon-info {
+    align-items: flex-end;
+    display: flex;
+}
+
+.jch-dash-icons .dashicon-icon {
+    margin-top: 0.5rem;
+    margin-inline-start: 0.2rem;
+}
+
+.jch-dash-icons .dashicon-icon > * {
+    font-size: 2rem;
+    color: var(--jch-dashicon-icon-color)
+}
+
+.jch-dash-icons .pro-only .dashicon-icon > * {
+    color: var(--secondary);
+}
+
+.jch-dash-icons .dashicon-title {
+    padding: 0.125rem 0 0.6rem;
+    font-size: .875rem;
+    font-weight: bold;
+}
+
+.jch-dash-icons .dashicon-title span.hasPopover {
+    pointer-events: auto;
+}
+
+.jch-dash-icons .dashicon-end {
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    color: var(--jch-dashicon-icon-color)
+}
+
+.jch-dash-icons .pro-only .dashicon-end {
+    color: var(--secondary);
+}
+
+.jch-dash-icons .dashicon-details {
+    background: hsl(var(--hue), 50%, 93%);
+    border-radius: 0.25rem;
+    margin-inline-start: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: 700;
+    line-height: 1rem;
+    transition: all .25s
+}
+
+.jch-dash-icons a:hover .dashicon-details {
+    background: var(--jch-dashicon-icon-color);
+}
+
+/** Popovers **/
+
+.popover h4.list-header {
+    font-weight: 500;
+    margin: 0 0 1em 0;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-align: center;
+}
+
+.popover h4.list-header:before, .popover h4.list-header:after {
+    position: absolute;
+    top: 51%;
+    overflow: hidden;
+    width: 50%;
+    height: 1px;
+    content: '\a0';
+    background-color: #ccc;
+    margin-left: 20px;
+}
+
+.popover h4.list-header:before {
+    margin-left: -60%;
+    text-align: right;
+}
+
+.popover ul {
+    min-width: 200px;
+}
+
+.popover li {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.popover i {
+    margin: auto 0;
+}
+
+.popover .fa-toggle-on {
+    color: var(--success);
+}
+
+.popover .fa-toggle-off {
+    color: var(--danger);
+}
+
+.jch-dash-icons .pro-only a{
+    pointer-events: none;
+    cursor: default;
+}

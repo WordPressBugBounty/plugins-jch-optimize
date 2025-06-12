@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace _JchOptimizeVendor\Symfony\Polyfill\Mbstring;
+namespace _JchOptimizeVendor\V91\Symfony\Polyfill\Mbstring;
 
 /**
  * Partial mbstring implementation in PHP, iconv based, UTF-8 centric.
@@ -47,6 +47,8 @@ namespace _JchOptimizeVendor\Symfony\Polyfill\Mbstring;
  * - mb_strstr               - Finds first occurrence of a string within another
  * - mb_strwidth             - Return width of string
  * - mb_substr_count         - Count the number of substring occurrences
+ * - mb_ucfirst              - Make a string's first character uppercase
+ * - mb_lcfirst              - Make a string's first character lowercase
  *
  * Not implemented:
  * - mb_convert_kana         - Convert "kana" one from another ("zen-kaku", "han-kaku" and more)
@@ -104,7 +106,7 @@ final class Mbstring
     public static function mb_convert_variables($toEncoding, $fromEncoding, &...$vars)
     {
         $ok = \true;
-        \array_walk_recursive($vars, function (&$v) use(&$ok, $toEncoding, $fromEncoding) {
+        \array_walk_recursive($vars, function (&$v) use (&$ok, $toEncoding, $fromEncoding) {
             if (\false === ($v = self::mb_convert_encoding($v, $toEncoding, $fromEncoding))) {
                 $ok = \false;
             }
@@ -152,7 +154,7 @@ final class Mbstring
             $convmap[$i] += $convmap[$i + 2];
             $convmap[$i + 1] += $convmap[$i + 2];
         }
-        $s = \preg_replace_callback('/&#(?:0*([0-9]+)|x0*([0-9a-fA-F]+))(?!&);?/', function (array $m) use($cnt, $convmap) {
+        $s = \preg_replace_callback('/&#(?:0*([0-9]+)|x0*([0-9a-fA-F]+))(?!&);?/', function (array $m) use ($cnt, $convmap) {
             $c = isset($m[2]) ? (int) \hexdec($m[2]) : $m[1];
             for ($i = 0; $i < $cnt; $i += 4) {
                 if ($c >= $convmap[$i] && $c <= $convmap[$i + 1]) {
@@ -656,7 +658,7 @@ final class Mbstring
         }
         return $code;
     }
-    public static function mb_str_pad(string $string, int $length, string $pad_string = ' ', int $pad_type = \STR_PAD_RIGHT, string $encoding = null) : string
+    public static function mb_str_pad(string $string, int $length, string $pad_string = ' ', int $pad_type = \STR_PAD_RIGHT, ?string $encoding = null): string
     {
         if (!\in_array($pad_type, [\STR_PAD_RIGHT, \STR_PAD_LEFT, \STR_PAD_BOTH], \true)) {
             throw new \ValueError('mb_str_pad(): Argument #4 ($pad_type) must be STR_PAD_LEFT, STR_PAD_RIGHT, or STR_PAD_BOTH');
@@ -690,6 +692,42 @@ final class Mbstring
                 $rightPaddingLength = $paddingRequired - $leftPaddingLength;
                 return self::mb_substr(\str_repeat($pad_string, $leftPaddingLength), 0, $leftPaddingLength, $encoding) . $string . self::mb_substr(\str_repeat($pad_string, $rightPaddingLength), 0, $rightPaddingLength, $encoding);
         }
+    }
+    public static function mb_ucfirst(string $string, ?string $encoding = null): string
+    {
+        if (null === $encoding) {
+            $encoding = self::mb_internal_encoding();
+        }
+        try {
+            $validEncoding = @self::mb_check_encoding('', $encoding);
+        } catch (\ValueError $e) {
+            throw new \ValueError(\sprintf('mb_ucfirst(): Argument #2 ($encoding) must be a valid encoding, "%s" given', $encoding));
+        }
+        // BC for PHP 7.3 and lower
+        if (!$validEncoding) {
+            throw new \ValueError(\sprintf('mb_ucfirst(): Argument #2 ($encoding) must be a valid encoding, "%s" given', $encoding));
+        }
+        $firstChar = \mb_substr($string, 0, 1, $encoding);
+        $firstChar = \mb_convert_case($firstChar, \MB_CASE_TITLE, $encoding);
+        return $firstChar . \mb_substr($string, 1, null, $encoding);
+    }
+    public static function mb_lcfirst(string $string, ?string $encoding = null): string
+    {
+        if (null === $encoding) {
+            $encoding = self::mb_internal_encoding();
+        }
+        try {
+            $validEncoding = @self::mb_check_encoding('', $encoding);
+        } catch (\ValueError $e) {
+            throw new \ValueError(\sprintf('mb_lcfirst(): Argument #2 ($encoding) must be a valid encoding, "%s" given', $encoding));
+        }
+        // BC for PHP 7.3 and lower
+        if (!$validEncoding) {
+            throw new \ValueError(\sprintf('mb_lcfirst(): Argument #2 ($encoding) must be a valid encoding, "%s" given', $encoding));
+        }
+        $firstChar = \mb_substr($string, 0, 1, $encoding);
+        $firstChar = \mb_convert_case($firstChar, \MB_CASE_LOWER, $encoding);
+        return $firstChar . \mb_substr($string, 1, null, $encoding);
     }
     private static function getSubpart($pos, $part, $haystack, $encoding)
     {

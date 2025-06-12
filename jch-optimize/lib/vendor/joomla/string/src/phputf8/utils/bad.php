@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * Tools for locating / replacing bad bytes in UTF-8 strings
@@ -311,7 +311,7 @@ function utf8_bad_identify($str, &$i)
         return \UTF8_BAD_SEQINCOMPLETE;
     }
     // No bad octets found
-    $i = NULL;
+    $i = null;
     return \FALSE;
 }
 //--------------------------------------------------------------------

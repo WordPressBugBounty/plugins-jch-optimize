@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Psr7;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
-use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\StreamInterface;
+
 /**
  * Stream decorator that can cache previously read bytes from a sequentially
  * read stream.
@@ -12,6 +13,7 @@ use _JchOptimizeVendor\Psr\Http\Message\StreamInterface;
 class CachingStream implements StreamInterface
 {
     use StreamDecoratorTrait;
+
     /** @var StreamInterface Stream being wrapped */
     private $remoteStream;
     /** @var int Number of bytes to skip reading due to a write on the buffer */

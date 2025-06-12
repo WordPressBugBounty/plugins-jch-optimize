@@ -11,11 +11,11 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
 
 defined('_WP_EXEC') or die('Restricted access');
 
-use JchOptimize\Core\Interfaces\Paths as PathsInterface;
+use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\SystemUri;
 use JchOptimize\Core\Uri\Utils;
 
@@ -35,9 +35,9 @@ use function wp_upload_dir;
 use const DIRECTORY_SEPARATOR;
 use const JCH_CACHE_DIR;
 
-abstract class Paths implements PathsInterface
+class Paths implements PathsInterface
 {
-    public static function mediaUrl(): string
+    public function mediaUrl(): string
     {
         return JCH_PLUGIN_URL . 'media';
     }
@@ -49,7 +49,7 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function absolutePath(string $url): string
+    public function absolutePath(string $url): string
     {
         $home_path = trailingslashit(self::rootPath());
         $rootPath = str_replace('/\\', DIRECTORY_SEPARATOR, $home_path);
@@ -61,7 +61,7 @@ abstract class Paths implements PathsInterface
     /**
      * @return string Absolute path to root of site
      */
-    public static function rootPath(): string
+    public function rootPath(): string
     {
         $home = set_url_scheme((string)get_option('home'), 'http');
         $site_url = set_url_scheme((string)get_option('siteurl'), 'http');
@@ -84,9 +84,9 @@ abstract class Paths implements PathsInterface
         return untrailingslashit($home_path);
     }
 
-    public static function basePath(): string
+    public function basePath(): string
     {
-        return self::rootPath();
+        return $this->rootPath();
     }
 
     /**
@@ -96,10 +96,10 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function relAssetPath(bool $pathonly = false): string
+    public function relAssetPath(bool $pathonly = false): string
     {
         if ($pathonly) {
-            return SystemUri::basePath() . 'jch-optimize/media/assets';
+            return SystemUri::currentBasePath() . 'jch-optimize/media/assets';
         }
 
         return plugins_url() . '/jch-optimize/media/assets';
@@ -111,7 +111,7 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function rewriteBaseFolder(): string
+    public function rewriteBaseFolder(): string
     {
         static $rewrite_base;
 
@@ -130,7 +130,7 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function spritePath(bool $isRootRelative = false): string
+    public function spritePath(bool $isRootRelative = false): string
     {
         if ($isRootRelative) {
             return JCH_PLUGIN_URL . 'media/sprites';
@@ -146,10 +146,10 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function path2Url(string $path): string
+    public function path2Url(string $path): string
     {
         $oUri = Utils::uriFor(SystemUri::toString());
-        $sBaseFolder = SystemUri::basePath();
+        $sBaseFolder = SystemUri::currentBasePath();
 
         $abs_path = str_replace(DIRECTORY_SEPARATOR, '/', self::rootPath());
         $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
@@ -167,12 +167,12 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function backupImagesParentDir(): string
+    public function backupImagesParentDir(): string
     {
         return WP_CONTENT_DIR . DIRECTORY_SEPARATOR;
     }
 
-    public static function nextGenImagesPath(bool $isRootRelative = false): string
+    public function nextGenImagesPath(bool $isRootRelative = false): string
     {
         $wp_upload_dir = wp_upload_dir(null, true, true);
         $sRelJchUploadPath = '/jch-optimize/ng';
@@ -186,24 +186,24 @@ abstract class Paths implements PathsInterface
         return $wp_upload_dir['basedir'] . $sRelJchUploadPath;
     }
 
-    public static function iconsUrl(): string
+    public function iconsUrl(): string
     {
         return JCH_PLUGIN_URL . 'media/core/icons';
     }
 
-    public static function getLogsPath(): string
+    public function getLogsPath(): string
     {
         return JCH_PLUGIN_DIR . 'logs';
     }
 
-    public static function homeBasePath(): string
+    public function homeBasePath(): string
     {
-        return home_url('', 'relative');
+        return site_url('', 'relative');
     }
 
-    public static function homeBaseFullPath(): string
+    public function homeBaseFullPath(): string
     {
-        return home_url('/');
+        return site_url('/');
     }
 
     /**
@@ -213,7 +213,7 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function adminController(string $name): string
+    public function adminController(string $name): string
     {
         $url = add_query_arg(['task' => $name], admin_url('admin-ajax.php?action=onclickicon'));
 
@@ -227,12 +227,12 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function ajaxUrl(string $function): string
+    public function ajaxUrl(string $function): string
     {
         return add_query_arg(['action' => $function], admin_url('admin-ajax.php'));
     }
 
-    public static function captureCacheDir(bool $isRootRelative = false): string
+    public function captureCacheDir(bool $isRootRelative = false): string
     {
         $captureCacheDir = self::cachePath($isRootRelative) . '/html';
 
@@ -252,7 +252,7 @@ abstract class Paths implements PathsInterface
      *
      * @return string
      */
-    public static function cachePath(bool $isRootRelative = true): string
+    public function cachePath(bool $isRootRelative = true): string
     {
         $id = '';
 
@@ -267,22 +267,22 @@ abstract class Paths implements PathsInterface
         }
     }
 
-    public static function cacheDir(): string
+    public function cacheDir(): string
     {
         return JCH_CACHE_DIR;
     }
 
-    public static function templateCachePath(): string
+    public function templateCachePath(): string
     {
         return JCH_CACHE_DIR . 'compiled_templates';
     }
 
-    public static function templatePath(): string
+    public function templatePath(): string
     {
         return dirname(__FILE__, 3) . '/tmpl';
     }
 
-    public static function responsiveImagePath(bool $isRootRelative = false): string
+    public function responsiveImagePath(bool $isRootRelative = false): string
     {
         $wp_upload_dir = wp_upload_dir(null, true, true);
         $sRelJchUploadPath = '/jch-optimize/rs';
@@ -294,5 +294,10 @@ abstract class Paths implements PathsInterface
         }
 
         return $wp_upload_dir['basedir'] . $sRelJchUploadPath;
+    }
+
+    public function liveSite(): string
+    {
+        return home_url('/');
     }
 }

@@ -11,16 +11,15 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Plugin;
+namespace JchOptimize\WordPress\Plugin;
 
+use _JchOptimizeVendor\V91\Joomla\Filesystem\File;
+use _JchOptimizeVendor\V91\Joomla\Filesystem\Folder;
 use Exception;
-use JchOptimize\ContainerFactory;
-use JchOptimize\Core\Admin\Helper as AdminHelper;
-use JchOptimize\Core\Admin\Tasks;
-use JchOptimize\Core\Filesystem\File;
-use JchOptimize\Core\Filesystem\Folder;
+use JchOptimize\Core\Admin\AdminHelper;
+use JchOptimize\Core\Admin\AdminTasks;
+use JchOptimize\Core\Model\CacheMaintainer;
 use JchOptimize\Core\Registry;
-use JchOptimize\Model\Cache;
 
 use function defined;
 use function delete_option;
@@ -38,6 +37,14 @@ use const WPMU_PLUGIN_DIR;
 
 class Installer
 {
+    public function __construct(
+        private Registry $params,
+        private AdminTasks $tasks,
+        private AdminHelper $helper,
+        private CacheMaintainer $cacheMaintainer,
+    ) {
+    }
+
     /**
      * Fires when plugin is activated and create a dir.php file in plugin root containing
      * absolute path of plugin install
@@ -54,7 +61,7 @@ class Installer
 PHPCODE;
 
         File::write($file, $code);
-        Tasks::leverageBrowserCaching();
+        $this->tasks->leverageBrowserCaching();
 
         $this->installMUPlugin();
     }
@@ -91,13 +98,8 @@ PHPCODE;
     {
         delete_option('jch-optimize_settings');
 
-        $container = ContainerFactory::getContainer();
-        /** @var Cache $cache */
-        $cache = $container->get(Cache::class);
-        $cache->cleanCache();
-
-        Tasks::cleanHtaccess();
-
+        $this->cacheMaintainer->cleanCache();
+        $this->tasks->cleanHtaccess();
         $this->deleteMUPlugin();
     }
 
@@ -119,18 +121,14 @@ PHPCODE;
 
     public function updateSettings(): void
     {
-        $container = ContainerFactory::getContainer();
-        /** @var Registry $params */
-        $params = $container->get('params');
-
         //Update new Load WEBP setting
         /** @var string|null $loadWebp */
-        $loadWebp = $params->get('pro_load_webp_images');
+        $loadWebp = $this->params->get('pro_load_webp_images');
         /** @var string|null $nextGenImages */
-        $nextGenImages = $params->get('pro_next_gen_images');
+        $nextGenImages = $this->params->get('pro_next_gen_images');
 
         if (is_null($loadWebp) && $nextGenImages) {
-            $params->set('pro_load_webp_images', '1');
+            $this->params->set('pro_load_webp_images', '1');
         }
 
         //Update Exclude JavaScript settings
@@ -149,10 +147,11 @@ PHPCODE;
 
         foreach ($oldJsSettings as $oldJsSetting) {
             /** @var array $oldJsSettingValue */
-            $oldJsSettingValue = json_decode(json_encode($params->get($oldJsSetting)), true);
+            $oldJsSettingValue = json_decode(json_encode($this->params->get($oldJsSetting)), true);
 
             if ($oldJsSettingValue) {
-                if (!isset($oldJsSettingValue[0]['url']) && !isset($oldJsSettingValue[0]['script'])) {
+                $firstValue = array_shift($oldJsSettingValue);
+                if (!isset($firstValue['url']) && !isset($firstValue['script'])) {
                     $updateJsSettings = true;
                 }
 
@@ -161,10 +160,10 @@ PHPCODE;
         }
 
         if ($updateJsSettings) {
-            $dontMoveJs = (array)$params->get('excludeJs');
-            $dontMoveScripts = (array)$params->get('dontmoveScripts');
-            $params->remove('dontmoveJs');
-            $params->remove('dontmoveScripts');
+            $dontMoveJs = (array)$this->params->get('excludeJs');
+            $dontMoveScripts = (array)$this->params->get('dontmoveScripts');
+            $this->params->remove('dontmoveJs');
+            $this->params->remove('dontmoveScripts');
 
             /** @var array<string, array{ieo:string, valueType: string, dontmove: array<array-key, string>}> $excludeJsPeoSettingsMap */
             $excludeJsPeoSettingsMap = [
@@ -187,8 +186,8 @@ PHPCODE;
 
             foreach ($excludeJsPeoSettingsMap as $excludeJsPeoSettingName => $settingsMap) {
                 /** @var string[] $excludeJsPeoSetting */
-                $excludeJsPeoSetting = (array)$params->get($excludeJsPeoSettingName);
-                $params->remove($excludeJsPeoSettingName);
+                $excludeJsPeoSetting = (array)$this->params->get($excludeJsPeoSettingName);
+                $this->params->remove($excludeJsPeoSettingName);
                 $newExcludeJs_peo = [];
                 $i = 0;
 
@@ -196,7 +195,7 @@ PHPCODE;
                     $newExcludeJs_peo[$i][$settingsMap['valueType']] = $excludeJsPeoSettingValue;
 
                     foreach ($settingsMap['dontmove'] as $dontMoveValue) {
-                        if (strpos($excludeJsPeoSettingValue, $dontMoveValue) !== false) {
+                        if (str_contains($excludeJsPeoSettingValue, $dontMoveValue)) {
                             $newExcludeJs_peo[$i]['dontmove'] = 'on';
                         }
                     }
@@ -204,8 +203,8 @@ PHPCODE;
                 }
 
                 /** @var string[] $excludeJsIeoSetting */
-                $excludeJsIeoSetting = $params->get($settingsMap['ieo']);
-                $params->remove($settingsMap['ieo']);
+                $excludeJsIeoSetting = $this->params->get($settingsMap['ieo']);
+                $this->params->remove($settingsMap['ieo']);
 
                 foreach ($excludeJsIeoSetting as $excludeJsIeoSettingValue) {
                     $i++;
@@ -213,16 +212,16 @@ PHPCODE;
                     $newExcludeJs_peo[$i]['ieo'] = 'on';
 
                     foreach ($settingsMap['dontmove'] as $dontMoveValue) {
-                        if (strpos($excludeJsIeoSettingValue, $dontMoveValue) !== false) {
+                        if (str_contains($excludeJsIeoSettingValue, $dontMoveValue)) {
                             $newExcludeJs_peo[$i]['dontmove'] = 'on';
                         }
                     }
                 }
 
-                $params->set($excludeJsPeoSettingName, $newExcludeJs_peo);
+                $this->params->set($excludeJsPeoSettingName, $newExcludeJs_peo);
             }
 
-            update_option('jch-optimize_settings', $params->toArray());
+            update_option('jch-optimize_settings', $this->params->toArray());
         }
     }
 
@@ -233,28 +232,30 @@ PHPCODE;
         $installedMU = $mu_folder . '/jch-optimize-mode-switcher.php';
 
 
-        if (file_exists($installedMU) && md5_file(
-            JCH_PLUGIN_DIR . 'mu-plugins/jch-optimize-mode-switcher.php'
-        ) !== md5_file($installedMU)) {
+        if (
+            file_exists($installedMU) && md5_file(
+                JCH_PLUGIN_DIR . 'mu-plugins/jch-optimize-mode-switcher.php'
+            ) !== md5_file($installedMU)
+        ) {
             $this->installMUPlugin();
         }
     }
 
-    public function fixMetaFileSecurity()
+    public function fixMetaFileSecurity(): void
     {
-        $metaFile = AdminHelper::getMetaFile();
+        $metaFile = $this->helper->getMetaFile();
         $metaFileDir = dirname($metaFile);
 
-        if (file_exists($metaFile)
+        if (
+            file_exists($metaFile)
             && (!file_exists($metaFileDir . '/index.html')
                 || !file_exists($metaFileDir . '/.htaccess'))
         ) {
-            /** @var string[] $optimizedFiles */
-            $optimizedFiles = AdminHelper::getOptimizedFiles();
+            $optimizedFiles = $this->helper->getOptimizedFiles();
             File::delete($metaFile);
 
             foreach ($optimizedFiles as $files) {
-                AdminHelper::markOptimized($files);
+                $this->helper->markOptimized($files);
             }
         }
     }

@@ -6,11 +6,13 @@
  * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
-namespace _JchOptimizeVendor\Joomla\Filter;
 
-use _JchOptimizeVendor\Joomla\Language\Language;
-use _JchOptimizeVendor\Joomla\Language\Transliterate;
-use _JchOptimizeVendor\Joomla\String\StringHelper;
+namespace _JchOptimizeVendor\V91\Joomla\Filter;
+
+use _JchOptimizeVendor\V91\Joomla\Language\Language;
+use _JchOptimizeVendor\V91\Joomla\Language\Transliterate;
+use _JchOptimizeVendor\V91\Joomla\String\StringHelper;
+
 /**
  * OutputFilter is a class for processing an output string for "safe" display
  *
@@ -208,7 +210,7 @@ class OutputFilter
      *
      * @since   2.0.0
      */
-    public static function setLanguage(Language $language) : void
+    public static function setLanguage(Language $language): void
     {
         self::$language = $language;
     }

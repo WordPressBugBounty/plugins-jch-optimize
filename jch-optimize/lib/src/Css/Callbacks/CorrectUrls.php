@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,188 +13,254 @@
 
 namespace JchOptimize\Core\Css\Callbacks;
 
-use _JchOptimizeVendor\GuzzleHttp\Psr7\Uri;
-use _JchOptimizeVendor\GuzzleHttp\Psr7\UriResolver;
-use _JchOptimizeVendor\Joomla\DI\Container;
-use JchOptimize\Core\Cdn;
-use JchOptimize\Core\Css\Parser;
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\UriResolver;
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+use JchOptimize\Core\Cdn\Cdn;
+use JchOptimize\Core\Css\Components\CssRule;
+use JchOptimize\Core\Css\Components\CssUrl;
+use JchOptimize\Core\Css\CssComponents;
+use JchOptimize\Core\Css\ModifyCssUrlsProcessor;
+use JchOptimize\Core\Css\ModifyCssUrlsTrait;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
+use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
 use JchOptimize\Core\FeatureHelpers\Webp;
-use JchOptimize\Core\Helper;
-use JchOptimize\Core\Http2Preload;
+use JchOptimize\Core\Platform\PathsInterface;
+use JchOptimize\Core\Platform\UtilityInterface;
+use JchOptimize\Core\Preloads\Http2Preload;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
+use JchOptimize\Core\Uri\Uri;
 use JchOptimize\Core\Uri\UriComparator;
-use JchOptimize\Core\Uri\Utils;
-use JchOptimize\Platform\Utility;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
-class CorrectUrls extends \JchOptimize\Core\Css\Callbacks\AbstractCallback
+use function defined;
+use function in_array;
+use function str_contains;
+
+defined('_JCH_EXEC') or die('Restricted access');
+
+class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
 {
-    /** @var bool True if this callback is called when preloading assets for HTTP/2 */
-    public bool $isHttp2 = \false;
+    use ModifyCssUrlsTrait;
 
-    public Cdn $cdn;
+    private string $context = 'css-rule';
 
-    public Http2Preload $http2Preload;
-    public array $cssBgImagesSelectors = [];
+    private bool $handlingCriticalCss = false;
 
-    private array $images = [];
-
-    /** @var array An array of external domains that we'll add preconnects for */
-    private array $preconnects = [];
-
-    private array $cssInfos = [];
-    private array $lcpImages = [];
-    private array $responsiveImages = [];
-    private string $postCss = '';
-
-    public function __construct(Container $container, Registry $params, Cdn $cdn, Http2Preload $http2Preload)
-    {
+    public function __construct(
+        Container $container,
+        Registry $params,
+        private Cdn $cdn,
+        private Http2Preload $http2Preload,
+        private UtilityInterface $utility
+    ) {
         parent::__construct($container, $params);
-        $this->cdn = $cdn;
-        $this->http2Preload = $http2Preload;
     }
 
-    public function processMatches(array $matches, string $context): string
+    public function setHandlingCriticalCss(bool $handlingCriticalCss): CorrectUrls
     {
-        $sRegex = '(?>u?[^u]*+)*?\\K(?:'.Parser::cssUrlWithCaptureValueToken(\true).'|$)';
-        if ('import' == $context) {
-            $sRegex = Parser::cssAtImportWithCaptureValueToken(\true);
+        $this->handlingCriticalCss = $handlingCriticalCss;
+
+        return $this;
+    }
+
+    public function setContext(string $context): CorrectUrls
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
+    protected function internalProcessMatches(CssComponents $cssComponent): string
+    {
+        if (
+            $cssComponent instanceof CssRule
+            && str_contains($cssComponent->getDeclarationList(), 'url(')
+        ) {
+            $this->processCssRule($cssComponent);
         }
-        $css = \preg_replace_callback('#'.$sRegex.'#i', function ($aInnerMatches) use ($context) {
-            return $this->processInnerMatches($aInnerMatches, $context);
-        }, $matches[0]);
-        // Lazy-load background images
-        if (JCH_PRO && $this->params->get('lazyload_enable', '0') && $this->params->get('pro_lazyload_bgimages', '0') && !\in_array($context, ['font-face', 'import'])) {
-            /** @see LazyLoadExtended::handleCssBgImages() */
-            $css = $this->getContainer()->get(LazyLoadExtended::class)->handleCssBgImages($this, $css);
-        }
-        if (JCH_PRO && !empty($this->responsiveImages)) {
-            $rsImages = \array_reverse($this->responsiveImages, \true);
-            $this->addPostCss($this->getResponsiveCss($rsImages, $css));
-        }
 
-        return $css;
+        return $cssComponent->render();
     }
 
-    public function setCssInfos(array $cssInfos): void
+    public function processCssRule(CssRule $cssComponent): void
     {
-        $this->cssInfos = $cssInfos;
+        $cssComponent->modifyCssUrls($this);
+        $this->context = 'css-rule';
+
+        $this->postProcessCssRule($cssComponent);
     }
 
-    public function getImages(): array
+    public function processCssUrls(CssUrl $cssUrl): CssUrl
     {
-        return $this->images;
+        $cssUrl->setUri($this->processUri($cssUrl->getUri()));
+
+        return $cssUrl;
     }
 
-    public function getLcpImages(): array
+    public function processUri(UriInterface $originalUri): UriInterface
     {
-        return $this->lcpImages;
-    }
+        if (
+            $originalUri->getScheme() !== 'data'
+            && $originalUri->getPath() != ''
+            && $originalUri->getPath() != '/'
+        ) {
+            $imageUri = $this->resolveImageToFileUrl($originalUri);
+            $paths = $this->getContainer()->get(PathsInterface::class);
 
-    public function getPreconnects(): array
-    {
-        return $this->preconnects;
-    }
-
-    public function getCssBgImagesSelectors(): array
-    {
-        return $this->cssBgImagesSelectors;
-    }
-
-    public function addPostCss(string $css): void
-    {
-        $this->postCss .= $css;
-    }
-
-    public function getPostCss(): string
-    {
-        return $this->postCss;
-    }
-
-    /**
-     * @param string[] $matches
-     */
-    protected function processInnerMatches(array $matches, string $context): string|bool
-    {
-        if (empty($matches[0])) {
-            return $matches[0];
-        }
-        $originalUri = Utils::uriFor($matches[1]);
-        if ('data' !== $originalUri->getScheme() && '' != $originalUri->getPath() && '/' != $originalUri->getPath()) {
-            if ($this->isHttp2) {
-                // The urls were already corrected on a previous run,
-                // we're only preloading assets in critical CSS and return
-                $fileType = 'font-face' == $context ? 'font' : 'image';
-                // LCP Images would have already been processed, we can skip those
-                if (JCH_PRO && $this->params->get('pro_lcp_images_enable')) {
-                    $lcpImages = Helper::getArray($this->params->get('pro_lcp_images', []));
-                    if (Helper::findMatches($lcpImages, $originalUri)) {
-                        return \true;
-                    }
-                    // Don't preload responsive images
-                    if (\str_contains((string) $originalUri, 'jch-optimize/rs')) {
-                        return \true;
-                    }
-                }
-                $this->http2Preload->add($originalUri, $fileType);
-
-                return \true;
-            }
-            // Get the url of the file that contained the CSS
-            $cssFileUri = empty($this->cssInfos['url']) ? new Uri() : $this->cssInfos['url'];
-            $cssFileUri = UriResolver::resolve(SystemUri::currentUri(), $cssFileUri);
-            $imageUri = UriResolver::resolve($cssFileUri, $originalUri);
-            if (!UriComparator::isCrossOrigin($imageUri)) {
-                // Collect local images if running in admin. Used by Optimize Images and MultiSelect exclude
-                if (Utility::isAdmin() && !\in_array((string) $imageUri, $this->images) && 'font-face' != $context) {
-                    $this->images[] = $imageUri;
-                }
+            if (UriComparator::existsLocally($imageUri, $this->cdn, $paths)) {
+                $this->cacheImageForAdminUsers($imageUri);
                 $imageUri = $this->cdn->loadCdnResource($imageUri);
             } elseif ($this->params->get('pro_preconnect_domains_enable', '0')) {
-                // Cache external domains to add preconnects for them
-                $domain = Uri::composeComponents($imageUri->getScheme(), $imageUri->getAuthority(), '', '', '');
-                if (!\in_array($domain, $this->preconnects)) {
-                    $this->preconnects[] = $domain;
-                }
-            }
-            if ('font-face' != $context && 'import' != $context) {
-                if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
-                    $this->responsiveImages = $this->getContainer()->get(ResponsiveImages::class)->getResponsiveImages($imageUri);
-                }
-                if (JCH_PRO && $this->params->get('pro_load_webp_images', '0')) {
-                    /** @see Webp::getWebpImages() */
-                    $imageUri = $this->getContainer()->get(Webp::class)->getWebpImages($imageUri);
-                }
-                if (JCH_PRO && $this->params->get('pro_lcp_images_enable')) {
-                    $lcpImages = Helper::getArray($this->params->get('pro_lcp_images', []));
-                    if (Helper::findMatches($lcpImages, $imageUri)) {
-                        $this->lcpImages[] = ['src' => $imageUri, 'srcset' => $this->responsiveImages ? $this->getContainer()->get(ResponsiveImages::class)->createSrcsetString($this->responsiveImages, $imageUri) : ''];
-                    }
-                }
-            }
-            // If URL without quotes and contains any parentheses, whitespace characters,
-            // single quotes (') and double quotes (") that are part of the URL, quote URL
-            if (\str_contains($matches[0], 'url('.$originalUri.')') && \preg_match('#[()\\s\'"]#', $imageUri)) {
-                $imageUri = '"'.$imageUri.'"';
+                $this->prefetchExternalDomains($imageUri);
             }
 
-            return \str_replace($matches[1], $imageUri, $matches[0]);
+            if ($this->context == 'css-rule') {
+                $imageUri = $this->applyFeatureHelpers($imageUri);
+            }
+
+            $this->addHttpPreloadsToCacheObject($imageUri);
+
+            return $imageUri;
         }
 
-        return $matches[0];
+        return $originalUri;
     }
 
-    private function getResponsiveCss(array $rsImages, $css): string
+    private function resolveImageToFileUrl(UriInterface $originalUri): UriInterface
     {
-        $rsCss = '';
-        foreach ($rsImages as $breakpoint => $rsImage) {
-            $tmpCss = \preg_replace_callback('#'.Parser::cssUrlWithCaptureValueToken(\true).'#', fn ($match) => \str_replace($match[1], $rsImage, $match[0]), $css);
-            $rsCss .= "@media(max-width: {$breakpoint}px) {{$tmpCss}}";
+        //Get the url of the file that contained the CSS
+        $cssFileUri = $this->getCssInfo()->hasUri() ? $this->getCssInfo()->getUri() : new Uri();
+        $cssFileUri = UriResolver::resolve(SystemUri::currentUri(), $cssFileUri);
+        return UriResolver::resolve($cssFileUri, $originalUri);
+    }
+
+    private function prefetchExternalDomains(UriInterface $imageUri): void
+    {
+        $domain = $imageUri->withPath('')->withQuery('')->withFragment('');
+
+        if (!in_array($domain, $this->cacheObject->getPrefetches())) {
+            $this->cacheObject->addPrefetches($domain);
+        }
+    }
+
+    private function cacheImageForAdminUsers(UriInterface $imageUri): void
+    {
+        //Collect local images if running in admin. Used by Optimize Images and MultiSelect exclude
+        if (
+            $this->utility->isAdmin()
+            && !in_array((string)$imageUri, $this->cacheObject->getImages())
+            && $this->context != 'font-face'
+        ) {
+            $this->cacheObject->addImages($imageUri);
+        }
+    }
+
+    private function applyFeatureHelpers(UriInterface $imageUri): UriInterface
+    {
+        $responsiveImages = [];
+        //We need to get responsive images before URI is converted to WEBP
+        if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
+            $responsiveImages = $this->getContainer()->get(ResponsiveImages::class)
+                /** @see ResponsiveImages::getResponsiveImages() */
+               ->getResponsiveImages($imageUri);
         }
 
-        return $rsCss;
+        if (JCH_PRO && $this->params->get('pro_load_webp_images', '0')) {
+            /** @see Webp::getWebpImages() */
+            $webpImageUri = $this->getContainer()->get(Webp::class)->getWebpImages($imageUri);
+
+            //If Webp were generated, add them to ResponsiveImages, so we can identify them later
+            if ($webpImageUri !== $imageUri && !empty($responsiveImages)) {
+                $this->getContainer()->get(ResponsiveImages::class)
+                   ->responsiveImages[(string)$webpImageUri] = $responsiveImages;
+            }
+
+            $imageUri = $webpImageUri;
+        }
+
+        if (JCH_PRO && $this->handlingCriticalCss && $this->params->get('pro_lcp_images_enable', '0')) {
+            $this->getContainer()->get(LCPImages::class)
+                /** @see LCPImages::prepareBackgroundLcpImages() */
+                ->prepareBackgroundLcpImages($imageUri, $this->cacheObject);
+        }
+
+        return $imageUri;
+    }
+
+    private function lazyLoadCssRule(CssRule $cssRule, &$lazyLoaded = false): void
+    {
+        if (
+            JCH_PRO && $this->params->get('lazyload_enable', '0')
+            && $this->params->get('pro_lazyload_bgimages', '0')
+            && !$this->handlingCriticalCss
+            && !str_contains($cssRule->render(), '.jch-lazyload')
+        ) {
+            $this->getContainer()->get(LazyLoadExtended::class)
+                /** @see LazyLoadExtended::handleCssBgImages() */
+                ->handleCssBgImages(
+                    $this,
+                    $cssRule,
+                    $lazyLoaded
+                );
+        }
+    }
+
+    protected function supportedCssComponents(): array
+    {
+        return [
+            CssRule::class
+        ];
+    }
+
+    public function addHttpPreloadsToCacheObject(UriInterface $imageUri): void
+    {
+        if (
+            $this->params->get('http2_push_enable', '0')
+            && $this->handlingCriticalCss
+        ) {
+            $fileType = match ($this->context) {
+                'font-face' => 'font',
+                'import' => 'css',
+                default => 'image'
+            };
+
+            $cacheItems = [
+                [
+                    'src' => $imageUri,
+                    'as' => $fileType
+                ]
+            ];
+            if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0') && $fileType == 'image') {
+                $cacheItems = $this->getContainer()->get(ResponsiveImages::class)
+                    /** @see ResponsiveImages::mergeResponsiveImageCacheItems() */
+                        ->mergeResponsiveImageCacheItems($cacheItems);
+            }
+            foreach ($cacheItems as $cacheItem) {
+                $this->cacheObject->addHttp2Preloads($cacheItem);
+            }
+        }
+    }
+
+    public function postProcessCssRule(CssRule $cssComponent): void
+    {
+        if (JCH_PRO && str_contains($cssComponent->getDeclarationList(), 'url(')) {
+            $this->lazyLoadCssRule($cssComponent);
+            $this->makeCssRuleResponsive($cssComponent);
+        }
+    }
+
+    public function postProcessModifiedCssComponent(CssComponents $cssComponent): void
+    {
+    }
+
+    private function makeCssRuleResponsive(CssRule $cssRule): void
+    {
+        if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
+            $this->getContainer()->get(ResponsiveImages::class)
+                /** @see ResponsiveImages::makeCssRuleResponsive() */
+                ->makeCssRuleResponsive($cssRule);
+        }
     }
 }

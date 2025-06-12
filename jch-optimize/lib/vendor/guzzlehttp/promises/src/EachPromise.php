@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp\Promise;
+namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 /**
  * Represents a promise that iterates over many promises and invokes
@@ -138,12 +138,12 @@ class EachPromise implements PromisorInterface
         // Iterable keys may not be unique, so we use a counter to
         // guarantee uniqueness
         $idx = $this->nextPendingIndex++;
-        $this->pending[$idx] = $promise->then(function ($value) use($idx, $key) {
+        $this->pending[$idx] = $promise->then(function ($value) use ($idx, $key) {
             if ($this->onFulfilled) {
                 \call_user_func($this->onFulfilled, $value, $key, $this->aggregate);
             }
             $this->step($idx);
-        }, function ($reason) use($idx, $key) {
+        }, function ($reason) use ($idx, $key) {
             if ($this->onRejected) {
                 \call_user_func($this->onRejected, $reason, $key, $this->aggregate);
             }

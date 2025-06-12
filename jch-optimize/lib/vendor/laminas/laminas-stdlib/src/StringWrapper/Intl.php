@@ -1,13 +1,16 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\StringWrapper;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception;
+
 use function extension_loaded;
 use function grapheme_strlen;
 use function grapheme_strpos;
 use function grapheme_substr;
+
 class Intl extends AbstractStringWrapper
 {
     /**

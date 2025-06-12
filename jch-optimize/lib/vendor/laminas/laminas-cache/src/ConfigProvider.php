@@ -1,17 +1,19 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache;
+namespace _JchOptimizeVendor\V91\Laminas\Cache;
 
-use _JchOptimizeVendor\Laminas\Cache\Command\DeprecatedStorageFactoryConfigurationCheckCommand;
-use _JchOptimizeVendor\Laminas\Cache\Command\DeprecatedStorageFactoryConfigurationCheckCommandFactory;
-use _JchOptimizeVendor\Laminas\Cache\Service\StorageAdapterFactory;
-use _JchOptimizeVendor\Laminas\Cache\Service\StorageAdapterFactoryFactory;
-use _JchOptimizeVendor\Laminas\Cache\Service\StorageAdapterFactoryInterface;
-use _JchOptimizeVendor\Laminas\Cache\Service\StoragePluginFactory;
-use _JchOptimizeVendor\Laminas\Cache\Service\StoragePluginFactoryFactory;
-use _JchOptimizeVendor\Laminas\Cache\Service\StoragePluginFactoryInterface;
-use _JchOptimizeVendor\Symfony\Component\Console\Command\Command;
+use _JchOptimizeVendor\V91\Laminas\Cache\Command\DeprecatedStorageFactoryConfigurationCheckCommand;
+use _JchOptimizeVendor\V91\Laminas\Cache\Command\DeprecatedStorageFactoryConfigurationCheckCommandFactory;
+use _JchOptimizeVendor\V91\Laminas\Cache\Service\StorageAdapterFactory;
+use _JchOptimizeVendor\V91\Laminas\Cache\Service\StorageAdapterFactoryFactory;
+use _JchOptimizeVendor\V91\Laminas\Cache\Service\StorageAdapterFactoryInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Service\StoragePluginFactory;
+use _JchOptimizeVendor\V91\Laminas\Cache\Service\StoragePluginFactoryFactory;
+use _JchOptimizeVendor\V91\Laminas\Cache\Service\StoragePluginFactoryInterface;
+use _JchOptimizeVendor\V91\Symfony\Component\Console\Command\Command;
+
 use function class_exists;
+
 class ConfigProvider
 {
     /**
@@ -39,7 +41,7 @@ class ConfigProvider
     /**
      * @return array<string,mixed>
      */
-    public function getCliConfig() : array
+    public function getCliConfig(): array
     {
         if (!class_exists(Command::class)) {
             return [];

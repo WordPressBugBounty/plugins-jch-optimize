@@ -1,7 +1,8 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Psr\Container;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Psr\Container;
 
 /**
  * Describes the interface of a container that exposes methods to read its entries.

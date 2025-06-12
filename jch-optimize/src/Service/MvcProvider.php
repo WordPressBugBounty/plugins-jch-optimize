@@ -11,121 +11,117 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Service;
+namespace JchOptimize\WordPress\Service;
 
-use JchOptimize\Controller\ApplyAutoSetting;
-use JchOptimize\Controller\BrowserCaching;
-use JchOptimize\Controller\CleanCache;
-use JchOptimize\Controller\Configurations;
-use JchOptimize\Controller\DeleteBackups;
-use JchOptimize\Controller\ExportSettings;
-use JchOptimize\Controller\GetCacheInfo;
-use JchOptimize\Controller\Help;
-use JchOptimize\Controller\ImportSettings;
-use JchOptimize\Controller\KeyCache;
-use JchOptimize\Controller\Main;
-use JchOptimize\Controller\OptimizeImages;
-use JchOptimize\Controller\OrderPlugins;
-use JchOptimize\Controller\PageCache;
-use JchOptimize\Controller\ReCache;
-use JchOptimize\Controller\RestoreImages;
-use JchOptimize\Controller\SetDefaultSettings;
-use JchOptimize\Controller\ToggleSetting;
-use JchOptimize\ControllerResolver;
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Joomla\DI\ServiceProviderInterface;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
+use _JchOptimizeVendor\V91\Joomla\Renderer\RendererInterface;
+use _JchOptimizeVendor\V91\Slim\Views\PhpRenderer;
+use JchOptimize\Core\Admin\AdminTasks;
 use JchOptimize\Core\Admin\Icons;
-use JchOptimize\Core\Container\Container;
-use JchOptimize\Core\Container\ServiceProviderInterface;
-use JchOptimize\Core\Input;
-use JchOptimize\Core\Interfaces\MvcLoggerInterface;
+use JchOptimize\Core\Model\CacheMaintainer;
+use JchOptimize\Core\Mvc\Renderer;
 use JchOptimize\Core\Mvc\View;
 use JchOptimize\Core\PageCache\PageCache as CorePageCache;
+use JchOptimize\Core\Platform\CacheInterface;
+use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Registry;
-use JchOptimize\Log\WordpressNoticeLogger;
-use JchOptimize\Model\BulkSettings;
-use JchOptimize\Model\Cache;
-use JchOptimize\Model\Configure;
-use JchOptimize\Model\PageCache as PageCacheModel;
-use JchOptimize\Model\ReCache as ReCacheModel;
-use JchOptimize\Plugin\Loader;
-use JchOptimize\View\ConfigurationsHtml;
-use JchOptimize\View\MainHtml;
-use JchOptimize\View\PageCacheHtml;
+use JchOptimize\WordPress\Controller\ApplyAutoSetting;
+use JchOptimize\WordPress\Controller\BrowserCaching;
+use JchOptimize\WordPress\Controller\CleanCache;
+use JchOptimize\WordPress\Controller\Configurations;
+use JchOptimize\WordPress\Controller\DeleteBackups;
+use JchOptimize\WordPress\Controller\ExportSettings;
+use JchOptimize\WordPress\Controller\GetCacheInfo;
+use JchOptimize\WordPress\Controller\Help;
+use JchOptimize\WordPress\Controller\ImportSettings;
+use JchOptimize\WordPress\Controller\KeyCache;
+use JchOptimize\WordPress\Controller\Main;
+use JchOptimize\WordPress\Controller\OptimizeImages;
+use JchOptimize\WordPress\Controller\OrderPlugins;
+use JchOptimize\WordPress\Controller\PageCache;
+use JchOptimize\WordPress\Controller\ReCache;
+use JchOptimize\WordPress\Controller\RestoreImages;
+use JchOptimize\WordPress\Controller\SetDefaultSettings;
+use JchOptimize\WordPress\Controller\ToggleSetting;
+use JchOptimize\WordPress\ControllerResolver;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Model\BulkSettings;
+use JchOptimize\WordPress\Model\Configure;
+use JchOptimize\WordPress\Model\NotificationIcons;
+use JchOptimize\WordPress\Model\PageCache as PageCacheModel;
+use JchOptimize\WordPress\Model\ReCache as ReCacheModel;
+use JchOptimize\WordPress\Plugin\Loader;
+use JchOptimize\WordPress\Plugin\Updater;
+use JchOptimize\WordPress\View\ConfigurationsHtml;
+use JchOptimize\WordPress\View\MainHtml;
+use JchOptimize\WordPress\View\OptimizeImageHtml;
+use JchOptimize\WordPress\View\PageCacheHtml;
 
 class MvcProvider implements ServiceProviderInterface
 {
-    public function register(Container $container)
+    public function register(Container $container): void
     {
         //MVC dependencies
-        $container->alias(MvcLoggerInterface::class, WordpressNoticeLogger::class)
-                  ->share(WordpressNoticeLogger::class, [$this, 'getWordpressNoticeLoggerService'], true);
-        $container->share(ControllerResolver::class, [$this, 'getControllerResolverService'], true);
+        $container->share(WordpressNoticeLogger::class, [$this, 'getWordpressNoticeLoggerService']);
+        $container->share(ControllerResolver::class, [$this, 'getControllerResolverService']);
 
         //controllers
         $container->alias(ApplyAutoSetting::class, 'applyautosetting')
-                  ->share('applyautosetting', [$this, 'getControllerApplyAutoSettingService'], true);
-
+                  ->share('applyautosetting', [$this, 'getControllerApplyAutoSettingService']);
         $container->alias(BrowserCaching::class, 'browsercaching')
-                  ->share('browsercaching', [$this, 'getControllerBrowserCachingService'], true);
-
+                  ->share('browsercaching', [$this, 'getControllerBrowserCachingService']);
         $container->alias(CleanCache::class, 'cleancache')
-                  ->share('cleancache', [$this, 'getControllerCleanCacheService'], true);
-
+                  ->share('cleancache', [$this, 'getControllerCleanCacheService']);
         $container->alias(Configurations::class, 'configurations')
-                  ->share('configurations', [$this, 'getControllerConfigurationsService'], true);
-
+                  ->share('configurations', [$this, 'getControllerConfigurationsService']);
         $container->alias(DeleteBackups::class, 'deletebackups')
-                  ->share('deletebackups', [$this, 'getControllerDeleteBackupsService'], true);
-
+                  ->share('deletebackups', [$this, 'getControllerDeleteBackupsService']);
         $container->alias(Help::class, 'help')
-                  ->share('help', [$this, 'getControllerHelpService'], true);
-
+                  ->share('help', [$this, 'getControllerHelpService']);
         $container->alias(KeyCache::class, 'keycache')
-                  ->share('keycache', [$this, 'getControllerKeyCacheService'], true);
-
+                  ->share('keycache', [$this, 'getControllerKeyCacheService']);
         $container->alias(Main::class, 'main')
-                  ->share('main', [$this, 'getControllerMainService'], true);
-
+                  ->share('main', [$this, 'getControllerMainService']);
         $container->alias(OptimizeImages::class, 'optimizeimages')
-                  ->share('optimizeimages', [$this, 'getControllerOptimizeImagesService'], true);
-
+                  ->share('optimizeimages', [$this, 'getControllerOptimizeImagesService']);
         $container->alias(OrderPlugins::class, 'orderplugins')
-                  ->share('orderplugins', [$this, 'getControllerOrderPluginsService'], true);
-
+                  ->share('orderplugins', [$this, 'getControllerOrderPluginsService']);
         $container->alias(RestoreImages::class, 'restoreimages')
-                  ->share('restoreimages', [$this, 'getControllerRestoreImagesService'], true);
-
+                  ->share('restoreimages', [$this, 'getControllerRestoreImagesService']);
         $container->alias(ToggleSetting::class, 'togglesetting')
-                  ->share('togglesetting', [$this, 'getControllerToggleSettingService'], true);
-
+                  ->share('togglesetting', [$this, 'getControllerToggleSettingService']);
         $container->alias(PageCache::class, 'pagecache')
-                  ->share('pagecache', [$this, 'getControllerPageCacheService'], true);
+                  ->share('pagecache', [$this, 'getControllerPageCacheService']);
         $container->alias(ReCache::class, 'recache')
-                  ->share('recache', [$this, 'getControllerReCacheService'], true);
-
+                  ->share('recache', [$this, 'getControllerReCacheService']);
         $container->alias(SetDefaultSettings::class, 'setdefaultsettings')
-                  ->share('setdefaultsettings', [$this, 'getControllerSetDefaultSettingsService'], true);
-
+                  ->share('setdefaultsettings', [$this, 'getControllerSetDefaultSettingsService']);
         $container->alias(ExportSettings::class, 'exportsettings')
-                  ->share('exportsettings', [$this, 'getControllerExportSettingsService'], true);
-
+                  ->share('exportsettings', [$this, 'getControllerExportSettingsService']);
         $container->alias(ImportSettings::class, 'importsettings')
-                  ->share('importsettings', [$this, 'getControllerImportSettingsService'], true);
-
+                  ->share('importsettings', [$this, 'getControllerImportSettingsService']);
         $container->alias(GetCacheInfo::class, 'getcacheinfo')
-                  ->share('getcacheinfo', [$this, 'getControllerGetCacheInfoService'], true);
+                  ->share('getcacheinfo', [$this, 'getControllerGetCacheInfoService']);
+
 
         //Models
-        $container->share(Configure::class, [$this, 'getModelConfigureService'], true);
-        $container->share(Cache::class, [$this, 'getModelMainService'], true);
-        $container->share(PageCacheModel::class, [$this, 'getModelPageCacheModelService'], true);
-        $container->share(ReCacheModel::class, [$this, 'getModelReCacheModelService'], true);
-        $container->share(BulkSettings::class, [$this, 'getModelBulkSettingsService'], true);
+        $container->share(Configure::class, [$this, 'getModelConfigureService']);
+        $container->share(PageCacheModel::class, [$this, 'getModelPageCacheModelService']);
+        $container->share(ReCacheModel::class, [$this, 'getModelReCacheModelService']);
+        $container->share(BulkSettings::class, [$this, 'getModelBulkSettingsService']);
+        $container->share(NotificationIcons::class, [$this, 'getModelNotificationIconsService']);
 
         //Views
-        $container->share(View::class, [$this, 'getViewHtmlService'], true);
-        $container->share(MainHtml::class, [$this, 'getViewMainHtmlService'], true);
-        $container->share(ConfigurationsHtml::class, [$this, 'getViewConfigurationsHtmlService'], true);
-        $container->share(PageCacheHtml::class, [$this, 'getViewPageCacheHtmlService'], true);
+        $container->share(View::class, [$this, 'getViewHtmlService']);
+        $container->share(MainHtml::class, [$this, 'getViewMainHtmlService']);
+        $container->share(ConfigurationsHtml::class, [$this, 'getViewConfigurationsHtmlService']);
+        $container->share(PageCacheHtml::class, [$this, 'getViewPageCacheHtmlService']);
+        $container->share(OptimizeImageHtml::class, [$this,'getViewOptimizeImageHtmlService']);
+
+        //Renderer
+        $container->share(RendererInterface::class, [$this, 'getRendererService']);
     }
 
     public function getWordpressNoticeLoggerService(): WordpressNoticeLogger
@@ -156,6 +152,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerBrowserCachingService(Container $container): BrowserCaching
     {
         $controller = new BrowserCaching(
+            $container->get(AdminTasks::class),
             $container->get(Input::class)
         );
 
@@ -167,7 +164,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerCleanCacheService(Container $container): CleanCache
     {
         $controller = new CleanCache(
-            $container->get(Cache::class),
+            $container->get(CacheMaintainer::class),
             $container->get(Input::class)
         );
 
@@ -180,6 +177,7 @@ class MvcProvider implements ServiceProviderInterface
     {
         return new Configurations(
             $container->get(ConfigurationsHtml::class),
+            $container->get(PathsInterface::class),
             $container->get(Input::class)
         );
     }
@@ -187,6 +185,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerDeleteBackupsService(Container $container): DeleteBackups
     {
         $controller = new DeleteBackups(
+            $container->get(AdminTasks::class),
             $container->get(Input::class)
         );
 
@@ -206,6 +205,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerKeyCacheService(Container $container): KeyCache
     {
         $controller = new KeyCache(
+            $container->get(AdminTasks::class),
             $container->get(Input::class)
         );
 
@@ -219,6 +219,7 @@ class MvcProvider implements ServiceProviderInterface
         return new Main(
             $container->get(MainHtml::class),
             $container->get(Icons::class),
+            $container->get(NotificationIcons::class),
             $container->get(Input::class)
         );
     }
@@ -226,7 +227,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerOptimizeImagesService(Container $container): OptimizeImages
     {
         $controller = new OptimizeImages(
-            $container->get(View::class),
+            $container->get(OptimizeImageHtml::class),
             $container->get(Icons::class),
             $container->get(Input::class)
         );
@@ -251,6 +252,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerRestoreImagesService(Container $container): RestoreImages
     {
         $controller = new RestoreImages(
+            $container->get(AdminTasks::class),
             $container->get(Input::class)
         );
 
@@ -263,6 +265,7 @@ class MvcProvider implements ServiceProviderInterface
     {
         $controller = new ToggleSetting(
             $container->get(Configure::class),
+            $container->get(CacheInterface::class),
             $container->get(Input::class)
         );
 
@@ -274,6 +277,7 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerPageCacheService(Container $container): PageCache
     {
         $controller = (new PageCache(
+            $container->get(Registry::class),
             $container->get(PageCacheHtml::class),
             $container->get(PageCacheModel::class),
             $container->get(Input::class)
@@ -328,25 +332,26 @@ class MvcProvider implements ServiceProviderInterface
     public function getControllerGetCacheInfoService(Container $container): GetCacheInfo
     {
         return new GetCacheInfo(
-            $container->get(Cache::class),
+            $container->get(CacheMaintainer::class),
             $container->get(Input::class)
         );
     }
 
     public function getModelConfigureService(Container $container): Configure
     {
-        $model = new Configure();
+        $model = new Configure($container->get(CacheInterface::class));
         $model->setState($container->get(Registry::class));
         $model->setContainer($container);
 
         return $model;
     }
 
-    public function getModelMainService(Container $container): Cache
+    public function getModelNotificationIconsService(Container $container): NotificationIcons
     {
-        return (new Cache(
-            $container->get(CorePageCache::class),
-        ))->setContainer($container);
+        return new NotificationIcons(
+            $container->get(Registry::class),
+            $container->get(Updater::class)
+        );
     }
 
     public function getModelPageCacheModelService(Container $container): PageCacheModel
@@ -360,7 +365,7 @@ class MvcProvider implements ServiceProviderInterface
 
     public function getModelReCacheModelService(Container $container): ReCacheModel
     {
-        $reCacheModel = new ReCacheModel();
+        $reCacheModel = new ReCacheModel($container->get(PathsInterface::class));
         $reCacheModel->setLogger($container->get(WordpressNoticeLogger::class));
 
         return $reCacheModel;
@@ -376,10 +381,7 @@ class MvcProvider implements ServiceProviderInterface
 
     public function getViewHtmlService(Container $container): View
     {
-        $renderer = $container->get('renderer');
-        $renderer->getRenderer()->setLayout('template.php');
-
-        $view = new View($container->get('renderer'));
+        $view = new View($container->get(RendererInterface::class));
 
         $layout = $container->get(Input::class)->get('tab', 'main') . '.php';
         $view->setLayout($layout);
@@ -387,33 +389,43 @@ class MvcProvider implements ServiceProviderInterface
         return $view;
     }
 
+    public function getViewOptimizeImageHtmlService(Container $container): OptimizeImageHtml
+    {
+        return (new OptimizeImageHtml(
+            $container->get(Registry::class),
+            $container->get(RendererInterface::class)
+        ))->setLayout('optimizeimages.php');
+    }
+
     public function getViewMainHtmlService(Container $container): MainHtml
     {
-        $renderer = $container->get('renderer');
-        $renderer->getRenderer()->setLayout('template.php');
-
         return (new MainHtml(
-            $renderer
+            $container->get(RendererInterface::class)
         ))->setLayout('main.php');
     }
 
     public function getViewConfigurationsHtmlService(Container $container): ConfigurationsHtml
     {
-        $renderer = $container->get('renderer');
-        $renderer->getRenderer()->setLayout('template.php');
-
         return (new ConfigurationsHtml(
-            $renderer
+            $container->get(RendererInterface::class),
         ))->setLayout('configurations.php');
     }
 
     public function getViewPageCacheHtmlService(Container $container): PageCacheHtml
     {
-        $renderer = $container->get('renderer');
-        $renderer->getRenderer()->setLayout('template.php');
-
         return (new PageCacheHtml(
-            $renderer
+            $container->get(RendererInterface::class),
         ))->setLayout('pagecache.php');
+    }
+
+    public function getRendererService(Container $container): RendererInterface
+    {
+        $engine = new PhpRenderer(
+            $container->get(PathsInterface::class)->templatePath(),
+            [],
+            'template.php'
+        );
+
+        return new Renderer($engine);
     }
 }

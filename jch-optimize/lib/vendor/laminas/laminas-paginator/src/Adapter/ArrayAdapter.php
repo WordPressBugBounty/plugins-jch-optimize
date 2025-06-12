@@ -1,11 +1,13 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Paginator\Adapter;
+namespace _JchOptimizeVendor\V91\Laminas\Paginator\Adapter;
 
 use ReturnTypeWillChange;
+
 // phpcs:ignore
 use function array_slice;
 use function count;
+
 class ArrayAdapter implements AdapterInterface
 {
     /**

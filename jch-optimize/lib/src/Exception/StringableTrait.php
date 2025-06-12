@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,12 +13,18 @@
 
 namespace JchOptimize\Core\Exception;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
+use function defined;
 
+defined('_JCH_EXEC') or die('Restricted access');
+
+/**
+ * @package     JchOptimize\Core
+ */
 trait StringableTrait
 {
     public function __toString()
     {
-        return \get_class($this)." '{$this->getMessage()}' in {$this->getFile()}({$this->getLine()})\n{$this->getTraceAsString()}";
+        return get_class($this) . " '{$this->getMessage()}' in {$this->getFile()}({$this->getLine()})\n"
+            . "{$this->getTraceAsString()}";
     }
 }

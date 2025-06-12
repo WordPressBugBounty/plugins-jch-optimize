@@ -11,13 +11,16 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Html\Renderer;
+namespace JchOptimize\WordPress\Html\Renderer;
 
-use JchOptimize\Html\CacheStorageSupportHelper;
-use JchOptimize\Html\Helper;
+use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
+use JchOptimize\WordPress\Html\CacheStorageSupportHelper;
+use JchOptimize\WordPress\Html\Helper;
 
 use function __;
 use function array_keys;
+
+use const _PHPStan_a4fa95a42\__;
 
 abstract class Setting
 {
@@ -34,17 +37,17 @@ abstract class Setting
 
     public static function debug(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function order_plugin(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function disable_logged_in_users(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function elements_above_fold(): void
@@ -54,7 +57,7 @@ abstract class Setting
 
     public static function elements_above_fold_marker(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     /*
@@ -139,7 +142,26 @@ abstract class Setting
 
     public static function delete_expiry(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
+    }
+
+    /*
+     Recache Section
+     */
+
+    public static function recache_crawl_limit(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '100');
+    }
+
+    public static function recache_concurrency(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '10');
+    }
+
+    public static function recache_max_depth(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '3');
     }
 
     ## Combine Files tab
@@ -150,12 +172,17 @@ abstract class Setting
 
     public static function combine_files_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
-    public static function pro_smart_combine(): void
+    public static function combine_files(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0', 'jch-smart-combine-radios-wrapper');
+        Helper::_('switch', __FUNCTION__, '0');
+    }
+
+    public static function try_catch(): void
+    {
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function html_minify_level(): void
@@ -181,33 +208,28 @@ abstract class Setting
         Helper::_('select', __FUNCTION__, '2', $aOptions);
     }
 
-    public static function try_catch(): void
-    {
-        Helper::_('radio', __FUNCTION__, '1');
-    }
-
     /*
     Combine Files Automatic Section
     */
 
     public static function gzip(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function html_minify(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function includeAllExtensions(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function phpAndExternal(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     ## CSS Tab
@@ -218,22 +240,22 @@ abstract class Setting
 
     public static function css(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function css_minify(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function replaceImports(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function inlineStyle(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     /*
@@ -257,7 +279,7 @@ abstract class Setting
 
     public static function excludeAllStyles(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     /*
@@ -272,6 +294,16 @@ abstract class Setting
     /*
      Custom CSS section
      */
+    public static function custom_css_enable(): void
+    {
+        Helper::_('switch', __FUNCTION__, '0');
+    }
+
+    public static function custom_css(): void
+    {
+        Helper::_('textarea', __FUNCTION__, '');
+    }
+
     public static function mobile_css(): void
     {
         Helper::_('textarea', __FUNCTION__, '');
@@ -288,12 +320,12 @@ abstract class Setting
 
     public static function optimizeCssDelivery_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function pro_reduce_unused_css(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_dynamic_selectors(): void
@@ -301,6 +333,10 @@ abstract class Setting
         Helper::_('multiselect.pro', __FUNCTION__, [], 'selectors', 'style');
     }
 
+    public static function critical_css_configure_helper(): void
+    {
+        Helper::_('switch', __FUNCTION__, '0');
+    }
     ## JavaScript Tab
 
     /*
@@ -309,27 +345,27 @@ abstract class Setting
 
     public static function javascript(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function js_minify(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function inlineScripts(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function bottom_js(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function loadAsynchronous(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     /*
@@ -353,7 +389,7 @@ abstract class Setting
 
     public static function excludeAllScripts(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     /*
@@ -370,7 +406,7 @@ abstract class Setting
 
     public static function pro_reduce_unused_js_enable(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_criticalJs(): void
@@ -390,14 +426,18 @@ abstract class Setting
 
     public static function pro_criticalModulesScripts(): void
     {
-        Helper::_('multiselect.pro', __FUNCTION__, [], 'js', 'script');
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'modulesScripts', 'script');
     }
 
     public static function pro_defer_criticalJs(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
+    public static function critical_js_configure_helper(): void
+    {
+        Helper::_('criticaljsmodalbutton', __FUNCTION__, '');
+    }
 
     ## Page Cache Tab
 
@@ -407,17 +447,17 @@ abstract class Setting
 
     public static function cache_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function pro_cache_platform(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function page_cache_exclude_form_users(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function page_cache_lifetime(): void
@@ -450,7 +490,7 @@ abstract class Setting
 
     public static function pro_capture_cache_enable(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     ## Media Tab
@@ -461,7 +501,7 @@ abstract class Setting
 
     public static function img_attributes_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     /*
@@ -470,7 +510,7 @@ abstract class Setting
 
     public static function csg_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function csg_direction(): void
@@ -485,7 +525,7 @@ abstract class Setting
 
     public static function csg_wrap_images(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function csg_exclude_images(): void
@@ -504,32 +544,32 @@ abstract class Setting
 
     public static function lazyload_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function lazyload_autosize(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function pro_lazyload_effects(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_lazyload_iframe(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_lazyload_audiovideo(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_lazyload_bgimages(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function excludeLazyLoad(): void
@@ -547,6 +587,21 @@ abstract class Setting
         Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'class');
     }
 
+    public static function includeLazyLoad(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'file');
+    }
+
+    public static function includeLazyLoadFolders(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'folder');
+    }
+
+    public static function includeLazyLoadClass(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'class');
+    }
+
     ## Preloads Tab
 
     /*
@@ -555,12 +610,12 @@ abstract class Setting
 
     public static function http2_push_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function pro_http2_preload_modules(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
     public static function pro_http2_file_types(): void
@@ -577,12 +632,12 @@ abstract class Setting
 
     public static function pro_http2_include(): void
     {
-        Helper::_('multiselect', __FUNCTION__, [], 'http2', 'file');
+        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'http2', 'file', 'url', 'anonymous', 'use-credentials', 'Crossorigin: \'anonymous\'', '\'use-credentials\'', '', '', 'only-one');
     }
 
     public static function pro_http2_exclude(): void
     {
-        Helper::_('multiselect', __FUNCTION__, [], 'http2', 'file');
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'http2', 'file');
     }
 
     /*
@@ -591,7 +646,7 @@ abstract class Setting
 
     public static function pro_lcp_images_enable(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_lcp_images(): void
@@ -605,12 +660,12 @@ abstract class Setting
 
     public static function pro_optimizeFonts_enable(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_force_swap_policy(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
     public static function pro_optimize_font_files(): void
@@ -624,12 +679,17 @@ abstract class Setting
 
     public static function pro_preconnect_domains_enable(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_preconnect_domains(): void
     {
-        Helper::_('multiselect.pro', __FUNCTION__, [], 'url', 'file');
+        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'origin', 'origin', 'url', 'anonymous', 'use-credentials', 'Crossorigin: \'anonymous\'', '\'use-credentials\'','', '', 'only-one');
+    }
+
+    public static function dns_prefetch_domains(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'origin', 'origin');
     }
 
     ## CDN Tab
@@ -640,7 +700,7 @@ abstract class Setting
 
     public static function cookielessdomain_enable(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
     }
 
     public static function cdn_scheme(): void
@@ -716,42 +776,97 @@ abstract class Setting
 
     public static function ignore_optimized(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
+
+    /*
+     Next Generation Images Section
+     */
 
     public static function pro_next_gen_images(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
     public static function pro_web_old_browsers(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_load_webp_images(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
+    /*
+     Responsive Image Section
+     */
     public static function pro_gen_responsive_images(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
     public static function pro_load_responsive_images(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
+    public static function cropgravity(): void
+    {
+        if (JCH_PRO) {
+            $breakpoint = ResponsiveImages::$breakpoints[0];
+            $option1Obj = "{
+                        type: \"select\", 
+                        name: \"gravity\", 
+                        htmlOptions: [
+                            {value: \"West\", selected: \"\", text: \"Left\"},
+                            {value: \"Center\", selected: \"selected\", text: \"Center\"},
+                            {value: \"East\", selected: \"\", text: \"Right\"}
+                        ]
+                    }";
+            $option2Obj = "{type: \"text\", name: \"cropwidth\", defaultValue: \"$breakpoint\"}";
+        } else {
+            $option1Obj = "{}";
+            $option2Obj = "{}";
+        }
+
+        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'lazyload', 'file', 'url', 'gravity', 'cropwidth', 'Position', 'Width (px)', $option1Obj, $option2Obj, '', '', 'select', 'text');
+    }
+
+    /*
+     Optimization Configuration Section
+     */
     public static function lossy(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     public static function save_metadata(): void
     {
-        Helper::_('radio', __FUNCTION__, '0');
+        Helper::_('switch', __FUNCTION__, '0');
+    }
+
+    /*
+     Upload Setting Section
+     */
+    public static function pro_api_concurrency(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '5');
+    }
+
+    public static function pro_api_num_files(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '');
+    }
+
+    public static function pro_api_max_size(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '2M');
+    }
+
+    public static function api_connection_timeout(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '30');
     }
 
     /*
@@ -760,7 +875,7 @@ abstract class Setting
 
     public static function pro_api_resize_mode(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
     /*
@@ -769,7 +884,7 @@ abstract class Setting
 
     public static function recursive(): void
     {
-        Helper::_('radio', __FUNCTION__, '1');
+        Helper::_('switch', __FUNCTION__, '1');
     }
 
     ## Miscellaneous Tab
@@ -780,28 +895,45 @@ abstract class Setting
 
     public static function pro_reduce_dom(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_html_sections(): void
     {
         $options = [
+            'header' => 'header',
+            'nav'     => 'nav',
+            'main' => 'main',
+            'article' => 'article',
             'section' => 'section',
-            'header'  => 'header',
-            'footer'  => 'footer',
             'aside'   => 'aside',
-            'nav'     => 'nav'
+            'footer'  => 'footer',
         ];
 
         Helper::_('checkboxes.pro', __FUNCTION__, array_keys($options), $options);
     }
 
+    public static function reduce_dom_identifiers(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'reducedom', 'class');
+    }
+
+    public static function reduce_dom_exclude_identifiers(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'reducedom', 'class');
+    }
+
+    public static function reduce_dom_above_fold_identifiers(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'reducedom', 'class');
+    }
+
+
     /*
     Mode Switcher Menu Section
     */
-
     public static function pro_disableModeSwitcher(): void
     {
-        Helper::_('radio.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 }

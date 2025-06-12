@@ -1,8 +1,9 @@
 <?php
 
 /**
- * JCH Optimize - Performs several front-end optimizations for fast downloads.
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
+ * @package   jchoptimize/core
  * @author    Samuel Marshall <samuel@jch-optimize.net>
  * @copyright Copyright (c) 2022 Samuel Marshall / JCH Optimize
  * @license   GNU/GPLv3, or later. See LICENSE file
@@ -12,363 +13,409 @@
 
 namespace JchOptimize\Core;
 
-use _JchOptimizeVendor\GuzzleHttp\Client;
-use _JchOptimizeVendor\GuzzleHttp\Exception\GuzzleException;
-use _JchOptimizeVendor\GuzzleHttp\Psr7\UriResolver;
-use _JchOptimizeVendor\GuzzleHttp\Psr7\Utils;
-use _JchOptimizeVendor\GuzzleHttp\RequestOptions;
-use _JchOptimizeVendor\Joomla\DI\ContainerAwareInterface;
-use _JchOptimizeVendor\Laminas\Cache\Pattern\CallbackCache;
-use _JchOptimizeVendor\Laminas\Cache\Storage\IterableInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\StorageInterface;
-use _JchOptimizeVendor\Laminas\Cache\Storage\TaggableInterface;
-use _JchOptimizeVendor\Psr\Http\Client\ClientInterface;
-use _JchOptimizeVendor\Psr\Http\Message\UriInterface;
-use _JchOptimizeVendor\Psr\Log\LoggerAwareInterface;
-use _JchOptimizeVendor\Psr\Log\LoggerAwareTrait;
+use _JchOptimizeVendor\V91\GuzzleHttp\Client;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\GuzzleException;
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\UriResolver;
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\Utils;
+use _JchOptimizeVendor\V91\GuzzleHttp\RequestOptions;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
+use _JchOptimizeVendor\V91\Laminas\Stdlib\StringUtils;
+use _JchOptimizeVendor\V91\Psr\Http\Client\ClientInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use CodeAlfa\Minify\Css;
+use CodeAlfa\Minify\Html;
 use CodeAlfa\Minify\Js;
-use CodeAlfa\RegexTokenizer\Debug\Debug;
-use JchOptimize\Core\Container\ContainerAwareTrait;
-use JchOptimize\Core\Css\Processor as CssProcessor;
-use JchOptimize\Core\Css\Sprite\Generator;
+use Exception;
+use JchOptimize\Core\Cdn\Cdn;
+use JchOptimize\Core\Css\CssProcessor;
+use JchOptimize\Core\Exception\FileNotFoundException;
+use JchOptimize\Core\Exception\PropertyNotFoundException;
+use JchOptimize\Core\Exception\RuntimeException;
+use JchOptimize\Core\Html\CacheManager;
+use JchOptimize\Core\Platform\PathsInterface;
+use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Uri\UriComparator;
 use JchOptimize\Core\Uri\UriConverter;
-use JchOptimize\Platform\Profiler;
+use Serializable;
 
-\defined('_JCH_EXEC') or exit('Restricted access');
+use function defined;
+use function file_exists;
+use function function_exists;
+use function preg_match;
+use function sprintf;
+use function str_ends_with;
+use function trim;
+
+use const PHP_EOL;
+
+defined('_JCH_EXEC') or die('Restricted access');
 
 /**
- * Class to combine CSS/JS files together.
+ * Class to combine CSS/JS files together
  */
-class Combiner implements ContainerAwareInterface, LoggerAwareInterface, \Serializable
+class Combiner implements ContainerAwareInterface, LoggerAwareInterface, Serializable
 {
     use ContainerAwareTrait;
     use LoggerAwareTrait;
-    use Debug;
-    use \JchOptimize\Core\FileInfosUtilsTrait;
-    use \JchOptimize\Core\SerializableTrait;
-    use \JchOptimize\Core\StorageTaggingTrait;
+    use SerializableTrait;
 
-    public bool $isBackend = \false;
+    private bool $isLastKey = false;
 
-    private Registry $params;
-
-    private CallbackCache $callbackCache;
-
-    /**
-     * @var null|(Client&ClientInterface)
-     */
-    private $http;
-
-    /**
-     * @var IterableInterface&StorageInterface&TaggableInterface
-     */
-    private $taggableCache;
-
-    /**
-     * Constructor.
-     *
-     * @param IterableInterface&StorageInterface&TaggableInterface $taggableCache
-     * @param null|(Client&ClientInterface)                        $http
-     */
-    public function __construct(Registry $params, CallbackCache $callbackCache, $taggableCache, FileUtils $fileUtils, $http)
-    {
-        $this->params = $params;
-        $this->callbackCache = $callbackCache;
-        $this->taggableCache = $taggableCache;
-        $this->fileUtils = $fileUtils;
-        $this->http = $http;
-    }
-
-    public function getCssContents(array $urlArray): array
-    {
-        return $this->getContents($urlArray, 'css');
+    public function __construct(
+        private Registry $params,
+        /**
+         * @var (Client&ClientInterface)|null
+         */
+        private $http,
+        private ProfilerInterface $profiler
+    ) {
     }
 
     /**
-     * Get aggregated and possibly minified content from js and css files.
-     *
-     * @param array  $urlArray Indexed multidimensional array of urls of css or js files for aggregation
-     * @param string $type     css or js
-     *
-     * @return array Aggregated (and possibly minified) contents of files
-     *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function getContents(array $urlArray, string $type): array
+    public function getCssContents(array $fileInfosArray): CacheObject
     {
-        !JCH_DEBUG ?: Profiler::start('GetContents - '.$type, \true);
-        $aResult = $this->combineFiles($urlArray, $type);
-        $sContents = $this->prepareContents($aResult['content']);
-        if ('css' == $type) {
-            if ($this->params->get('csg_enable', 0)) {
-                try {
-                    /** @var Generator $oSpriteGenerator */
-                    $oSpriteGenerator = $this->container->get(Generator::class);
-                    $aSpriteCss = $oSpriteGenerator->getSprite($sContents);
-                    if (!empty($aSpriteCss) && !empty($aSpriteCss['needles']) && !empty($aSpriteCss['replacements'])) {
-                        $sContents = \str_replace($aSpriteCss['needles'], $aSpriteCss['replacements'], $sContents);
-                    }
-                } catch (\Exception $ex) {
-                    $this->logger->error($ex->getMessage());
-                }
+        return $this->getContents($fileInfosArray, 'css');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getContents(array $fileInfosArray, string $type): CacheObject
+    {
+        !JCH_DEBUG ?: $this->profiler->start('GetContents - ' . $type, true);
+
+        $resultObj = $this->combineFiles($fileInfosArray);
+
+        if ($type == 'css') {
+            if (!$this->params->get('optimizeCssDelivery_enable', '0')) {
+                $resultObj->prependContents($resultObj->getImports());
             }
-            $sContents = $aResult['import'].$sContents;
-            if (\function_exists('mb_convert_encoding')) {
-                $sContents = '@charset "utf-8";'.$sContents;
-            }
+
+            $this->addCharset($resultObj);
         }
-        // Save contents in array to store in cache
-        $aContents = ['filemtime' => \time(), 'etag' => \md5($sContents), 'contents' => $sContents, 'images' => \array_unique($aResult['images']), 'font-face' => $aResult['font-face'], 'preconnects' => $aResult['preconnects'], 'gfonts' => $aResult['gfonts'], 'bgselectors' => $aResult['bgselectors'], 'lcpImages' => $aResult['lcpImages']];
-        !JCH_DEBUG ?: Profiler::stop('GetContents - '.$type);
 
-        return $aContents;
+        $resultObj->prepareForCaching();
+
+        !JCH_DEBUG ?: $this->profiler->stop('GetContents - ' . $type);
+
+        return $resultObj;
     }
 
     /**
-     * Aggregate contents of CSS and JS files.
-     *
-     * @param array  $fileInfosArray Array of links of files to combine
-     * @param string $type           css|js
-     * @param mixed  $cacheItems
-     *
-     * @return array Aggregated contents
-     *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function combineFiles(array $fileInfosArray, string $type, $cacheItems = \true): array
+    public function combineFiles(array $fileInfosArray, bool $cacheItems = true): CacheObject
     {
-        $responses = ['content' => '', 'import' => '', 'font-face' => [], 'preconnects' => [], 'images' => [], 'gfonts' => [], 'bgselectors' => [], 'lcpImages' => []];
-        // Iterate through each file/script to optimize and combine
+        $cacheObj = new CacheObject();
+
+        /** @var FileInfo $fileInfos */
         foreach ($fileInfosArray as $fileInfos) {
-            // Truncate url to less than 40 characters
-            $sUrl = $this->prepareFileUrl($fileInfos, $type);
-            !JCH_DEBUG ?: Profiler::start('CombineFile - '.$sUrl);
-            // Try to store tags first
-            $function = [$this, 'cacheContent'];
-            $args = [$fileInfos, $type, \true];
-            $id = $this->callbackCache->generateKey($function, $args);
-            $this->tagStorage($id);
-            // If caching set and tagging was successful we attempt to cache
-            if ($cacheItems && !empty($this->taggableCache->getTags($id))) {
-                // Optimize and cache file/script returning the optimized content
-                $results = $this->callbackCache->call($function, $args);
-                // Append to combined contents
-                $responses['content'] .= $this->addCommentedUrl($type, $fileInfos).$results['content']."\n".'JCHOPTIMIZE_DELIMITER';
+            $url = $fileInfos->display();
+            $truncatedUrl = FileUtils::prepareFileForDisplay(Uri\Utils::uriFor($url));
+
+            !JCH_DEBUG ?: $this->profiler->start('CombineFile - ' . $truncatedUrl);
+
+            if ($cacheItems && $this->params->get('combine_files', '0')) {
+                $cacheManager = $this->getContainer()->get(CacheManager::class);
+                $resultObj = $cacheManager->cacheContent($fileInfos, $this->isLastKey);
             } else {
-                // If we're not caching just get the optimized content
-                $results = $this->cacheContent($fileInfos, $type, \false);
-                $responses['content'] .= $this->addCommentedUrl($type, $fileInfos).$results['content'].'|"JCHOPTIMIZE_LINE_END"|';
+                $resultObj = $this->cacheContent($fileInfos);
             }
-            if ('css' == $type) {
-                $responses['import'] .= $results['import'];
-                $responses['images'] = \array_merge($responses['images'], $results['images']);
-                $responses['gfonts'] = \array_merge($responses['gfonts'], $results['gfonts']);
-                $responses['font-face'] = \array_merge($responses['font-face'], $results['font-face']);
-                $responses['preconnects'] = \array_merge($responses['preconnects'], $results['preconnects']);
-                $responses['bgselectors'] = \array_merge($responses['bgselectors'], $results['bgselectors']);
-                $responses['lcpImages'] = \array_merge($responses['lcpImages'], $results['lcpImages']);
-            }
-            !JCH_DEBUG ?: Profiler::stop('CombineFile - '.$sUrl, \true);
+
+            $cacheObj->merge($resultObj->getMergedImportedContents());
+            $cacheObj->appendContents(PHP_EOL);
+
+            !JCH_DEBUG ?: $this->profiler->stop('CombineFile - ' . $truncatedUrl, true);
         }
 
-        return $responses;
+        return $cacheObj;
     }
 
     /**
-     * Optimize and cache contents of individual file/script returning optimized content.
+     * Optimize and cache contents of individual file/script returning optimized content
      */
-    public function cacheContent(array $fileInfos, string $type, bool $bPrepare): array
+    public function cacheContent(FileInfo $fileInfos): CacheObject
     {
-        // Initialize content string
-        $content = '';
-        $responses = [];
-        // If it's a file fetch the contents of the file
-        if (isset($fileInfos['url'])) {
-            $content .= $this->getFileContents($fileInfos['url']);
-            // Remove zero-width non-breaking space
-            $content = \trim($content, '﻿');
-        } else {
-            // If it's a declaration just use it
-            $content .= $fileInfos['content'];
-        }
-        if ('css' == $type) {
-            /** @var CssProcessor $oCssProcessor */
-            $oCssProcessor = $this->container->get(CssProcessor::class);
-            $oCssProcessor->setCssInfos($fileInfos);
-            $oCssProcessor->setCss($content);
-            $oCssProcessor->formatCss();
-            $oCssProcessor->processUrls();
-            $oCssProcessor->processMediaQueries();
-            $oCssProcessor->processAtRules();
-            $content = $oCssProcessor->getCss();
-            $responses['import'] = $oCssProcessor->getImports();
-            $responses['images'] = $oCssProcessor->getImages();
-            $responses['font-face'] = $oCssProcessor->getFontFace();
-            $responses['gfonts'] = $oCssProcessor->getGFonts();
-            $responses['preconnects'] = $oCssProcessor->getPreconnects();
-            $responses['bgselectors'] = $oCssProcessor->getCssBgImagesSelectors();
-            $responses['lcpImages'] = $oCssProcessor->getLcpImages();
-        }
-        if ('js' == $type && '' != \trim($content)) {
-            if ($this->params->get('try_catch', '1')) {
-                $content = $this->addErrorHandler($content, $fileInfos);
-            } else {
-                $content = $this->addSemiColon($content);
-            }
-        }
-        if ($bPrepare) {
-            $content = $this->minifyContent($content, $type, $fileInfos);
-            $content = $this->prepareContents($content);
-        }
-        $responses['content'] = $content;
-
-        return $responses;
-    }
-
-    /**
-     * Remove placeholders from aggregated file for caching.
-     *
-     * @param string $contents Aggregated file contents
-     */
-    public function prepareContents(string $contents, bool $test = \false): string
-    {
-        return \str_replace(['|"JCHOPTIMIZE_COMMENT_START', '|"JCHOPTIMIZE_COMMENT_IMPORT_START', 'JCHOPTIMIZE_COMMENT_END"|', 'JCHOPTIMIZE_DELIMITER', '|"JCHOPTIMIZE_LINE_END"|'], ["\n".'/***! ', "\n\n".'/***! @import url', ' !***/'."\n\n", $test ? 'JCHOPTIMIZE_DELIMITER' : '', "\n"], \trim($contents));
-    }
-
-    public function getJsContents(array $urlArray): array
-    {
-        return $this->getContents($urlArray, 'js');
-    }
-
-    /**
-     * Used when you want to append the contents of files to some that are already combined, into one file.
-     *
-     * @param array  $ids         Array of ids of files that were already combined
-     * @param array  $fileMatches Array of file matches to be combined
-     * @param string $type        Type of files css|js
-     *
-     * @return array The contents of the combined files
-     */
-    public function appendFiles(array $ids, array $fileMatches, string $type): array
-    {
-        $contents = '';
-        foreach ($ids as $id) {
-            $contents .= \JchOptimize\Core\Output::getCombinedFile(['f' => $id, 'type' => $type], \false);
-        }
+        $cacheObj = new CacheObject();
 
         try {
-            $results = $this->combineFiles($fileMatches, $type);
-        } catch (\Exception $e) {
-            $this->logger->error('Error appending files: '.$e->getMessage());
-            $results = ['content' => '', 'font-face' => [], 'gfonts' => [], 'images' => []];
-        }
-        $contents .= $this->prepareContents($results['content']);
-        $contents .= "\n".'jchOptimizeDynamicScriptLoader.next()';
+            if ($fileInfos->hasUri()) {
+                $content = $this->getFileContents($fileInfos);
+            } else {
+                $content = $fileInfos->getContent();
+            }
 
-        return ['filemtime' => \time(), 'etag' => \md5($contents), 'contents' => $contents, 'font-face' => $results['font-face'], 'preconnects' => $results['preconnects'], 'images' => $results['images']];
+            if (!$fileInfos->isAlreadyProcessed()) {
+                $content = $this->removeHtmlComments($content, $fileInfos);
+
+                if ($fileInfos->getType() == 'css') {
+                    $cacheObj->merge($this->processCssInfos($content, $fileInfos));
+                    $content = $cacheObj->getContents();
+                }
+
+                if ($fileInfos->getType() == 'js') {
+                    $content = $this->addSemiColon($content);
+                    $content = $this->addTryCatch($content, $fileInfos);
+                }
+            }
+
+            $content = $this->minifyContent($content, $fileInfos);
+            $content = $this->addCommentedUrl($fileInfos) . $content;
+        } catch (FileNotFoundException $e) {
+            $content = $e->getMessage();
+        }
+
+        $cacheObj->setContents($content);
+
+        return $cacheObj;
     }
 
-    protected function addCommentedUrl(string $type, array $fileInfos): string
+    public function getFileContents(FileInfo $fileInfo): string
     {
-        $comment = '';
-        if ($this->params->get('debug', '1')) {
-            $fileInfos = $fileInfos['url'] ?? ('js' == $type ? 'script' : 'style').' declaration';
-            $comment = '|"JCHOPTIMIZE_COMMENT_START '.$fileInfos.' JCHOPTIMIZE_COMMENT_END"|';
-        }
+        $uri = UriResolver::resolve(SystemUri::currentUri(), $fileInfo->getUri());
+        $cdn = $this->getContainer()->get(Cdn::class);
+        $paths = $this->getContainer()->get(PathsInterface::class);
 
-        return $comment;
-    }
+        if (UriComparator::existsLocally($uri, $cdn, $paths)) {
+            $pathsUtils = $this->getContainer()->get(PathsInterface::class);
+            $filePath = UriConverter::uriToFilePath($uri, $pathsUtils, $cdn);
 
-    private function getFileContents(UriInterface $uri): string
-    {
-        $uri = UriResolver::resolve(\JchOptimize\Core\SystemUri::currentUri(), $uri);
-        if (!UriComparator::isCrossOrigin($uri)) {
-            $filePath = UriConverter::uriToFilePath($uri);
-            if (\file_exists($filePath) && \JchOptimize\Core\Helper::isStaticFile($filePath)) {
+            if (file_exists($filePath) && Helper::isStaticFile($filePath)) {
                 try {
-                    $stream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
-                    if (!$stream->isReadable()) {
-                        throw new \Exception('Stream unreadable');
-                    }
-                    if ($stream->isSeekable()) {
-                        $stream->rewind();
-                    }
-
-                    return $stream->getContents();
-                } catch (\Exception $e) {
-                    $this->logger->warning('Couldn\'t open file: '.$uri.'; error: '.$e->getMessage());
+                    return $this->readStreamFromDisk($filePath);
+                } catch (RuntimeException $e) {
+                    $this->logger?->debug('Couldn\'t open file: ' . $uri . '; error: ' . $e->getMessage());
                 }
             }
         }
 
         try {
-            $options = [RequestOptions::HEADERS => ['Accept-Enconding' => 'identity;q=0']];
-            $response = $this->http->get($uri, $options);
-            if (200 === $response->getStatusCode()) {
-                // Get body and set pointer to beginning of stream
-                $body = $response->getBody();
-                $body->rewind();
-
-                return $body->getContents();
-            }
-
-            return '|"JCHOPTIMIZE_COMMENT_START Response returned status code: '.$response->getStatusCode().' JCHOPTIMIZE_COMMENT_END"|';
-        } catch (GuzzleException $e) {
-            return '|"JCHOPTIMIZE_COMMENT_START Exception fetching file with message: '.$e->getMessage().' JCHOPTIMIZE_COMMENT_END"|';
+            return $this->getResponseFromHttpRequest($uri, $fileInfo);
+        } catch (GuzzleException | FileNotFoundException $e) {
+            throw new FileNotFoundException(
+                $this->wrapInComments($fileInfo->display()) .  $e->getMessage()
+            );
         }
     }
 
     /**
-     * Add try catch to contents of javascript file.
+     * @throws RuntimeException
      */
-    private function addErrorHandler(string $content, array $fileInfos): string
+    private function readStreamFromDisk(string $filePath): string
     {
-        if (empty($fileInfos['module']) || 'module' != $fileInfos['module']) {
-            $content = 'try {'."\n".$content."\n".'} catch (e) {'."\n";
-            $content .= 'console.error(\'Error in ';
-            $content .= isset($fileInfos['url']) ? 'file:'.$fileInfos['url'] : 'script declaration';
-            $content .= '; Error:\' + e.message);'."\n".'};';
+        $stream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
+
+        if (!$stream->isReadable()) {
+            throw new RuntimeException('Stream unreadable');
         }
 
-        return $content;
+        if ($stream->isSeekable()) {
+            $stream->rewind();
+        }
+
+        return $stream->getContents();
     }
 
     /**
-     * Add semicolon to end of js files if non exists;.
+     * @throws GuzzleException|FileNotFoundException
      */
+    private function getResponseFromHttpRequest(UriInterface $uri, FileInfo $fileInfo): string
+    {
+        $options = [
+            RequestOptions::HEADERS => [
+                'Accept-Encoding' => 'identity;q=0'
+            ]
+        ];
+
+        $response = $this->getHttp()->get($uri, $options);
+        $contentType = $response->getHeader('Content-Type')[0];
+        $expectedContentType = $this->getExpectedContentTypeRegex($fileInfo);
+
+        if (!preg_match("#$expectedContentType#i", $contentType)) {
+            throw new FileNotFoundException("/* Wrong Content-Type returned: $contentType */");
+        }
+
+        if ($response->getStatusCode() === 200) {
+            $body = $response->getBody();
+            $body->rewind();
+
+            return $body->getContents();
+        } else {
+            throw new FileNotFoundException("/* Response returned status code: {$response->getStatusCode()} */");
+        }
+    }
+
+    /**
+     * @return Client&ClientInterface
+     * @throw PropertyNotFoundException
+     */
+    public function getHttp()
+    {
+        if ($this->http === null) {
+            throw new PropertyNotFoundException('Http Client not set');
+        }
+
+        return $this->http;
+    }
+
+    private function getExpectedContentTypeRegex(FileInfo $fileInfo): string
+    {
+        if ($fileInfo->getType() == 'js') {
+            return '(?:text|application)/(?:x-)??(?:java|ecma|live|j)script';
+        } else {
+            return 'text/css';
+        }
+    }
+
+    private function wrapInComments(string $message): string
+    {
+        $commentStart = '/***!';
+        $commentEnd = '!***/';
+        $message = str_replace([$commentStart, $commentEnd], '', $message);
+
+        return PHP_EOL . "$commentStart  $message  $commentEnd" . PHP_EOL . PHP_EOL;
+    }
+
+    private function removeHtmlComments(string $content, FileInfo $fileInfos): string
+    {
+        return Html::cleanScript($content, $fileInfos->getType());
+    }
+
+    private function processCssInfos(string $content, FileInfo $fileInfos): CacheObject
+    {
+        /** @var CssProcessor $oCssProcessor */
+        $oCssProcessor = $this->getContainer()->getNewInstance(CssProcessor::class);
+        $oCssProcessor->setCssInfos($fileInfos);
+        $oCssProcessor->setCss($content);
+        $oCssProcessor->setIsLastKey($this->isLastKey);
+        $oCssProcessor->formatCss();
+        $oCssProcessor->processAtRules();
+        $oCssProcessor->processConditionalAtRules();
+        $oCssProcessor->optimizeCssDelivery();
+        $oCssProcessor->processUrls();
+        $oCssProcessor->processSprite();
+
+        return $oCssProcessor->getCacheObj();
+    }
+
+    public function setIsLastKey(bool $isLastKey): Combiner
+    {
+        $this->isLastKey = $isLastKey;
+
+        return $this;
+    }
+
     private function addSemiColon(string $content): string
     {
-        $content = \rtrim($content);
-        if (';' != \substr($content, -1) && !\preg_match('#\\|"JCHOPTIMIZE_COMMENT_START File[^"]+not found JCHOPTIMIZE_COMMENT_END"\\|#', $content)) {
-            $content = $content.';';
+        $content = trim($content);
+
+        if ($content !== '' && !str_ends_with($content, ';')) {
+            $content .= ';';
         }
 
         return $content;
     }
 
-    /**
-     * Minify contents of fil.
-     *
-     * @return string $sMinifiedContent Minified content or original content if failed
-     */
-    private function minifyContent(string $content, string $type, array $fileInfos): string
+    private function addTryCatch(string $content, FileInfo $fileInfo): string
     {
-        if ($this->params->get($type.'_minify', 0)) {
-            $url = $this->prepareFileUrl($fileInfos, $type);
+        if (
+            $this->params->get('combine_files', '0')
+            && $this->params->get('try_catch', '1')
+        ) {
+            $content = <<<JS
+try{
+$content
+} catch (e) {
+console.error('Error in {$fileInfo->display()}; Error: ' + e.message);
+}
+JS;
+        }
+
+        return $content;
+    }
+
+    private function minifyContent(string $content, FileInfo $fileInfo): string
+    {
+        if ($this->params->get($fileInfo->getType() . '_minify', 0)) {
+            $url = $fileInfo->display();
 
             try {
-                $minifiedContent = \trim('css' == $type ? Css::optimize($content) : Js::optimize($content));
-            } catch (\Exception $e) {
-                $this->logger->error(\sprintf('Error occurred trying to minify: %s', $url));
+                $minifiedContent = trim(
+                    $fileInfo->getType() == 'css' ? Css::optimize($content) : Js::optimize($content)
+                );
+            } catch (Exception $e) {
+                $this->logger?->error(sprintf('Error occurred trying to minify: %s', $url));
                 $minifiedContent = $content;
             }
-            $this->_debug($url, '', 'minifyContent');
 
             return $minifiedContent;
         }
 
         return $content;
+    }
+
+    public function addCommentedUrl(FileInfo $fileInfos): string
+    {
+        $comment = '';
+
+        if ($this->params->get('debug', '1')) {
+            $comment = $this->wrapInComments($fileInfos->display());
+        }
+
+        return $comment;
+    }
+
+    private function addCharset(CacheObject $resultObj): void
+    {
+        if (
+            (function_exists('mb_detect_encoding')
+                && mb_detect_encoding($resultObj->getContents(), 'UTF-8', true) === 'UTF-8')
+            || (!function_exists('mb_detect_encoding')
+            && StringUtils::hasPcreUnicodeSupport()
+                && StringUtils::isValidUtf8($resultObj->getContents()))
+        ) {
+            $resultObj->prependContents('@charset "UTF-8";');
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getJsContents(array $fileInfosArray): CacheObject
+    {
+        return $this->getContents($fileInfosArray, 'js');
+    }
+
+    /**
+     * Used when you want to append the contents of files to some that are already combined, into one file
+     */
+    public function appendFiles(array $ids, array $fileInfosArray, string $type): CacheObject
+    {
+        $resultObj = new CacheObject();
+
+        foreach ($ids as $id) {
+            $resultObj->appendContents(Output::getCombinedFile([
+                'f' => $id,
+                'type' => $type
+            ], false));
+        }
+
+        try {
+            $resultObj->merge($this->combineFiles($fileInfosArray));
+        } catch (Exception $e) {
+            $this->logger?->error('Error appending files: ' . $e->getMessage());
+
+            $resultObj = new CacheObject();
+        }
+
+        $resultObj->appendContents("\n" . 'jchOptimizeDynamicScriptLoader.next();');
+        $resultObj->prepareForCaching();
+
+        return $resultObj;
     }
 }

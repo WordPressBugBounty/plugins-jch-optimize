@@ -1,10 +1,12 @@
 <?php
 
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Plugin;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Plugin;
 
-use _JchOptimizeVendor\Laminas\Cache\Storage\ExceptionEvent;
-use _JchOptimizeVendor\Laminas\EventManager\EventManagerInterface;
+use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ExceptionEvent;
+use _JchOptimizeVendor\V91\Laminas\EventManager\EventManagerInterface;
+
 use function call_user_func;
+
 class ExceptionHandler extends AbstractPlugin
 {
     /**

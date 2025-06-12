@@ -1,8 +1,9 @@
 <?php
 
-namespace _JchOptimizeVendor\GuzzleHttp;
+namespace _JchOptimizeVendor\V91\GuzzleHttp;
 
-use _JchOptimizeVendor\Psr\Http\Message\MessageInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Message\MessageInterface;
+
 final class BodySummarizer implements BodySummarizerInterface
 {
     /**
@@ -16,8 +17,8 @@ final class BodySummarizer implements BodySummarizerInterface
     /**
      * Returns a summarized message body.
      */
-    public function summarize(MessageInterface $message) : ?string
+    public function summarize(MessageInterface $message): ?string
     {
-        return $this->truncateAt === null ? \_JchOptimizeVendor\GuzzleHttp\Psr7\Message::bodySummary($message) : \_JchOptimizeVendor\GuzzleHttp\Psr7\Message::bodySummary($message, $this->truncateAt);
+        return $this->truncateAt === null ? \_JchOptimizeVendor\V91\GuzzleHttp\Psr7\Message::bodySummary($message) : \_JchOptimizeVendor\V91\GuzzleHttp\Psr7\Message::bodySummary($message, $this->truncateAt);
     }
 }

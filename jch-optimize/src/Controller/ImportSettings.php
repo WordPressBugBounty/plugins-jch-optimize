@@ -11,14 +11,14 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Controller;
+namespace JchOptimize\WordPress\Controller;
 
+use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\UploadedFile;
+use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use Exception;
-use JchOptimize\Core\Input;
 use JchOptimize\Core\Mvc\Controller;
-use JchOptimize\Core\Uri\UploadedFile;
-use JchOptimize\Log\WordpressNoticeLogger;
-use JchOptimize\Model\BulkSettings;
+use JchOptimize\WordPress\Log\WordpressNoticeLogger;
+use JchOptimize\WordPress\Model\BulkSettings;
 
 use function __;
 use function check_admin_referer;
@@ -36,12 +36,8 @@ use const UPLOAD_ERR_PARTIAL;
 
 class ImportSettings extends Controller
 {
-    private BulkSettings $bulkSettings;
-
-    public function __construct(BulkSettings $bulkSettings, ?Input $input)
+    public function __construct(private BulkSettings $bulkSettings, ?Input $input)
     {
-        $this->bulkSettings = $bulkSettings;
-
         parent::__construct($input);
     }
 

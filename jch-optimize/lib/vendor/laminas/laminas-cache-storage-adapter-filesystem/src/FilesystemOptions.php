@@ -1,10 +1,12 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Cache\Storage\Adapter;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Cache\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter;
+
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception;
 use Traversable;
+
 use function is_dir;
 use function is_readable;
 use function is_string;
@@ -15,8 +17,10 @@ use function rtrim;
 use function stripos;
 use function strlen;
 use function sys_get_temp_dir;
+
 use const DIRECTORY_SEPARATOR;
 use const PHP_OS;
+
 final class FilesystemOptions extends AdapterOptions
 {
     public const KEY_PATTERN = '/^[a-z0-9_\\+\\-]*$/Di';
@@ -114,7 +118,7 @@ final class FilesystemOptions extends AdapterOptions
     /**
      * @throws Exception\InvalidArgumentException
      */
-    public function setCacheDir(?string $cacheDir) : self
+    public function setCacheDir(?string $cacheDir): self
     {
         $cacheDir = $cacheDir ?? sys_get_temp_dir();
         $cacheDir = $this->normalizeCacheDirectory($cacheDir);
@@ -125,11 +129,11 @@ final class FilesystemOptions extends AdapterOptions
         $this->cacheDir = $cacheDir;
         return $this;
     }
-    public function getCacheDir() : string
+    public function getCacheDir(): string
     {
         return $this->cacheDir;
     }
-    public function setClearStatCache(bool $clearStatCache) : self
+    public function setClearStatCache(bool $clearStatCache): self
     {
         if ($this->clearStatCache === $clearStatCache) {
             return $this;
@@ -138,14 +142,14 @@ final class FilesystemOptions extends AdapterOptions
         $this->clearStatCache = $clearStatCache;
         return $this;
     }
-    public function getClearStatCache() : bool
+    public function getClearStatCache(): bool
     {
         return $this->clearStatCache;
     }
     /**
      * @throws Exception\InvalidArgumentException
      */
-    public function setDirLevel(int $dirLevel) : self
+    public function setDirLevel(int $dirLevel): self
     {
         if ($dirLevel < 0 || $dirLevel > 16) {
             throw new Exception\InvalidArgumentException("Directory level '{$dirLevel}' must be between 0 and 16");
@@ -157,7 +161,7 @@ final class FilesystemOptions extends AdapterOptions
         $this->dirLevel = $dirLevel;
         return $this;
     }
-    public function getDirLevel() : int
+    public function getDirLevel(): int
     {
         return $this->dirLevel;
     }
@@ -170,7 +174,7 @@ final class FilesystemOptions extends AdapterOptions
      *
      * @param false|string|int $dirPermission FALSE to disable explicit permission or an octal number
      */
-    public function setDirPermission($dirPermission) : self
+    public function setDirPermission($dirPermission): self
     {
         if ($dirPermission !== \false) {
             if (is_string($dirPermission)) {
@@ -199,13 +203,13 @@ final class FilesystemOptions extends AdapterOptions
     {
         return $this->dirPermission;
     }
-    public function setFileLocking(bool $fileLocking) : self
+    public function setFileLocking(bool $fileLocking): self
     {
         $this->triggerOptionEvent('file_locking', $fileLocking);
         $this->fileLocking = $fileLocking;
         return $this;
     }
-    public function getFileLocking() : bool
+    public function getFileLocking(): bool
     {
         return $this->fileLocking;
     }
@@ -218,7 +222,7 @@ final class FilesystemOptions extends AdapterOptions
      *
      * @param false|string|int $filePermission FALSE to disable explicit permission or an octal number
      */
-    public function setFilePermission($filePermission) : self
+    public function setFilePermission($filePermission): self
     {
         if ($filePermission !== \false) {
             if (is_string($filePermission)) {
@@ -252,7 +256,7 @@ final class FilesystemOptions extends AdapterOptions
     /**
      * @param string $namespace
      */
-    public function setNamespace($namespace) : self
+    public function setNamespace($namespace): self
     {
         if (strlen($namespace) >= 250) {
             throw new Exception\InvalidArgumentException('Provided namespace is too long.');
@@ -260,17 +264,17 @@ final class FilesystemOptions extends AdapterOptions
         parent::setNamespace($namespace);
         return $this;
     }
-    public function setNamespaceSeparator(string $namespaceSeparator) : self
+    public function setNamespaceSeparator(string $namespaceSeparator): self
     {
         $this->triggerOptionEvent('namespace_separator', $namespaceSeparator);
         $this->namespaceSeparator = $namespaceSeparator;
         return $this;
     }
-    public function getNamespaceSeparator() : string
+    public function getNamespaceSeparator(): string
     {
         return $this->namespaceSeparator;
     }
-    public function setNoAtime(bool $noAtime) : self
+    public function setNoAtime(bool $noAtime): self
     {
         if ($this->noAtime === $noAtime) {
             return $this;
@@ -279,11 +283,11 @@ final class FilesystemOptions extends AdapterOptions
         $this->noAtime = $noAtime;
         return $this;
     }
-    public function getNoAtime() : bool
+    public function getNoAtime(): bool
     {
         return $this->noAtime;
     }
-    public function setNoCtime(bool $noCtime) : self
+    public function setNoCtime(bool $noCtime): self
     {
         if ($this->noCtime === $noCtime) {
             return $this;
@@ -292,7 +296,7 @@ final class FilesystemOptions extends AdapterOptions
         $this->noCtime = $noCtime;
         return $this;
     }
-    public function getNoCtime() : bool
+    public function getNoCtime(): bool
     {
         return $this->noCtime;
     }
@@ -308,7 +312,7 @@ final class FilesystemOptions extends AdapterOptions
      *
      * @param false|string|int $umask false to disable umask or an octal number
      */
-    public function setUmask($umask) : self
+    public function setUmask($umask): self
     {
         if ($umask !== \false) {
             if (is_string($umask)) {
@@ -342,14 +346,14 @@ final class FilesystemOptions extends AdapterOptions
     /**
      * Get the suffix for cache files
      */
-    public function getSuffix() : string
+    public function getSuffix(): string
     {
         return $this->suffix;
     }
     /**
      * Set the suffix for cache files
      */
-    public function setSuffix(string $suffix) : self
+    public function setSuffix(string $suffix): self
     {
         $this->suffix = $suffix;
         return $this;
@@ -357,14 +361,14 @@ final class FilesystemOptions extends AdapterOptions
     /**
      * Get the suffix for tag files
      */
-    public function getTagSuffix() : string
+    public function getTagSuffix(): string
     {
         return $this->tagSuffix;
     }
     /**
      * Set the suffix for cache files
      */
-    public function setTagSuffix(string $tagSuffix) : self
+    public function setTagSuffix(string $tagSuffix): self
     {
         $this->tagSuffix = $tagSuffix;
         return $this;
@@ -372,7 +376,7 @@ final class FilesystemOptions extends AdapterOptions
     /**
      * @throws Exception\InvalidArgumentException
      */
-    private function normalizeCacheDirectory(string $cacheDir) : string
+    private function normalizeCacheDirectory(string $cacheDir): string
     {
         if (!is_dir($cacheDir)) {
             throw new Exception\InvalidArgumentException("Cache directory '{$cacheDir}' not found or not a directory");

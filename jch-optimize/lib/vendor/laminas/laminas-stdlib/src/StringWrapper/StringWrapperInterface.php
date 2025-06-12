@@ -1,9 +1,11 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\StringWrapper;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper;
 
 use const STR_PAD_RIGHT;
+
 interface StringWrapperInterface
 {
     /**

@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'JchOptimize\\' => array($baseDir . '/src'),
+    'JchOptimize\\WordPress\\' => array($baseDir . '/src'),
 );

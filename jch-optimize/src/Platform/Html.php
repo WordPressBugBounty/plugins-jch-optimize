@@ -10,13 +10,19 @@
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-namespace JchOptimize\Platform;
+namespace JchOptimize\WordPress\Platform;
 
 defined('_WP_EXEC') or die('Restricted access');
 
-use JchOptimize\Core\Admin\AbstractHtml;
+use _JchOptimizeVendor\V91\GuzzleHttp\Exception\GuzzleException;
+use _JchOptimizeVendor\V91\GuzzleHttp\RequestOptions;
+use _JchOptimizeVendor\V91\Psr\Http\Client\ClientInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use JchOptimize\Core\Exception;
-use JchOptimize\Core\Uri\RequestOptions;
+use JchOptimize\Core\Platform\HtmlInterface;
+use JchOptimize\Core\Platform\ProfilerInterface;
+use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Uri\Uri;
 use JchOptimize\Core\Uri\UriComparator;
 use JchOptimize\Core\Uri\Utils;
@@ -33,11 +39,23 @@ use function rtrim;
 use function wp_get_nav_menu_items;
 use function wp_get_nav_menus;
 
-class Html extends AbstractHtml
+class Html implements HtmlInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    public function __construct(
+        private ClientInterface $http,
+        private ProfilerInterface $profiler,
+        private UtilityInterface $utility
+    ) {
+    }
+
+    /**
+     * @throws GuzzleException
+     */
     public function getHomePageHtml(): string
     {
-        JCH_DEBUG ? Profiler::mark('beforeGetHtml') : null;
+        JCH_DEBUG ? $this->profiler->mark('beforeGetHtml') : null;
 
         $url = home_url() . '/?jchbackend=1';
 
@@ -48,13 +66,14 @@ class Html extends AbstractHtml
 
             if ($response->getStatusCode() != 200) {
                 throw new Exception\RuntimeException(
-                    Utility::translate(
-                        'Failed fetching front end HTML with response code ' . $response->getStatusCode()
+                    __(
+                        'Failed fetching front end HTML with response code ' . $response->getStatusCode(),
+                        'jch-optimize'
                     )
                 );
             }
 
-            JCH_DEBUG ? Profiler::mark('afterGetHtml') : null;
+            JCH_DEBUG ? $this->profiler->mark('afterGetHtml') : null;
 
 
             $body = $response->getBody();
@@ -63,14 +82,15 @@ class Html extends AbstractHtml
 
             return $body->getContents();
         } catch (\Exception $e) {
-            $this->logger->error($url . ': ' . $e->getMessage());
+            $this->logger?->error($url . ': ' . $e->getMessage());
 
-            JCH_DEBUG ? Profiler::mark('afterGetHtml)') : null;
+            JCH_DEBUG ? $this->profiler->mark('afterGetHtml)') : null;
 
             throw new Exception\RuntimeException(
                 __(
                     'Load or refresh the front-end site first then refresh this page '
-                        . 'to populate the multi select exclude lists.'
+                        . 'to populate the multi select exclude lists.',
+                    'jch-optimize'
                 )
             );
         }
@@ -97,7 +117,7 @@ class Html extends AbstractHtml
                     $aHtmls[] = $this->getHtml($menuUrl);
                 }
             } catch (Exception\ExceptionInterface $e) {
-                $this->logger->error($e);
+                $this->logger?->error((string)$e);
             }
 
             if (microtime(true) > $iTimer + 10.0) {
@@ -158,6 +178,7 @@ class Html extends AbstractHtml
 
     /**
      * @throws Exception\RuntimeException
+     * @throws GuzzleException
      */
     protected function getHtml(string $url): string
     {

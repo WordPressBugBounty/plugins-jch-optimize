@@ -9,10 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace _JchOptimizeVendor\Composer;
+namespace _JchOptimizeVendor\V91\Composer;
 
-use _JchOptimizeVendor\Composer\Autoload\ClassLoader;
-use _JchOptimizeVendor\Composer\Semver\VersionParser;
+use _JchOptimizeVendor\V91\Composer\Autoload\ClassLoader;
+use _JchOptimizeVendor\V91\Composer\Semver\VersionParser;
+
 /**
  * This class is copied in every Composer installed project and available to all
  *
@@ -264,7 +265,7 @@ class InstalledVersions
     private static function getInstalled()
     {
         if (null === self::$canGetVendors) {
-            self::$canGetVendors = \method_exists('_JchOptimizeVendor\\Composer\\Autoload\\ClassLoader', 'getRegisteredLoaders');
+            self::$canGetVendors = \method_exists('_JchOptimizeVendor\\V91\\Composer\\Autoload\\ClassLoader', 'getRegisteredLoaders');
         }
         $installed = array();
         if (self::$canGetVendors) {

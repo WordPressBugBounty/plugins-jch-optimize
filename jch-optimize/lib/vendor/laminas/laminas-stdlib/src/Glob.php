@@ -1,8 +1,9 @@
 <?php
 
 // phpcs:disable WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix,Generic.NamingConventions.ConstructorName.OldStyle
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib;
+declare(strict_types=1);
+
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib;
 
 use function array_merge;
 use function array_unique;
@@ -11,6 +12,7 @@ use function glob;
 use function strlen;
 use function strpos;
 use function substr;
+
 use const GLOB_BRACE;
 use const GLOB_ERR;
 use const GLOB_MARK;
@@ -18,6 +20,7 @@ use const GLOB_NOCHECK;
 use const GLOB_NOESCAPE;
 use const GLOB_NOSORT;
 use const GLOB_ONLYDIR;
+
 /**
  * Wrapper for glob with fallback if GLOB_BRACE is not available.
  */
@@ -173,7 +176,7 @@ abstract class Glob
         return $current < $length ? $current : null;
     }
     /** @internal */
-    public static function flagsIsEqualTo(int $flags, int $otherFlags) : bool
+    public static function flagsIsEqualTo(int $flags, int $otherFlags): bool
     {
         return (bool) ($flags & $otherFlags);
     }

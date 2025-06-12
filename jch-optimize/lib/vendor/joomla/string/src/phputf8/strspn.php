@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * @package utf8
@@ -15,14 +15,14 @@ namespace _JchOptimizeVendor;
 * @see http://www.php.net/strspn
 * @package utf8
 */
-function utf8_strspn($str, $mask, $start = NULL, $length = NULL)
+function utf8_strspn($str, $mask, $start = null, $length = null)
 {
     $mask = \preg_replace('!([\\\\\\-\\]\\[/^])!', '\\\\${1}', $mask);
     // Fix for $start but no $length argument.
     if ($start !== null && $length === null) {
         $length = utf8_strlen($str);
     }
-    if ($start !== NULL || $length !== NULL) {
+    if ($start !== null || $length !== null) {
         $str = utf8_substr($str, $start, $length);
     }
     \preg_match('/^[' . $mask . ']+/u', $str, $matches);

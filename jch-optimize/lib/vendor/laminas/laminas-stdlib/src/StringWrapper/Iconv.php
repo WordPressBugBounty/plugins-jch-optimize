@@ -1,15 +1,18 @@
 <?php
 
-declare (strict_types=1);
-namespace _JchOptimizeVendor\Laminas\Stdlib\StringWrapper;
+declare(strict_types=1);
 
-use _JchOptimizeVendor\Laminas\Stdlib\Exception;
+namespace _JchOptimizeVendor\V91\Laminas\Stdlib\StringWrapper;
+
+use _JchOptimizeVendor\V91\Laminas\Stdlib\Exception;
+
 use function assert;
 use function extension_loaded;
 use function iconv;
 use function iconv_strlen;
 use function iconv_strpos;
 use function iconv_substr;
+
 class Iconv extends AbstractStringWrapper
 {
     /**
@@ -137,7 +140,7 @@ class Iconv extends AbstractStringWrapper
                 // Full Unicode, in terms of uint16_t or uint32_t (with machine dependent endianness and alignment)
                 'UCS-2-INTERNAL',
                 'UCS-4-INTERNAL',
-        
+
                 // Locale dependent, in terms of `char' or `wchar_t' (with machine dependent endianness and alignment,
                 // and with OS and locale dependent semantics)
                 'char',

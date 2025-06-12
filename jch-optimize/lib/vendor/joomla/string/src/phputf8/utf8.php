@@ -1,6 +1,6 @@
 <?php
 
-namespace _JchOptimizeVendor;
+namespace _JchOptimizeVendor\V91;
 
 /**
 * This is the dynamic loader for the library. It checks whether you have
@@ -22,6 +22,7 @@ namespace _JchOptimizeVendor;
 * six functions being available
 * @package utf8
 */
+
 /**
 * Put the current directory in this constant
 */
