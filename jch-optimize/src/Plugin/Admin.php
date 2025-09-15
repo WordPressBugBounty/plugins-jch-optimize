@@ -149,11 +149,9 @@ HTML;
         wp_enqueue_script('jch-platformwordpress-js');
         wp_enqueue_script('jch-bootstrap-js');
         wp_enqueue_script('jch-adminutility-js');
-        wp_enqueue_script('jch-multiselect-js');
 
         wp_enqueue_script('jch-chosen-js');
         wp_enqueue_script('jch-collapsible-js');
-
     }
 
     public function addScriptsToHead(): void
@@ -186,8 +184,6 @@ HTML;
                 ],
                 admin_url('options-general.php')
             );
-
-
         }
     }
 
@@ -205,8 +201,18 @@ HTML;
         wp_register_style('jch-fonts-css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
         wp_register_style('jch-chosen-css', JCH_PLUGIN_URL . 'media/chosen-js/chosen.css', [], JCH_VERSION);
         wp_register_style('jch-wordpress-css', JCH_PLUGIN_URL . 'media/css/wordpress.css', [], JCH_VERSION);
-        wp_register_style('jch-dashicons-wordpress', JCH_PLUGIN_URL . 'media/css/dashicons-wordpress.css', [], JCH_VERSION);
-        wp_register_style('jch-dashicons-css', JCH_PLUGIN_URL . 'media/core/css/dashicons.css', ['jch-dashicons-wordpress'], JCH_VERSION);
+        wp_register_style(
+            'jch-dashicons-wordpress',
+            JCH_PLUGIN_URL . 'media/css/dashicons-wordpress.css',
+            [],
+            JCH_VERSION
+        );
+        wp_register_style(
+            'jch-dashicons-css',
+            JCH_PLUGIN_URL . 'media/core/css/dashicons.css',
+            ['jch-dashicons-wordpress'],
+            JCH_VERSION
+        );
 
 
         //JavaScript files
@@ -231,11 +237,6 @@ HTML;
             JCH_VERSION,
             true
         );
-        wp_register_script('jch-multiselect-js', JCH_PLUGIN_URL . 'media/core/js/multiselect.js', [
-            'jquery',
-            'jch-adminutility-js',
-            'jch-platformwordpress-js'
-        ], JCH_VERSION, true);
         wp_register_script(
             'jch-chosen-js',
             JCH_PLUGIN_URL . 'media/chosen-js/chosen.jquery.js',
@@ -323,12 +324,12 @@ JS;
     private function getSettingsClassMap(): array
     {
         return [
-            'memcached_server_host'    => 'jch-memcached-wrapper d-none',
-            'memcached_server_port'    => 'jch-memcached-wrapper d-none',
-            'redis_server_host'        => 'jch-redis-wrapper d-none',
-            'redis_server_port'        => 'jch-redis-wrapper d-none',
-            'redis_server_password'    => 'jch-redis-wrapper d-none',
-            'redis_server_database'    => 'jch-redis-wrapper d-none',
+            'memcached_server_host' => 'jch-memcached-wrapper d-none',
+            'memcached_server_port' => 'jch-memcached-wrapper d-none',
+            'redis_server_host'     => 'jch-redis-wrapper d-none',
+            'redis_server_port'     => 'jch-redis-wrapper d-none',
+            'redis_server_password' => 'jch-redis-wrapper d-none',
+            'redis_server_database' => 'jch-redis-wrapper d-none',
         ];
     }
 
@@ -404,15 +405,15 @@ JS;
 
         if ($pluginFile == $this_plugin) {
             $settingsLink = '<a href="' . admin_url('options-general.php?page=jch_optimize') . '">' . __(
-                'Settings'
-            ) . '</a>';
+                    'Settings'
+                ) . '</a>';
             array_unshift($actionLinks, $settingsLink);
         }
 
         return $actionLinks;
     }
 
-    #[NoReturn] public function doAjaxFileTree(): void
+    public function doAjaxFileTree(): void
     {
         check_admin_referer('jch_optimize_filetree');
 
@@ -423,7 +424,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxMultiSelect(): void
+    public function doAjaxMultiSelect(): void
     {
         check_admin_referer('jch_optimize_multiselect');
 
@@ -434,7 +435,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxOptimizeImages(): void
+    public function doAjaxOptimizeImages(): void
     {
         check_admin_referer('jch_optimize_image');
 
@@ -445,7 +446,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxConfigureSettings(): void
+    public function doAjaxConfigureSettings(): void
     {
         if (current_user_can('manage_options')) {
             $container = ContainerFactory::getInstance();
@@ -455,7 +456,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxOnClickIcon(): void
+    public function doAjaxOnClickIcon(): void
     {
         if (current_user_can('manage_options')) {
             $container = ContainerFactory::getInstance();
@@ -466,7 +467,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxSmartCombine(): void
+    public function doAjaxSmartCombine(): void
     {
         if (current_user_can('manage_options')) {
             echo Ajax::getInstance('SmartCombine')->run();
@@ -475,7 +476,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxGetCacheInfo(): void
+    public function doAjaxGetCacheInfo(): void
     {
         $container = ContainerFactory::getInstance();
         $container->get(Input::class)->def('task', 'getcacheinfo');
@@ -484,7 +485,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxJchConfigureJsTableBody(): void
+    public function doAjaxJchConfigureJsTableBody(): void
     {
         $container = ContainerFactory::getInstance();
         $container->get(Input::class)->def('task', 'criticaljstablebody');
@@ -493,7 +494,7 @@ JS;
         die();
     }
 
-    #[NoReturn] public function doAjaxJchConfigureJsAutoSave(): void
+    public function doAjaxJchConfigureJsAutoSave(): void
     {
         $container = ContainerFactory::getInstance();
         $container->get(Input::class)->def('task', 'criticaljsautosave');

@@ -34,7 +34,7 @@ trait ProcessableHandlerTrait
      */
     public function pushProcessor(callable $callback): HandlerInterface
     {
-        \array_unshift($this->processors, $callback);
+        array_unshift($this->processors, $callback);
         return $this;
     }
     /**
@@ -45,7 +45,7 @@ trait ProcessableHandlerTrait
         if (!$this->processors) {
             throw new \LogicException('You tried to pop from an empty processor stack.');
         }
-        return \array_shift($this->processors);
+        return array_shift($this->processors);
     }
     /**
      * Processes a record.

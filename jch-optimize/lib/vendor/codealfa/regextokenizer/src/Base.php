@@ -118,9 +118,9 @@ trait Base
     {
         $searchArray = ['<<<', '>>>', '<<', '>>'];
         if ($shouldCaptureValue) {
-            return \str_replace($searchArray, ['(?|', ')', '(', ')'], $regex);
+            return str_replace($searchArray, ['(?|', ')', '(', ')'], $regex);
         } else {
-            return \str_replace($searchArray, ['(?:', ')', '', ''], $regex);
+            return str_replace($searchArray, ['(?:', ')', '', ''], $regex);
         }
     }
     /**
@@ -141,7 +141,7 @@ trait Base
     //language=RegExp
     public static function blockCommentToken(): string
     {
-        return '/\\*(?>[^*]++|\\*)*?\\*/';
+        return '/\*(?>[^*]++|\*)*?\*/';
     }
     /**
      * Regex token for line comment
@@ -150,7 +150,7 @@ trait Base
      */
     public static function lineCommentToken(): string
     {
-        return '//[^\\r\\n]*+';
+        return '//[^\r\n]*+';
     }
     /**
      * Will throw an exception when a PHP preg error is encountered.
@@ -160,10 +160,10 @@ trait Base
      */
     protected static function throwExceptionOnPregError(): void
     {
-        $error = \array_flip(\array_filter(\get_defined_constants(\true)['pcre'], function (string $value) {
-            return \str_ends_with($value, '_ERROR');
-        }, \ARRAY_FILTER_USE_KEY))[\preg_last_error()];
-        if (\preg_last_error() != \PREG_NO_ERROR) {
+        $error = array_flip(array_filter(get_defined_constants(\true)['pcre'], function (string $value) {
+            return str_ends_with($value, '_ERROR');
+        }, \ARRAY_FILTER_USE_KEY))[preg_last_error()];
+        if (preg_last_error() != \PREG_NO_ERROR) {
             throw new Exception($error);
         }
     }

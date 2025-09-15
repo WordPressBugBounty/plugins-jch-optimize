@@ -39,7 +39,9 @@ class Html extends \CodeAlfa\Minify\Base
         $l = self::lineCommentToken();
         $c = self::htmlCommentToken();
         if ($type == 'css') {
-            return \preg_replace("#(?>[<\\]\\-]?[^'\"<\\]\\-/]*+(?>{$s1}|{$s2}|{$b}|{$l}|/)?)*?\\K(?:{$c}|\$)#i", '', $content);
+            // @lang RegExp
+            $regex = "(?>[^'\"</]++|{$s1}|{$s2}|{$b}|{$l}|['\"</])*?\\K(?:{$c}|\$)";
+            return preg_replace("#{$regex}#i", '', $content) ?? $content;
         } else {
             return \CodeAlfa\Minify\Js::optimize($content, array('prepareOnly' => \true));
         }
@@ -72,7 +74,7 @@ class Html extends \CodeAlfa\Minify\Base
         $this->html = $html;
         $paramOptions = ['isXhtml' => \false, 'isHtml5' => \false, 'minifyLevel' => 0, 'cssMinifier' => null, 'jsMinifier' => null, 'jsonMinifier' => null];
         if ($options) {
-            $paramOptions = \array_merge($paramOptions, $options);
+            $paramOptions = array_merge($paramOptions, $options);
         }
         $this->options = $paramOptions;
         parent::__construct();
@@ -89,6 +91,7 @@ class Html extends \CodeAlfa\Minify\Base
         $s1 = self::doubleQuoteStringToken();
         $s2 = self::singleQuoteStringToken();
         $a = self::htmlAttributeToken();
+        $ie = self::htmlIECommentToken();
         //Regex for escape elements
         $pr = self::htmlElementToken('pre');
         $sc = self::htmlElementToken('script');
@@ -96,11 +99,12 @@ class Html extends \CodeAlfa\Minify\Base
         $tx = self::htmlElementToken('textarea');
         if ($this->options['minifyLevel'] > 0) {
             //Remove comments (not containing IE conditional comments)
-            $rx = "#(?><?[^<]*+(?>{$pr}|{$sc}|{$st}|{$tx}|<!--\\[(?><?[^<]*+)*?" . "<!\\s*\\[(?>-?[^-]*+)*?--!?>|<!DOCTYPE[^>]++>)?)*?\\K(?:{$x}|\$)#i";
-            $this->html = $this->_replace($rx, '', $this->html, 'html1');
+            // language=RegExp
+            $rx = "(?>[^<]++|{$ie}|{$sc}|{$st}|{$tx}|<!DOCTYPE[^>]++>|<)*?\\K(?:(?!{$ie}){$x}|\$)";
+            $this->html = $this->_replace("#{$rx}#si", '', $this->html, 'html1');
         }
         //Reduce runs of whitespace outside all elements to one
-        $rx = "#(?>[^<]*+(?:{$pr}|{$sc}|{$st}|{$tx}|{$x}|<(?>[^>=]*+(?:=\\s*+(?:{$s1}|{$s2}|['\"])?|(?=>)))*?>)?)*?\\K" . '(?:[\\t\\f ]++(?=[\\r\\n]\\s*+<)|(?>\\r?\\n|\\r)\\K\\s++(?=<)|[\\t\\f]++(?=[ ]\\s*+<)|[\\t\\f]\\K\\s*+(?=<)|[ ]\\K\\s*+(?=<)|$)#i';
+        $rx = "#(?>[^<]*+(?:{$pr}|{$sc}|{$st}|{$tx}|{$x}|<(?>[^>=]*+(?:=\\s*+(?:{$s1}|{$s2}|['\"])?|(?=>)))*?>)?)*?\\K" . '(?:[\t\f ]++(?=[\r\n]\s*+<)|(?>\r?\n|\r)\K\s++(?=<)|[\t\f]++(?=[ ]\s*+<)|[\t\f]\K\s*+(?=<)|[ ]\K\s*+(?=<)|$)#i';
         $this->html = $this->_replace($rx, '', $this->html, 'html2');
         //Minify scripts
         //invalid scripts
@@ -110,10 +114,10 @@ class Html extends \CodeAlfa\Minify\Base
         $rx = "#(?><?[^<]*+(?:{$x}|{$nsc}|{$nst})?)*?\\K" . "(?:(<script\\b(?!(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?(?:module|(?:text|application)/(?:javascript|[^'\"\\s>]*?json))))[^<>]*+>)((?><?[^<]*+)*?)(</\\s*+script\\s*+>)|" . "(<style\\b(?!(?>\\s*+{$a})*?\\s*+type\\s*+=\\s*+(?![\"']?text/(?:css|stylesheet)))[^<>]*+>)((?><?[^<]*+)*?)(</\\s*+style\\s*+>)|\$)#i";
         $this->html = $this->_replace($rx, '', $this->html, 'html3', array($this, '_minifyCB'));
         if ($this->options['minifyLevel'] < 1) {
-            return \trim($this->html);
+            return trim($this->html);
         }
         //Replace line feed with space (legacy)
-        $rx = "#(?>[^<]*+(?:{$pr}|{$sc}|{$st}|{$tx}|{$x}|<(?>[^>=]*+(?:=\\s*+(?:{$s1}|{$s2}|['\"])?|(?=>)))*?>)?)*?\\K" . '(?:[\\r\\n\\t\\f]++(?=<)|$)#i';
+        $rx = "#(?>[^<]*+(?:{$pr}|{$sc}|{$st}|{$tx}|{$x}|<(?>[^>=]*+(?:=\\s*+(?:{$s1}|{$s2}|['\"])?|(?=>)))*?>)?)*?\\K" . '(?:[\r\n\t\f]++(?=<)|$)#i';
         $this->html = $this->_replace($rx, ' ', $this->html, 'html4');
         // remove ws around block elements preserving space around inline elements
         //block/undisplayed elements
@@ -135,15 +139,15 @@ class Html extends \CodeAlfa\Minify\Base
         $rx = "#(?>\\s?(?>[^<>]*+(?:<!(?!DOCTYPE)(?>>?[^>]*+)*?>[^<>]*+)?<|(?=[^<>]++>)[^\\s>'\"]++(?>{$s1}|{$s2})?|[^<]*+))*?\\K" . "(?>\\s\\s++|\$)#i";
         $this->html = $this->_replace($rx, ' ', $this->html, 'html7');
         if ($this->options['minifyLevel'] < 2) {
-            return \trim($this->html);
+            return trim($this->html);
         }
         //remove redundant attributes
-        $rx = "#(?:(?=[^<>]++>)|(?><?[^<]*+(?>{$x}|{$nsc}|{$nst}|<(?!(?:script|style|link)|/html>))?)*?" . "<(?:(?:script|style|link)|/html>))(?>[ ]?[^ >]*+)*?\\K" . '(?: (?:type|language)=["\']?(?:(?:text|application)/(?:javascript|css)|javascript)["\']?|[^<]*+\\K$)#i';
+        $rx = "#(?:(?=[^<>]++>)|(?><?[^<]*+(?>{$x}|{$nsc}|{$nst}|<(?!(?:script|style|link)|/html>))?)*?" . "<(?:(?:script|style|link)|/html>))(?>[ ]?[^ >]*+)*?\\K" . '(?: (?:type|language)=["\']?(?:(?:text|application)/(?:javascript|css)|javascript)["\']?|[^<]*+\K$)#i';
         $this->html = $this->_replace($rx, '', $this->html, 'html8');
         $j = '<input type="hidden" name="[0-9a-f]{32}" value="1" />';
         //Remove quotes from selected attributes
         if ($this->options['isHtml5']) {
-            $ns1 = '"[^"\'`=<>\\s]*+(?:[\'`=<>\\s]|(?<=\\\\)")(?>(?:(?<=\\\\)")?[^"]*+)*?(?<!\\\\)"';
+            $ns1 = '"[^"\'`=<>\s]*+(?:[\'`=<>\s]|(?<=\\\\)")(?>(?:(?<=\\\\)")?[^"]*+)*?(?<!\\\\)"';
             $ns2 = "'[^'\"`=<>\\s]*+(?:[\"`=<>\\s]|(?<=\\\\)')(?>(?:(?<=\\\\)')?[^']*+)*?(?<!\\\\)'";
             $rx = "#(?:(?=[^>]*+>)|<[a-z0-9]++ )" . "(?>[=]?[^=><]*+(?:=(?:{$ns1}|{$ns2})|>(?>[^<]*+(?:{$j}|{$x}|{$nsc}|{$nst}|<(?![a-z0-9]++ ))?)*?(?:<[a-z0-9]++ |\$))?)*?" . "(?:=\\K([\"'])([^\"'`=<>\\s]++)\\g{1}[ ]?|\\K\$)#i";
             $this->html = $this->_replace($rx, '$2 ', $this->html, 'html9');
@@ -151,7 +155,7 @@ class Html extends \CodeAlfa\Minify\Base
         //Remove last whitespace in open tag
         $rx = "#(?>[^<]*+(?:{$j}|{$x}|{$nsc}|{$nst}|<(?![a-z0-9]++))?)*?(?:<[a-z0-9]++(?>\\s*+[^\\s>]++)*?\\K" . "(?:\\s*+(?=>)|(?<=[\"'])\\s++(?=/>))|\$\\K)#i";
         $this->html = $this->_replace($rx, '', $this->html, 'html10');
-        return \trim($this->html);
+        return trim($this->html);
     }
     /**
      *
@@ -164,16 +168,16 @@ class Html extends \CodeAlfa\Minify\Base
         if ($m[0] == '') {
             return $m[0];
         }
-        if (\strpos($m[0], 'var google_conversion') !== \false) {
+        if (strpos($m[0], 'var google_conversion') !== \false) {
             return $m[0];
         }
         $openTag = isset($m[1]) && $m[1] != '' ? $m[1] : (isset($m[4]) && $m[4] != '' ? $m[4] : '');
         $content = isset($m[2]) && $m[2] != '' ? $m[2] : (isset($m[5]) && $m[5] != '' ? $m[5] : '');
         $closeTag = isset($m[3]) && $m[3] != '' ? $m[3] : (isset($m[6]) && $m[6] != '' ? $m[6] : '');
-        if (\trim($content) == '') {
+        if (trim($content) == '') {
             return $m[0];
         }
-        $type = \stripos($openTag, 'script') == 1 ? \stripos($openTag, 'json') !== \false ? 'json' : 'js' : 'css';
+        $type = stripos($openTag, 'script') == 1 ? stripos($openTag, 'json') !== \false ? 'json' : 'js' : 'css';
         if (is_callable($this->options[$type . 'Minifier'])) {
             // minify
             /** @psalm-suppress PossiblyNullArgument $content */
@@ -203,6 +207,6 @@ class Html extends \CodeAlfa\Minify\Base
      */
     protected function _needsCdata(string $str, string $type): bool
     {
-        return $this->options['isXhtml'] && $type == 'js' && \preg_match('#(?:[<&]|\\-\\-|\\]\\]>)#', $str);
+        return $this->options['isXhtml'] && $type == 'js' && preg_match('#(?:[<&]|\-\-|\]\]>)#', $str);
     }
 }

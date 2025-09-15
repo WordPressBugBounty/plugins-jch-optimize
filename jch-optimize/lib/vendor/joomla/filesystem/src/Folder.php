@@ -34,32 +34,32 @@ abstract class Folder
      */
     public static function copy($src, $dest, $path = '', $force = \false, $useStreams = \false)
     {
-        @\set_time_limit(\ini_get('max_execution_time'));
+        @set_time_limit(ini_get('max_execution_time'));
         if ($path) {
             $src = Path::clean($path . '/' . $src);
             $dest = Path::clean($path . '/' . $dest);
         }
         // Eliminate trailing directory separators, if any
-        $src = \rtrim($src, \DIRECTORY_SEPARATOR);
-        $dest = \rtrim($dest, \DIRECTORY_SEPARATOR);
-        if (!\is_dir(Path::clean($src))) {
+        $src = rtrim($src, \DIRECTORY_SEPARATOR);
+        $dest = rtrim($dest, \DIRECTORY_SEPARATOR);
+        if (!is_dir(Path::clean($src))) {
             throw new FilesystemException('Source folder not found', -1);
         }
-        if (\is_dir(Path::clean($dest)) && !$force) {
+        if (is_dir(Path::clean($dest)) && !$force) {
             throw new FilesystemException('Destination folder not found', -1);
         }
         // Make sure the destination exists
         if (!self::create($dest)) {
             throw new FilesystemException('Cannot create destination folder', -1);
         }
-        if (!($dh = @\opendir($src))) {
+        if (!$dh = @opendir($src)) {
             throw new FilesystemException('Cannot open source folder', -1);
         }
         // Walk through the directory copying files and recursing into folders.
-        while (($file = \readdir($dh)) !== \false) {
+        while (($file = readdir($dh)) !== \false) {
             $sfid = $src . '/' . $file;
             $dfid = $dest . '/' . $file;
-            switch (\filetype($sfid)) {
+            switch (filetype($sfid)) {
                 case 'dir':
                     if ($file != '.' && $file != '..') {
                         $ret = self::copy($sfid, $dfid, null, $force, $useStreams);
@@ -71,10 +71,8 @@ abstract class Folder
                 case 'file':
                     if ($useStreams) {
                         Stream::getStream()->copy($sfid, $dfid);
-                    } else {
-                        if (!@\copy($sfid, $dfid)) {
-                            throw new FilesystemException('Copy file failed', -1);
-                        }
+                    } elseif (!@copy($sfid, $dfid)) {
+                        throw new FilesystemException('Copy file failed', -1);
                     }
                     break;
             }
@@ -99,7 +97,7 @@ abstract class Folder
         $path = Path::clean($path);
         // Check if parent dir exists
         $parent = \dirname($path);
-        if (!\is_dir(Path::clean($parent))) {
+        if (!is_dir(Path::clean($parent))) {
             // Prevent infinite loops!
             $nested++;
             if ($nested > 20 || $parent == $path) {
@@ -120,11 +118,11 @@ abstract class Folder
             $nested--;
         }
         // Check if dir already exists
-        if (\is_dir(Path::clean($path))) {
+        if (is_dir(Path::clean($path))) {
             return \true;
         }
         // We need to get and explode the open_basedir paths
-        $obd = \ini_get('open_basedir');
+        $obd = ini_get('open_basedir');
         // If open_basedir is set we need to get the open_basedir that the path is in
         if ($obd != null) {
             if (\defined('PHP_WINDOWS_VERSION_MAJOR')) {
@@ -133,12 +131,12 @@ abstract class Folder
                 $obdSeparator = ':';
             }
             // Create the array of open_basedir paths
-            $obdArray = \explode($obdSeparator, $obd);
+            $obdArray = explode($obdSeparator, $obd);
             $inBaseDir = \false;
             // Iterate through open_basedir paths looking for a match
             foreach ($obdArray as $test) {
                 $test = Path::clean($test);
-                if (\strpos($path, $test) === 0 || \strpos($path, \realpath($test)) === 0) {
+                if (strpos($path, $test) === 0 || strpos($path, realpath($test)) === 0) {
                     $inBaseDir = \true;
                     break;
                 }
@@ -149,14 +147,14 @@ abstract class Folder
             }
         }
         // First set umask
-        $origmask = @\umask(0);
+        $origmask = @umask(0);
         // Create the path
-        if (!($ret = @\mkdir($path, $mode))) {
-            @\umask($origmask);
+        if (!$ret = @mkdir($path, $mode)) {
+            @umask($origmask);
             throw new FilesystemException(__METHOD__ . ': Could not create directory.  Path: ' . $path);
         }
         // Reset umask
-        @\umask($origmask);
+        @umask($origmask);
         return $ret;
     }
     /**
@@ -172,7 +170,7 @@ abstract class Folder
      */
     public static function delete($path)
     {
-        @\set_time_limit(\ini_get('max_execution_time'));
+        @set_time_limit(ini_get('max_execution_time'));
         // Sanity check
         if (!$path) {
             // Bad programmer! Bad Bad programmer!
@@ -181,8 +179,8 @@ abstract class Folder
         // Check to make sure the path valid and clean
         $path = Path::clean($path);
         // Is this really a folder?
-        if (!\is_dir($path)) {
-            throw new \UnexpectedValueException(\sprintf('%1$s: Path is not a folder. Path: %2$s', __METHOD__, Path::removeRoot($path)));
+        if (!is_dir($path)) {
+            throw new \UnexpectedValueException(sprintf('%1$s: Path is not a folder. Path: %2$s', __METHOD__, Path::removeRoot($path)));
         }
         // Remove all the files in folder if they exist; disable all filtering
         $files = self::files($path, '.', \false, \true, array(), array());
@@ -195,7 +193,7 @@ abstract class Folder
         // Remove sub-folders of folder; disable all filtering
         $folders = self::folders($path, '.', \false, \true, array(), array());
         foreach ($folders as $folder) {
-            if (\is_link($folder)) {
+            if (is_link($folder)) {
                 // Don't descend into linked directories, just delete the link.
                 if (File::delete($folder) !== \true) {
                     // File::delete throws an error
@@ -207,10 +205,10 @@ abstract class Folder
             }
         }
         // In case of restricted permissions we zap it one way or the other as long as the owner is either the webserver or the ftp.
-        if (@\rmdir($path)) {
+        if (@rmdir($path)) {
             return \true;
         }
-        throw new FilesystemException(\sprintf('%1$s: Could not delete folder. Path: %2$s', __METHOD__, $path));
+        throw new FilesystemException(sprintf('%1$s: Could not delete folder. Path: %2$s', __METHOD__, $path));
     }
     /**
      * Moves a folder.
@@ -230,17 +228,17 @@ abstract class Folder
             $src = Path::clean($path . '/' . $src);
             $dest = Path::clean($path . '/' . $dest);
         }
-        if (!\is_dir(Path::clean($src))) {
+        if (!is_dir(Path::clean($src))) {
             return 'Cannot find source folder';
         }
-        if (\is_dir(Path::clean($dest))) {
+        if (is_dir(Path::clean($dest))) {
             return 'Folder already exists';
         }
         if ($useStreams) {
             Stream::getStream()->move($src, $dest);
             return \true;
         }
-        if (!@\rename($src, $dest)) {
+        if (!@rename($src, $dest)) {
             return 'Rename failed';
         }
         return \true;
@@ -260,25 +258,25 @@ abstract class Folder
      * @since   1.0
      * @throws  \UnexpectedValueException
      */
-    public static function files($path, $filter = '.', $recurse = \false, $full = \false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'), $excludeFilter = array('^\\..*', '.*~'))
+    public static function files($path, $filter = '.', $recurse = \false, $full = \false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'), $excludeFilter = array('^\..*', '.*~'))
     {
         // Check to make sure the path valid and clean
         $path = Path::clean($path);
         // Is the path a folder?
-        if (!\is_dir($path)) {
-            throw new \UnexpectedValueException(\sprintf('%1$s: Path is not a folder. Path: %2$s', __METHOD__, Path::removeRoot($path)));
+        if (!is_dir($path)) {
+            throw new \UnexpectedValueException(sprintf('%1$s: Path is not a folder. Path: %2$s', __METHOD__, Path::removeRoot($path)));
         }
         // Compute the excludefilter string
         if (\count($excludeFilter)) {
-            $excludeFilterString = '/(' . \implode('|', $excludeFilter) . ')/';
+            $excludeFilterString = '/(' . implode('|', $excludeFilter) . ')/';
         } else {
             $excludeFilterString = '';
         }
         // Get the files
         $arr = self::_items($path, $filter, $recurse, $full, $exclude, $excludeFilterString, \true);
         // Sort the files
-        \asort($arr);
-        return \array_values($arr);
+        asort($arr);
+        return array_values($arr);
     }
     /**
      * Utility function to read the folders in a folder.
@@ -295,25 +293,25 @@ abstract class Folder
      * @since   1.0
      * @throws  \UnexpectedValueException
      */
-    public static function folders($path, $filter = '.', $recurse = \false, $full = \false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'), $excludeFilter = array('^\\..*'))
+    public static function folders($path, $filter = '.', $recurse = \false, $full = \false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'), $excludeFilter = array('^\..*'))
     {
         // Check to make sure the path valid and clean
         $path = Path::clean($path);
         // Is the path a folder?
-        if (!\is_dir($path)) {
-            throw new \UnexpectedValueException(\sprintf('%1$s: Path is not a folder. Path: %2$s', __METHOD__, Path::removeRoot($path)));
+        if (!is_dir($path)) {
+            throw new \UnexpectedValueException(sprintf('%1$s: Path is not a folder. Path: %2$s', __METHOD__, Path::removeRoot($path)));
         }
         // Compute the excludefilter string
         if (\count($excludeFilter)) {
-            $excludeFilterString = '/(' . \implode('|', $excludeFilter) . ')/';
+            $excludeFilterString = '/(' . implode('|', $excludeFilter) . ')/';
         } else {
             $excludeFilterString = '';
         }
         // Get the folders
         $arr = self::_items($path, $filter, $recurse, $full, $exclude, $excludeFilterString, \false);
         // Sort the folders
-        \asort($arr);
-        return \array_values($arr);
+        asort($arr);
+        return array_values($arr);
     }
     /**
      * Function to read the files/folders in a folder.
@@ -332,19 +330,19 @@ abstract class Folder
      */
     protected static function _items($path, $filter, $recurse, $full, $exclude, $excludeFilterString, $findfiles)
     {
-        @\set_time_limit(\ini_get('max_execution_time'));
+        @set_time_limit(ini_get('max_execution_time'));
         $arr = array();
         // Read the source directory
-        if (!($handle = @\opendir($path))) {
+        if (!$handle = @opendir($path)) {
             return $arr;
         }
-        while (($file = \readdir($handle)) !== \false) {
-            if ($file != '.' && $file != '..' && !\in_array($file, $exclude) && (empty($excludeFilterString) || !\preg_match($excludeFilterString, $file))) {
+        while (($file = readdir($handle)) !== \false) {
+            if ($file != '.' && $file != '..' && !\in_array($file, $exclude) && (empty($excludeFilterString) || !preg_match($excludeFilterString, $file))) {
                 // Compute the fullpath
                 $fullpath = Path::clean($path . '/' . $file);
                 // Compute the isDir flag
-                $isDir = \is_dir($fullpath);
-                if (($isDir xor $findfiles) && \preg_match("/{$filter}/", $file)) {
+                $isDir = is_dir($fullpath);
+                if (($isDir xor $findfiles) && preg_match("/{$filter}/", $file)) {
                     // (fullpath is dir and folders are searched or fullpath is not dir and files are searched) and file matches the filter
                     if ($full) {
                         // Full path is requested
@@ -358,14 +356,14 @@ abstract class Folder
                     // Search recursively
                     if (\is_int($recurse)) {
                         // Until depth 0 is reached
-                        $arr = \array_merge($arr, self::_items($fullpath, $filter, $recurse - 1, $full, $exclude, $excludeFilterString, $findfiles));
+                        $arr = array_merge($arr, self::_items($fullpath, $filter, $recurse - 1, $full, $exclude, $excludeFilterString, $findfiles));
                     } else {
-                        $arr = \array_merge($arr, self::_items($fullpath, $filter, $recurse, $full, $exclude, $excludeFilterString, $findfiles));
+                        $arr = array_merge($arr, self::_items($fullpath, $filter, $recurse, $full, $exclude, $excludeFilterString, $findfiles));
                     }
                 }
             }
         }
-        \closedir($handle);
+        closedir($handle);
         return $arr;
     }
     /**
@@ -393,9 +391,9 @@ abstract class Folder
             foreach ($folders as $name) {
                 $id = ++$GLOBALS['_JFolder_folder_tree_index'];
                 $fullName = Path::clean($path . '/' . $name);
-                $dirs[] = array('id' => $id, 'parent' => $parent, 'name' => $name, 'fullname' => $fullName, 'relname' => \str_replace(\_JchOptimizeVendor\V91\JPATH_ROOT, '', $fullName));
+                $dirs[] = array('id' => $id, 'parent' => $parent, 'name' => $name, 'fullname' => $fullName, 'relname' => str_replace(\_JchOptimizeVendor\V91\JPATH_ROOT, '', $fullName));
                 $dirs2 = self::listFolderTree($fullName, $filter, $maxLevel, $level + 1, $id);
-                $dirs = \array_merge($dirs, $dirs2);
+                $dirs = array_merge($dirs, $dirs2);
             }
         }
         return $dirs;
@@ -411,7 +409,7 @@ abstract class Folder
      */
     public static function makeSafe($path)
     {
-        $regex = array('#[^A-Za-z0-9_\\\\/\\(\\)\\[\\]\\{\\}\\#\\$\\^\\+\\.\'~`!@&=;,-]#');
-        return \preg_replace($regex, '', $path);
+        $regex = array('#[^A-Za-z0-9_\\\\/\(\)\[\]\{\}\#\$\^\+\.\'~`!@&=;,-]#');
+        return preg_replace($regex, '', $path);
     }
 }

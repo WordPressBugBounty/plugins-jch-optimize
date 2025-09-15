@@ -25,7 +25,7 @@ use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use Exception;
 use JchOptimize\Core\Helper;
-use JchOptimize\Core\Laminas\Plugins\ClearExpiredByFactor;
+use JchOptimize\Core\Laminas\ClearExpiredByFactor;
 use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Platform\HooksInterface;
 use JchOptimize\Core\Platform\UtilityInterface;

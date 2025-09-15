@@ -46,7 +46,7 @@ class ArrayAdapter implements AdapterInterface
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function count()
     {
         return $this->count;

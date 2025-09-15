@@ -265,10 +265,8 @@ abstract class ArrayUtils
                 } else {
                     $a[$key] = $value;
                 }
-            } else {
-                if (!$value instanceof MergeRemoveKey) {
-                    $a[$key] = $value;
-                }
+            } elseif (!$value instanceof MergeRemoveKey) {
+                $a[$key] = $value;
             }
         }
         return $a;

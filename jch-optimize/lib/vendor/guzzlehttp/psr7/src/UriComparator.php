@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace _JchOptimizeVendor\V91\GuzzleHttp\Psr7;
 
 use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
@@ -14,10 +16,8 @@ final class UriComparator
     /**
      * Determines if a modified URL should be considered cross-origin with
      * respect to an original URL.
-     *
-     * @return bool
      */
-    public static function isCrossOrigin(UriInterface $original, UriInterface $modified)
+    public static function isCrossOrigin(UriInterface $original, UriInterface $modified): bool
     {
         if (\strcasecmp($original->getHost(), $modified->getHost()) !== 0) {
             return \true;
@@ -30,10 +30,7 @@ final class UriComparator
         }
         return \false;
     }
-    /**
-     * @return int
-     */
-    private static function computePort(UriInterface $uri)
+    private static function computePort(UriInterface $uri): int
     {
         $port = $uri->getPort();
         if (null !== $port) {

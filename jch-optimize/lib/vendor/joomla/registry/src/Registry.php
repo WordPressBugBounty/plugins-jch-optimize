@@ -732,7 +732,7 @@ class Registry implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \
                 \_JchOptimizeVendor\V91\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'The $separator parameter will be removed in version 3.', self::class, self::class);
                 return $this->separator;
             default:
-                if (\property_exists($this, $name)) {
+                if (property_exists($this, $name)) {
                     throw new \RuntimeException(\sprintf('Cannot access protected or private property %s::$%s', __CLASS__, $name));
                 }
                 $trace = \debug_backtrace();
@@ -759,7 +759,7 @@ class Registry implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \
                 $this->separator = $value;
                 break;
             default:
-                if (\property_exists($this, $name)) {
+                if (property_exists($this, $name)) {
                     throw new \RuntimeException(\sprintf('Cannot access protected or private property %s::$%s', __CLASS__, $name));
                 }
                 \_JchOptimizeVendor\V91\trigger_deprecation('joomla/registry', '__DEPLOY_VERSION__', 'Creating a property will be removed in version 3.', self::class, self::class);

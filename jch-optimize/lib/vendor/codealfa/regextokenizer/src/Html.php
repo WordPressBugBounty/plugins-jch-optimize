@@ -23,27 +23,32 @@ trait Html
         return '<!--(?>[^>!]++|[!>]++)*?(?<=--)!?>';
     }
     //language=RegExp
+    public static function htmlIECommentToken(): string
+    {
+        return '<!--\[[^]]*+\](?>[^<]++|<)*?<!\[[^]]*+\]-->';
+    }
+    //language=RegExp
     public static function htmlElementsToken(array $elements, bool $voidElements = \false): string
     {
         $result = [];
         foreach ($elements as $element) {
             $result[] = $voidElements ? self::htmlVoidElementToken($element) : self::htmlElementToken($element);
         }
-        return '(?:' . \implode('|', $result) . ')';
+        return '(?:' . implode('|', $result) . ')';
     }
     //language=RegExp
-    public static function htmlElementToken(string $name = null): string
+    public static function htmlElementToken(?string $name = null): string
     {
         $startTag = self::htmlStartTagToken($name);
         $textContent = self::htmlTextContentToken();
         $endTag = self::htmlEndTagToken();
         return "{$startTag}{$textContent}?{$endTag}";
     }
-    public static function htmlVoidElementToken(string $name = null): string
+    public static function htmlVoidElementToken(?string $name = null): string
     {
         $element = $name ?? '(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)';
         $attributes = self::htmlAttributesListToken();
-        return "<{$element}\\b(\\s++{$attributes}+)?/?>";
+        return "<{$element}\\b(?:\\s++{$attributes}+)?/?>";
     }
     //language=RegExp
     public static function htmlNestedElementToken(string $name): string
@@ -66,7 +71,7 @@ trait Html
     //language=RegExp
     protected static function parseAttributesStatic(): string
     {
-        return '(?>' . self::htmlAttributeWithCaptureValueToken() . '\\s*+)*?';
+        return '(?>' . self::htmlAttributeWithCaptureValueToken() . '\s*+)*?';
     }
     /**
      * Regex token for an HTML attribute, optionally capturing the value in a capture group
@@ -82,13 +87,13 @@ trait Html
     //language=RegExp
     public static function htmlAttributeWithCaptureValueToken(string $attrName = '', bool $captureValue = \false, bool $captureDelimiter = \false, string $matchedValue = ''): string
     {
-        $name = $attrName != '' ? $attrName : '[^\\s/"\'=>]++';
+        $name = $attrName != '' ? $attrName : '[^\s/"\'=>]++';
         $delimiter = $captureDelimiter ? '([\'"]?)' : '[\'"]?';
         //If we don't need to match a value then the value of attribute is optional
         if ($matchedValue == '') {
-            $attribute = $name . '(?:\\s*+=\\s*+(?>' . $delimiter . ')<<' . self::htmlAttributeValueToken() . '>>[\'"]?)?';
+            $attribute = $name . '(?:\s*+=\s*+(?>' . $delimiter . ')<<' . self::htmlAttributeValueToken() . '>>[\'"]?)?';
         } else {
-            $attribute = $name . '\\s*+=\\s*+(?>' . $delimiter . ')' . $matchedValue . '<<' . self::htmlAttributeValueToken() . '>>[\'"]?';
+            $attribute = $name . '\s*+=\s*+(?>' . $delimiter . ')' . $matchedValue . '<<' . self::htmlAttributeValueToken() . '>>[\'"]?';
         }
         return self::prepare($attribute, $captureValue);
     }
@@ -109,10 +114,9 @@ trait Html
      * @return string
      * @deprecated Will be removed in 3.0
      */
-    //language=RegExp
     public static function htmlUnquotedAttributeValueToken(): string
     {
-        return '(?<==)[^\\s*+>]++';
+        return '(?<==)[^\s*+>]++';
     }
     /**
      * Regex token for a self closing HTML element
@@ -138,19 +142,19 @@ trait Html
         $a = self::htmlAttributeToken();
         return "(?>{$a}|\\s++)*";
     }
-    public static function htmlStartTagToken(string $name = null): string
+    public static function htmlStartTagToken(?string $name = null): string
     {
         $element = $name ?? self::htmlGenericElementNameToken();
         $attributes = self::htmlAttributesListToken();
         $gName = self::$cgName . ++self::$cgIndex;
-        return "<(?<{$gName}>{$element})\\b(\\s++{$attributes}+)?>";
+        return "<(?<{$gName}>{$element})\\b(?:\\s++{$attributes}+)?>";
     }
-    public static function htmlEndTagToken(string $name = null): string
+    public static function htmlEndTagToken(?string $name = null): string
     {
         $gName = $name ?? '(?&' . self::$cgName . self::$cgIndex . ')';
         return "</{$gName}\\s*+>";
     }
-    public static function htmlTextContentToken(string $name = null): string
+    public static function htmlTextContentToken(?string $name = null): string
     {
         $et = self::htmlEndTagToken($name);
         return "(?>[^<]++|(?!{$et}})<)*";
@@ -170,6 +174,6 @@ trait Html
     {
         $name = self::htmlGenericElementNameToken();
         $attributes = self::htmlAttributesListToken();
-        return "<{$name}\\b(\\s++{$attributes}+)?/?>";
+        return "<{$name}\\b(?:\\s++{$attributes}+)?/?>";
     }
 }

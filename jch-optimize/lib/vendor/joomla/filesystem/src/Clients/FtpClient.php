@@ -138,7 +138,7 @@ class FtpClient
         $this->setOptions($options);
         if (FTP_NATIVE) {
             // Autoloading fails for Buffer as the class is used as a stream handler
-            \class_exists('_JchOptimizeVendor\\V91\\Joomla\\Filesystem\\Buffer');
+            class_exists('_JchOptimizeVendor\V91\Joomla\Filesystem\Buffer');
         }
     }
     /**
@@ -231,24 +231,24 @@ class FtpClient
         }
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            $this->conn = @\ftp_connect($host, $port, $this->timeout);
+            $this->conn = @ftp_connect($host, $port, $this->timeout);
             if ($this->conn === \false) {
-                throw new FilesystemException(\sprintf('%1$s: Could not connect to host " %2$s " on port " %3$s "', __METHOD__, $host, $port));
+                throw new FilesystemException(sprintf('%1$s: Could not connect to host " %2$s " on port " %3$s "', __METHOD__, $host, $port));
             }
             // Set the timeout for this connection
-            \ftp_set_option($this->conn, \FTP_TIMEOUT_SEC, $this->timeout);
+            ftp_set_option($this->conn, \FTP_TIMEOUT_SEC, $this->timeout);
             return \true;
         }
         // Connect to the FTP server.
-        $this->conn = @\fsockopen($host, $port, $errno, $err, $this->timeout);
+        $this->conn = @fsockopen($host, $port, $errno, $err, $this->timeout);
         if (!$this->conn) {
-            throw new FilesystemException(\sprintf('%1$s: Could not connect to host " %2$s " on port " %3$s ". Socket error number: %4$s and error message: %5$s', __METHOD__, $host, $port, $errno, $err));
+            throw new FilesystemException(sprintf('%1$s: Could not connect to host " %2$s " on port " %3$s ". Socket error number: %4$s and error message: %5$s', __METHOD__, $host, $port, $errno, $err));
         }
         // Set the timeout for this connection
-        \socket_set_timeout($this->conn, $this->timeout, 0);
+        socket_set_timeout($this->conn, $this->timeout, 0);
         // Check for welcome response code
         if (!$this->_verifyResponse(220)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response. Server response: %2$s [Expected: 220]', __METHOD__, $this->response));
+            throw new FilesystemException(sprintf('%1$s: Bad response. Server response: %2$s [Expected: 220]', __METHOD__, $this->response));
         }
         return \true;
     }
@@ -278,14 +278,14 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_login($this->conn, $user, $pass) === \false) {
+            if (@ftp_login($this->conn, $user, $pass) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to login');
             }
             return \true;
         }
         // Send the username
         if (!$this->_putCmd('USER ' . $user, array(331, 503))) {
-            throw new FilesystemException(\sprintf('%1$s: Bad Username. Server response: %2$s [Expected: 331]. Username sent: %3$s', __METHOD__, $this->response, $user));
+            throw new FilesystemException(sprintf('%1$s: Bad Username. Server response: %2$s [Expected: 331]. Username sent: %3$s', __METHOD__, $this->response, $user));
         }
         // If we are already logged in, continue :)
         if ($this->responseCode == 503) {
@@ -293,7 +293,7 @@ class FtpClient
         }
         // Send the password
         if (!$this->_putCmd('PASS ' . $pass, 230)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad Password. Server response: %2$s [Expected: 230].', __METHOD__, $this->response));
+            throw new FilesystemException(sprintf('%1$s: Bad Password. Server response: %2$s [Expected: 230].', __METHOD__, $this->response));
         }
         return \true;
     }
@@ -308,12 +308,12 @@ class FtpClient
     {
         // If native FTP support is enabled lets use it...
         if (FTP_NATIVE) {
-            @\ftp_close($this->conn);
+            @ftp_close($this->conn);
             return \true;
         }
         // Logout and close connection
-        @\fwrite($this->conn, "QUIT\r\n");
-        @\fclose($this->conn);
+        @fwrite($this->conn, "QUIT\r\n");
+        @fclose($this->conn);
         return \true;
     }
     /**
@@ -328,7 +328,7 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (($ret = @\ftp_pwd($this->conn)) === \false) {
+            if (($ret = @ftp_pwd($this->conn)) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return $ret;
@@ -336,12 +336,12 @@ class FtpClient
         $match = array(null);
         // Send print working directory command and verify success
         if (!$this->_putCmd('PWD', 257)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 257]', __METHOD__, $this->response));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 257]', __METHOD__, $this->response));
         }
         // Match just the path
-        \preg_match('/"[^"\\r\\n]*"/', $this->response, $match);
+        preg_match('/"[^"\r\n]*"/', $this->response, $match);
         // Return the cleaned path
-        return \preg_replace('/"/', '', $match[0]);
+        return preg_replace('/"/', '', $match[0]);
     }
     /**
      * Method to system string from the FTP server
@@ -355,20 +355,20 @@ class FtpClient
     {
         // If native FTP support is enabled lets use it...
         if (FTP_NATIVE) {
-            if (($ret = @\ftp_systype($this->conn)) === \false) {
+            if (($ret = @ftp_systype($this->conn)) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
         } else {
             // Send print working directory command and verify success
             if (!$this->_putCmd('SYST', 215)) {
-                throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 215]', __METHOD__, $this->response));
+                throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 215]', __METHOD__, $this->response));
             }
             $ret = $this->response;
         }
         // Match the system string to an OS
-        if (\strpos(\strtoupper($ret), 'MAC') !== \false) {
+        if (strpos(strtoupper($ret), 'MAC') !== \false) {
             $ret = 'MAC';
-        } elseif (\strpos(\strtoupper($ret), 'WIN') !== \false) {
+        } elseif (strpos(strtoupper($ret), 'WIN') !== \false) {
             $ret = 'WIN';
         } else {
             $ret = 'UNIX';
@@ -390,14 +390,14 @@ class FtpClient
     {
         // If native FTP support is enabled lets use it...
         if (FTP_NATIVE) {
-            if (@\ftp_chdir($this->conn, $path) === \false) {
+            if (@ftp_chdir($this->conn, $path) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         // Send change directory command and verify success
         if (!$this->_putCmd('CWD ' . $path, 250)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  Sent path: %3$s', __METHOD__, $this->response, $path));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  Sent path: %3$s', __METHOD__, $this->response, $path));
         }
         return \true;
     }
@@ -415,14 +415,14 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_site($this->conn, 'REIN') === \false) {
+            if (@ftp_site($this->conn, 'REIN') === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         // Send reinitialise command to the server
         if (!$this->_putCmd('REIN', 220)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 220]', __METHOD__, $this->response));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 220]', __METHOD__, $this->response));
         }
         return \true;
     }
@@ -441,18 +441,18 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_rename($this->conn, $from, $to) === \false) {
+            if (@ftp_rename($this->conn, $from, $to) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         // Send rename from command to the server
         if (!$this->_putCmd('RNFR ' . $from, 350)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 350].  From path sent: %3$s', __METHOD__, $this->response, $from));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 350].  From path sent: %3$s', __METHOD__, $this->response, $from));
         }
         // Send rename to command to the server
         if (!$this->_putCmd('RNTO ' . $to, 250)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  To path sent: %3$s', __METHOD__, $this->response, $to));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  To path sent: %3$s', __METHOD__, $this->response, $to));
         }
         return \true;
     }
@@ -475,11 +475,11 @@ class FtpClient
         }
         // Convert the mode to a string
         if (\is_int($mode)) {
-            $mode = \decoct($mode);
+            $mode = decoct($mode);
         }
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_site($this->conn, 'CHMOD ' . $mode . ' ' . $path) === \false) {
+            if (@ftp_site($this->conn, 'CHMOD ' . $mode . ' ' . $path) === \false) {
                 if (!\defined('PHP_WINDOWS_VERSION_MAJOR')) {
                     throw new FilesystemException(__METHOD__ . 'Bad response.');
                 }
@@ -490,7 +490,7 @@ class FtpClient
         // Send change mode command and verify success [must convert mode from octal]
         if (!$this->_putCmd('SITE CHMOD ' . $mode . ' ' . $path, array(200, 250))) {
             if (!\defined('PHP_WINDOWS_VERSION_MAJOR')) {
-                throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  Path sent: %3$s.  Mode sent: %4$s', __METHOD__, $this->response, $path, $mode));
+                throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  Path sent: %3$s.  Mode sent: %4$s', __METHOD__, $this->response, $path, $mode));
             }
             return \false;
         }
@@ -510,8 +510,8 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_delete($this->conn, $path) === \false) {
-                if (@\ftp_rmdir($this->conn, $path) === \false) {
+            if (@ftp_delete($this->conn, $path) === \false) {
+                if (@ftp_rmdir($this->conn, $path) === \false) {
                     throw new FilesystemException(__METHOD__ . 'Bad response.');
                 }
             }
@@ -520,7 +520,7 @@ class FtpClient
         // Send delete file command and if that doesn't work, try to remove a directory
         if (!$this->_putCmd('DELE ' . $path, 250)) {
             if (!$this->_putCmd('RMD ' . $path, 250)) {
-                throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  Path sent: %3$s', __METHOD__, $this->response, $path));
+                throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 250].  Path sent: %3$s', __METHOD__, $this->response, $path));
             }
         }
         return \true;
@@ -539,14 +539,14 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_mkdir($this->conn, $path) === \false) {
+            if (@ftp_mkdir($this->conn, $path) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         // Send change directory command and verify success
         if (!$this->_putCmd('MKD ' . $path, 257)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 257].  Path sent: %3$s', __METHOD__, $this->response, $path));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 257].  Path sent: %3$s', __METHOD__, $this->response, $path));
         }
         return \true;
     }
@@ -564,14 +564,14 @@ class FtpClient
     {
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
-            if (@\ftp_site($this->conn, 'REST ' . $point) === \false) {
+            if (@ftp_site($this->conn, 'REST ' . $point) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         // Send restart command and verify success
         if (!$this->_putCmd('REST ' . $point, 350)) {
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 350].  Restart point sent: %3$s', __METHOD__, $this->response, $point));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 350].  Restart point sent: %3$s', __METHOD__, $this->response, $point));
         }
         return \true;
     }
@@ -590,15 +590,15 @@ class FtpClient
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            $buffer = \fopen('buffer://tmp', 'r');
-            if (@\ftp_fput($this->conn, $path, $buffer, \FTP_ASCII) === \false) {
-                \fclose($buffer);
+            $buffer = fopen('buffer://tmp', 'r');
+            if (@ftp_fput($this->conn, $path, $buffer, \FTP_ASCII) === \false) {
+                fclose($buffer);
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
-            \fclose($buffer);
+            fclose($buffer);
             return \true;
         }
         // Start passive mode
@@ -606,13 +606,13 @@ class FtpClient
             throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
         }
         if (!$this->_putCmd('STOR ' . $path, array(150, 125))) {
-            @\fclose($this->dataconn);
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $path));
+            @fclose($this->dataconn);
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $path));
         }
         // To create a zero byte upload close the data port connection
-        \fclose($this->dataconn);
+        fclose($this->dataconn);
         if (!$this->_verifyResponse(226)) {
-            throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $path));
+            throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $path));
         }
         return \true;
     }
@@ -634,21 +634,21 @@ class FtpClient
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            $tmp = \fopen('buffer://tmp', 'br+');
-            if (@\ftp_fget($this->conn, $tmp, $remote, $mode) === \false) {
-                \fclose($tmp);
+            $tmp = fopen('buffer://tmp', 'br+');
+            if (@ftp_fget($this->conn, $tmp, $remote, $mode) === \false) {
+                fclose($tmp);
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             // Read tmp buffer contents
-            \rewind($tmp);
+            rewind($tmp);
             $buffer = '';
-            while (!\feof($tmp)) {
-                $buffer .= \fread($tmp, 8192);
+            while (!feof($tmp)) {
+                $buffer .= fread($tmp, 8192);
             }
-            \fclose($tmp);
+            fclose($tmp);
             return \true;
         }
         $this->_mode($mode);
@@ -657,26 +657,26 @@ class FtpClient
             throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
         }
         if (!$this->_putCmd('RETR ' . $remote, array(150, 125))) {
-            @\fclose($this->dataconn);
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            @fclose($this->dataconn);
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         // Read data from data port connection and add to the buffer
         $buffer = '';
-        while (!\feof($this->dataconn)) {
-            $buffer .= \fread($this->dataconn, 4096);
+        while (!feof($this->dataconn)) {
+            $buffer .= fread($this->dataconn, 4096);
         }
         // Close the data port connection
-        \fclose($this->dataconn);
+        fclose($this->dataconn);
         // Let's try to cleanup some line endings if it is ascii
         if ($mode == \FTP_ASCII) {
             $os = 'UNIX';
             if (\defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 $os = 'WIN';
             }
-            $buffer = \preg_replace('/' . CRLF . '/', $this->lineEndings[$os], $buffer);
+            $buffer = preg_replace('/' . CRLF . '/', $this->lineEndings[$os], $buffer);
         }
         if (!$this->_verifyResponse(226)) {
-            throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Restart point sent: %3$s', __METHOD__, $this->response, $remote));
+            throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Restart point sent: %3$s', __METHOD__, $this->response, $remote));
         }
         return \true;
     }
@@ -698,38 +698,38 @@ class FtpClient
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            if (@\ftp_get($this->conn, $local, $remote, $mode) === \false) {
+            if (@ftp_get($this->conn, $local, $remote, $mode) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         $this->_mode($mode);
         // Check to see if the local file can be opened for writing
-        $fp = \fopen($local, 'wb');
+        $fp = fopen($local, 'wb');
         if (!$fp) {
-            throw new FilesystemException(\sprintf('%1$s: Unable to open local file for writing.  Local path: %2$s', __METHOD__, $local));
+            throw new FilesystemException(sprintf('%1$s: Unable to open local file for writing.  Local path: %2$s', __METHOD__, $local));
         }
         // Start passive mode
         if (!$this->_passive()) {
             throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
         }
         if (!$this->_putCmd('RETR ' . $remote, array(150, 125))) {
-            @\fclose($this->dataconn);
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            @fclose($this->dataconn);
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         // Read data from data port connection and add to the buffer
-        while (!\feof($this->dataconn)) {
-            $buffer = \fread($this->dataconn, 4096);
-            \fwrite($fp, $buffer, 4096);
+        while (!feof($this->dataconn)) {
+            $buffer = fread($this->dataconn, 4096);
+            fwrite($fp, $buffer, 4096);
         }
         // Close the data port connection and file pointer
-        \fclose($this->dataconn);
-        \fclose($fp);
+        fclose($this->dataconn);
+        fclose($fp);
         if (!$this->_verifyResponse(226)) {
-            throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         return \true;
     }
@@ -749,56 +749,56 @@ class FtpClient
         // If remote file is not given, use the filename of the local file in the current
         // working directory.
         if ($remote == null) {
-            $remote = \basename($local);
+            $remote = basename($local);
         }
         // Determine file type
         $mode = $this->_findMode($remote);
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            if (@\ftp_put($this->conn, $remote, $local, $mode) === \false) {
+            if (@ftp_put($this->conn, $remote, $local, $mode) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
             return \true;
         }
         $this->_mode($mode);
         // Check to see if the local file exists and if so open it for reading
-        if (@\file_exists($local)) {
-            $fp = \fopen($local, 'rb');
+        if (@file_exists($local)) {
+            $fp = fopen($local, 'rb');
             if (!$fp) {
-                throw new FilesystemException(\sprintf('%1$s: Unable to open local file for reading. Local path: %2$s', __METHOD__, $local));
+                throw new FilesystemException(sprintf('%1$s: Unable to open local file for reading. Local path: %2$s', __METHOD__, $local));
             }
         } else {
-            throw new FilesystemException(\sprintf('%1$s: Unable to find local file. Local path: %2$s', __METHOD__, $local));
+            throw new FilesystemException(sprintf('%1$s: Unable to find local file. Local path: %2$s', __METHOD__, $local));
         }
         // Start passive mode
         if (!$this->_passive()) {
-            @\fclose($fp);
+            @fclose($fp);
             throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
         }
         // Send store command to the FTP server
         if (!$this->_putCmd('STOR ' . $remote, array(150, 125))) {
-            @\fclose($fp);
-            @\fclose($this->dataconn);
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            @fclose($fp);
+            @fclose($this->dataconn);
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         // Do actual file transfer, read local file and write to data port connection
-        while (!\feof($fp)) {
-            $line = \fread($fp, 4096);
+        while (!feof($fp)) {
+            $line = fread($fp, 4096);
             do {
-                if (($result = @\fwrite($this->dataconn, $line)) === \false) {
+                if (($result = @fwrite($this->dataconn, $line)) === \false) {
                     throw new FilesystemException(__METHOD__ . ': Unable to write to data port socket');
                 }
-                $line = \substr($line, $result);
+                $line = substr($line, $result);
             } while ($line != '');
         }
-        \fclose($fp);
-        \fclose($this->dataconn);
+        fclose($fp);
+        fclose($this->dataconn);
         if (!$this->_verifyResponse(226)) {
-            throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         return \true;
     }
@@ -820,17 +820,17 @@ class FtpClient
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            $tmp = \fopen('buffer://tmp', 'br+');
-            \fwrite($tmp, $buffer);
-            \rewind($tmp);
-            if (@\ftp_fput($this->conn, $remote, $tmp, $mode) === \false) {
-                \fclose($tmp);
+            $tmp = fopen('buffer://tmp', 'br+');
+            fwrite($tmp, $buffer);
+            rewind($tmp);
+            if (@ftp_fput($this->conn, $remote, $tmp, $mode) === \false) {
+                fclose($tmp);
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
-            \fclose($tmp);
+            fclose($tmp);
             return \true;
         }
         // First we need to set the transfer mode
@@ -841,21 +841,21 @@ class FtpClient
         }
         // Send store command to the FTP server
         if (!$this->_putCmd('STOR ' . $remote, array(150, 125))) {
-            @\fclose($this->dataconn);
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            @fclose($this->dataconn);
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         // Write buffer to the data connection port
         do {
-            if (($result = @\fwrite($this->dataconn, $buffer)) === \false) {
+            if (($result = @fwrite($this->dataconn, $buffer)) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to write to data port socket.');
             }
-            $buffer = \substr($buffer, $result);
+            $buffer = substr($buffer, $result);
         } while ($buffer != '');
         // Close the data connection port [Data transfer complete]
-        \fclose($this->dataconn);
+        fclose($this->dataconn);
         // Verify that the server received the transfer
         if (!$this->_verifyResponse(226)) {
-            throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $remote));
+            throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $remote));
         }
         return \true;
     }
@@ -878,18 +878,18 @@ class FtpClient
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            if (($list = @\ftp_nlist($this->conn, $path)) === \false) {
+            if (($list = @ftp_nlist($this->conn, $path)) === \false) {
                 // Workaround for empty directories on some servers
                 if ($this->listDetails($path, 'files') === array()) {
                     return array();
                 }
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
-            $list = \preg_replace('#^' . \preg_quote($path, '#') . '[/\\\\]?#', '', $list);
-            if ($keys = \array_merge(\array_keys($list, '.'), \array_keys($list, '..'))) {
+            $list = preg_replace('#^' . preg_quote($path, '#') . '[/\\\\]?#', '', $list);
+            if ($keys = array_merge(array_keys($list, '.'), array_keys($list, '..'))) {
                 foreach ($keys as $key) {
                     unset($list[$key]);
                 }
@@ -905,25 +905,25 @@ class FtpClient
             throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
         }
         if (!$this->_putCmd('NLST' . $path, array(150, 125))) {
-            @\fclose($this->dataconn);
+            @fclose($this->dataconn);
             // Workaround for empty directories on some servers
             if ($this->listDetails($path, 'files') === array()) {
                 return array();
             }
-            throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $path));
+            throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $path));
         }
         // Read in the file listing.
-        while (!\feof($this->dataconn)) {
-            $data .= \fread($this->dataconn, 4096);
+        while (!feof($this->dataconn)) {
+            $data .= fread($this->dataconn, 4096);
         }
-        \fclose($this->dataconn);
+        fclose($this->dataconn);
         // Everything go okay?
         if (!$this->_verifyResponse(226)) {
-            throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $path));
+            throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $path));
         }
-        $data = \preg_split('/[' . CRLF . ']+/', $data, -1, \PREG_SPLIT_NO_EMPTY);
-        $data = \preg_replace('#^' . \preg_quote(\substr($path, 1), '#') . '[/\\\\]?#', '', $data);
-        if ($keys = \array_merge(\array_keys($data, '.'), \array_keys($data, '..'))) {
+        $data = preg_split('/[' . CRLF . ']+/', $data, -1, \PREG_SPLIT_NO_EMPTY);
+        $data = preg_replace('#^' . preg_quote(substr($path, 1), '#') . '[/\\\\]?#', '', $data);
+        if ($keys = array_merge(array_keys($data, '.'), array_keys($data, '..'))) {
             foreach ($keys as $key) {
                 unset($data[$key]);
             }
@@ -952,10 +952,10 @@ class FtpClient
         // If native FTP support is enabled let's use it...
         if (FTP_NATIVE) {
             // Turn passive mode on
-            if (@\ftp_pasv($this->conn, \true) === \false) {
+            if (@ftp_pasv($this->conn, \true) === \false) {
                 throw new FilesystemException(__METHOD__ . ': Unable to use passive mode.');
             }
-            if (($contents = @\ftp_rawlist($this->conn, $path)) === \false) {
+            if (($contents = @ftp_rawlist($this->conn, $path)) === \false) {
                 throw new FilesystemException(__METHOD__ . 'Bad response.');
             }
         } else {
@@ -970,19 +970,19 @@ class FtpClient
             }
             // Request the file listing
             if (!$this->_putCmd($recurse == \true ? 'LIST -R' : 'LIST' . $path, array(150, 125))) {
-                @\fclose($this->dataconn);
-                throw new FilesystemException(\sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $path));
+                @fclose($this->dataconn);
+                throw new FilesystemException(sprintf('%1$s: Bad response.  Server response: %2$s [Expected: 150 or 125].  Path sent: %3$s', __METHOD__, $this->response, $path));
             }
             // Read in the file listing.
-            while (!\feof($this->dataconn)) {
-                $data .= \fread($this->dataconn, 4096);
+            while (!feof($this->dataconn)) {
+                $data .= fread($this->dataconn, 4096);
             }
-            \fclose($this->dataconn);
+            fclose($this->dataconn);
             // Everything go okay?
             if (!$this->_verifyResponse(226)) {
-                throw new FilesystemException(\sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $path));
+                throw new FilesystemException(sprintf('%1$s: Transfer failed.  Server response: %2$s [Expected: 226].  Path sent: %3$s', __METHOD__, $this->response, $path));
             }
-            $contents = \explode(CRLF, $data);
+            $contents = explode(CRLF, $data);
         }
         // If only raw output is requested we are done
         if ($type == 'raw') {
@@ -993,8 +993,8 @@ class FtpClient
             return $dirList;
         }
         // If the server returned the number of results in the first response, let's dump it
-        if (\strtolower(\substr($contents[0], 0, 6)) == 'total ') {
-            \array_shift($contents);
+        if (strtolower(substr($contents[0], 0, 6)) == 'total ') {
+            array_shift($contents);
             if (!isset($contents[0]) || empty($contents[0])) {
                 return $dirList;
             }
@@ -1004,7 +1004,7 @@ class FtpClient
         // Find out the format of the directory listing by matching one of the regexps
         $osType = null;
         foreach ($regexps as $k => $v) {
-            if (@\preg_match($v, $contents[0])) {
+            if (@preg_match($v, $contents[0])) {
                 $osType = $k;
                 $regexp = $v;
                 break;
@@ -1019,8 +1019,8 @@ class FtpClient
         if ($osType == 'UNIX' || $osType == 'MAC') {
             foreach ($contents as $file) {
                 $tmpArray = null;
-                if (@\preg_match($regexp, $file, $regs)) {
-                    $fType = (int) \strpos('-dl', $regs[1][0]);
+                if (@preg_match($regexp, $file, $regs)) {
+                    $fType = (int) strpos('-dl', $regs[1][0]);
                     // $tmpArray['line'] = $regs[0];
                     $tmpArray['type'] = $fType;
                     $tmpArray['rights'] = $regs[1];
@@ -1028,7 +1028,7 @@ class FtpClient
                     $tmpArray['user'] = $regs[3];
                     $tmpArray['group'] = $regs[4];
                     $tmpArray['size'] = $regs[5];
-                    $tmpArray['date'] = @\date('m-d', \strtotime($regs[6]));
+                    $tmpArray['date'] = @date('m-d', strtotime($regs[6]));
                     $tmpArray['time'] = $regs[7];
                     $tmpArray['name'] = $regs[9];
                 }
@@ -1047,9 +1047,9 @@ class FtpClient
         } else {
             foreach ($contents as $file) {
                 $tmpArray = null;
-                if (@\preg_match($regexp, $file, $regs)) {
+                if (@preg_match($regexp, $file, $regs)) {
                     $fType = (int) ($regs[7] == '<DIR>');
-                    $timestamp = \strtotime("{$regs[3]}-{$regs[1]}-{$regs[2]} {$regs[4]}:{$regs[5]}{$regs[6]}");
+                    $timestamp = strtotime("{$regs[3]}-{$regs[1]}-{$regs[2]} {$regs[4]}:{$regs[5]}{$regs[6]}");
                     // $tmpArray['line'] = $regs[0];
                     $tmpArray['type'] = $fType;
                     $tmpArray['rights'] = '';
@@ -1057,8 +1057,8 @@ class FtpClient
                     $tmpArray['user'] = '';
                     $tmpArray['group'] = '';
                     $tmpArray['size'] = (int) $regs[7];
-                    $tmpArray['date'] = \date('m-d', $timestamp);
-                    $tmpArray['time'] = \date('H:i', $timestamp);
+                    $tmpArray['date'] = date('m-d', $timestamp);
+                    $tmpArray['time'] = date('H:i', $timestamp);
                     $tmpArray['name'] = $regs[8];
                 }
                 // If we just want files, do not add a folder
@@ -1094,8 +1094,8 @@ class FtpClient
             throw new FilesystemException(__METHOD__ . ': Not connected to the control port.');
         }
         // Send the command to the server
-        if (!\fwrite($this->conn, $cmd . "\r\n")) {
-            throw new FilesystemException(\sprintf('%1$s: Unable to send command: %2$s', __METHOD__, $cmd));
+        if (!fwrite($this->conn, $cmd . "\r\n")) {
+            throw new FilesystemException(sprintf('%1$s: Unable to send command: %2$s', __METHOD__, $cmd));
         }
         return $this->_verifyResponse($expectedResponse);
     }
@@ -1113,14 +1113,14 @@ class FtpClient
     {
         $parts = null;
         // Wait for a response from the server, but timeout after the set time limit
-        $endTime = \time() + $this->timeout;
+        $endTime = time() + $this->timeout;
         $this->response = '';
         do {
-            $this->response .= \fgets($this->conn, 4096);
-        } while (!\preg_match('/^([0-9]{3})(-(.*' . CRLF . ')+\\1)? [^' . CRLF . ']+' . CRLF . '$/', $this->response, $parts) && \time() < $endTime);
+            $this->response .= fgets($this->conn, 4096);
+        } while (!preg_match('/^([0-9]{3})(-(.*' . CRLF . ')+\1)? [^' . CRLF . ']+' . CRLF . '$/', $this->response, $parts) && time() < $endTime);
         // Catch a timeout or bad response
         if (!isset($parts[1])) {
-            throw new FilesystemException(\sprintf('%1$s: Timeout or unrecognised response while waiting for a response from the server. Server response: %2$s', __METHOD__, $this->response));
+            throw new FilesystemException(sprintf('%1$s: Timeout or unrecognised response while waiting for a response from the server. Server response: %2$s', __METHOD__, $this->response));
         }
         // Separate the code from the message
         $this->responseCode = $parts[1];
@@ -1132,12 +1132,10 @@ class FtpClient
             } else {
                 $retval = \false;
             }
+        } elseif ($this->responseCode == $expected) {
+            $retval = \true;
         } else {
-            if ($this->responseCode == $expected) {
-                $retval = \true;
-            } else {
-                $retval = \false;
-            }
+            $retval = \false;
         }
         return $retval;
     }
@@ -1160,37 +1158,37 @@ class FtpClient
             throw new FilesystemException(__METHOD__ . ': Not connected to the control port.');
         }
         // Request a passive connection - this means, we'll talk to you, you don't talk to us.
-        @\fwrite($this->conn, "PASV\r\n");
+        @fwrite($this->conn, "PASV\r\n");
         // Wait for a response from the server, but timeout after the set time limit
-        $endTime = \time() + $this->timeout;
+        $endTime = time() + $this->timeout;
         $this->response = '';
         do {
-            $this->response .= \fgets($this->conn, 4096);
-        } while (!\preg_match('/^([0-9]{3})(-(.*' . CRLF . ')+\\1)? [^' . CRLF . ']+' . CRLF . '$/', $this->response, $parts) && \time() < $endTime);
+            $this->response .= fgets($this->conn, 4096);
+        } while (!preg_match('/^([0-9]{3})(-(.*' . CRLF . ')+\1)? [^' . CRLF . ']+' . CRLF . '$/', $this->response, $parts) && time() < $endTime);
         // Catch a timeout or bad response
         if (!isset($parts[1])) {
-            throw new FilesystemException(\sprintf('%1$s: Timeout or unrecognised response while waiting for a response from the server. Server response: %2$s', __METHOD__, $this->response));
+            throw new FilesystemException(sprintf('%1$s: Timeout or unrecognised response while waiting for a response from the server. Server response: %2$s', __METHOD__, $this->response));
         }
         // Separate the code from the message
         $this->responseCode = $parts[1];
         $this->responseMsg = $parts[0];
         // If it's not 227, we weren't given an IP and port, which means it failed.
         if ($this->responseCode != 227) {
-            throw new FilesystemException(\sprintf('%1$s: Unable to obtain IP and port for data transfer. Server response: %2$s', __METHOD__, $this->responseMsg));
+            throw new FilesystemException(sprintf('%1$s: Unable to obtain IP and port for data transfer. Server response: %2$s', __METHOD__, $this->responseMsg));
         }
         // Snatch the IP and port information, or die horribly trying...
-        if (\preg_match('~\\((\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*(\\d+))\\)~', $this->responseMsg, $match) == 0) {
-            throw new FilesystemException(\sprintf('%1$s: IP and port for data transfer not valid. Server response: %2$s', __METHOD__, $this->responseMsg));
+        if (preg_match('~\((\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))\)~', $this->responseMsg, $match) == 0) {
+            throw new FilesystemException(sprintf('%1$s: IP and port for data transfer not valid. Server response: %2$s', __METHOD__, $this->responseMsg));
         }
         // This is pretty simple - store it for later use ;).
         $this->pasv = array('ip' => $match[1] . '.' . $match[2] . '.' . $match[3] . '.' . $match[4], 'port' => $match[5] * 256 + $match[6]);
         // Connect, assuming we've got a connection.
-        $this->dataconn = @\fsockopen($this->pasv['ip'], $this->pasv['port'], $errno, $err, $this->timeout);
+        $this->dataconn = @fsockopen($this->pasv['ip'], $this->pasv['port'], $errno, $err, $this->timeout);
         if (!$this->dataconn) {
-            throw new FilesystemException(\sprintf('%1$s: Could not connect to host %2$s on port %3$s. Socket error number: %4$s and error message: %5$s', __METHOD__, $this->pasv['ip'], $this->pasv['port'], $errno, $err));
+            throw new FilesystemException(sprintf('%1$s: Could not connect to host %2$s on port %3$s. Socket error number: %4$s and error message: %5$s', __METHOD__, $this->pasv['ip'], $this->pasv['port'], $errno, $err));
         }
         // Set the timeout for this connection
-        \socket_set_timeout($this->conn, $this->timeout, 0);
+        socket_set_timeout($this->conn, $this->timeout, 0);
         return \true;
     }
     /**
@@ -1205,8 +1203,8 @@ class FtpClient
     protected function _findMode($fileName)
     {
         if ($this->type == FTP_AUTOASCII) {
-            $dot = \strrpos($fileName, '.') + 1;
-            $ext = \substr($fileName, $dot);
+            $dot = strrpos($fileName, '.') + 1;
+            $ext = substr($fileName, $dot);
             if (\in_array($ext, $this->autoAscii)) {
                 $mode = \FTP_ASCII;
             } else {
@@ -1234,12 +1232,10 @@ class FtpClient
     {
         if ($mode == \FTP_BINARY) {
             if (!$this->_putCmd('TYPE I', 200)) {
-                throw new FilesystemException(\sprintf('%1$s: Bad response. Server response: %2$s [Expected: 200]. Mode sent: Binary', __METHOD__, $this->response));
+                throw new FilesystemException(sprintf('%1$s: Bad response. Server response: %2$s [Expected: 200]. Mode sent: Binary', __METHOD__, $this->response));
             }
-        } else {
-            if (!$this->_putCmd('TYPE A', 200)) {
-                throw new FilesystemException(\sprintf('%1$s: Bad response. Server response: %2$s [Expected: 200]. Mode sent: ASCII', __METHOD__, $this->response));
-            }
+        } elseif (!$this->_putCmd('TYPE A', 200)) {
+            throw new FilesystemException(sprintf('%1$s: Bad response. Server response: %2$s [Expected: 200]. Mode sent: ASCII', __METHOD__, $this->response));
         }
         return \true;
     }

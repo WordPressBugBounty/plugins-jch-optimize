@@ -14,8 +14,8 @@
 // Protect from unauthorized access
 defined('_JCH_EXEC') or die;
 
-const JCH_VERSION  = '5.0.0';
-const JCH_DATE     = '2025-06-11';
+const JCH_VERSION  = '5.0.1';
+const JCH_DATE     = '2025-09-15';
 const JCH_PRO      = '0';
 const JCH_DEVELOP  = '0';
 const JCH_PLATFORM = 'WordPress';

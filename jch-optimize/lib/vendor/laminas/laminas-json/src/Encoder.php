@@ -233,13 +233,13 @@ class Encoder
         // Escape these characters with a backslash or unicode escape:
         // " \ / \n \r \t \b \f
         $search = ['\\', "\n", "\t", "\r", "\\b", "\f", '"', '\'', '&', '<', '>', '/'];
-        $replace = ['\\\\', '\\n', '\\t', '\\r', '\\b', '\\f', '\\u0022', '\\u0027', '\\u0026', '\\u003C', '\\u003E', '\\/'];
+        $replace = ['\\\\', '\n', '\t', '\r', '\b', '\f', '\u0022', '\u0027', '\u0026', '\u003C', '\u003E', '\/'];
         $string = str_replace($search, $replace, $string);
         // @codingStandardsIgnoreEnd
         // Escape certain ASCII characters:
         // 0x08 => \b
         // 0x0c => \f
-        $string = str_replace([chr(0x8), chr(0xc)], ['\\b', '\\f'], $string);
+        $string = str_replace([chr(0x8), chr(0xc)], ['\b', '\f'], $string);
         $string = self::encodeUnicodeString($string);
         return '"' . $string . '"';
     }
@@ -393,7 +393,7 @@ class Encoder
                     $char = pack('C*', $ordVarC, ord($value[$i + 1]));
                     $i += 1;
                     $utf16 = self::utf82utf16($char);
-                    $ascii .= sprintf('\\u%04s', bin2hex($utf16));
+                    $ascii .= sprintf('\u%04s', bin2hex($utf16));
                     break;
                 case ($ordVarC & 0xf0) === 0xe0:
                     // characters U-00000800 - U-0000FFFF, mask 1110XXXX
@@ -401,7 +401,7 @@ class Encoder
                     $char = pack('C*', $ordVarC, ord($value[$i + 1]), ord($value[$i + 2]));
                     $i += 2;
                     $utf16 = self::utf82utf16($char);
-                    $ascii .= sprintf('\\u%04s', bin2hex($utf16));
+                    $ascii .= sprintf('\u%04s', bin2hex($utf16));
                     break;
                 case ($ordVarC & 0xf8) === 0xf0:
                     // characters U-00010000 - U-001FFFFF, mask 11110XXX
@@ -409,7 +409,7 @@ class Encoder
                     $char = pack('C*', $ordVarC, ord($value[$i + 1]), ord($value[$i + 2]), ord($value[$i + 3]));
                     $i += 3;
                     $utf16 = self::utf82utf16($char);
-                    $ascii .= sprintf('\\u%04s', bin2hex($utf16));
+                    $ascii .= sprintf('\u%04s', bin2hex($utf16));
                     break;
                 case ($ordVarC & 0xfc) === 0xf8:
                     // characters U-00200000 - U-03FFFFFF, mask 111110XX
@@ -417,7 +417,7 @@ class Encoder
                     $char = pack('C*', $ordVarC, ord($value[$i + 1]), ord($value[$i + 2]), ord($value[$i + 3]), ord($value[$i + 4]));
                     $i += 4;
                     $utf16 = self::utf82utf16($char);
-                    $ascii .= sprintf('\\u%04s', bin2hex($utf16));
+                    $ascii .= sprintf('\u%04s', bin2hex($utf16));
                     break;
                 case ($ordVarC & 0xfe) === 0xfc:
                     // characters U-04000000 - U-7FFFFFFF, mask 1111110X
@@ -425,7 +425,7 @@ class Encoder
                     $char = pack('C*', $ordVarC, ord($value[$i + 1]), ord($value[$i + 2]), ord($value[$i + 3]), ord($value[$i + 4]), ord($value[$i + 5]));
                     $i += 5;
                     $utf16 = self::utf82utf16($char);
-                    $ascii .= sprintf('\\u%04s', bin2hex($utf16));
+                    $ascii .= sprintf('\u%04s', bin2hex($utf16));
                     break;
             }
         }

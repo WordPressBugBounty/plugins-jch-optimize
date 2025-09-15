@@ -62,7 +62,7 @@ function utf8_strpos($str, $needle, $offset = null)
             return \FALSE;
         }
         $str = utf8_substr($str, $offset);
-        if (\FALSE !== ($pos = utf8_strpos($str, $needle))) {
+        if (\FALSE !== $pos = utf8_strpos($str, $needle)) {
             return $pos + $offset;
         }
         return \FALSE;
@@ -100,7 +100,7 @@ function utf8_strrpos($str, $needle, $offset = null)
             return \FALSE;
         }
         $str = utf8_substr($str, $offset);
-        if (\FALSE !== ($pos = utf8_strrpos($str, $needle))) {
+        if (\FALSE !== $pos = utf8_strrpos($str, $needle)) {
             return $pos + $offset;
         }
         return \FALSE;
@@ -201,21 +201,19 @@ function utf8_substr($str, $offset, $length = null)
                 $Lp = '(?:.{65535}){' . $Lx . '}';
             }
             $Lp = '(' . $Lp . '.{' . $Ly . '})';
-        } else {
-            if ($length < 0) {
-                if ($length < $offset - $strlen) {
-                    return '';
-                }
-                $Lx = (int) (-$length / 65535);
-                $Ly = -$length % 65535;
-                // negative length requires ... capture everything
-                // except a group of  -length characters
-                // anchored at the tail-end of the string
-                if ($Lx) {
-                    $Lp = '(?:.{65535}){' . $Lx . '}';
-                }
-                $Lp = '(.*)(?:' . $Lp . '.{' . $Ly . '})$';
+        } elseif ($length < 0) {
+            if ($length < $offset - $strlen) {
+                return '';
             }
+            $Lx = (int) (-$length / 65535);
+            $Ly = -$length % 65535;
+            // negative length requires ... capture everything
+            // except a group of  -length characters
+            // anchored at the tail-end of the string
+            if ($Lx) {
+                $Lp = '(?:.{65535}){' . $Lx . '}';
+            }
+            $Lp = '(.*)(?:' . $Lp . '.{' . $Ly . '})$';
         }
     }
     if (!\preg_match('#' . $Op . $Lp . '#us', $str, $match)) {

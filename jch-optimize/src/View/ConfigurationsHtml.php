@@ -34,10 +34,15 @@ class ConfigurationsHtml extends View
                 'jch-bootstrap-js'
         ], JCH_VERSION, true);
         wp_register_script('jch-sticky-overlap-observer', JCH_PLUGIN_URL . 'media/js/sticky-overlap-observer.js', [], JCH_VERSION, true);
-
+        wp_register_script('jch-multiselect-js', JCH_PLUGIN_URL . 'media/core/js/multiselect.js', [
+            'jquery',
+            'jch-adminutility-js',
+            'jch-platformwordpress-js'
+        ], JCH_VERSION, true);
         wp_enqueue_style('jch-excludesjs-css');
         wp_enqueue_script('jch-tabstate-js');
         wp_enqueue_script('jch-sticky-overlap-observer');
+        wp_enqueue_script('jch-multiselect-js');
 
         if (JCH_PRO) {
             wp_register_script(

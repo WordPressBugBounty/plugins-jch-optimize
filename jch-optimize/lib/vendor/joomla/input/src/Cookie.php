@@ -55,32 +55,32 @@ class Cookie extends Input
     public function set($name, $value, $options = [])
     {
         // BC layer to convert old method parameters.
-        if (\is_array($options) === \false) {
+        if (is_array($options) === \false) {
             trigger_deprecation('joomla/input', '1.4.0', 'The %s($name, $value, $expire, $path, $domain, $secure, $httpOnly) signature is deprecated and will not be supported once support' . ' for PHP 7.2 and earlier is dropped, use the %s($name, $value, $options) signature instead', __METHOD__, __METHOD__);
-            $argList = \func_get_args();
+            $argList = func_get_args();
             $options = ['expires' => $argList[2] ?? 0, 'path' => $argList[3] ?? '', 'domain' => $argList[4] ?? '', 'secure' => $argList[5] ?? \false, 'httponly' => $argList[6] ?? \false];
         }
         // Set the cookie
-        if (\version_compare(\PHP_VERSION, '7.3', '>=')) {
-            \setcookie($name, $value, $options);
+        if (version_compare(\PHP_VERSION, '7.3', '>=')) {
+            setcookie($name, $value, $options);
         } else {
             // Using the setcookie function before php 7.3, make sure we have default values.
-            if (\array_key_exists('expires', $options) === \false) {
+            if (array_key_exists('expires', $options) === \false) {
                 $options['expires'] = 0;
             }
-            if (\array_key_exists('path', $options) === \false) {
+            if (array_key_exists('path', $options) === \false) {
                 $options['path'] = '';
             }
-            if (\array_key_exists('domain', $options) === \false) {
+            if (array_key_exists('domain', $options) === \false) {
                 $options['domain'] = '';
             }
-            if (\array_key_exists('secure', $options) === \false) {
+            if (array_key_exists('secure', $options) === \false) {
                 $options['secure'] = \false;
             }
-            if (\array_key_exists('httponly', $options) === \false) {
+            if (array_key_exists('httponly', $options) === \false) {
                 $options['httponly'] = \false;
             }
-            \setcookie($name, $value, $options['expires'], $options['path'], $options['domain'], $options['secure'], $options['httponly']);
+            setcookie($name, $value, $options['expires'], $options['path'], $options['domain'], $options['secure'], $options['httponly']);
         }
         $this->data[$name] = $value;
     }

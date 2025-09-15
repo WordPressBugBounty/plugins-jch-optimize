@@ -1,9 +1,9 @@
 === JCH Optimize ===
 
 Contributors: codealfa
-Tags: performance, pagespeed, cache, optimize, seo, core web vitals
-Tested up to: 6.8.1
-Stable tag: 5.0.0
+Tags: performance, pagespeed, cache, optimize, seo
+Tested up to: 6.8.2
+Stable tag: 5.0.1
 License: GPLv3 or later
 Requires at least: 5.0
 Requires PHP: 8.0
@@ -79,6 +79,17 @@ The combined files are accessed by the browser via a jscss.php file in the `/wp-
 Simply deactivate or uninstall the plugin to reverse any changes it has made. The plugin doesn't modify any existing file or code but merely manipulates the HTML before it is sent to the browser. Any apparent persistent change after the plugin is deactivated is due to caching so ensure to flush all your WordPress, third party or browser cache.
 
 == Changelog ==
+
+= 5.0.1 =
+* Fixed a Path Traversal security vulnerability on the Optimize Image page found by Artyom from CleanTalk.
+* Improved simplification of dynamic CSS Selectors listed by the Optimize CSS Delivery configure helper.
+* [MEDIUM] Some CSS fonts missing when Reduce Unused CSS is enabled.
+* [MEDIUM] Remove @charsets from combined dynamic CSS file
+* [LOW] JavaScript error when lazy load background image enabled but none found.
+* Improve robustness of Critical JavaScript configure helper
+* Don't cache 404 or other invalid pages.
+* Improved usability and accuracy of 'Above fold marker' in Miscellaneous Settings and 'Configure helper' in Optimize CSS Delivery. These settings are only visible when 'Debug plugin' is enabled. Please read the descriptions for more information.
+* CSS files loaded dynamically in 'Reduce Unused CSS' feature are combined to prevent incremental layout shifts when the user interacts with the page.
 
 = 5.0.0 =
 * Implemented new design for Dashboard.

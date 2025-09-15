@@ -20,6 +20,7 @@ use JchOptimize\Core\Mvc\Model;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
 
+use function array_unique;
 use function dirname;
 use function file_exists;
 use function is_dir;
@@ -59,12 +60,32 @@ class BulkSettings extends Model
             $uploadedFile->moveTo($targetPath);
         }
 
-        $params = (new Registry())->loadFile($targetPath);
+        $uploadedSettings = (new Registry())->loadFile($targetPath);
 
         File::delete($targetPath);
 
-        $this->setState($params);
+        if ($uploadedSettings->get('merge')) {
+            $this->mergeSettings($uploadedSettings);
+        } else {
+            $this->setState($uploadedSettings);
+            update_option('jch-optimize_settings', $uploadedSettings->toArray());
+        }
+    }
 
-        update_option('jch-optimize_settings', $params->toArray());
+    private function mergeSettings(Registry $uploadedSettings): void
+    {
+        $uploadedSettings->remove('merge');
+
+        foreach ($uploadedSettings as $setting => $value) {
+            if (is_array($value)) {
+                $mergedSetting = array_unique(array_merge($this->state->get($setting, []), $value));
+            } else {
+                $mergedSetting = $value;
+            }
+
+            $this->state->set($setting, $mergedSetting);
+        }
+
+        update_option('jch-optimize_settings', $this->state->toArray());
     }
 }

@@ -25,6 +25,7 @@ use JchOptimize\Core\Css\Callbacks\PostProcessCriticalCss;
 use JchOptimize\Core\FeatureHelpers\DynamicSelectors;
 use JchOptimize\Core\Html\Callbacks\Cdn as CdnCallback;
 use JchOptimize\Core\Html\Callbacks\CombineJsCss;
+use JchOptimize\Core\Html\Callbacks\JavaScriptConfigureHelper;
 use JchOptimize\Core\Html\Callbacks\LazyLoad;
 use JchOptimize\Core\Html\FilesManager;
 use JchOptimize\Core\Preloads\Http2Preload;
@@ -46,6 +47,7 @@ class Callbacks implements ServiceProviderInterface
         $container->set(CdnCallback::class, [$this, 'getCdnCallbackService']);
         $container->set(CombineJsCss::class, [$this, 'getCombineJsCssService']);
         $container->set(LazyLoad::class, [$this, 'getLazyLoadService']);
+        $container->set(JavaScriptConfigureHelper::class, [$this, 'getJavaScriptConfigureHelperService']);
         //Css Callback;
         $container->set(CorrectUrls::class, [$this, 'getCorrectUrlsService']);
         $container->set(ExtractCriticalCss::class, [$this, 'getExtractCriticalCssService']);
@@ -83,6 +85,18 @@ class Callbacks implements ServiceProviderInterface
             $container,
             $container->get(Registry::class),
             $container->get(Http2Preload::class)
+        );
+    }
+
+    public function getJavaScriptConfigureHelperService(Container $container): JavaScriptConfigureHelper
+    {
+        return new JavaScriptConfigureHelper(
+            $container,
+            $container->get(Registry::class),
+            $container->get(FilesManager::class),
+            $container->get(HtmlProcessor::class),
+            $container->get(ProfilerInterface::class),
+            $container->get(ExcludesInterface::class)
         );
     }
 

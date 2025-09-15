@@ -28,12 +28,15 @@ abstract class AbstractContainerFactory
 {
     private static ?Container $container = null;
 
+    final public function __construct()
+    {
+    }
+
     /**
      * Will return a new instance of the container every time
      */
-    public static function create(
-        ContainerInterface|\Psr\Container\ContainerInterface|null $parent = null
-    ): Container {
+    public static function create(ContainerInterface|\Psr\Container\ContainerInterface|null $parent = null): Container
+    {
         $ContainerFactory = new static();
 
         $container = new Container($parent);

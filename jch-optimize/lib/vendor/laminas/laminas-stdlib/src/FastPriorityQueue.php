@@ -183,7 +183,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function count()
     {
         return $this->count;
@@ -193,7 +193,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      *
      * @return TValue|int|array{data: TValue|false, priority: int}|false
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         switch ($this->extractFlag) {
@@ -210,7 +210,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function key()
     {
         return $this->index;
@@ -240,7 +240,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      * Set the iterator pointer to the next element in the queue
      * without removing the previous element
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function next()
     {
         if (\false === next($this->values[$this->maxPriority])) {
@@ -257,7 +257,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
      *
      * @return bool
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->values[$this->maxPriority]);
@@ -265,7 +265,7 @@ class FastPriorityQueue implements Iterator, Countable, Serializable
     /**
      * Rewind the current iterator
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function rewind()
     {
         $this->subPriorities = $this->priorities;

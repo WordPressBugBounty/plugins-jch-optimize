@@ -51,7 +51,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\V91\Psr\Http\Client
      *
      * @param array $config Client configuration settings.
      *
-     * @see \GuzzleHttp\RequestOptions for a list of available request options.
+     * @see RequestOptions for a list of available request options.
      */
     public function __construct(array $config = [])
     {
@@ -111,7 +111,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\V91\Psr\Http\Client
     /**
      * The HttpClient PSR (PSR-18) specify this method.
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
@@ -205,7 +205,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\V91\Psr\Http\Client
         // We can only trust the HTTP_PROXY environment variable in a CLI
         // process due to the fact that PHP has no reliable mechanism to
         // get environment variables that start with "HTTP_".
-        if (\PHP_SAPI === 'cli' && ($proxy = Utils::getenv('HTTP_PROXY'))) {
+        if (\PHP_SAPI === 'cli' && $proxy = Utils::getenv('HTTP_PROXY')) {
             $defaults['proxy']['http'] = $proxy;
         }
         if ($proxy = Utils::getenv('HTTPS_PROXY')) {
@@ -292,7 +292,7 @@ class Client implements ClientInterface, \_JchOptimizeVendor\V91\Psr\Http\Client
     {
         $modify = ['set_headers' => []];
         if (isset($options['headers'])) {
-            if (\array_keys($options['headers']) === \range(0, \count($options['headers']) - 1)) {
+            if (array_keys($options['headers']) === range(0, count($options['headers']) - 1)) {
                 throw new InvalidArgumentException('The headers array must have header name as keys.');
             }
             $modify['set_headers'] = $options['headers'];
@@ -368,6 +368,9 @@ class Client implements ClientInterface, \_JchOptimizeVendor\V91\Psr\Http\Client
             if (\is_bool($options['sink'])) {
                 throw new InvalidArgumentException('sink must not be a boolean');
             }
+        }
+        if (isset($options['version'])) {
+            $modify['version'] = $options['version'];
         }
         $request = Psr7\Utils::modifyRequest($request, $modify);
         if ($request->getBody() instanceof Psr7\MultipartStream) {

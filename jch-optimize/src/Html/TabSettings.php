@@ -88,7 +88,7 @@ abstract class TabSettings
                 'elements_above_fold_marker' => [
                     __('Above fold marker', 'jch-optimize'),
                     __(
-                        'DO NOT LEAVE THIS ENABLED! This only works if Debug Plugin above is enabled. This prints a big bright red dot where the plugin has calculated that the \'above the fold\' line is. Gradually increase the \'Elements above fold\' value until the dot falls below the fold on mobile and desktop.'
+                        'DO NOT LEAVE THIS ENABLED! This only works if Debug Plugin above is enabled. This prints the calculate number of elements above the fold in the console. For a visual indicator of where your configured \'Elements above fold\' falls on the page, run \'verifyElementMarkerOverlay()\' in the console.'
                     )
                 ]
             ],
@@ -361,7 +361,7 @@ abstract class TabSettings
                 ],
                 'critical_css_configure_helper' => [
                     __('Configure helper', 'jch-optimize'),
-                    __('Prints the CSS Dynamic Selectors in the browser console. Copy each to the settings above as a start. DO NOT LEAVE ENABLED IN PRODUCTION!!')
+                    __('Prints the CSS Dynamic Selectors in the browser console. Run \'downloadDynamicSelectors()\' in the console to download a JSON file with these values and use the Bulk Settings feature on the Dashboard to import and merge them into your settings. DO NOT LEAVE ENABLED IN PRODUCTION!!')
                 ]
             ],
             /**
@@ -521,12 +521,6 @@ abstract class TabSettings
                 'pro_criticalModulesScripts'  => [
                     __('Critical inline modules', 'jch-optimize'),
                     __('You can exclude inline modules in a similar manner as outlined above.')
-                ],
-                'pro_defer_criticalJs'        => [
-                    __('Defer critical js', 'jch-optimize'),
-                    __(
-                        'The critical JavaScript will be deferred or loaded asynchronously by default to avoid render-blocking. However, if your template uses JavaScript to perform any of the initial render above the fold, you may want to disable this to ensure the critical JavaScript loads before the page starts rendering.'
-                    )
                 ],
                 'critical_js_configure_helper'  => [
                     __('Configure helper', 'jch-optimize'),

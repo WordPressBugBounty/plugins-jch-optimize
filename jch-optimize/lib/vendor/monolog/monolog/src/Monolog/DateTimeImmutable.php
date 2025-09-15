@@ -36,9 +36,9 @@ class DateTimeImmutable extends \DateTimeImmutable implements \JsonSerializable
     public function jsonSerialize(): string
     {
         if ($this->useMicroseconds) {
-            return $this->format('Y-m-d\\TH:i:s.uP');
+            return $this->format('Y-m-d\TH:i:s.uP');
         }
-        return $this->format('Y-m-d\\TH:i:sP');
+        return $this->format('Y-m-d\TH:i:sP');
     }
     public function __toString(): string
     {

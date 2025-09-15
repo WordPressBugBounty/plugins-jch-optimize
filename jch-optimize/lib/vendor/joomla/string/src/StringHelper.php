@@ -10,7 +10,7 @@
 namespace _JchOptimizeVendor\V91\Joomla\String;
 
 // PHP mbstring and iconv local configuration
-@\ini_set('default_charset', 'UTF-8');
+@ini_set('default_charset', 'UTF-8');
 /**
  * String handling class for UTF-8 data wrapping the phputf8 library. All functions assume the validity of UTF-8 strings.
  *
@@ -48,7 +48,7 @@ abstract class StringHelper
      * @var    array
      * @since  1.3.0
      */
-    protected static $incrementStyles = ['dash' => ['#-(\\d+)$#', '-%d'], 'default' => [['#\\((\\d+)\\)$#', '#\\(\\d+\\)$#'], [' (%d)', '(%d)']]];
+    protected static $incrementStyles = ['dash' => ['#-(\d+)$#', '-%d'], 'default' => [['#\((\d+)\)$#', '#\(\d+\)$#'], [' (%d)', '(%d)']]];
     /**
      * Increments a trailing number in a string.
      *
@@ -83,12 +83,12 @@ abstract class StringHelper
             $newFormat = $oldFormat = $styleSpec[1];
         }
         // Check if we are incrementing an existing pattern, or appending a new one.
-        if (\preg_match($rxSearch, $string, $matches)) {
+        if (preg_match($rxSearch, $string, $matches)) {
             $n = empty($n) ? $matches[1] + 1 : $n;
-            $string = \preg_replace($rxReplace, \sprintf($oldFormat, $n), $string);
+            $string = preg_replace($rxReplace, sprintf($oldFormat, $n), $string);
         } else {
             $n = empty($n) ? 2 : $n;
-            $string .= \sprintf($newFormat, $n);
+            $string .= sprintf($newFormat, $n);
         }
         return $string;
     }
@@ -331,23 +331,23 @@ abstract class StringHelper
             return utf8_strcasecmp($str1, $str2);
         }
         // Get current locale
-        $locale0 = \setlocale(\LC_COLLATE, 0);
-        if (!($locale = \setlocale(\LC_COLLATE, $locale))) {
+        $locale0 = setlocale(\LC_COLLATE, 0);
+        if (!$locale = setlocale(\LC_COLLATE, $locale)) {
             $locale = $locale0;
         }
         // See if we have successfully set locale to UTF-8
-        if (!\stristr($locale, 'UTF-8') && \stristr($locale, '_') && \preg_match('~\\.(\\d+)$~', $locale, $m)) {
+        if (!stristr($locale, 'UTF-8') && stristr($locale, '_') && preg_match('~\.(\d+)$~', $locale, $m)) {
             $encoding = 'CP' . $m[1];
-        } elseif (\stristr($locale, 'UTF-8') || \stristr($locale, 'utf8')) {
+        } elseif (stristr($locale, 'UTF-8') || stristr($locale, 'utf8')) {
             $encoding = 'UTF-8';
         } else {
             $encoding = 'nonrecodable';
         }
         // If we successfully set encoding it to utf-8 or encoding is sth weird don't recode
         if ($encoding == 'UTF-8' || $encoding == 'nonrecodable') {
-            return \strcoll(utf8_strtolower($str1), utf8_strtolower($str2));
+            return strcoll(utf8_strtolower($str1), utf8_strtolower($str2));
         }
-        return \strcoll(static::transcode(utf8_strtolower($str1), 'UTF-8', $encoding), static::transcode(utf8_strtolower($str2), 'UTF-8', $encoding));
+        return strcoll(static::transcode(utf8_strtolower($str1), 'UTF-8', $encoding), static::transcode(utf8_strtolower($str2), 'UTF-8', $encoding));
     }
     /**
      * UTF-8/LOCALE aware alternative to strcmp()
@@ -369,25 +369,25 @@ abstract class StringHelper
     {
         if ($locale) {
             // Get current locale
-            $locale0 = \setlocale(\LC_COLLATE, 0);
-            if (!($locale = \setlocale(\LC_COLLATE, $locale))) {
+            $locale0 = setlocale(\LC_COLLATE, 0);
+            if (!$locale = setlocale(\LC_COLLATE, $locale)) {
                 $locale = $locale0;
             }
             // See if we have successfully set locale to UTF-8
-            if (!\stristr($locale, 'UTF-8') && \stristr($locale, '_') && \preg_match('~\\.(\\d+)$~', $locale, $m)) {
+            if (!stristr($locale, 'UTF-8') && stristr($locale, '_') && preg_match('~\.(\d+)$~', $locale, $m)) {
                 $encoding = 'CP' . $m[1];
-            } elseif (\stristr($locale, 'UTF-8') || \stristr($locale, 'utf8')) {
+            } elseif (stristr($locale, 'UTF-8') || stristr($locale, 'utf8')) {
                 $encoding = 'UTF-8';
             } else {
                 $encoding = 'nonrecodable';
             }
             // If we successfully set encoding it to utf-8 or encoding is sth weird don't recode
             if ($encoding == 'UTF-8' || $encoding == 'nonrecodable') {
-                return \strcoll($str1, $str2);
+                return strcoll($str1, $str2);
             }
-            return \strcoll(static::transcode($str1, 'UTF-8', $encoding), static::transcode($str2, 'UTF-8', $encoding));
+            return strcoll(static::transcode($str1, 'UTF-8', $encoding), static::transcode($str2, 'UTF-8', $encoding));
         }
-        return \strcmp($str1, $str2);
+        return strcmp($str1, $str2);
     }
     /**
      * UTF-8 aware alternative to strcspn()
@@ -592,7 +592,7 @@ abstract class StringHelper
         if ($newDelimiter === null) {
             $newDelimiter = $delimiter;
         }
-        return \implode($newDelimiter, \array_map('utf8_ucfirst', \explode($delimiter, $str)));
+        return implode($newDelimiter, array_map('utf8_ucfirst', explode($delimiter, $str)));
     }
     /**
      * UTF-8 aware alternative to ucwords()
@@ -627,10 +627,10 @@ abstract class StringHelper
     {
         switch (\ICONV_IMPL) {
             case 'glibc':
-                return @\iconv($fromEncoding, $toEncoding . '//TRANSLIT,IGNORE', $source);
+                return @iconv($fromEncoding, $toEncoding . '//TRANSLIT,IGNORE', $source);
             case 'libiconv':
             default:
-                return \iconv($fromEncoding, $toEncoding . '//IGNORE//TRANSLIT', $source);
+                return iconv($fromEncoding, $toEncoding . '//IGNORE//TRANSLIT', $source);
         }
     }
     /**
@@ -683,8 +683,8 @@ abstract class StringHelper
     public static function unicode_to_utf8($str)
     {
         if (\extension_loaded('mbstring')) {
-            return \preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', static function ($match) {
-                return \mb_convert_encoding(\pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+            return preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', static function ($match) {
+                return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
             }, $str);
         }
         return $str;
@@ -701,8 +701,8 @@ abstract class StringHelper
     public static function unicode_to_utf16($str)
     {
         if (\extension_loaded('mbstring')) {
-            return \preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', static function ($match) {
-                return \mb_convert_encoding(\pack('H*', $match[1]), 'UTF-8', 'UTF-16BE');
+            return preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', static function ($match) {
+                return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UTF-16BE');
             }, $str);
         }
         return $str;

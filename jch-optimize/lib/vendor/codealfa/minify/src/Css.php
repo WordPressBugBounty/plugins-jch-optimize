@@ -49,33 +49,37 @@ class Css extends \CodeAlfa\Minify\Base
     {
         $s1 = self::doubleQuoteStringToken();
         $s2 = self::singleQuoteStringToken();
-        $es = $s1 . '|' . $s2;
-        $s = '(?<!\\\\)(?:' . $es . ')|[\'"]';
         $u = self::cssUrlToken();
-        $e = '(?<!\\\\)(?:' . $es . '|' . $u . ')|[\'"(]';
         $b = self::blockCommentToken();
-        //$c = self::LINE_COMMENT();
+        $sel = self::cssSelectorListToken();
         // Remove all comments
-        $rx = "#(?>/?[^/\"'(]*+(?:{$e})?)*?\\K(?>{$b}|\$)#s";
-        $this->css = $this->_replace($rx, '', $this->css, 'css1');
+        // language=RegExp
+        $rx = "(?>[^/\"'u]++|{$s1}|{$s2}|{$u}|[/\"'u])*?\\K(?>{$b}|\$)";
+        $this->css = $this->_replace("#{$rx}#si", '', $this->css, 'css1');
         // remove ws around , ; : { } in CSS Declarations and media queries
-        $rx = "#(?>(?:[{};]|^)[^{}@;]*+{|(?:(?<![,;:{}])\\s++(?![,;:{}]))|[^\\s{};\"'(]++|{$e}|[{};])*?\\K" . "(?:\\s++(?=[,;:{}])|(?<=[,;:{}])\\s++|\\K\$)#s";
-        $this->css = $this->_replace($rx, '', $this->css, 'css2');
+        // language=RegExp
+        $rx = "(?>(?<=.)[^{}\\s\"'u;]++|(?:^|[{}/;])\\s*+{$sel}\\{|{$s1}|{$s2}|{$u}|[{}\\s\"'u;]|^.)*?" . "\\K(?:\\s++(?=[,;:{}])|(?<=[,;:{}])\\s++|\$)";
+        $this->css = $this->_replace("#{$rx}#si", '', $this->css, 'css2');
         //remove ws around , + > ~ { } in selectors
-        $rx = "#(?>(?:(?<![,+>~{}])\\s++(?![,+>~{}]))?[^\\s{\"'(]*+(?:{[^{}]++}|{|{$e})?)*?\\K" . "(?:\\s++(?=[,+>~{}])|(?<=[,+>~{};])\\s++|\$\\K)#s";
-        $this->css = $this->_replace($rx, '', $this->css, 'css3');
+        //language=RegExp
+        $rx = "(?>[^{}\\s\"'u]++|\\{[^{}]++\\}|{$s1}|{$s2}|{$u}|[{}\\s\"'u])*?\\K(?:\\s++(?=[,+>~{}])|(?<=[,+>~{};])\\s++|\$)";
+        $this->css = $this->_replace("#{$rx}#si", '', $this->css, 'css3');
         //remove last ; in block
-        $rx = "#(?>(?:;(?!}))?[^;\"'(]*+(?:{$e})?)*?\\K(?:;(?=})|\$\\K)#s";
-        $this->css = $this->_replace($rx, '', $this->css, 'css4');
+        //language=RegExp
+        $rx = "(?>[^;\"'u]++|{$s1}|{$s2}|{$u}|[;\"'u])*?\\K(?:;(?=\\s*+})|\$)";
+        $this->css = $this->_replace("#{$rx}#si", '', $this->css, 'css4');
         // remove ws inside urls
-        $rx = "#(?>\\(?[^\"'(]*+(?:{$s})?)*?(?:(?<=\\burl)\\(\\K\\s++|\\G" . "(?(?=[\"'])['\"][^'\"]++['\"]|[^\\s]++)\\K\\s++(?=\\))|\$\\K)#s";
-        $this->css = $this->_replace($rx, '', $this->css, 'css5');
+        //language=RegExp
+        $rx = "(?>[^('\"]++|{$s1}|{$s2}|\\()*?(?:(?<=\\burl)\\(\\K\\s*+({$s1}|{$s2}|\\S++)\\s*+(?=\\))|\\K\$)";
+        $this->css = $this->_replace("#{$rx}#si", '$1', $this->css, 'css5');
         // minimize hex colors
-        $rx = "#(?>\\#?[^\\#\"'(]*+(?:{$e})?)*?(?:(?<!=)\\#\\K" . "([a-f\\d])\\g{1}([a-f\\d])\\g{2}([a-f\\d])\\g{3}(?=[\\s;}])|\$\\K)#is";
-        $this->css = $this->_replace($rx, '$1$2$3', $this->css, 'css6');
+        //language=RegExp
+        $rx = "(?>[^\\#\"'u]++|{$s1}|{$s2}|{$u}|[\\#\"'u])*?" . "(?:\\#\\K([a-f\\d])\\g{1}([a-f\\d])\\g{2}([a-f\\d])\\g{3}\\b|\\K\$)";
+        $this->css = $this->_replace("#{$rx}#si", '$1$2$3', $this->css, 'css6');
         // reduce remaining ws to single space
-        $rx = "#(?>[^\\s'\"(]*+(?:{$e}|\\s(?!\\s))?)*?\\K(?:\\s\\s++|\$)#s";
-        $this->css = $this->_replace($rx, ' ', $this->css, 'css7');
-        return \trim($this->css);
+        //language=RegExp
+        $rx = "(?>[^\\s'\"u]++|{$s1}|{$s2}|{$u}|[\\s'\"u])*?\\K(?:\\s\\s++|\$)";
+        $this->css = $this->_replace("#{$rx}#si", ' ', $this->css, 'css7');
+        return trim($this->css);
     }
 }

@@ -23,28 +23,28 @@ class Patcher
      * @var    string
      * @since  1.0
      */
-    const SRC_FILE = '/^---\\s+(\\S+)\\s+\\d{1,4}-\\d{1,2}-\\d{1,2}\\s+\\d{1,2}:\\d{1,2}:\\d{1,2}(\\.\\d+)?\\s+(\\+|-)\\d{4}/A';
+    const SRC_FILE = '/^---\s+(\S+)\s+\d{1,4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}(\.\d+)?\s+(\+|-)\d{4}/A';
     /**
      * Regular expression for searching destination files
      *
      * @var    string
      * @since  1.0
      */
-    const DST_FILE = '/^\\+\\+\\+\\s+(\\S+)\\s+\\d{1,4}-\\d{1,2}-\\d{1,2}\\s+\\d{1,2}:\\d{1,2}:\\d{1,2}(\\.\\d+)?\\s+(\\+|-)\\d{4}/A';
+    const DST_FILE = '/^\+\+\+\s+(\S+)\s+\d{1,4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}(\.\d+)?\s+(\+|-)\d{4}/A';
     /**
      * Regular expression for searching hunks of differences
      *
      * @var    string
      * @since  1.0
      */
-    const HUNK = '/@@ -(\\d+)(,(\\d+))?\\s+\\+(\\d+)(,(\\d+))?\\s+@@($)/A';
+    const HUNK = '/@@ -(\d+)(,(\d+))?\s+\+(\d+)(,(\d+))?\s+@@($)/A';
     /**
      * Regular expression for splitting lines
      *
      * @var    string
      * @since  1.0
      */
-    const SPLIT = '/(\\r\\n)|(\\r)|(\\n)/';
+    const SPLIT = '/(\r\n)|(\r)|(\n)/';
     /**
      * Source files
      *
@@ -136,11 +136,11 @@ class Patcher
             while (self::findHeader($lines, $src, $dst)) {
                 $done = \false;
                 if ($patch['strip'] === null) {
-                    $src = $patch['root'] . \preg_replace('#^([^/]*/)*#', '', $src);
-                    $dst = $patch['root'] . \preg_replace('#^([^/]*/)*#', '', $dst);
+                    $src = $patch['root'] . preg_replace('#^([^/]*/)*#', '', $src);
+                    $dst = $patch['root'] . preg_replace('#^([^/]*/)*#', '', $dst);
                 } else {
-                    $src = $patch['root'] . \preg_replace('#^([^/]*/){' . (int) $patch['strip'] . '}#', '', $src);
-                    $dst = $patch['root'] . \preg_replace('#^([^/]*/){' . (int) $patch['strip'] . '}#', '', $dst);
+                    $src = $patch['root'] . preg_replace('#^([^/]*/){' . (int) $patch['strip'] . '}#', '', $src);
+                    $dst = $patch['root'] . preg_replace('#^([^/]*/){' . (int) $patch['strip'] . '}#', '', $dst);
                 }
                 // Loop for each hunk of differences
                 while (self::findHunk($lines, $srcLine, $srcSize, $dstLine, $dstSize)) {
@@ -158,7 +158,7 @@ class Patcher
         $done = 0;
         // Patch each destination file
         foreach ($this->destinations as $file => $content) {
-            $content = \implode("\n", $content);
+            $content = implode("\n", $content);
             if (File::write($file, $content)) {
                 if (isset($this->sources[$file])) {
                     $this->sources[$file] = $content;
@@ -196,7 +196,7 @@ class Patcher
      */
     public function addFile($filename, $root = \_JchOptimizeVendor\V91\JPATH_ROOT, $strip = 0)
     {
-        return $this->add(\file_get_contents($filename), $root, $strip);
+        return $this->add(file_get_contents($filename), $root, $strip);
     }
     /**
      * Add a unified diff string to the patcher
@@ -211,7 +211,7 @@ class Patcher
      */
     public function add($udiff, $root = \_JchOptimizeVendor\V91\JPATH_ROOT, $strip = 0)
     {
-        $this->patches[] = array('udiff' => $udiff, 'root' => isset($root) ? \rtrim($root, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR : '', 'strip' => $strip);
+        $this->patches[] = array('udiff' => $udiff, 'root' => isset($root) ? rtrim($root, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR : '', 'strip' => $strip);
         return $this;
     }
     /**
@@ -225,7 +225,7 @@ class Patcher
      */
     protected static function splitLines($data)
     {
-        return \preg_split(self::SPLIT, $data);
+        return preg_split(self::SPLIT, $data);
     }
     /**
      * Find the diff header
@@ -244,10 +244,10 @@ class Patcher
     protected static function findHeader(&$lines, &$src, &$dst)
     {
         // Get the current line
-        $line = \current($lines);
+        $line = current($lines);
         // Search for the header
-        while ($line !== \false && !\preg_match(self::SRC_FILE, $line, $m)) {
-            $line = \next($lines);
+        while ($line !== \false && !preg_match(self::SRC_FILE, $line, $m)) {
+            $line = next($lines);
         }
         if ($line === \false) {
             // No header found, return false
@@ -256,18 +256,18 @@ class Patcher
         // Set the source file
         $src = $m[1];
         // Advance to the next line
-        $line = \next($lines);
+        $line = next($lines);
         if ($line === \false) {
             throw new \RuntimeException('Unexpected EOF');
         }
         // Search the destination file
-        if (!\preg_match(self::DST_FILE, $line, $m)) {
+        if (!preg_match(self::DST_FILE, $line, $m)) {
             throw new \RuntimeException('Invalid Diff file');
         }
         // Set the destination file
         $dst = $m[1];
         // Advance to the next line
-        if (\next($lines) === \false) {
+        if (next($lines) === \false) {
             throw new \RuntimeException('Unexpected EOF');
         }
         return \true;
@@ -290,8 +290,8 @@ class Patcher
      */
     protected static function findHunk(&$lines, &$srcLine, &$srcSize, &$dstLine, &$dstSize)
     {
-        $line = \current($lines);
-        if (\preg_match(self::HUNK, $line, $m)) {
+        $line = current($lines);
+        if (preg_match(self::HUNK, $line, $m)) {
             $srcLine = (int) $m[1];
             if ($m[3] === '') {
                 $srcSize = 1;
@@ -304,7 +304,7 @@ class Patcher
             } else {
                 $dstSize = (int) $m[6];
             }
-            if (\next($lines) === \false) {
+            if (next($lines) === \false) {
                 throw new \RuntimeException('Unexpected EOF');
             }
             return \true;
@@ -331,7 +331,7 @@ class Patcher
     {
         $srcLine--;
         $dstLine--;
-        $line = \current($lines);
+        $line = current($lines);
         // Source lines (old file)
         $source = array();
         // New lines (new file)
@@ -346,18 +346,18 @@ class Patcher
                 $dstLeft--;
             } elseif ($line[0] == '-') {
                 if ($srcLeft == 0) {
-                    throw new \RuntimeException('Unexpected remove line at line ' . \key($lines));
+                    throw new \RuntimeException('Unexpected remove line at line ' . key($lines));
                 }
-                $source[] = \substr($line, 1);
+                $source[] = substr($line, 1);
                 $srcLeft--;
             } elseif ($line[0] == '+') {
                 if ($dstLeft == 0) {
-                    throw new \RuntimeException('Unexpected add line at line ' . \key($lines));
+                    throw new \RuntimeException('Unexpected add line at line ' . key($lines));
                 }
-                $destin[] = \substr($line, 1);
+                $destin[] = substr($line, 1);
                 $dstLeft--;
-            } elseif ($line != '\\ No newline at end of file') {
-                $line = \substr($line, 1);
+            } elseif ($line != '\ No newline at end of file') {
+                $line = substr($line, 1);
                 $source[] = $line;
                 $destin[] = $line;
                 $srcLeft--;
@@ -377,20 +377,20 @@ class Patcher
                         $srcBottom = $srcLine + \count($source);
                         for ($l = $srcLine; $l < $srcBottom; $l++) {
                             if ($srcLines[$l] != $source[$l - $srcLine]) {
-                                throw new \RuntimeException(\sprintf('Failed source verification of file %1$s at line %2$s', Path::removeRoot($src), $l));
+                                throw new \RuntimeException(sprintf('Failed source verification of file %1$s at line %2$s', Path::removeRoot($src), $l));
                             }
                         }
-                        \array_splice($dstLines, $dstLine, \count($source), $destin);
+                        array_splice($dstLines, $dstLine, \count($source), $destin);
                     } else {
                         $this->destinations[$dst] = $destin;
                     }
                 } else {
                     $this->removals[] = $src;
                 }
-                \next($lines);
+                next($lines);
                 return;
             }
-            $line = \next($lines);
+            $line = next($lines);
         } while ($line !== \false);
         throw new \RuntimeException('Unexpected EOF');
     }
@@ -406,8 +406,8 @@ class Patcher
     protected function &getSource($src)
     {
         if (!isset($this->sources[$src])) {
-            if (\is_readable($src)) {
-                $this->sources[$src] = self::splitLines(\file_get_contents($src));
+            if (is_readable($src)) {
+                $this->sources[$src] = self::splitLines(file_get_contents($src));
             } else {
                 $this->sources[$src] = null;
             }

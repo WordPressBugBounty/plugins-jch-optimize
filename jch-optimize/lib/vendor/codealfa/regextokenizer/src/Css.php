@@ -36,7 +36,7 @@ trait Css
     //language=RegExp
     public static function cssUrlWithCaptureValueToken(bool $shouldCaptureValue = \false): string
     {
-        $cssUrl = '(?:url\\(|(?<=url)\\()(?:\\s*+[\'"])?<<' . self::cssUrlValueToken() . '>>(?:[\'"]\\s*+)?\\)';
+        $cssUrl = '(?:url\(|(?<=url)\()(?:\s*+[\'"])?<<' . self::cssUrlValueToken() . '>>(?:[\'"]\s*+)?\)';
         return self::prepare($cssUrl, $shouldCaptureValue);
     }
     /**
@@ -59,7 +59,7 @@ trait Css
     //language=RegExp
     public static function cssUnquotedUrlValueToken(): string
     {
-        return '(?<=url\\()(?>\\s*+(?:\\\\.)?[^\\\\()\\s\'"]*+)++';
+        return '(?<=url\()(?>\s*+(?:\\\\.)?[^\\\\()\s\'"]*+)++';
     }
     public static function cssUrlToken(): string
     {
@@ -83,7 +83,7 @@ trait Css
         $sqStr = self::singleQuoteStringToken();
         $bc = self::blockCommentToken();
         $esc = self::cssEscapedString();
-        $brc = '(?<brc>\\((?>[^()]++|(?&brc))*+\\))';
+        $brc = '(?<brc>\((?>[^()]++|(?&brc))*+\))';
         return "(?>{$ident}|\\s++|{$bc})*?:" . "(?>[^/()'\";{}@\\\\]++|{$brc}|{$dqStr}|{$sqStr}|{$bc}|{$esc}|[/])*?(?:;|\$|(?=}))";
     }
     public static function cssDeclarationListToken(): string

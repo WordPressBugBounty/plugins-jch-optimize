@@ -253,7 +253,7 @@ class Http2Preload implements ContainerAwareInterface
     public function preloadAssets(Event $event): void
     {
         $this->addIncludesToPreload();
-        // $this->sendLinkHeaders();
+        $this->sendLinkHeaders();
         $this->addPreloadsToHtml($event);
     }
 

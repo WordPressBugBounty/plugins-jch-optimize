@@ -173,7 +173,7 @@ class Paginator implements Countable, IteratorAggregate
             throw new Exception\InvalidArgumentException(__METHOD__ . ' expects an array or Traversable');
         }
         static::$config = $config;
-        if (isset($config['scrolling_style_plugins']) && null !== ($adapters = $config['scrolling_style_plugins'])) {
+        if (isset($config['scrolling_style_plugins']) && null !== $adapters = $config['scrolling_style_plugins']) {
             static::setScrollingStylePluginManager($adapters);
         }
         $scrollingStyle = $config['scrolling_style'] ?? null;
@@ -269,7 +269,7 @@ class Paginator implements Countable, IteratorAggregate
         } elseif ($adapter instanceof AdapterAggregateInterface) {
             $this->adapter = $adapter->getPaginatorAdapter();
         } else {
-            throw new Exception\InvalidArgumentException('Laminas\\Paginator only accepts instances of the type ' . 'Laminas\\Paginator\\Adapter\\AdapterInterface or Laminas\\Paginator\\AdapterAggregateInterface.');
+            throw new Exception\InvalidArgumentException('Laminas\Paginator only accepts instances of the type ' . 'Laminas\Paginator\Adapter\AdapterInterface or Laminas\Paginator\AdapterAggregateInterface.');
         }
         $config = static::$config;
         if (!empty($config)) {
@@ -314,7 +314,7 @@ class Paginator implements Countable, IteratorAggregate
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function count()
     {
         if ($this->pageCount === null) {
@@ -559,7 +559,7 @@ class Paginator implements Countable, IteratorAggregate
      * @throws Exception\RuntimeException
      * @return Traversable
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function getIterator()
     {
         try {
@@ -838,7 +838,7 @@ class Paginator implements Countable, IteratorAggregate
         switch (strtolower(gettype($scrollingStyle))) {
             case 'object':
                 if (!$scrollingStyle instanceof ScrollingStyleInterface) {
-                    throw new Exception\InvalidArgumentException('_JchOptimizeVendor\\V91\\Scrolling style must implement Laminas\\Paginator\\ScrollingStyle\\ScrollingStyleInterface');
+                    throw new Exception\InvalidArgumentException('Scrolling style must implement Laminas\Paginator\ScrollingStyle\ScrollingStyleInterface');
                 }
                 return $scrollingStyle;
             case 'string':
@@ -846,7 +846,7 @@ class Paginator implements Countable, IteratorAggregate
             case 'null':
             // Fall through to default case
             default:
-                throw new Exception\InvalidArgumentException('Scrolling style must be a class ' . 'name or object implementing Laminas\\Paginator\\ScrollingStyle\\ScrollingStyleInterface');
+                throw new Exception\InvalidArgumentException('Scrolling style must be a class ' . 'name or object implementing Laminas\Paginator\ScrollingStyle\ScrollingStyleInterface');
         }
     }
 }

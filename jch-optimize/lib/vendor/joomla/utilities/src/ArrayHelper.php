@@ -39,7 +39,7 @@ final class ArrayHelper
     public static function toInteger($array, $default = null)
     {
         if (\is_array($array)) {
-            return \array_map('intval', $array);
+            return array_map('intval', $array);
         }
         if ($default === null) {
             return [];
@@ -98,7 +98,7 @@ final class ArrayHelper
                 $output[] = $key . $innerGlue . '"' . $item . '"';
             }
         }
-        return \implode($outerGlue, $output);
+        return implode($outerGlue, $output);
     }
     /**
      * Utility function to map an object to an array
@@ -133,8 +133,8 @@ final class ArrayHelper
     {
         if (\is_object($item)) {
             $result = [];
-            foreach (\get_object_vars($item) as $k => $v) {
-                if (!$regex || \preg_match($regex, $k)) {
+            foreach (get_object_vars($item) as $k => $v) {
+                if (!$regex || preg_match($regex, $k)) {
                     if ($recurse) {
                         $result[$k] = self::arrayFromObject($v, $recurse, $regex);
                     } else {
@@ -176,7 +176,7 @@ final class ArrayHelper
             } else {
                 // Convert object to array
                 $subject = \is_object($item) ? static::fromObject($item) : $item;
-                if (isset($subject[$keyCol]) && \is_scalar($subject[$keyCol])) {
+                if (isset($subject[$keyCol]) && is_scalar($subject[$keyCol])) {
                     $value = static::getValue($column, $subject[$keyCol]);
                 }
             }
@@ -185,12 +185,10 @@ final class ArrayHelper
                 if (isset($colName)) {
                     $item->{$colName} = $value;
                 }
+            } elseif (isset($colName)) {
+                $item[$colName] = $value;
             } else {
-                if (isset($colName)) {
-                    $item[$colName] = $value;
-                } else {
-                    $item[] = $value;
-                }
+                $item[] = $value;
             }
             $result[$i] = $item;
         }
@@ -238,11 +236,11 @@ final class ArrayHelper
     public static function getColumn(array $array, $valueCol, $keyCol = null)
     {
         return \array_reduce($array, function ($result, $item) use ($keyCol, $valueCol) {
-            $array = \is_object($item) ? \get_object_vars($item) : $item;
+            $array = \is_object($item) ? get_object_vars($item) : $item;
             if ($valueCol === null) {
                 $value = $item;
             } else {
-                if (!\array_key_exists($valueCol, $array)) {
+                if (!array_key_exists($valueCol, $array)) {
                     return $result;
                 }
                 $value = $array[$valueCol];
@@ -276,8 +274,8 @@ final class ArrayHelper
         $result = null;
         if (isset($array[$name])) {
             $result = $array[$name];
-        } elseif (\strpos($name, '.')) {
-            list($name, $subset) = \explode('.', $name, 2);
+        } elseif (strpos($name, '.')) {
+            list($name, $subset) = explode('.', $name, 2);
             if (isset($array[$name]) && \is_array($array[$name])) {
                 return static::getValue($array[$name], $subset, $default, $type);
             }
@@ -287,17 +285,17 @@ final class ArrayHelper
             $result = $default;
         }
         // Handle the type constraint
-        switch (\strtoupper($type)) {
+        switch (strtoupper($type)) {
             case 'INT':
             case 'INTEGER':
                 // Only use the first integer value
-                @\preg_match('/-?[0-9]+/', $result, $matches);
+                @preg_match('/-?[0-9]+/', $result, $matches);
                 $result = @(int) $matches[0];
                 break;
             case 'FLOAT':
             case 'DOUBLE':
                 // Only use the first floating point value
-                @\preg_match('/-?[0-9]+(\\.[0-9]+)?/', $result, $matches);
+                @preg_match('/-?[0-9]+(\.[0-9]+)?/', $result, $matches);
                 $result = @(float) $matches[0];
                 break;
             case 'BOOL':
@@ -313,7 +311,7 @@ final class ArrayHelper
                 $result = (string) $result;
                 break;
             case 'WORD':
-                $result = (string) \preg_replace('#\\W#', '', $result);
+                $result = (string) preg_replace('#\W#', '', $result);
                 break;
             case 'NONE':
             default:
@@ -358,7 +356,7 @@ final class ArrayHelper
             }
             foreach ($values as $key) {
                 // If the key isn't scalar then ignore it.
-                if (\is_scalar($key)) {
+                if (is_scalar($key)) {
                     $return[$key] = $base;
                 }
             }
@@ -377,7 +375,7 @@ final class ArrayHelper
     public static function isAssociative($array)
     {
         if (\is_array($array)) {
-            foreach (\array_keys($array) as $k => $v) {
+            foreach (array_keys($array) as $k => $v) {
                 if ($k !== $v) {
                     return \true;
                 }
@@ -459,7 +457,7 @@ final class ArrayHelper
         $sortDirection = (array) $direction;
         $key = (array) $k;
         $sortLocale = $locale;
-        \usort($a, function ($a, $b) use ($sortCase, $sortDirection, $key, $sortLocale) {
+        usort($a, function ($a, $b) use ($sortCase, $sortDirection, $key, $sortLocale) {
             for ($i = 0, $count = \count($key); $i < $count; $i++) {
                 if (isset($sortDirection[$i])) {
                     $direction = $sortDirection[$i];
@@ -472,7 +470,7 @@ final class ArrayHelper
                 }
                 $va = $a->{$key[$i]};
                 $vb = $b->{$key[$i]};
-                if ((\is_bool($va) || \is_numeric($va)) && (\is_bool($vb) || \is_numeric($vb))) {
+                if ((\is_bool($va) || is_numeric($va)) && (\is_bool($vb) || is_numeric($vb))) {
                     $cmp = $va - $vb;
                 } elseif ($caseSensitive) {
                     $cmp = StringHelper::strcmp($va, $vb, $locale);
@@ -502,9 +500,9 @@ final class ArrayHelper
      */
     public static function arrayUnique(array $array)
     {
-        $array = \array_map('serialize', $array);
-        $array = \array_unique($array);
-        $array = \array_map('unserialize', $array);
+        $array = array_map('serialize', $array);
+        $array = array_unique($array);
+        $array = array_map('unserialize', $array);
         return $array;
     }
     /**
@@ -542,9 +540,9 @@ final class ArrayHelper
     public static function flatten($array, $separator = '.', $prefix = '')
     {
         if ($array instanceof \Traversable) {
-            $array = \iterator_to_array($array);
+            $array = iterator_to_array($array);
         } elseif (\is_object($array)) {
-            $array = \get_object_vars($array);
+            $array = get_object_vars($array);
         }
         $result = [];
         foreach ($array as $k => $v) {
@@ -555,7 +553,7 @@ final class ArrayHelper
                 $result[] = [$key => $v];
             }
         }
-        return \array_merge(...$result);
+        return array_merge(...$result);
     }
     /**
      * Merge array recursively.
@@ -572,7 +570,7 @@ final class ArrayHelper
         $result = [];
         foreach ($args as $i => $array) {
             if (!\is_array($array)) {
-                throw new \InvalidArgumentException(\sprintf('Argument #%d is not an array.', $i + 2));
+                throw new \InvalidArgumentException(sprintf('Argument #%d is not an array.', $i + 2));
             }
             foreach ($array as $key => &$value) {
                 if (\is_array($value) && isset($result[$key]) && \is_array($result[$key])) {

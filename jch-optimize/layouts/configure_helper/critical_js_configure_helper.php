@@ -179,19 +179,21 @@ document.addEventListener('JchOptimizeCriticalJsBodyLoaded', () => {
 function setBody() {
     const ajaxUrl = new URL('<?= $tableBodyAjaxUrl ?>', window.location.toString());
     const baseUrl = document.getElementById('criticalJsBaseUrlInput');
+    ajaxUrl.searchParams.set('baseUrl', encodeURIComponent(baseUrl.value));
     fetch(ajaxUrl, {
-        method: 'POST',
-        body: JSON.stringify({'baseUrl': encodeURIComponent(baseUrl.value)}),
+        method: 'GET',
         headers: new Headers({
-             'Content-Type': 'text/html'
+             'Content-Type': 'text/html',
+             'User-Agent': 'JchOptimizeCrawler/<?= JCH_VERSION ?>'
         }),
         cache: 'no-store',
-    }).then((response) => {
-            return response.text();
-    }).then((html) => {
-            modalTableBody.innerHTML = html;
-            document.dispatchEvent(new Event('JchOptimizeCriticalJsBodyLoaded'));
-    });
+    })
+    .then(response => response.text())
+    .then(html => {
+        modalTableBody.innerHTML = html;
+        document.dispatchEvent(new Event('JchOptimizeCriticalJsBodyLoaded'));
+    })
+    .catch(err => console.error('Fetch error:', err));
 }
 
 async function saveSettingsAjaxly(values) {

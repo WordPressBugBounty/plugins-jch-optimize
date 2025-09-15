@@ -58,7 +58,7 @@ class ImageAttributes
         return $imageAttributes;
     }
 
-    private function validateImage(mixed $image): UriInterface|bool
+    private function validateImage(mixed $image): bool
     {
         try {
             $imgObj = HtmlElementBuilder::load($image);
@@ -84,13 +84,13 @@ class ImageAttributes
 
         $imagePath = UriConverter::uriToFilePath($uri, $this->pathsUtils, $this->cdn);
 
-        if (!file_exists($imagePath)) {
+        if (!is_file($imagePath)) {
             return false;
         }
 
         $imageSize = getimagesize($imagePath);
 
-        if (empty($imageSize) || !is_array($imageSize) || $imageSize[0] <= 1 || $imageSize <= 1) {
+        if (empty($imageSize) || !is_array($imageSize) || $imageSize[0] <= 1 || $imageSize[1] <= 1) {
             return false;
         }
 

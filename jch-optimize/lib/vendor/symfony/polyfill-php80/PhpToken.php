@@ -26,13 +26,16 @@ class PhpToken implements \Stringable
      */
     public $text;
     /**
-     * @var int
+     * @var -1|positive-int
      */
     public $line;
     /**
      * @var int
      */
     public $pos;
+    /**
+     * @param -1|positive-int $line
+     */
     public function __construct(int $id, string $text, int $line = -1, int $position = -1)
     {
         $this->id = $id;
@@ -42,7 +45,7 @@ class PhpToken implements \Stringable
     }
     public function getTokenName(): ?string
     {
-        if ('UNKNOWN' === ($name = \token_name($this->id))) {
+        if ('UNKNOWN' === $name = token_name($this->id)) {
             $name = \strlen($this->text) > 1 || \ord($this->text) < 32 ? null : $this->text;
         }
         return $name;
@@ -68,13 +71,13 @@ class PhpToken implements \Stringable
         return (string) $this->text;
     }
     /**
-     * @return static[]
+     * @return list<static>
      */
     public static function tokenize(string $code, int $flags = 0): array
     {
         $line = 1;
         $position = 0;
-        $tokens = \token_get_all($code, $flags);
+        $tokens = token_get_all($code, $flags);
         foreach ($tokens as $index => $token) {
             if (\is_string($token)) {
                 $id = \ord($token);

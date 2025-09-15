@@ -29,7 +29,7 @@ class File
      */
     public static function stripExt($file)
     {
-        return \preg_replace('#\\.[^.]*$#', '', $file);
+        return preg_replace('#\.[^.]*$#', '', $file);
     }
     /**
      * Makes the file name safe to use
@@ -41,12 +41,12 @@ class File
      *
      * @since   1.0
      */
-    public static function makeSafe($file, array $stripChars = array('#^\\.#'))
+    public static function makeSafe($file, array $stripChars = array('#^\.#'))
     {
-        $regex = \array_merge(array('#(\\.){2,}#', '#[^A-Za-z0-9\\.\\_\\- ]#'), $stripChars);
-        $file = \preg_replace($regex, '', $file);
+        $regex = array_merge(array('#(\.){2,}#', '#[^A-Za-z0-9\.\_\- ]#'), $stripChars);
+        $file = preg_replace($regex, '', $file);
         // Remove any trailing dots, as those aren't ever valid file names.
-        $file = \rtrim($file, '.');
+        $file = rtrim($file, '.');
         return $file;
     }
     /**
@@ -71,17 +71,17 @@ class File
             $dest = Path::clean($path . '/' . $dest);
         }
         // Check src path
-        if (!\is_readable($src)) {
-            throw new \UnexpectedValueException(\sprintf("%s: Cannot find or read file: %s", __METHOD__, Path::removeRoot($src)));
+        if (!is_readable($src)) {
+            throw new \UnexpectedValueException(sprintf("%s: Cannot find or read file: %s", __METHOD__, Path::removeRoot($src)));
         }
         if ($useStreams) {
             $stream = Stream::getStream();
             if (!$stream->copy($src, $dest, null, \false)) {
-                throw new FilesystemException(\sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()));
+                throw new FilesystemException(sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()));
             }
             return \true;
         }
-        if (!@\copy($src, $dest)) {
+        if (!@copy($src, $dest)) {
             throw new FilesystemException(__METHOD__ . ': Copy failed.');
         }
         return \true;
@@ -101,16 +101,16 @@ class File
         $files = (array) $file;
         foreach ($files as $file) {
             $file = Path::clean($file);
-            $filename = \basename($file);
+            $filename = basename($file);
             if (!Path::canChmod($file)) {
                 throw new FilesystemException(__METHOD__ . ': Failed deleting inaccessible file ' . $filename);
             }
             // Try making the file writable first. If it's read-only, it can't be deleted
             // on Windows, even if the parent folder is writable
-            @\chmod($file, 0777);
+            @chmod($file, 0777);
             // In case of restricted permissions we zap it one way or the other
             // as long as the owner is either the webserver or the ftp
-            if (!@\unlink($file)) {
+            if (!@unlink($file)) {
                 throw new FilesystemException(__METHOD__ . ': Failed deleting ' . $filename);
             }
         }
@@ -136,7 +136,7 @@ class File
             $dest = Path::clean($path . '/' . $dest);
         }
         // Check src path
-        if (!\is_readable($src)) {
+        if (!is_readable($src)) {
             return 'Cannot find source file.';
         }
         if ($useStreams) {
@@ -146,7 +146,7 @@ class File
             }
             return \true;
         }
-        if (!@\rename($src, $dest)) {
+        if (!@rename($src, $dest)) {
             throw new FilesystemException(__METHOD__ . ': Rename failed.');
         }
         return \true;
@@ -165,9 +165,9 @@ class File
      */
     public static function write($file, &$buffer, $useStreams = \false, $appendToFile = \false)
     {
-        @\set_time_limit(\ini_get('max_execution_time'));
+        @set_time_limit(ini_get('max_execution_time'));
         // If the destination directory doesn't exist we need to create it
-        if (!\file_exists(\dirname($file))) {
+        if (!file_exists(\dirname($file))) {
             Folder::create(\dirname($file));
         }
         if ($useStreams) {
@@ -180,9 +180,9 @@ class File
         $file = Path::clean($file);
         // Set the required flag to only append to the file and not overwrite it
         if ($appendToFile === \true) {
-            return \is_int(\file_put_contents($file, $buffer, \FILE_APPEND));
+            return \is_int(file_put_contents($file, $buffer, \FILE_APPEND));
         }
-        return \is_int(\file_put_contents($file, $buffer));
+        return \is_int(file_put_contents($file, $buffer));
     }
     /**
      * Moves an uploaded file to a destination folder
@@ -202,17 +202,17 @@ class File
         $dest = Path::clean($dest);
         // Create the destination directory if it does not exist
         $baseDir = \dirname($dest);
-        if (!\is_dir($baseDir)) {
+        if (!is_dir($baseDir)) {
             Folder::create($baseDir);
         }
         if ($useStreams) {
             $stream = Stream::getStream();
             if (!$stream->upload($src, $dest, null, \false)) {
-                throw new FilesystemException(\sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()));
+                throw new FilesystemException(sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()));
             }
             return \true;
         }
-        if (\is_writable($baseDir) && \move_uploaded_file($src, $dest)) {
+        if (is_writable($baseDir) && move_uploaded_file($src, $dest)) {
             // Short circuit to prevent file permission errors
             if (Path::setPermissions($dest)) {
                 return \true;

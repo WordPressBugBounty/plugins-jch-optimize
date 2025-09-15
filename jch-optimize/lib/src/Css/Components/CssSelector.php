@@ -3,10 +3,10 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
@@ -43,6 +43,7 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
             . $this->renderPseudoSelector()
             . $this->renderDescendant();
     }
+
     private function renderTypeSelector(): string
     {
         if (($type = $this->getType()) instanceof TypeSelector) {
@@ -157,8 +158,10 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
 
     public function removeLastDescendantNonFunctionalPseudoSelectors(): static
     {
-        if ($this->getDescendant() instanceof CssSelector) {
-            $this->getDescendant()->removeLastDescendantNonFunctionalPseudoSelectors();
+        $descendant = $this->getDescendant();
+
+        if ($descendant instanceof CssSelector) {
+            $descendant->removeLastDescendantNonFunctionalPseudoSelectors();
 
             return $this;
         }
@@ -210,8 +213,10 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
 
     public function renderLastDescendantNonFunctionalPseudoSelector($combinator = ''): string
     {
-        if ($this->getDescendant() instanceof CssSelector) {
-            return $this->getDescendant()->renderLastDescendantNonFunctionalPseudoSelector($this->combinator);
+        $descendant = $this->getDescendant();
+
+        if ($descendant instanceof CssSelector) {
+            return $descendant->renderLastDescendantNonFunctionalPseudoSelector($this->combinator);
         }
 
         $css = '';

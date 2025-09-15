@@ -21,8 +21,12 @@ use JchOptimize\Core\Html\Elements\Link;
 use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\Elements\Style;
 use JchOptimize\Core\Html\HtmlElementInterface;
+use JchOptimize\Core\Uri\Utils;
+use Serializable;
 
-class FileInfo
+use function json_encode;
+
+class FileInfo implements Serializable
 {
     protected ?UriInterface $uri = null;
 
@@ -140,5 +144,32 @@ class FileInfo
     public function setAlreadyProcessed(bool $alreadyProcessed): void
     {
         $this->alreadyProcessed = $alreadyProcessed;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function serialize(): string
+    {
+        return json_encode([
+            (string) $this->uri,
+            $this->content,
+            $this->media,
+            $this->layer,
+            $this->supports,
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function unserialize(string $data): void
+    {
+        $properties = json_decode($data, true);
+        $this->uri = Utils::uriFor($properties['uri']);
+        $this->content = $properties['content'];
+        $this->media = $properties['media'];
+        $this->layer = $properties['layer'];
+        $this->supports = $properties['supports'];
     }
 }

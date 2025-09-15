@@ -17,7 +17,7 @@ namespace _JchOptimizeVendor\V91;
 */
 function utf8_strspn($str, $mask, $start = null, $length = null)
 {
-    $mask = \preg_replace('!([\\\\\\-\\]\\[/^])!', '\\\\${1}', $mask);
+    $mask = \preg_replace('!([\\\\\\-\]\[/^])!', '\\\\${1}', $mask);
     // Fix for $start but no $length argument.
     if ($start !== null && $length === null) {
         $length = utf8_strlen($str);

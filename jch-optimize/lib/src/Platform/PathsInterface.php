@@ -155,7 +155,7 @@ interface PathsInterface
      *
      * @return string
      */
-    public function captureCacheDir(): string;
+    public function captureCacheDir(bool $isRootRelative = false): string;
 
     /**
      * The directory for storing cache

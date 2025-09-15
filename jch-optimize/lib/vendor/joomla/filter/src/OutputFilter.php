@@ -46,8 +46,8 @@ class OutputFilter
             $quoteStyle = \ENT_QUOTES;
         }
         if (\is_object($mixed)) {
-            foreach (\get_object_vars($mixed) as $k => $v) {
-                if (\is_array($v) || \is_object($v) || $v == null || \substr($k, 1, 1) == '_') {
+            foreach (get_object_vars($mixed) as $k => $v) {
+                if (\is_array($v) || \is_object($v) || $v == null || substr($k, 1, 1) == '_') {
                     continue;
                 }
                 if (\is_string($excludeKeys) && $k == $excludeKeys) {
@@ -56,7 +56,7 @@ class OutputFilter
                 if (\is_array($excludeKeys) && \in_array($k, $excludeKeys)) {
                     continue;
                 }
-                $mixed->{$k} = \htmlspecialchars($v, $quoteStyle, 'UTF-8');
+                $mixed->{$k} = htmlspecialchars($v, $quoteStyle, 'UTF-8');
             }
         }
     }
@@ -72,8 +72,8 @@ class OutputFilter
     public static function linkXhtmlSafe($input)
     {
         $regex = 'href="([^"]*(&(amp;){0})[^"]*)*?"';
-        return \preg_replace_callback("#{$regex}#i", function ($m) {
-            return \preg_replace('#&(?!amp;)#', '&amp;', $m[0]);
+        return preg_replace_callback("#{$regex}#i", function ($m) {
+            return preg_replace('#&(?!amp;)#', '&amp;', $m[0]);
         }, $input);
     }
     /**
@@ -87,14 +87,14 @@ class OutputFilter
      */
     public static function stringJSSafe($string)
     {
-        $chars = \preg_split('//u', $string, -1, \PREG_SPLIT_NO_EMPTY);
+        $chars = preg_split('//u', $string, -1, \PREG_SPLIT_NO_EMPTY);
         $newStr = '';
         foreach ($chars as $chr) {
-            $code = \str_pad(\dechex(StringHelper::ord($chr)), 4, '0', \STR_PAD_LEFT);
-            if (\strlen($code) < 5) {
-                $newStr .= '\\u' . $code;
+            $code = str_pad(dechex(StringHelper::ord($chr)), 4, '0', \STR_PAD_LEFT);
+            if (strlen($code) < 5) {
+                $newStr .= '\u' . $code;
             } else {
-                $newStr .= '\\u{' . $code . '}';
+                $newStr .= '\u{' . $code . '}';
             }
         }
         return $newStr;
@@ -115,7 +115,7 @@ class OutputFilter
     public static function stringUrlSafe($string, $language = '')
     {
         // Remove any '-' from the string since they will be used as concatenaters
-        $str = \str_replace('-', ' ', $string);
+        $str = str_replace('-', ' ', $string);
         if (self::$language) {
             /*
              * Transliterate on the language requested (fallback to current language if not specified)
@@ -133,11 +133,11 @@ class OutputFilter
             $str = StringHelper::strtolower((new Transliterate())->utf8_latin_to_ascii($string));
         }
         // Trim white spaces at beginning and end of alias and make lowercase
-        $str = \trim(StringHelper::strtolower($str));
+        $str = trim(StringHelper::strtolower($str));
         // Remove any duplicate whitespace, and ensure all characters are alphanumeric
-        $str = \preg_replace('/(\\s|[^A-Za-z0-9\\-])+/', '-', $str);
+        $str = preg_replace('/(\s|[^A-Za-z0-9\-])+/', '-', $str);
         // Trim dashes at beginning and end of alias
-        $str = \trim($str, '-');
+        $str = trim($str, '-');
         return $str;
     }
     /**
@@ -152,18 +152,18 @@ class OutputFilter
     public static function stringUrlUnicodeSlug($string)
     {
         // Replace double byte whitespaces by single byte (East Asian languages)
-        $str = \preg_replace('/\\xE3\\x80\\x80/', ' ', $string);
+        $str = preg_replace('/\xE3\x80\x80/', ' ', $string);
         // Remove any '-' from the string as they will be used as concatenator.
         // Would be great to let the spaces in but only Firefox is friendly with this
-        $str = \str_replace('-', ' ', $str);
+        $str = str_replace('-', ' ', $str);
         // Replace forbidden characters by whitespaces
-        $str = \preg_replace('#[:\\#\\*"@+=;!><&\\.%()\\]\\/\'\\\\|\\[]#', " ", $str);
+        $str = preg_replace('#[:\#\*"@+=;!><&\.%()\]\/\'\\\\|\[]#', " ", $str);
         // Delete all '?'
-        $str = \str_replace('?', '', $str);
+        $str = str_replace('?', '', $str);
         // Trim white spaces at beginning and end of alias and make lowercase
-        $str = \trim(StringHelper::strtolower($str));
+        $str = trim(StringHelper::strtolower($str));
         // Remove any duplicate whitespace and replace whitespaces by hyphens
-        $str = \preg_replace('#\\x20+#', '-', $str);
+        $str = preg_replace('#\x20+#', '-', $str);
         return $str;
     }
     /**
@@ -177,7 +177,7 @@ class OutputFilter
      */
     public static function ampReplace($text)
     {
-        return \preg_replace('/(?<!&)&(?!&|#|[\\w]+;)/', '&amp;', $text);
+        return preg_replace('/(?<!&)&(?!&|#|[\w]+;)/', '&amp;', $text);
     }
     /**
      * Cleans text of all formatting and scripting code.
@@ -190,15 +190,15 @@ class OutputFilter
      */
     public static function cleanText(&$text)
     {
-        $text = \preg_replace("'<script[^>]*>.*?</script>'si", '', $text);
-        $text = \preg_replace('/<a\\s+.*?href="([^"]+)"[^>]*>([^<]+)<\\/a>/is', '\\2 (\\1)', $text);
-        $text = \preg_replace('/<!--.+?-->/', '', $text);
-        $text = \preg_replace('/{.+?}/', '', $text);
-        $text = \preg_replace('/&nbsp;/', ' ', $text);
-        $text = \preg_replace('/&amp;/', ' ', $text);
-        $text = \preg_replace('/&quot;/', ' ', $text);
-        $text = \strip_tags($text);
-        $text = \htmlspecialchars($text, \ENT_COMPAT, 'UTF-8');
+        $text = preg_replace("'<script[^>]*>.*?</script>'si", '', $text);
+        $text = preg_replace('/<a\s+.*?href="([^"]+)"[^>]*>([^<]+)<\/a>/is', '\2 (\1)', $text);
+        $text = preg_replace('/<!--.+?-->/', '', $text);
+        $text = preg_replace('/{.+?}/', '', $text);
+        $text = preg_replace('/&nbsp;/', ' ', $text);
+        $text = preg_replace('/&amp;/', ' ', $text);
+        $text = preg_replace('/&quot;/', ' ', $text);
+        $text = strip_tags($text);
+        $text = htmlspecialchars($text, \ENT_COMPAT, 'UTF-8');
         return $text;
     }
     /**
@@ -225,7 +225,10 @@ class OutputFilter
      */
     public static function stripImages($string)
     {
-        return \preg_replace('#(<[/]?img.*>)#U', '', $string);
+        while (preg_match('#(<[/]?img.*>)#Ui', $string)) {
+            $string = preg_replace('#(<[/]?img.*>)#Ui', '', $string);
+        }
+        return $string;
     }
     /**
      * Strips `<iframe>` tags from a string.
@@ -238,6 +241,9 @@ class OutputFilter
      */
     public static function stripIframes($string)
     {
-        return \preg_replace('#(<[/]?iframe.*>)#U', '', $string);
+        while (preg_match('#(<[/]?iframe.*>)#Ui', $string)) {
+            $string = preg_replace('#(<[/]?iframe.*>)#Ui', '', $string);
+        }
+        return $string;
     }
 }

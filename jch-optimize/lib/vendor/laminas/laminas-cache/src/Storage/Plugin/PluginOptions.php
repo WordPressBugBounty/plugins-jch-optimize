@@ -180,7 +180,7 @@ class PluginOptions extends AbstractOptions
     public function setSerializer($serializer)
     {
         if (!is_string($serializer) && !$serializer instanceof SerializerAdapter) {
-            throw new Exception\InvalidArgumentException(sprintf('%s expects either a string serializer name or Laminas\\Serializer\\Adapter\\AdapterInterface instance; ' . 'received "%s"', __METHOD__, is_object($serializer) ? get_class($serializer) : gettype($serializer)));
+            throw new Exception\InvalidArgumentException(sprintf('%s expects either a string serializer name or Laminas\Serializer\Adapter\AdapterInterface instance; ' . 'received "%s"', __METHOD__, is_object($serializer) ? get_class($serializer) : gettype($serializer)));
         }
         $this->serializer = $serializer;
         return $this;

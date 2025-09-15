@@ -29,6 +29,7 @@ use SplFileInfo;
 use function array_map;
 use function defined;
 use function file_exists;
+use function html_entity_decode;
 use function is_object;
 use function preg_match;
 use function preg_replace;
@@ -163,9 +164,9 @@ class Helper
         foreach ($needles as $needle) {
             //Remove all spaces from test string and excluded string
             $needle = preg_replace('#\s#', '', $needle);
-            $haystack = preg_replace('#\s#', '', $haystack);
+            $haystack = preg_replace('#\s#', '', html_entity_decode($haystack));
 
-            if ($needle && str_contains(htmlspecialchars_decode($haystack), $needle)) {
+            if ($needle && str_contains($haystack, $needle)) {
                 return true;
             }
         }
@@ -287,7 +288,6 @@ class Helper
             try {
                 Folder::create($cacheDir);
             } catch (Exception $e) {
-                $e;
             }
         }
     }

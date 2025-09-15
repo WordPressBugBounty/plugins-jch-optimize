@@ -270,7 +270,7 @@ final class LocalFilesystemInteraction implements FilesystemInteractionInterface
         if ($umask) {
             $umaskToRestore = umask($umask);
         }
-        $created = mkdir($directory, $permissions, $recursive);
+        $created = @mkdir($directory, $permissions, $recursive);
         $error = ErrorHandler::stop();
         if ($umaskToRestore) {
             umask($umaskToRestore);

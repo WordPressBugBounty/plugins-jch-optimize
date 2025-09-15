@@ -30,23 +30,23 @@ class Helper
      */
     public static function remotefsize($url)
     {
-        $sch = \parse_url($url, \PHP_URL_SCHEME);
+        $sch = parse_url($url, \PHP_URL_SCHEME);
         if (!\in_array($sch, array('http', 'https', 'ftp', 'ftps'), \true)) {
             return \false;
         }
         if (\in_array($sch, array('http', 'https'), \true)) {
-            $headers = @\get_headers($url, 1);
+            $headers = @get_headers($url, 1);
             if (!$headers || !\array_key_exists('Content-Length', $headers)) {
                 return \false;
             }
             return $headers['Content-Length'];
         }
         if (\in_array($sch, array('ftp', 'ftps'), \true)) {
-            $server = \parse_url($url, \PHP_URL_HOST);
-            $port = \parse_url($url, \PHP_URL_PORT);
-            $path = \parse_url($url, \PHP_URL_PATH);
-            $user = \parse_url($url, \PHP_URL_USER);
-            $pass = \parse_url($url, \PHP_URL_PASS);
+            $server = parse_url($url, \PHP_URL_HOST);
+            $port = parse_url($url, \PHP_URL_PORT);
+            $path = parse_url($url, \PHP_URL_PATH);
+            $user = parse_url($url, \PHP_URL_USER);
+            $pass = parse_url($url, \PHP_URL_PASS);
             if (!$server || !$path) {
                 return \false;
             }
@@ -62,21 +62,21 @@ class Helper
             $ftpid = null;
             switch ($sch) {
                 case 'ftp':
-                    $ftpid = @\ftp_connect($server, $port);
+                    $ftpid = @ftp_connect($server, $port);
                     break;
                 case 'ftps':
-                    $ftpid = @\ftp_ssl_connect($server, $port);
+                    $ftpid = @ftp_ssl_connect($server, $port);
                     break;
             }
             if (!$ftpid) {
                 return \false;
             }
-            $login = @\ftp_login($ftpid, $user, $pass);
+            $login = @ftp_login($ftpid, $user, $pass);
             if (!$login) {
                 return \false;
             }
-            $ftpsize = \ftp_size($ftpid, $path);
-            \ftp_close($ftpid);
+            $ftpsize = ftp_size($ftpid, $path);
+            ftp_close($ftpid);
             if ($ftpsize == -1) {
                 return \false;
             }
@@ -96,15 +96,15 @@ class Helper
      */
     public static function ftpChmod($url, $mode)
     {
-        $sch = \parse_url($url, \PHP_URL_SCHEME);
+        $sch = parse_url($url, \PHP_URL_SCHEME);
         if ($sch != 'ftp' && $sch != 'ftps') {
             return \false;
         }
-        $server = \parse_url($url, \PHP_URL_HOST);
-        $port = \parse_url($url, \PHP_URL_PORT);
-        $path = \parse_url($url, \PHP_URL_PATH);
-        $user = \parse_url($url, \PHP_URL_USER);
-        $pass = \parse_url($url, \PHP_URL_PASS);
+        $server = parse_url($url, \PHP_URL_HOST);
+        $port = parse_url($url, \PHP_URL_PORT);
+        $path = parse_url($url, \PHP_URL_PATH);
+        $user = parse_url($url, \PHP_URL_USER);
+        $pass = parse_url($url, \PHP_URL_PASS);
         if (!$server || !$path) {
             return \false;
         }
@@ -120,21 +120,21 @@ class Helper
         $ftpid = null;
         switch ($sch) {
             case 'ftp':
-                $ftpid = @\ftp_connect($server, $port);
+                $ftpid = @ftp_connect($server, $port);
                 break;
             case 'ftps':
-                $ftpid = @\ftp_ssl_connect($server, $port);
+                $ftpid = @ftp_ssl_connect($server, $port);
                 break;
         }
         if (!$ftpid) {
             return \false;
         }
-        $login = @\ftp_login($ftpid, $user, $pass);
+        $login = @ftp_login($ftpid, $user, $pass);
         if (!$login) {
             return \false;
         }
-        $res = @\ftp_chmod($ftpid, $mode, $path);
-        \ftp_close($ftpid);
+        $res = @ftp_chmod($ftpid, $mode, $path);
+        ftp_close($ftpid);
         return $res;
     }
     /**
@@ -163,7 +163,7 @@ class Helper
         // Really quite cool what php can do with arrays when you let it...
         static $streams;
         if (!$streams) {
-            $streams = \array_merge(\stream_get_wrappers(), self::getJStreams());
+            $streams = array_merge(stream_get_wrappers(), self::getJStreams());
         }
         return $streams;
     }
@@ -177,7 +177,7 @@ class Helper
     public static function getTransports()
     {
         // Is this overkill?
-        return \stream_get_transports();
+        return stream_get_transports();
     }
     /**
      * Returns a list of filters
@@ -190,7 +190,7 @@ class Helper
     {
         // Note: This will look like the getSupported() function with J! filters.
         // TODO: add user space filter loading like user space stream loading
-        return \stream_get_filters();
+        return stream_get_filters();
     }
     /**
      * Returns a list of J! streams

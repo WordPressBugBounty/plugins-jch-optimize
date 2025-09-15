@@ -39,17 +39,17 @@ trait Debug
         if (!$this->_debug) {
             return;
         }
-        if (\is_null($this->logger)) {
+        if (is_null($this->logger)) {
             $this->setLogger(new NullLogger());
         }
-        \assert($this->logger instanceof LoggerInterface);
+        assert($this->logger instanceof LoggerInterface);
         /** @var float $pstamp */
         static $pstamp = 0.0;
         if ($pstamp === 0.0) {
-            $pstamp = \microtime(\true);
+            $pstamp = microtime(\true);
             return;
         }
-        $nstamp = \microtime(\true);
+        $nstamp = microtime(\true);
         $time = ($nstamp - $pstamp) * 1000;
         if ($time > $this->_limit) {
             $context = ['category' => 'Regextokenizer'];

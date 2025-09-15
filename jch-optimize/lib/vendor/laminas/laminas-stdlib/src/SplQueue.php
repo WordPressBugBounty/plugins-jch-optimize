@@ -40,7 +40,7 @@ class SplQueue extends \SplQueue implements Serializable
      *
      * @return string
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function serialize()
     {
         return serialize($this->__serialize());
@@ -50,7 +50,7 @@ class SplQueue extends \SplQueue implements Serializable
      *
      * @return list<TValue>
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function __serialize()
     {
         return $this->toArray();
@@ -61,7 +61,7 @@ class SplQueue extends \SplQueue implements Serializable
      * @param  string $data
      * @return void
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function unserialize($data)
     {
         $toUnserialize = unserialize($data);
@@ -76,7 +76,7 @@ class SplQueue extends \SplQueue implements Serializable
      * @param array<array-key, TValue> $data Data array.
      * @return void
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function __unserialize($data)
     {
         foreach ($data as $item) {

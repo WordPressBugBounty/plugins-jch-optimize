@@ -53,73 +53,73 @@ if (!\defined('UUID_TYPE_NULL')) {
 if (!\defined('UUID_TYPE_INVALID')) {
     \define('UUID_TYPE_INVALID', -42);
 }
-if (!\function_exists('uuid_create')) {
+if (!\function_exists('uuid_create') && !\function_exists('_JchOptimizeVendor\V91\uuid_create')) {
     function uuid_create(?int $uuid_type = \UUID_TYPE_DEFAULT): string
     {
         return p\Uuid::uuid_create((int) $uuid_type);
     }
 }
-if (!\function_exists('uuid_generate_md5')) {
+if (!\function_exists('uuid_generate_md5') && !\function_exists('_JchOptimizeVendor\V91\uuid_generate_md5')) {
     function uuid_generate_md5(?string $uuid_ns, ?string $name): string
     {
         return p\Uuid::uuid_generate_md5((string) $uuid_ns, (string) $name);
     }
 }
-if (!\function_exists('uuid_generate_sha1')) {
+if (!\function_exists('uuid_generate_sha1') && !\function_exists('_JchOptimizeVendor\V91\uuid_generate_sha1')) {
     function uuid_generate_sha1(?string $uuid_ns, ?string $name): string
     {
         return p\Uuid::uuid_generate_sha1((string) $uuid_ns, (string) $name);
     }
 }
-if (!\function_exists('uuid_is_valid')) {
+if (!\function_exists('uuid_is_valid') && !\function_exists('_JchOptimizeVendor\V91\uuid_is_valid')) {
     function uuid_is_valid(?string $uuid): bool
     {
         return p\Uuid::uuid_is_valid((string) $uuid);
     }
 }
-if (!\function_exists('uuid_compare')) {
+if (!\function_exists('uuid_compare') && !\function_exists('_JchOptimizeVendor\V91\uuid_compare')) {
     function uuid_compare(?string $uuid1, ?string $uuid2): int
     {
         return p\Uuid::uuid_compare((string) $uuid1, (string) $uuid2);
     }
 }
-if (!\function_exists('uuid_is_null')) {
+if (!\function_exists('uuid_is_null') && !\function_exists('_JchOptimizeVendor\V91\uuid_is_null')) {
     function uuid_is_null(?string $uuid): bool
     {
         return p\Uuid::uuid_is_null((string) $uuid);
     }
 }
-if (!\function_exists('uuid_type')) {
+if (!\function_exists('uuid_type') && !\function_exists('_JchOptimizeVendor\V91\uuid_type')) {
     function uuid_type(?string $uuid): int
     {
         return p\Uuid::uuid_type((string) $uuid);
     }
 }
-if (!\function_exists('uuid_variant')) {
+if (!\function_exists('uuid_variant') && !\function_exists('_JchOptimizeVendor\V91\uuid_variant')) {
     function uuid_variant(?string $uuid): int
     {
         return p\Uuid::uuid_variant((string) $uuid);
     }
 }
-if (!\function_exists('uuid_time')) {
+if (!\function_exists('uuid_time') && !\function_exists('_JchOptimizeVendor\V91\uuid_time')) {
     function uuid_time(?string $uuid): int
     {
         return p\Uuid::uuid_time((string) $uuid);
     }
 }
-if (!\function_exists('uuid_mac')) {
+if (!\function_exists('uuid_mac') && !\function_exists('_JchOptimizeVendor\V91\uuid_mac')) {
     function uuid_mac(?string $uuid): string
     {
         return p\Uuid::uuid_mac((string) $uuid);
     }
 }
-if (!\function_exists('uuid_parse')) {
+if (!\function_exists('uuid_parse') && !\function_exists('_JchOptimizeVendor\V91\uuid_parse')) {
     function uuid_parse(?string $uuid): string
     {
         return p\Uuid::uuid_parse((string) $uuid);
     }
 }
-if (!\function_exists('uuid_unparse')) {
+if (!\function_exists('uuid_unparse') && !\function_exists('_JchOptimizeVendor\V91\uuid_unparse')) {
     function uuid_unparse(?string $uuid): string
     {
         return p\Uuid::uuid_unparse((string) $uuid);

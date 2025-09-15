@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace _JchOptimizeVendor\V91\GuzzleHttp\Promise;
 
 final class Each
@@ -17,13 +19,9 @@ final class Each
      * index, and the aggregate promise. The callback can invoke any necessary
      * side effects and choose to resolve or reject the aggregate if needed.
      *
-     * @param mixed    $iterable    Iterator or array to iterate over.
-     * @param callable $onFulfilled
-     * @param callable $onRejected
-     *
-     * @return PromiseInterface
+     * @param mixed $iterable Iterator or array to iterate over.
      */
-    public static function of($iterable, callable $onFulfilled = null, callable $onRejected = null)
+    public static function of($iterable, ?callable $onFulfilled = null, ?callable $onRejected = null): PromiseInterface
     {
         return (new EachPromise($iterable, ['fulfilled' => $onFulfilled, 'rejected' => $onRejected]))->promise();
     }
@@ -37,12 +35,8 @@ final class Each
      *
      * @param mixed        $iterable
      * @param int|callable $concurrency
-     * @param callable     $onFulfilled
-     * @param callable     $onRejected
-     *
-     * @return PromiseInterface
      */
-    public static function ofLimit($iterable, $concurrency, callable $onFulfilled = null, callable $onRejected = null)
+    public static function ofLimit($iterable, $concurrency, ?callable $onFulfilled = null, ?callable $onRejected = null): PromiseInterface
     {
         return (new EachPromise($iterable, ['fulfilled' => $onFulfilled, 'rejected' => $onRejected, 'concurrency' => $concurrency]))->promise();
     }
@@ -53,13 +47,10 @@ final class Each
      *
      * @param mixed        $iterable
      * @param int|callable $concurrency
-     * @param callable     $onFulfilled
-     *
-     * @return PromiseInterface
      */
-    public static function ofLimitAll($iterable, $concurrency, callable $onFulfilled = null)
+    public static function ofLimitAll($iterable, $concurrency, ?callable $onFulfilled = null): PromiseInterface
     {
-        return self::ofLimit($iterable, $concurrency, $onFulfilled, function ($reason, $idx, PromiseInterface $aggregate) {
+        return self::ofLimit($iterable, $concurrency, $onFulfilled, function ($reason, $idx, PromiseInterface $aggregate): void {
             $aggregate->reject($reason);
         });
     }

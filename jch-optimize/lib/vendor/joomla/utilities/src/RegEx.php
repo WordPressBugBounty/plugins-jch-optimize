@@ -27,9 +27,9 @@ abstract class RegEx
     public static function match($regex, $subject)
     {
         $match = array();
-        \preg_match($regex, $subject, $match);
-        return \array_filter($match, static function ($value, $key) {
-            return !\is_numeric($key) && !empty($value);
+        preg_match($regex, $subject, $match);
+        return array_filter($match, static function ($value, $key) {
+            return !is_numeric($key) && !empty($value);
         }, \ARRAY_FILTER_USE_BOTH);
     }
     /**
@@ -86,9 +86,9 @@ abstract class RegEx
      */
     public static function anyOf($regexList)
     {
-        if (\is_string($regexList)) {
-            $regexList = \func_get_args();
+        if (is_string($regexList)) {
+            $regexList = func_get_args();
         }
-        return '(?:' . \implode('|', $regexList) . ')';
+        return '(?:' . implode('|', $regexList) . ')';
     }
 }

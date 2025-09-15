@@ -38,13 +38,17 @@ class StreamHandler
         if (isset($options['delay'])) {
             \usleep($options['delay'] * 1000);
         }
+        $protocolVersion = $request->getProtocolVersion();
+        if ('1.0' !== $protocolVersion && '1.1' !== $protocolVersion) {
+            throw new ConnectException(sprintf('HTTP/%s is not supported by the stream handler.', $protocolVersion), $request);
+        }
         $startTime = isset($options['on_stats']) ? Utils::currentTime() : null;
         try {
             // Does not support the expect header.
             $request = $request->withoutHeader('Expect');
             // Append a content-length header if body size is zero to match
-            // cURL's behavior.
-            if (0 === $request->getBody()->getSize()) {
+            // the behavior of `CurlHandler`
+            if ((0 === \strcasecmp('PUT', $request->getMethod()) || 0 === \strcasecmp('POST', $request->getMethod())) && 0 === $request->getBody()->getSize()) {
                 $request = $request->withHeader('Content-Length', '0');
             }
             return $this->createResponse($request, $options, $this->createStream($request, $options), $startTime);
@@ -54,7 +58,7 @@ class StreamHandler
             // Determine if the error was a networking error.
             $message = $e->getMessage();
             // This list can probably get more comprehensive.
-            if (\false !== \strpos($message, 'getaddrinfo') || \false !== \strpos($message, 'Connection refused') || \false !== \strpos($message, "couldn't connect to host") || \false !== \strpos($message, "connection attempt failed")) {
+            if (\false !== \strpos($message, 'getaddrinfo') || \false !== \strpos($message, 'Connection refused') || \false !== \strpos($message, "couldn't connect to host") || \false !== \strpos($message, 'connection attempt failed')) {
                 $e = new ConnectException($e->getMessage(), $request, $e);
             } else {
                 $e = RequestException::wrapException($request, $e);
@@ -63,7 +67,7 @@ class StreamHandler
             return P\Create::rejectionFor($e);
         }
     }
-    private function invokeStats(array $options, RequestInterface $request, ?float $startTime, ResponseInterface $response = null, \Throwable $error = null): void
+    private function invokeStats(array $options, RequestInterface $request, ?float $startTime, ?ResponseInterface $response = null, ?\Throwable $error = null): void
     {
         if (isset($options['on_stats'])) {
             $stats = new TransferStats($request, $response, Utils::currentTime() - $startTime, $error, []);
@@ -211,7 +215,7 @@ class StreamHandler
         }
         // HTTP/1.1 streams using the PHP stream wrapper require a
         // Connection: close header
-        if ($request->getProtocolVersion() == '1.1' && !$request->hasHeader('Connection')) {
+        if ($request->getProtocolVersion() === '1.1' && !$request->hasHeader('Connection')) {
             $request = $request->withHeader('Connection', 'close');
         }
         // Ensure SSL is verified by default
@@ -249,7 +253,7 @@ class StreamHandler
             $resource = @\fopen((string) $uri, 'r', \false, $contextResource);
             $this->lastHeaders = $http_response_header ?? [];
             if (\false === $resource) {
-                throw new ConnectException(\sprintf('Connection refused for URI %s', $uri), $request, null, $context);
+                throw new ConnectException(sprintf('Connection refused for URI %s', $uri), $request, null, $context);
             }
             if (isset($options['read_timeout'])) {
                 $readTimeout = $options['read_timeout'];
@@ -355,6 +359,17 @@ class StreamHandler
         if ($value > 0) {
             $options['http']['timeout'] = $value;
         }
+    }
+    /**
+     * @param mixed $value as passed via Request transfer options.
+     */
+    private function add_crypto_method(RequestInterface $request, array &$options, $value, array &$params): void
+    {
+        if ($value === \STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT || $value === \STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT || $value === \STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT || defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && $value === \STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT) {
+            $options['http']['crypto_method'] = $value;
+            return;
+        }
+        throw new \InvalidArgumentException('Invalid crypto_method request option: unknown version provided');
     }
     /**
      * @param mixed $value as passed via Request transfer options.

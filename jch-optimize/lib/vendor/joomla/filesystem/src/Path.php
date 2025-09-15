@@ -32,13 +32,13 @@ class Path
      */
     public static function canChmod($path)
     {
-        if (!\file_exists($path)) {
+        if (!file_exists($path)) {
             return \false;
         }
-        $perms = @\fileperms($path);
+        $perms = @fileperms($path);
         if ($perms !== \false) {
-            if (@\chmod($path, $perms ^ 01)) {
-                @\chmod($path, $perms);
+            if (@chmod($path, $perms ^ 01)) {
+                @chmod($path, $perms);
                 return \true;
             }
         }
@@ -59,37 +59,33 @@ class Path
     {
         // Initialise return value
         $ret = \true;
-        if (\is_dir($path)) {
-            $dh = @\opendir($path);
+        if (is_dir($path)) {
+            $dh = @opendir($path);
             if ($dh) {
-                while ($file = \readdir($dh)) {
+                while ($file = readdir($dh)) {
                     if ($file != '.' && $file != '..') {
                         $fullpath = $path . '/' . $file;
-                        if (\is_dir($fullpath)) {
+                        if (is_dir($fullpath)) {
                             if (!static::setPermissions($fullpath, $filemode, $foldermode)) {
                                 $ret = \false;
                             }
-                        } else {
-                            if (isset($filemode)) {
-                                if (!static::canChmod($fullpath) || !@\chmod($fullpath, \octdec($filemode))) {
-                                    $ret = \false;
-                                }
+                        } elseif (isset($filemode)) {
+                            if (!static::canChmod($fullpath) || !@chmod($fullpath, octdec($filemode))) {
+                                $ret = \false;
                             }
                         }
                     }
                 }
-                \closedir($dh);
+                closedir($dh);
             }
             if (isset($foldermode)) {
-                if (!static::canChmod($path) || !@\chmod($path, \octdec($foldermode))) {
+                if (!static::canChmod($path) || !@chmod($path, octdec($foldermode))) {
                     $ret = \false;
                 }
             }
-        } else {
-            if (isset($filemode)) {
-                if (!static::canChmod($path) || !@\chmod($path, \octdec($filemode))) {
-                    $ret = \false;
-                }
+        } elseif (isset($filemode)) {
+            if (!static::canChmod($path) || !@chmod($path, octdec($filemode))) {
+                $ret = \false;
             }
         }
         return $ret;
@@ -106,7 +102,7 @@ class Path
     public static function getPermissions($path)
     {
         $path = self::clean($path);
-        $mode = @\decoct(@\fileperms($path) & 0777);
+        $mode = @decoct(@fileperms($path) & 0777);
         if (\strlen($mode) < 3) {
             return '---------';
         }
@@ -133,12 +129,12 @@ class Path
      */
     public static function check($path)
     {
-        if (\strpos($path, '..') !== \false) {
-            throw new FilesystemException(\sprintf('%s() - Use of relative paths not permitted', __METHOD__), 20);
+        if (strpos($path, '..') !== \false) {
+            throw new FilesystemException(sprintf('%s() - Use of relative paths not permitted', __METHOD__), 20);
         }
         $path = static::clean($path);
-        if (\_JchOptimizeVendor\V91\JPATH_ROOT != '' && \strpos($path, static::clean(\_JchOptimizeVendor\V91\JPATH_ROOT)) !== 0) {
-            throw new FilesystemException(\sprintf('%1$s() - Snooping out of bounds @ %2$s (root %3$s)', __METHOD__, $path, \_JchOptimizeVendor\V91\JPATH_ROOT), 20);
+        if (\_JchOptimizeVendor\V91\JPATH_ROOT != '' && strpos($path, static::clean(\_JchOptimizeVendor\V91\JPATH_ROOT)) !== 0) {
+            throw new FilesystemException(sprintf('%1$s() - Snooping out of bounds @ %2$s (root %3$s)', __METHOD__, $path, \_JchOptimizeVendor\V91\JPATH_ROOT), 20);
         }
         return $path;
     }
@@ -158,22 +154,22 @@ class Path
         if (!\is_string($path)) {
             throw new \UnexpectedValueException('JPath::clean $path is not a string.');
         }
-        $stream = \explode('://', $path, 2);
+        $stream = explode('://', $path, 2);
         $scheme = '';
         $path = $stream[0];
         if (\count($stream) >= 2) {
             $scheme = $stream[0] . '://';
             $path = $stream[1];
         }
-        $path = \trim($path);
+        $path = trim($path);
         if (empty($path)) {
             $path = \_JchOptimizeVendor\V91\JPATH_ROOT;
         } elseif ($ds == '\\' && $path[0] == '\\' && $path[1] == '\\') {
             // Remove double slashes and backslashes and convert all slashes and backslashes to DIRECTORY_SEPARATOR
             // If dealing with a UNC path don't forget to prepend the path with a backslash.
-            $path = '\\' . \preg_replace('#[/\\\\]+#', $ds, $path);
+            $path = '\\' . preg_replace('#[/\\\\]+#', $ds, $path);
         } else {
-            $path = \preg_replace('#[/\\\\]+#', $ds, $path);
+            $path = preg_replace('#[/\\\\]+#', $ds, $path);
         }
         return $scheme . $path;
     }
@@ -188,20 +184,20 @@ class Path
      */
     public static function isOwner($path)
     {
-        $tmp = \md5(\random_bytes(16));
-        $ssp = \ini_get('session.save_path');
+        $tmp = md5(random_bytes(16));
+        $ssp = ini_get('session.save_path');
         $jtp = \_JchOptimizeVendor\V91\JPATH_ROOT;
         // Try to find a writable directory
-        $dir = \is_writable('/tmp') ? '/tmp' : \false;
-        $dir = !$dir && \is_writable($ssp) ? $ssp : $dir;
-        $dir = !$dir && \is_writable($jtp) ? $jtp : $dir;
+        $dir = is_writable('/tmp') ? '/tmp' : \false;
+        $dir = !$dir && is_writable($ssp) ? $ssp : $dir;
+        $dir = !$dir && is_writable($jtp) ? $jtp : $dir;
         if ($dir) {
             $test = $dir . '/' . $tmp;
             // Create the test file
             $blank = '';
             File::write($test, $blank, \false);
             // Test ownership
-            $return = \fileowner($test) == \fileowner($path);
+            $return = fileowner($test) == fileowner($path);
             // Delete the test file
             File::delete($test);
             return $return;
@@ -222,19 +218,19 @@ class Path
     {
         // Force to array
         if (!\is_array($paths) && !$paths instanceof \Iterator) {
-            \settype($paths, 'array');
+            settype($paths, 'array');
         }
         // Start looping through the path set
         foreach ($paths as $path) {
             // Get the path to the file
             $fullname = $path . '/' . $file;
             // Is the path based on a stream?
-            if (\strpos($path, '://') === \false) {
+            if (strpos($path, '://') === \false) {
                 // Not a stream, so do a realpath() to avoid directory
                 // traversal attempts on the local file system.
                 // Needed for substr() later
-                $path = \realpath($path);
-                $fullname = \realpath($fullname);
+                $path = realpath($path);
+                $fullname = realpath($fullname);
             }
             /*
              * The substr() check added to make sure that the realpath()
@@ -242,7 +238,7 @@ class Path
              * non-registered directories are not accessible via directory
              * traversal attempts.
              */
-            if (\file_exists($fullname) && \substr($fullname, 0, \strlen($path)) == $path) {
+            if (file_exists($fullname) && substr($fullname, 0, \strlen($path)) == $path) {
                 return $fullname;
             }
         }
@@ -265,7 +261,7 @@ class Path
         // Save start character for absolute path
         $startCharacter = $path[0] === \DIRECTORY_SEPARATOR ? \DIRECTORY_SEPARATOR : '';
         $parts = array();
-        foreach (\explode(\DIRECTORY_SEPARATOR, $path) as $part) {
+        foreach (explode(\DIRECTORY_SEPARATOR, $path) as $part) {
             switch ($part) {
                 case '':
                 case '.':
@@ -274,14 +270,14 @@ class Path
                     if (empty($parts)) {
                         throw new FilesystemException('Path is outside of the defined root');
                     }
-                    \array_pop($parts);
+                    array_pop($parts);
                     break;
                 default:
                     $parts[] = $part;
                     break;
             }
         }
-        return $startCharacter . \implode(\DIRECTORY_SEPARATOR, $parts);
+        return $startCharacter . implode(\DIRECTORY_SEPARATOR, $parts);
     }
     /**
      * Remove all references to root directory path and the system tmp path from a message
@@ -298,8 +294,8 @@ class Path
         if (empty($rootDirectory)) {
             $rootDirectory = \_JchOptimizeVendor\V91\JPATH_ROOT;
         }
-        $replacements = array(self::makePattern(static::clean($rootDirectory)) => '[ROOT]', self::makePattern(\sys_get_temp_dir()) => '[TMP]');
-        return \preg_replace(\array_keys($replacements), \array_values($replacements), $message);
+        $replacements = array(self::makePattern(static::clean($rootDirectory)) => '[ROOT]', self::makePattern(sys_get_temp_dir()) => '[TMP]');
+        return preg_replace(array_keys($replacements), array_values($replacements), $message);
     }
     /**
      * Turn directory separators into match classes
@@ -312,6 +308,6 @@ class Path
      */
     private static function makePattern($dir)
     {
-        return '~' . \str_replace('~', '\\~', \preg_replace('~[/\\\\]+~', '[/\\\\\\\\]+', $dir)) . '~';
+        return '~' . str_replace('~', '\~', preg_replace('~[/\\\\]+~', '[/\\\\\\\\]+', $dir)) . '~';
     }
 }

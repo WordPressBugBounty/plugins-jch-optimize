@@ -236,9 +236,9 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
     {
         return $this->combinator;
     }
-    public function getDescendant(): static|null
+    public function getDescendant(): \CodeAlfa\Css2Xpath\Selector\CssSelector|null
     {
-        if (\is_string($this->descendant)) {
+        if (is_string($this->descendant)) {
             $this->descendant = $this->selectorFactory->createCssSelector($this->selectorFactory, $this->descendant);
         }
         return $this->descendant;

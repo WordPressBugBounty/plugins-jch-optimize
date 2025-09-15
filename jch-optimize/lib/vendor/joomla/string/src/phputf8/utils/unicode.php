@@ -59,99 +59,85 @@ function utf8_to_unicode($str)
                 // US-ASCII, pass straight through.
                 $out[] = $in;
                 $mBytes = 1;
-            } else {
-                if (0xc0 == (0xe0 & $in)) {
-                    // First octet of 2 octet sequence
-                    $mUcs4 = $in;
-                    $mUcs4 = ($mUcs4 & 0x1f) << 6;
-                    $mState = 1;
-                    $mBytes = 2;
-                } else {
-                    if (0xe0 == (0xf0 & $in)) {
-                        // First octet of 3 octet sequence
-                        $mUcs4 = $in;
-                        $mUcs4 = ($mUcs4 & 0xf) << 12;
-                        $mState = 2;
-                        $mBytes = 3;
-                    } else {
-                        if (0xf0 == (0xf8 & $in)) {
-                            // First octet of 4 octet sequence
-                            $mUcs4 = $in;
-                            $mUcs4 = ($mUcs4 & 0x7) << 18;
-                            $mState = 3;
-                            $mBytes = 4;
-                        } else {
-                            if (0xf8 == (0xfc & $in)) {
-                                /* First octet of 5 octet sequence.
-                                 *
-                                 * This is illegal because the encoded codepoint must be either
-                                 * (a) not the shortest form or
-                                 * (b) outside the Unicode range of 0-0x10FFFF.
-                                 * Rather than trying to resynchronize, we will carry on until the end
-                                 * of the sequence and let the later error handling code catch it.
-                                 */
-                                $mUcs4 = $in;
-                                $mUcs4 = ($mUcs4 & 0x3) << 24;
-                                $mState = 4;
-                                $mBytes = 5;
-                            } else {
-                                if (0xfc == (0xfe & $in)) {
-                                    // First octet of 6 octet sequence, see comments for 5 octet sequence.
-                                    $mUcs4 = $in;
-                                    $mUcs4 = ($mUcs4 & 1) << 30;
-                                    $mState = 5;
-                                    $mBytes = 6;
-                                } else {
-                                    /* Current octet is neither in the US-ASCII range nor a legal first
-                                     * octet of a multi-octet sequence.
-                                     */
-                                    \trigger_error('utf8_to_unicode: Illegal sequence identifier ' . 'in UTF-8 at byte ' . $i, \E_USER_WARNING);
-                                    return \FALSE;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            // When mState is non-zero, we expect a continuation of the multi-octet
-            // sequence
-            if (0x80 == (0xc0 & $in)) {
-                // Legal continuation.
-                $shift = ($mState - 1) * 6;
-                $tmp = $in;
-                $tmp = ($tmp & 0x3f) << $shift;
-                $mUcs4 |= $tmp;
-                /**
-                 * End of the multi-octet sequence. mUcs4 now contains the final
-                 * Unicode codepoint to be output
+            } elseif (0xc0 == (0xe0 & $in)) {
+                // First octet of 2 octet sequence
+                $mUcs4 = $in;
+                $mUcs4 = ($mUcs4 & 0x1f) << 6;
+                $mState = 1;
+                $mBytes = 2;
+            } elseif (0xe0 == (0xf0 & $in)) {
+                // First octet of 3 octet sequence
+                $mUcs4 = $in;
+                $mUcs4 = ($mUcs4 & 0xf) << 12;
+                $mState = 2;
+                $mBytes = 3;
+            } elseif (0xf0 == (0xf8 & $in)) {
+                // First octet of 4 octet sequence
+                $mUcs4 = $in;
+                $mUcs4 = ($mUcs4 & 0x7) << 18;
+                $mState = 3;
+                $mBytes = 4;
+            } elseif (0xf8 == (0xfc & $in)) {
+                /* First octet of 5 octet sequence.
+                 *
+                 * This is illegal because the encoded codepoint must be either
+                 * (a) not the shortest form or
+                 * (b) outside the Unicode range of 0-0x10FFFF.
+                 * Rather than trying to resynchronize, we will carry on until the end
+                 * of the sequence and let the later error handling code catch it.
                  */
-                if (0 == --$mState) {
-                    /*
-                     * Check for illegal sequences and codepoints.
-                     */
-                    // From Unicode 3.1, non-shortest form is illegal
-                    if (2 == $mBytes && $mUcs4 < 0x80 || 3 == $mBytes && $mUcs4 < 0x800 || 4 == $mBytes && $mUcs4 < 0x10000 || 4 < $mBytes || ($mUcs4 & 0xfffff800) == 0xd800 || $mUcs4 > 0x10ffff) {
-                        \trigger_error('utf8_to_unicode: Illegal sequence or codepoint ' . 'in UTF-8 at byte ' . $i, \E_USER_WARNING);
-                        return \FALSE;
-                    }
-                    if (0xfeff != $mUcs4) {
-                        // BOM is legal but we don't want to output it
-                        $out[] = $mUcs4;
-                    }
-                    //initialize UTF8 cache
-                    $mState = 0;
-                    $mUcs4 = 0;
-                    $mBytes = 1;
-                }
+                $mUcs4 = $in;
+                $mUcs4 = ($mUcs4 & 0x3) << 24;
+                $mState = 4;
+                $mBytes = 5;
+            } elseif (0xfc == (0xfe & $in)) {
+                // First octet of 6 octet sequence, see comments for 5 octet sequence.
+                $mUcs4 = $in;
+                $mUcs4 = ($mUcs4 & 1) << 30;
+                $mState = 5;
+                $mBytes = 6;
             } else {
-                /**
-                 *((0xC0 & (*in) != 0x80) && (mState != 0))
-                 * Incomplete multi-octet sequence.
+                /* Current octet is neither in the US-ASCII range nor a legal first
+                 * octet of a multi-octet sequence.
                  */
-                \trigger_error('utf8_to_unicode: Incomplete multi-octet ' . '   sequence in UTF-8 at byte ' . $i, \E_USER_WARNING);
+                \trigger_error('utf8_to_unicode: Illegal sequence identifier ' . 'in UTF-8 at byte ' . $i, \E_USER_WARNING);
                 return \FALSE;
             }
+        } elseif (0x80 == (0xc0 & $in)) {
+            // Legal continuation.
+            $shift = ($mState - 1) * 6;
+            $tmp = $in;
+            $tmp = ($tmp & 0x3f) << $shift;
+            $mUcs4 |= $tmp;
+            /**
+             * End of the multi-octet sequence. mUcs4 now contains the final
+             * Unicode codepoint to be output
+             */
+            if (0 == --$mState) {
+                /*
+                 * Check for illegal sequences and codepoints.
+                 */
+                // From Unicode 3.1, non-shortest form is illegal
+                if (2 == $mBytes && $mUcs4 < 0x80 || 3 == $mBytes && $mUcs4 < 0x800 || 4 == $mBytes && $mUcs4 < 0x10000 || 4 < $mBytes || ($mUcs4 & 0xfffff800) == 0xd800 || $mUcs4 > 0x10ffff) {
+                    \trigger_error('utf8_to_unicode: Illegal sequence or codepoint ' . 'in UTF-8 at byte ' . $i, \E_USER_WARNING);
+                    return \FALSE;
+                }
+                if (0xfeff != $mUcs4) {
+                    // BOM is legal but we don't want to output it
+                    $out[] = $mUcs4;
+                }
+                //initialize UTF8 cache
+                $mState = 0;
+                $mUcs4 = 0;
+                $mBytes = 1;
+            }
+        } else {
+            /**
+             *((0xC0 & (*in) != 0x80) && (mState != 0))
+             * Incomplete multi-octet sequence.
+             */
+            \trigger_error('utf8_to_unicode: Incomplete multi-octet ' . '   sequence in UTF-8 at byte ' . $i, \E_USER_WARNING);
+            return \FALSE;
         }
     }
     return $out;
@@ -183,42 +169,32 @@ function utf8_from_unicode($arr)
         if ($arr[$k] >= 0 && $arr[$k] <= 0x7f) {
             echo \chr($arr[$k]);
             # 2 byte sequence
+        } elseif ($arr[$k] <= 0x7ff) {
+            echo \chr(0xc0 | $arr[$k] >> 6);
+            echo \chr(0x80 | $arr[$k] & 0x3f);
+            # Byte order mark (skip)
+        } elseif ($arr[$k] == 0xfeff) {
+            // nop -- zap the BOM
+            # Test for illegal surrogates
+        } elseif ($arr[$k] >= 0xd800 && $arr[$k] <= 0xdfff) {
+            // found a surrogate
+            \trigger_error('utf8_from_unicode: Illegal surrogate ' . 'at index: ' . $k . ', value: ' . $arr[$k], \E_USER_WARNING);
+            return \FALSE;
+            # 3 byte sequence
+        } elseif ($arr[$k] <= 0xffff) {
+            echo \chr(0xe0 | $arr[$k] >> 12);
+            echo \chr(0x80 | $arr[$k] >> 6 & 0x3f);
+            echo \chr(0x80 | $arr[$k] & 0x3f);
+            # 4 byte sequence
+        } elseif ($arr[$k] <= 0x10ffff) {
+            echo \chr(0xf0 | $arr[$k] >> 18);
+            echo \chr(0x80 | $arr[$k] >> 12 & 0x3f);
+            echo \chr(0x80 | $arr[$k] >> 6 & 0x3f);
+            echo \chr(0x80 | $arr[$k] & 0x3f);
         } else {
-            if ($arr[$k] <= 0x7ff) {
-                echo \chr(0xc0 | $arr[$k] >> 6);
-                echo \chr(0x80 | $arr[$k] & 0x3f);
-                # Byte order mark (skip)
-            } else {
-                if ($arr[$k] == 0xfeff) {
-                    // nop -- zap the BOM
-                    # Test for illegal surrogates
-                } else {
-                    if ($arr[$k] >= 0xd800 && $arr[$k] <= 0xdfff) {
-                        // found a surrogate
-                        \trigger_error('utf8_from_unicode: Illegal surrogate ' . 'at index: ' . $k . ', value: ' . $arr[$k], \E_USER_WARNING);
-                        return \FALSE;
-                        # 3 byte sequence
-                    } else {
-                        if ($arr[$k] <= 0xffff) {
-                            echo \chr(0xe0 | $arr[$k] >> 12);
-                            echo \chr(0x80 | $arr[$k] >> 6 & 0x3f);
-                            echo \chr(0x80 | $arr[$k] & 0x3f);
-                            # 4 byte sequence
-                        } else {
-                            if ($arr[$k] <= 0x10ffff) {
-                                echo \chr(0xf0 | $arr[$k] >> 18);
-                                echo \chr(0x80 | $arr[$k] >> 12 & 0x3f);
-                                echo \chr(0x80 | $arr[$k] >> 6 & 0x3f);
-                                echo \chr(0x80 | $arr[$k] & 0x3f);
-                            } else {
-                                \trigger_error('utf8_from_unicode: Codepoint out of Unicode range ' . 'at index: ' . $k . ', value: ' . $arr[$k], \E_USER_WARNING);
-                                // out of range
-                                return \FALSE;
-                            }
-                        }
-                    }
-                }
-            }
+            \trigger_error('utf8_from_unicode: Codepoint out of Unicode range ' . 'at index: ' . $k . ', value: ' . $arr[$k], \E_USER_WARNING);
+            // out of range
+            return \FALSE;
         }
     }
     $result = \ob_get_contents();

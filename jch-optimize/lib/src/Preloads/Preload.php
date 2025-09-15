@@ -77,7 +77,7 @@ class Preload
         }
     }
 
-    public function getHref(): UriInterface
+    public function getHref(): UriInterface|\Psr\Http\Message\UriInterface
     {
         return $this->href;
     }

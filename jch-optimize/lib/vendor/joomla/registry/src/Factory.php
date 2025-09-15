@@ -33,8 +33,8 @@ class Factory
     public static function getFormat($type, array $options = [])
     {
         // Sanitize format type.
-        $type = \strtolower(\preg_replace('/[^A-Z\\d_]/i', '', $type));
-        $localNamespace = __NAMESPACE__ . '\\Format';
+        $type = \strtolower(\preg_replace('/[^A-Z\d_]/i', '', $type));
+        $localNamespace = __NAMESPACE__ . '\Format';
         $namespace = $options['format_namespace'] ?? $localNamespace;
         $class = $namespace . '\\' . \ucfirst($type);
         if (!\class_exists($class)) {

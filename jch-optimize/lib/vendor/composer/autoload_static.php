@@ -4,11 +4,11 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
+class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
 {
     public static $files = array (
-        'c9d07b32a2e02bc0fc582d4f0c1b56cc' => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src/autoload.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'c9d07b32a2e02bc0fc582d4f0c1b56cc' => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src/autoload.php',
         '2fb9d6f23c8e8faefc193a4cde0cab4f' => __DIR__ . '/..' . '/joomla/string/src/phputf8/utf8.php',
         'e6851e0ae7328fe5412fcec73928f3d9' => __DIR__ . '/..' . '/joomla/string/src/phputf8/ord.php',
         'd9ad1b7c85c100a18c404a13824b846e' => __DIR__ . '/..' . '/joomla/string/src/phputf8/str_ireplace.php',
@@ -25,12 +25,10 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         '4292e2fa66516089e6006723267587b4' => __DIR__ . '/..' . '/joomla/string/src/phputf8/utils/ascii.php',
         '87465e33b7551b401bf051928f220e9a' => __DIR__ . '/..' . '/joomla/string/src/phputf8/utils/validation.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
         '09f6b20656683369174dd6fa83b7e5fb' => __DIR__ . '/..' . '/symfony/polyfill-uuid/bootstrap.php',
     );
@@ -144,7 +142,8 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         ),
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Client\\' =>
         array (
@@ -188,10 +187,10 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         ),
         '_JchOptimizeVendor\\V91\\Laminas\\Cache\\Storage\\Adapter\\' =>
         array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-apcu/src',
-            1 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-filesystem/src',
-            2 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-memcached/src',
-            3 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-redis/src',
+            0 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-redis/src',
+            1 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-memcached/src',
+            2 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-filesystem/src',
+            3 => __DIR__ . '/..' . '/laminas/laminas-cache-storage-adapter-apcu/src',
         ),
         '_JchOptimizeVendor\\V91\\Laminas\\Cache\\' =>
         array (
@@ -404,6 +403,7 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         'JchOptimize\\Core\\Html\\Callbacks\\AbstractCallback' => __DIR__ . '/../..' . '/src/Html/Callbacks/AbstractCallback.php',
         'JchOptimize\\Core\\Html\\Callbacks\\Cdn' => __DIR__ . '/../..' . '/src/Html/Callbacks/Cdn.php',
         'JchOptimize\\Core\\Html\\Callbacks\\CombineJsCss' => __DIR__ . '/../..' . '/src/Html/Callbacks/CombineJsCss.php',
+        'JchOptimize\\Core\\Html\\Callbacks\\JavaScriptConfigureHelper' => __DIR__ . '/../..' . '/src/Html/Callbacks/JavaScriptConfigureHelper.php',
         'JchOptimize\\Core\\Html\\Callbacks\\LazyLoad' => __DIR__ . '/../..' . '/src/Html/Callbacks/LazyLoad.php',
         'JchOptimize\\Core\\Html\\Callbacks\\ReduceDom' => __DIR__ . '/../..' . '/src/Html/Callbacks/ReduceDom.php',
         'JchOptimize\\Core\\Html\\ElementObject' => __DIR__ . '/../..' . '/src/Html/ElementObject.php',
@@ -431,7 +431,7 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         'JchOptimize\\Core\\ImageAttributes' => __DIR__ . '/../..' . '/src/ImageAttributes.php',
         'JchOptimize\\Core\\Laminas\\ArrayPaginator' => __DIR__ . '/../..' . '/src/Laminas/ArrayPaginator.php',
         'JchOptimize\\Core\\Laminas\\CacheConfigurationContainerFactory' => __DIR__ . '/../..' . '/src/Laminas/CacheConfigurationContainerFactory.php',
-        'JchOptimize\\Core\\Laminas\\Plugins\\ClearExpiredByFactor' => __DIR__ . '/../..' . '/src/Laminas/Plugins/ClearExpiredByFactor.php',
+        'JchOptimize\\Core\\Laminas\\ClearExpiredByFactor' => __DIR__ . '/../..' . '/src/Laminas/ClearExpiredByFactor.php',
         'JchOptimize\\Core\\Model\\CacheMaintainer' => __DIR__ . '/../..' . '/src/Model/CacheMaintainer.php',
         'JchOptimize\\Core\\Model\\PopulateModalBodyTrait' => __DIR__ . '/../..' . '/src/Model/PopulateModalBodyTrait.php',
         'JchOptimize\\Core\\Mvc\\Controller' => __DIR__ . '/../..' . '/src/Mvc/Controller.php',
@@ -536,8 +536,10 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\BufferStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/BufferStream.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\CachingStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/CachingStream.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\DroppingStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/DroppingStream.php',
+        '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\Exception\\MalformedUriException' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Exception/MalformedUriException.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\FnStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/FnStream.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\Header' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Header.php',
+        '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\HttpFactory' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/HttpFactory.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\InflateStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/InflateStream.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\LazyOpenStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/LazyOpenStream.php',
         '_JchOptimizeVendor\\V91\\GuzzleHttp\\Psr7\\LimitStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/LimitStream.php',
@@ -882,11 +884,17 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Client\\NetworkExceptionInterface' => __DIR__ . '/..' . '/psr/http-client/src/NetworkExceptionInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Client\\RequestExceptionInterface' => __DIR__ . '/..' . '/psr/http-client/src/RequestExceptionInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\MessageInterface' => __DIR__ . '/..' . '/psr/http-message/src/MessageInterface.php',
+        '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\RequestFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/RequestFactoryInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\RequestInterface' => __DIR__ . '/..' . '/psr/http-message/src/RequestInterface.php',
+        '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\ResponseFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/ResponseFactoryInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\ResponseInterface' => __DIR__ . '/..' . '/psr/http-message/src/ResponseInterface.php',
+        '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\ServerRequestFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/ServerRequestFactoryInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\ServerRequestInterface' => __DIR__ . '/..' . '/psr/http-message/src/ServerRequestInterface.php',
+        '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\StreamFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/StreamFactoryInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\StreamInterface' => __DIR__ . '/..' . '/psr/http-message/src/StreamInterface.php',
+        '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\UploadedFileFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/UploadedFileFactoryInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\UploadedFileInterface' => __DIR__ . '/..' . '/psr/http-message/src/UploadedFileInterface.php',
+        '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\UriFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/UriFactoryInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Http\\Message\\UriInterface' => __DIR__ . '/..' . '/psr/http-message/src/UriInterface.php',
         '_JchOptimizeVendor\\V91\\Psr\\Log\\AbstractLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/AbstractLogger.php',
         '_JchOptimizeVendor\\V91\\Psr\\Log\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/log/Psr/Log/InvalidArgumentException.php',
@@ -947,9 +955,9 @@ class ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitbaca5329978578236dd4ce3fd5baa5b6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52::$classMap;
         }, null, ClassLoader::class);
     }
 }

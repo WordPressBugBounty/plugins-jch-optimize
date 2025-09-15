@@ -21,7 +21,7 @@ function utf8_strcspn($str, $mask, $start = null, $length = null)
     if (empty($mask) || \strlen($mask) == 0) {
         return null;
     }
-    $mask = \preg_replace('!([\\\\\\-\\]\\[/^])!', '\\\\${1}', $mask);
+    $mask = \preg_replace('!([\\\\\\-\]\[/^])!', '\\\\${1}', $mask);
     if ($start !== null || $length !== null) {
         $str = utf8_substr($str, $start, $length);
     }

@@ -163,7 +163,7 @@ abstract class StringUtils
     {
         if (static::$hasPcreUnicodeSupport === null) {
             ErrorHandler::start();
-            static::$hasPcreUnicodeSupport = defined('PREG_BAD_UTF8_OFFSET_ERROR') && preg_match('/\\pL/u', 'a') === 1;
+            static::$hasPcreUnicodeSupport = defined('PREG_BAD_UTF8_OFFSET_ERROR') && preg_match('/\pL/u', 'a') === 1;
             ErrorHandler::stop();
         }
         return static::$hasPcreUnicodeSupport;

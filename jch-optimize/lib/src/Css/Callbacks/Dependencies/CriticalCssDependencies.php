@@ -64,6 +64,7 @@ class CriticalCssDependencies
  </body>
 </html>
 HTML;
+        $this->htmlAboveFold = strtolower($this->htmlAboveFold);
 
         $oDom = new DOMDocument();
 

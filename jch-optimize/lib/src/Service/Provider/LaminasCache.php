@@ -26,16 +26,20 @@ use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Filesystem;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Memcached;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\Adapter\Redis;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IterableInterface;
-use _JchOptimizeVendor\V91\Laminas\Cache\Storage\PluginAwareInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\TaggableInterface;
+use _JchOptimizeVendor\V91\Laminas\EventManager\LazyListener;
+use _JchOptimizeVendor\V91\Laminas\EventManager\SharedEventManager;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerInterface;
 use JchOptimize\Core\Exception;
 use JchOptimize\Core\Helper;
+use JchOptimize\Core\Html\HtmlManager;
 use JchOptimize\Core\Laminas\CacheConfigurationContainerFactory;
-use JchOptimize\Core\Laminas\Plugins\ClearExpiredByFactor;
+use JchOptimize\Core\Laminas\ClearExpiredByFactor;
+use JchOptimize\Core\PageCache\PageCache;
 use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Platform\PathsInterface;
+use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Registry;
 use Throwable;
@@ -57,16 +61,26 @@ class LaminasCache implements ServiceProviderInterface
         $container->share('page_cache', [$this, 'getPageCacheStorageService']);
 
         $container->alias('Filesystem', Filesystem::class)
-            ->share(Filesystem::class, [$this, 'getFilesystemService']);
+                  ->share(Filesystem::class, [$this, 'getFilesystemService']);
         $container->alias('Redis', Redis::class)
-            ->share(Redis::class, [$this, 'getRedisService']);
+                  ->share(Redis::class, [$this, 'getRedisService']);
         $container->alias('Apcu', Apcu::class)
-            ->share(Apcu::class, [$this, 'getApcuService']);
+                  ->share(Apcu::class, [$this, 'getApcuService']);
         $container->alias('Memcached', Memcached::class)
-            ->share(Memcached::class, [$this, 'getMemcachedService']);
+                  ->share(Memcached::class, [$this, 'getMemcachedService']);
 
         $container->share(TaggableInterface::class, [$this, 'getTaggableInterfaceService']);
         $container->share(ClearExpiredByFactor::class, [$this, 'getClearExpiredByFactorService']);
+
+        $sharedEvents = $container->get(SharedEventManager::class);
+        $sharedEvents->attach(
+            HtmlManager::class,
+            'preProcessHtml',
+            new LazyListener([
+                'listener' => ClearExpiredByFactor::class,
+                'method' => 'clearExpiredByFactor',
+            ], $container)
+        );
     }
 
     /**
@@ -99,7 +113,7 @@ class LaminasCache implements ServiceProviderInterface
                 /** @var StorageInterface $cache */
                 $cache = $factory($laminasContainer, $adapter);
                 $cache->getOptions()
-                    ->setNamespace($container->get(CacheInterface::class)->getGlobalCacheNamespace());
+                      ->setNamespace($container->get(CacheInterface::class)->getGlobalCacheNamespace());
                 //Let's make sure we can connect
                 $cache->addItem(md5('__ITEM__'), '__ITEM__');
             }
@@ -177,14 +191,8 @@ class LaminasCache implements ServiceProviderInterface
             (int)$params->get('page_cache_lifetime', '900')
         );
         $cache->getOptions()
-            ->setNamespace($container->get(CacheInterface::class)->getGlobalCacheNamespace())
-            ->setTtl($ttl);
-        if ($cache instanceof PluginAwareInterface) {
-            $plugin = new ClearExpiredByFactor();
-            $plugin->setContainer($container);
-            $plugin->getOptions()->setClearingFactor(100);
-            $cache->addPlugin($plugin);
-        }
+              ->setNamespace($container->get(CacheInterface::class)->getGlobalCacheNamespace())
+              ->setTtl($ttl);
 
         return $cache;
     }
@@ -230,11 +238,11 @@ APACHECONFIG;
         return new CaptureCache(
             new PatternOptions(
                 [
-                    'public_dir' => $publicDir,
-                    'file_locking' => true,
+                    'public_dir'      => $publicDir,
+                    'file_locking'    => true,
                     'file_permission' => 0644,
-                    'dir_permission' => 0755,
-                    'umask' => false,
+                    'dir_permission'  => 0755,
+                    'umask'           => false,
                 ]
             )
         );
@@ -256,8 +264,8 @@ APACHECONFIG;
 
         /** @var StorageInterface&TaggableInterface&IterableInterface $cache */
         $cache->getOptions()
-            ->setNamespace($container->get(CacheInterface::class)->getTaggableCacheNamespace())
-            ->setTtl(0);
+              ->setNamespace($container->get(CacheInterface::class)->getTaggableCacheNamespace())
+              ->setTtl(0);
 
         return $cache;
     }
@@ -270,9 +278,25 @@ APACHECONFIG;
         );
 
         $cache->getOptions()
-            ->setNamespace($container->get(CacheInterface::class)->getPageCacheNamespace())
-            ->setTtl((int)$container->get(Registry::class)->get('page_cache_lifetime', '900'));
+              ->setNamespace($container->get(CacheInterface::class)->getPageCacheNamespace())
+              ->setTtl((int)$container->get(Registry::class)->get('page_cache_lifetime', '900'));
 
         return $cache;
+    }
+
+    public function getClearExpiredByFactorService(Container $container): ClearExpiredByFactor
+    {
+        $service = new ClearExpiredByFactor(
+            $container->get(Registry::class),
+            $container->get(ProfilerInterface::class),
+            $container->get(PageCache::class),
+            $container->get(StorageInterface::class),
+            $container->get(TaggableInterface::class),
+            $container->get(PathsInterface::class),
+            $container->get(CacheInterface::class),
+        );
+        $service->setLogger($container->get(LoggerInterface::class));
+
+        return $service;
     }
 }

@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
+        'name' => 'jchoptimize/wordpress-platform',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
+        'reference' => '8c6d01b7ccdae5e144db399adb22e4f735a7a9a0',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'a6bf3c24ddbc6b1facbde7472cf18009840407f4',
-        'name' => 'jchoptimize/wordpress-platform',
         'dev' => false,
     ),
     'versions' => array(
         'jchoptimize/wordpress-platform' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
+            'reference' => '8c6d01b7ccdae5e144db399adb22e4f735a7a9a0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'a6bf3c24ddbc6b1facbde7472cf18009840407f4',
             'dev_requirement' => false,
         ),
     ),

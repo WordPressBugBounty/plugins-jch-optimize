@@ -3,6 +3,7 @@
 namespace JchOptimize\WordPress;
 
 use function base64_decode;
+use function base64_encode;
 use function strtr;
 
 if (! function_exists('JchOptimize\WordPress\base64_encode_url')) {

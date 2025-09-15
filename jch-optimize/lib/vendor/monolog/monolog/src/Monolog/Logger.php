@@ -156,7 +156,7 @@ class Logger implements LoggerInterface, ResettableInterface
         $this->name = $name;
         $this->setHandlers($handlers);
         $this->processors = $processors;
-        $this->timezone = $timezone ?: new DateTimeZone(\date_default_timezone_get() ?: 'UTC');
+        $this->timezone = $timezone ?: new DateTimeZone(date_default_timezone_get() ?: 'UTC');
         if (\PHP_VERSION_ID >= 80100) {
             // Local variable for phpstan, see https://github.com/phpstan/phpstan/issues/6732#issuecomment-1111118412
             /** @var \WeakMap<\Fiber<mixed, mixed, mixed, mixed>, int> $fiberLogDepth */
@@ -182,7 +182,7 @@ class Logger implements LoggerInterface, ResettableInterface
      */
     public function pushHandler(HandlerInterface $handler): self
     {
-        \array_unshift($this->handlers, $handler);
+        array_unshift($this->handlers, $handler);
         return $this;
     }
     /**
@@ -195,7 +195,7 @@ class Logger implements LoggerInterface, ResettableInterface
         if (!$this->handlers) {
             throw new \LogicException('You tried to pop from an empty handler stack.');
         }
-        return \array_shift($this->handlers);
+        return array_shift($this->handlers);
     }
     /**
      * Set handlers, replacing all existing ones.
@@ -207,7 +207,7 @@ class Logger implements LoggerInterface, ResettableInterface
     public function setHandlers(array $handlers): self
     {
         $this->handlers = [];
-        foreach (\array_reverse($handlers) as $handler) {
+        foreach (array_reverse($handlers) as $handler) {
             $this->pushHandler($handler);
         }
         return $this;
@@ -224,7 +224,7 @@ class Logger implements LoggerInterface, ResettableInterface
      */
     public function pushProcessor(callable $callback): self
     {
-        \array_unshift($this->processors, $callback);
+        array_unshift($this->processors, $callback);
         return $this;
     }
     /**
@@ -238,7 +238,7 @@ class Logger implements LoggerInterface, ResettableInterface
         if (!$this->processors) {
             throw new \LogicException('You tried to pop from an empty processor stack.');
         }
-        return \array_shift($this->processors);
+        return array_shift($this->processors);
     }
     /**
      * @return callable[]
@@ -285,7 +285,7 @@ class Logger implements LoggerInterface, ResettableInterface
             $level = self::RFC_5424_LEVELS[$level];
         }
         if ($this->detectCycles) {
-            if (\PHP_VERSION_ID >= 80100 && ($fiber = \Fiber::getCurrent())) {
+            if (\PHP_VERSION_ID >= 80100 && $fiber = \Fiber::getCurrent()) {
                 // @phpstan-ignore offsetAssign.dimType
                 $this->fiberLogDepth[$fiber] = $this->fiberLogDepth[$fiber] ?? 0;
                 $logDepth = ++$this->fiberLogDepth[$fiber];
@@ -389,7 +389,7 @@ class Logger implements LoggerInterface, ResettableInterface
      */
     public static function getLevels(): array
     {
-        return \array_flip(static::$levels);
+        return array_flip(static::$levels);
     }
     /**
      * Gets the name of the logging level.
@@ -402,7 +402,7 @@ class Logger implements LoggerInterface, ResettableInterface
     public static function getLevelName(int $level): string
     {
         if (!isset(static::$levels[$level])) {
-            throw new InvalidArgumentException('Level "' . $level . '" is not defined, use one of: ' . \implode(', ', \array_keys(static::$levels)));
+            throw new InvalidArgumentException('Level "' . $level . '" is not defined, use one of: ' . implode(', ', array_keys(static::$levels)));
         }
         return static::$levels[$level];
     }
@@ -417,21 +417,21 @@ class Logger implements LoggerInterface, ResettableInterface
      */
     public static function toMonologLevel($level): int
     {
-        if (\is_string($level)) {
-            if (\is_numeric($level)) {
+        if (is_string($level)) {
+            if (is_numeric($level)) {
                 /** @phpstan-ignore-next-line */
-                return \intval($level);
+                return intval($level);
             }
             // Contains chars of all log levels and avoids using strtoupper() which may have
             // strange results depending on locale (for example, "i" will become "İ" in Turkish locale)
-            $upper = \strtr($level, 'abcdefgilmnortuwy', 'ABCDEFGILMNORTUWY');
-            if (\defined(__CLASS__ . '::' . $upper)) {
-                return \constant(__CLASS__ . '::' . $upper);
+            $upper = strtr($level, 'abcdefgilmnortuwy', 'ABCDEFGILMNORTUWY');
+            if (defined(__CLASS__ . '::' . $upper)) {
+                return constant(__CLASS__ . '::' . $upper);
             }
-            throw new InvalidArgumentException('Level "' . $level . '" is not defined, use one of: ' . \implode(', ', \array_keys(static::$levels) + static::$levels));
+            throw new InvalidArgumentException('Level "' . $level . '" is not defined, use one of: ' . implode(', ', array_keys(static::$levels) + static::$levels));
         }
-        if (!\is_int($level)) {
-            throw new InvalidArgumentException('Level "' . \var_export($level, \true) . '" is not defined, use one of: ' . \implode(', ', \array_keys(static::$levels) + static::$levels));
+        if (!is_int($level)) {
+            throw new InvalidArgumentException('Level "' . var_export($level, \true) . '" is not defined, use one of: ' . implode(', ', array_keys(static::$levels) + static::$levels));
         }
         return $level;
     }
@@ -477,7 +477,7 @@ class Logger implements LoggerInterface, ResettableInterface
      */
     public function log($level, $message, array $context = []): void
     {
-        if (!\is_int($level) && !\is_string($level)) {
+        if (!is_int($level) && !is_string($level)) {
             throw new \InvalidArgumentException('$level is expected to be a string or int');
         }
         if (isset(self::RFC_5424_LEVELS[$level])) {

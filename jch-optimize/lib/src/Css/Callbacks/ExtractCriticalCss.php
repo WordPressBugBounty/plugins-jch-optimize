@@ -74,7 +74,7 @@ class ExtractCriticalCss extends AbstractCallback
 
     protected function evaluateSelectorLists(CssRule $cssComponent): bool
     {
-        $selectorList = $cssComponent->getSelectorList();
+        $selectorList = strtolower($cssComponent->getSelectorList());
 
         if ($this->dynamicSelectors->getDynamicSelectors($selectorList)) {
             return true;

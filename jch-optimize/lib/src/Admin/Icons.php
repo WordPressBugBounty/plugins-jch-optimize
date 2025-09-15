@@ -15,7 +15,9 @@ namespace JchOptimize\Core\Admin;
 
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
+use CodeAlfa\Component\JchOptimize\Administrator\Extension\JchOptimizeComponent;
 use CodeAlfa\Component\JchOptimize\Administrator\Model\ModeSwitcherModel;
+use Exception;
 use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
@@ -469,16 +471,21 @@ HTML;
         if (JCH_PLATFORM == 'Joomla!') {
             $pageCacheTooltip = '<strong>[';
 
-            /** @var ModeSwitcherModel $modeSwitcher */
-            $modeSwitcher = Factory::getApplication()->bootComponent('com_jchoptimize')
-                ->getMVCFactory()->createModel('ModeSwitcher', 'Administrator');
-
-            $integratedPageCache = $modeSwitcher->getIntegratedPageCachePlugin();
-            if ($integratedPageCache == 'jchoptimizepagecache') {
-                $integratedPageCache = 'jchpagecache';
+            try {
+                $component = Factory::getApplication()->bootComponent('com_jchoptimize');
+                if ($component instanceof JchOptimizeComponent) {
+                    $modeSwitcher = $component->getMVCFactory()->createModel('ModeSwitcher', 'Administrator');
+                    if ($modeSwitcher instanceof ModeSwitcherModel) {
+                        $integratedPageCache = $modeSwitcher->getIntegratedPageCachePlugin();
+                        if ($integratedPageCache == 'jchoptimizepagecache') {
+                            $integratedPageCache = 'jchpagecache';
+                        }
+                        $pageCacheTooltip .= Text::_($modeSwitcher->pageCachePlugins[$integratedPageCache]);
+                        $pageCacheTooltip .= ']</strong><br><br>';
+                    }
+                }
+            } catch (Exception $e) {
             }
-            $pageCacheTooltip .= Text::_($modeSwitcher->pageCachePlugins[$integratedPageCache]);
-            $pageCacheTooltip .= ']</strong><br><br>';
         }
 
         $pageCacheTooltip .= $this->utility->translate('Toggles on/off the Page Cache feature.');

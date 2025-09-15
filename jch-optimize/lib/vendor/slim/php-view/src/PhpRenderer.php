@@ -27,7 +27,7 @@ class PhpRenderer
      */
     public function __construct(string $templatePath = '', array $attributes = [], string $layout = '')
     {
-        $this->templatePath = \rtrim($templatePath, '/\\') . '/';
+        $this->templatePath = rtrim($templatePath, '/\\') . '/';
         $this->attributes = $attributes;
         $this->setLayout($layout);
     }
@@ -120,7 +120,7 @@ class PhpRenderer
      */
     public function setTemplatePath(string $templatePath): void
     {
-        $this->templatePath = \rtrim($templatePath, '/\\') . '/';
+        $this->templatePath = rtrim($templatePath, '/\\') . '/';
     }
     /**
      * @param string $template
@@ -156,13 +156,13 @@ class PhpRenderer
         if (!$this->templateExists($template)) {
             throw new PhpTemplateNotFoundException('View cannot render "' . $template . '" because the template does not exist');
         }
-        $data = \array_merge($this->attributes, $data);
+        $data = array_merge($this->attributes, $data);
         try {
-            \ob_start();
+            ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
-            $output = \ob_get_clean();
+            $output = ob_get_clean();
         } catch (Throwable $e) {
-            \ob_end_clean();
+            ob_end_clean();
             throw $e;
         }
         return $output;
@@ -177,7 +177,7 @@ class PhpRenderer
     public function templateExists(string $template): bool
     {
         $path = $this->templatePath . $template;
-        return \is_file($path) && \is_readable($path);
+        return is_file($path) && is_readable($path);
     }
     /**
      * @param string $template
@@ -187,7 +187,7 @@ class PhpRenderer
      */
     protected function protectedIncludeScope(string $template, array $data): void
     {
-        \extract($data);
-        include \func_get_arg(0);
+        extract($data);
+        include func_get_arg(0);
     }
 }

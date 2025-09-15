@@ -30,7 +30,7 @@ class CssSelectorList extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
     {
         /** @var SplObjectStorage<CssSelector, null> $selectors */
         $selectors = new SplObjectStorage();
-        $selectorStrings = preg_split('#(?:[^,(\\s]++|(?<fn>\\((?>[^()]++|(?&fn))*+\\))|\\s++)*?\\K(?:\\s*+,\\s*+|$)+#', $css, -1, PREG_SPLIT_NO_EMPTY);
+        $selectorStrings = preg_split('#(?:[^,(\s]++|(?<fn>\((?>[^()]++|(?&fn))*+\))|\s++)*?\K(?:\s*+,\s*+|$)+#', $css, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($selectorStrings as $selectorString) {
             $selectors->attach($selectorFactory->createCssSelector($selectorFactory, $selectorString));
         }

@@ -1225,6 +1225,6 @@ final class Filesystem extends AbstractAdapter implements AvailableSpaceCapableI
      */
     private function escapeSuffixForGlob(string $suffix): string
     {
-        return preg_replace('#([*?\\[])#', '[$1]', $suffix);
+        return preg_replace('#([*?\[])#', '[$1]', $suffix);
     }
 }

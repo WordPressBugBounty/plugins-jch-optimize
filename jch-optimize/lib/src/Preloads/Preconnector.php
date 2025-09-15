@@ -21,6 +21,7 @@ use JchOptimize\Core\Helper;
 use JchOptimize\Core\Html\ElementObject;
 use JchOptimize\Core\Html\Elements\Link;
 use JchOptimize\Core\Html\HtmlElementBuilder;
+use JchOptimize\Core\Html\HtmlManager;
 use JchOptimize\Core\Html\HtmlProcessor;
 use JchOptimize\Core\Html\Parser;
 use JchOptimize\Core\Registry;
@@ -90,19 +91,26 @@ class Preconnector implements LoggerAwareInterface
 
         $htmlManager = $event->getTarget();
 
-        if ($this->prefetches->count() > 0) {
-            /** @var DnsPrefetch $prefetch */
-            foreach ($this->prefetches as $prefetch) {
-                $htmlManager->prependChildToHead($prefetch->render());
+        if ($htmlManager instanceof HtmlManager) {
+            if ($this->prefetches->count() > 0) {
+                /** @var DnsPrefetch $prefetch */
+                foreach ($this->prefetches as $prefetch) {
+                    try {
+                        $htmlManager->prependChildToHead($prefetch->render());
+                    } catch (PregErrorException $e) {
+                    }
+                }
             }
-        }
+            if ($this->preconnects->count() > 0) {
+                $this->checkPreconnects();
 
-        if ($this->preconnects->count() > 0) {
-            $this->checkPreconnects();
-
-            /** @var Preconnect $preconnect */
-            foreach ($this->preconnects as $preconnect) {
-                $htmlManager->prependChildToHead($preconnect->render());
+                /** @var Preconnect $preconnect */
+                foreach ($this->preconnects as $preconnect) {
+                    try {
+                        $htmlManager->prependChildToHead($preconnect->render());
+                    } catch (PregErrorException $e) {
+                    }
+                }
             }
         }
     }

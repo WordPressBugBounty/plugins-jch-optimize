@@ -13,9 +13,7 @@
 
 namespace JchOptimize\Core;
 
-use _JchOptimizeVendor\V91\Psr\Container\ContainerExceptionInterface;
 use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
-use _JchOptimizeVendor\V91\Psr\Container\NotFoundExceptionInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerInterface;
 use JchOptimize\Container\ContainerFactory;
 use JchOptimize\Core\Platform\PathsInterface;
@@ -43,9 +41,14 @@ abstract class Debugger
         }
     }
 
-    private static function debug(string $method, mixed $var, string $label = null): void
+    private static function debug(string $method, mixed $var, ?string $label = null): void
     {
+        if (!isset(self::$container) || !self::$container->has(LoggerInterface::class)) {
+            return;
+        }
+
         /** @var LoggerInterface $logger */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $logger = self::$container->get(LoggerInterface::class);
 
         if (is_null($label)) {
@@ -82,20 +85,21 @@ abstract class Debugger
         self::$dieOnError = $dieOnError;
 
         set_error_handler([Debugger::class, 'debuggerErrorHandler'], E_ALL);
-        register_shutdown_function([Debugger::class, 'debuggerCatchFatalErrors']);
+        register_shutdown_function([Debugger::class, 'debuggerCatchLastErrors']);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public static function debuggerErrorHandler(
         int $errno,
         string $errstr,
         string $errfile = '',
         int $errline = 0
     ): bool {
+        if (!isset(self::$container) || !self::$container->has(LoggerInterface::class)) {
+            return false;
+        }
+
         /** @var LoggerInterface $logger */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $logger = self::$container->get(LoggerInterface::class);
 
         $msg = 'Error no: ' . $errno
@@ -105,15 +109,15 @@ abstract class Debugger
 
         $logger->error($msg);
 
-        return true;
+        return !self::$dieOnError;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public static function debuggerCatchFatalErrors(): void
+    public static function debuggerCatchLastErrors(): void
     {
+        if (!isset(self::$container) || !self::$container->has(LoggerInterface::class)) {
+            return;
+        }
+
         $error = error_get_last();
 
         if ($error !== null) {
@@ -123,12 +127,13 @@ abstract class Debugger
                 . ' at line: ' . $error['line'] . "\n";
 
             /** @var LoggerInterface $logger */
+            /** @noinspection PhpUnhandledExceptionInspection */
             $logger = self::$container->get(LoggerInterface::class);
             $logger->error($msg);
         }
     }
 
-    public static function setErrorLogging(?int $error_level = E_ALL): void
+    public static function setErrorLogging(int $error_level = E_ALL): void
     {
         error_reporting($error_level);
         @ini_set('log_errors', 'On');

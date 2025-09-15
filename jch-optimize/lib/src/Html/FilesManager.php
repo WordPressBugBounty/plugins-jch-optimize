@@ -106,6 +106,9 @@ class FilesManager implements ContainerAwareInterface
      */
     public int $jsExcludedIndex = 0;
 
+    /**
+     * @var SplObjectStorage<Script, mixed>
+     */
     public SplObjectStorage $deferredScriptStorage;
 
 
@@ -462,11 +465,9 @@ class FilesManager implements ContainerAwareInterface
                 if (!$this->jsExcludedPeo && !empty($this->aJs[0])) {
                     $this->iIndex_js++;
                 }
-            } else {
                 //Don't increase index if we're in an exclude. Index already incremented
-                if (!$this->cssExcludedPeo && !empty($this->aCss[0])) {
+            } elseif (!$this->cssExcludedPeo && !empty($this->aCss[0])) {
                     $this->iIndex_css++;
-                }
             }
         }
     }
@@ -514,14 +515,12 @@ class FilesManager implements ContainerAwareInterface
             $this->excludeJsIEO(false);
         }
 
-        $this->addCriticalJsFromScript($script);
-
         foreach ($this->aExcludes['excludes_peo']['js'] as $exclude) {
             if (!empty($exclude['url']) && Helper::findExcludes([$exclude['url']], (string)$uri)) {
                 //If dont move, don't add to excludes
                 $addToExcludes = !isset($exclude['dontmove']);
                 //Handle js files IEO
-                if (isset($exclude['ieo'])) {
+                if (isset($exclude['ieo']) || Helper::isScriptDeferred($script)) {
                     $this->excludeJsIEO($addToExcludes);
                 } else {
                     //Prepare PEO excludes for js urls
@@ -599,7 +598,6 @@ class FilesManager implements ContainerAwareInterface
      */
     private function processJsContent(Script $script): void
     {
-        $this->addCriticalJsFromScript($script);
         $content = $script->getChildren()[0];
 
         foreach ($this->aExcludes['excludes_peo']['js_script'] as $exclude) {
@@ -608,10 +606,10 @@ class FilesManager implements ContainerAwareInterface
                 $addToExcludes = !isset($exclude['dontmove']);
 
                 if (isset($exclude['ieo'])) {
-                    //process PEO excludes for js scripts
+                    //process IEO excludes for js scripts
                     $this->excludeJsIEO($addToExcludes);
                 } else {
-                    //Prepare IEO excludes for js scripts
+                    //Prepare PEO excludes for js scripts
                     $this->excludeJsPEO($addToExcludes);
                 }
             }
@@ -650,19 +648,5 @@ class FilesManager implements ContainerAwareInterface
     private function mediaValueWillChangeOnLoad(Link $link): bool
     {
         return str_contains((string)$link->attributeValue('onload'), 'media');
-    }
-
-    /**
-     * @throws ExcludeException
-     */
-    private function addCriticalJsFromScript(Script $script): void
-    {
-        if (JCH_PRO && $this->params->get('pro_reduce_unused_js_enable', '0')) {
-            /** @see DynamicJs::addCriticalJsFromScript() */
-            if ($this->getContainer()->get(DynamicJs::class)->addCriticalJsFromScript($script)) {
-                 $this->replacement = '';
-                 $this->excludeJsIEO(false);
-            }
-        }
     }
 }

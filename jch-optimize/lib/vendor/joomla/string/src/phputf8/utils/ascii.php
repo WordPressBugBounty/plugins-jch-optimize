@@ -31,7 +31,7 @@ namespace _JchOptimizeVendor\V91;
 function utf8_is_ascii($str)
 {
     // Search for any bytes which are outside the ASCII range...
-    return \preg_match('/(?:[^\\x00-\\x7F])/', $str) !== 1;
+    return \preg_match('/(?:[^\x00-\x7F])/', $str) !== 1;
 }
 //--------------------------------------------------------------------
 /**
@@ -49,7 +49,7 @@ function utf8_is_ascii_ctrl($str)
     if (\strlen($str) > 0) {
         // Search for any bytes which are outside the ASCII range,
         // or are device control codes
-        return \preg_match('/[^\\x09\\x0A\\x0D\\x20-\\x7E]/', $str) !== 1;
+        return \preg_match('/[^\x09\x0A\x0D\x20-\x7E]/', $str) !== 1;
     }
     return \FALSE;
 }
@@ -66,7 +66,7 @@ function utf8_is_ascii_ctrl($str)
 function utf8_strip_non_ascii($str)
 {
     \ob_start();
-    while (\preg_match('/^([\\x00-\\x7F]+)|([^\\x00-\\x7F]+)/S', $str, $matches)) {
+    while (\preg_match('/^([\x00-\x7F]+)|([^\x00-\x7F]+)/S', $str, $matches)) {
         if (!isset($matches[2])) {
             echo $matches[0];
         }
@@ -89,7 +89,7 @@ function utf8_strip_non_ascii($str)
 function utf8_strip_ascii_ctrl($str)
 {
     \ob_start();
-    while (\preg_match('/^([^\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]+)|([\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]+)/S', $str, $matches)) {
+    while (\preg_match('/^([^\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+)|([\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+)/S', $str, $matches)) {
         if (!isset($matches[2])) {
             echo $matches[0];
         }
@@ -112,7 +112,7 @@ function utf8_strip_ascii_ctrl($str)
 function utf8_strip_non_ascii_ctrl($str)
 {
     \ob_start();
-    while (\preg_match('/^([\\x09\\x0A\\x0D\\x20-\\x7E]+)|([^\\x09\\x0A\\x0D\\x20-\\x7E]+)/S', $str, $matches)) {
+    while (\preg_match('/^([\x09\x0A\x0D\x20-\x7E]+)|([^\x09\x0A\x0D\x20-\x7E]+)/S', $str, $matches)) {
         if (!isset($matches[2])) {
             echo $matches[0];
         }

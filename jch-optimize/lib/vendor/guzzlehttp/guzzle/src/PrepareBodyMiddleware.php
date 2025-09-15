@@ -35,7 +35,7 @@ class PrepareBodyMiddleware
         // Add a default content-type if possible.
         if (!$request->hasHeader('Content-Type')) {
             if ($uri = $request->getBody()->getMetadata('uri')) {
-                if (\is_string($uri) && ($type = Psr7\MimeType::fromFilename($uri))) {
+                if (is_string($uri) && $type = Psr7\MimeType::fromFilename($uri)) {
                     $modify['set_headers']['Content-Type'] = $type;
                 }
             }
@@ -63,8 +63,8 @@ class PrepareBodyMiddleware
             return;
         }
         $expect = $options['expect'] ?? null;
-        // Return if disabled or if you're not using HTTP/1.1 or HTTP/2.0
-        if ($expect === \false || $request->getProtocolVersion() < 1.1) {
+        // Return if disabled or using HTTP/1.0
+        if ($expect === \false || $request->getProtocolVersion() === '1.0') {
             return;
         }
         // The expect header is unconditionally enabled

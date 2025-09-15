@@ -51,14 +51,14 @@ class PseudoSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
     }
     public function getSelectorList(): ?\CodeAlfa\Css2Xpath\Selector\CssSelectorList
     {
-        if (\is_string($this->selectorList)) {
+        if (is_string($this->selectorList)) {
             $this->selectorList = $this->selectorFactory->createCssSelectorList($this->selectorFactory, $this->selectorList);
         }
         return $this->selectorList;
     }
     protected function transformNotSelectorList(string $xpath): string
     {
-        return \preg_replace(['#^descendant-or-self::\\*#', '#^descendant-or-self::#'], ['self::node()', ''], $xpath);
+        return preg_replace(['#^descendant-or-self::\*#', '#^descendant-or-self::#'], ['self::node()', ''], $xpath);
     }
     protected function renderSelectorList(): string
     {

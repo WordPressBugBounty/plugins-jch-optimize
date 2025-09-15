@@ -164,7 +164,7 @@ class Ini implements FormatInterface
                 }
             }
             // Validate the key.
-            if (\preg_match('/[^A-Z\\d_]/i', $key)) {
+            if (\preg_match('/[^A-Z\d_]/i', $key)) {
                 // Maybe throw exception?
                 continue;
             }
@@ -173,26 +173,22 @@ class Ini implements FormatInterface
             if ($length && $value[0] === '"' && $value[$length - 1] === '"') {
                 // Strip the quotes and Convert the new line characters.
                 $value = \stripcslashes(\substr($value, 1, $length - 2));
-                $value = \str_replace('\\n', "\n", $value);
-            } else {
-                // If the value is not quoted, we assume it is not a string.
-                // If the value is 'false' assume boolean false.
-                if ($value === 'false') {
-                    $value = \false;
-                } elseif ($value === 'true') {
-                    // If the value is 'true' assume boolean true.
-                    $value = \true;
-                } elseif ($options['parseBooleanWords'] && \in_array(\strtolower($value), ['yes', 'no'], \true)) {
-                    // If the value is 'yes' or 'no' and option is enabled assume appropriate boolean
-                    $value = \strtolower($value) === 'yes';
-                } elseif (\is_numeric($value)) {
-                    // If the value is numeric than it is either a float or int.
-                    // If there is a period then we assume a float.
-                    if (\strpos($value, '.') !== \false) {
-                        $value = (float) $value;
-                    } else {
-                        $value = (int) $value;
-                    }
+                $value = \str_replace('\n', "\n", $value);
+            } elseif ($value === 'false') {
+                $value = \false;
+            } elseif ($value === 'true') {
+                // If the value is 'true' assume boolean true.
+                $value = \true;
+            } elseif ($options['parseBooleanWords'] && \in_array(\strtolower($value), ['yes', 'no'], \true)) {
+                // If the value is 'yes' or 'no' and option is enabled assume appropriate boolean
+                $value = \strtolower($value) === 'yes';
+            } elseif (\is_numeric($value)) {
+                // If the value is numeric than it is either a float or int.
+                // If there is a period then we assume a float.
+                if (\strpos($value, '.') !== \false) {
+                    $value = (float) $value;
+                } else {
+                    $value = (int) $value;
                 }
             }
             // If a section is set add the key/value to the section, otherwise top level.
@@ -209,19 +205,17 @@ class Ini implements FormatInterface
                 } else {
                     $obj->{$section}->{$key} = $value;
                 }
-            } else {
-                if ($array) {
-                    if (!isset($obj->{$key})) {
-                        $obj->{$key} = [];
-                    }
-                    if (!empty($arrayKey)) {
-                        $obj->{$key}[$arrayKey] = $value;
-                    } else {
-                        $obj->{$key}[] = $value;
-                    }
-                } else {
-                    $obj->{$key} = $value;
+            } elseif ($array) {
+                if (!isset($obj->{$key})) {
+                    $obj->{$key} = [];
                 }
+                if (!empty($arrayKey)) {
+                    $obj->{$key}[$arrayKey] = $value;
+                } else {
+                    $obj->{$key}[] = $value;
+                }
+            } else {
+                $obj->{$key} = $value;
             }
             $array = \false;
         }
@@ -251,7 +245,7 @@ class Ini implements FormatInterface
                 break;
             case 'string':
                 // Sanitize any CRLF characters..
-                $string = '"' . \str_replace(["\r\n", "\n"], '\\n', $value) . '"';
+                $string = '"' . \str_replace(["\r\n", "\n"], '\n', $value) . '"';
                 break;
         }
         return $string;

@@ -42,9 +42,9 @@ trait SerializableTrait
         ];
     }
 
-    public function serialize()
+    public function serialize(): string
     {
-        return json_encode($this->serializedArray());
+        return json_encode($this->serializedArray()) ?: '{}';
     }
 
     public function __unserialize($data)
@@ -52,7 +52,7 @@ trait SerializableTrait
         $this->params = $data['params'];
     }
 
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $this->params = (json_decode($data, true))['params'];
     }

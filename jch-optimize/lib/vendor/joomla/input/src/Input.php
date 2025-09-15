@@ -107,18 +107,18 @@ class Input implements \Countable
         if (isset($this->inputs[$name])) {
             return $this->inputs[$name];
         }
-        $className = __NAMESPACE__ . '\\' . \ucfirst($name);
-        if (\class_exists($className)) {
+        $className = __NAMESPACE__ . '\\' . ucfirst($name);
+        if (class_exists($className)) {
             $this->inputs[$name] = new $className(null, $this->options);
             return $this->inputs[$name];
         }
-        $superGlobal = '_' . \strtoupper($name);
-        if (\in_array(\strtoupper($name), self::ALLOWED_GLOBALS, \true) && isset($GLOBALS[$superGlobal])) {
+        $superGlobal = '_' . strtoupper($name);
+        if (\in_array(strtoupper($name), self::ALLOWED_GLOBALS, \true) && isset($GLOBALS[$superGlobal])) {
             $this->inputs[$name] = new self($GLOBALS[$superGlobal], $this->options);
             return $this->inputs[$name];
         }
-        $trace = \debug_backtrace();
-        \trigger_error('Undefined property via __get(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], \E_USER_NOTICE);
+        $trace = debug_backtrace();
+        trigger_error('Undefined property via __get(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], \E_USER_NOTICE);
     }
     /**
      * Get the number of variables.
@@ -177,14 +177,12 @@ class Input implements \Countable
                 } else {
                     $results[$k] = $this->getArray($v, $datasource[$k]);
                 }
+            } elseif ($datasource === null) {
+                $results[$k] = $this->get($k, null, $v);
+            } elseif (isset($datasource[$k])) {
+                $results[$k] = $this->filter->clean($datasource[$k], $v);
             } else {
-                if ($datasource === null) {
-                    $results[$k] = $this->get($k, null, $v);
-                } elseif (isset($datasource[$k])) {
-                    $results[$k] = $this->filter->clean($datasource[$k], $v);
-                } else {
-                    $results[$k] = $this->filter->clean(null, $v);
-                }
+                $results[$k] = $this->filter->clean(null, $v);
             }
         }
         return $results;
@@ -198,7 +196,7 @@ class Input implements \Countable
      */
     public function getInputForRequestMethod()
     {
-        switch (\strtoupper($this->getMethod())) {
+        switch (strtoupper($this->getMethod())) {
             case 'GET':
                 return $this->get;
             case 'POST':
@@ -264,16 +262,16 @@ class Input implements \Countable
      */
     public function __call($name, $arguments)
     {
-        if (\substr($name, 0, 3) == 'get') {
-            $filter = \substr($name, 3);
+        if (substr($name, 0, 3) == 'get') {
+            $filter = substr($name, 3);
             $default = null;
             if (isset($arguments[1])) {
                 $default = $arguments[1];
             }
             return $this->get($arguments[0], $default, $filter);
         }
-        $trace = \debug_backtrace();
-        \trigger_error('Call to undefined method via call(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], \E_USER_ERROR);
+        $trace = debug_backtrace();
+        trigger_error('Call to undefined method via call(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], \E_USER_ERROR);
     }
     /**
      * Gets the request method.
@@ -284,6 +282,6 @@ class Input implements \Countable
      */
     public function getMethod()
     {
-        return \strtoupper($this->server->getCmd('REQUEST_METHOD'));
+        return strtoupper($this->server->getCmd('REQUEST_METHOD'));
     }
 }

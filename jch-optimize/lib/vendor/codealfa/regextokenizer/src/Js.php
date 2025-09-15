@@ -22,6 +22,6 @@ trait Js
      */
     public static function jsHtmlCommentToken(): string
     {
-        return '(?:(?:<!--|(?<=[\\s/^])-->)[^\\r\\n]*+)';
+        return '(?:(?:<!--|(?<=[\s/^])-->)[^\r\n]*+)';
     }
 }

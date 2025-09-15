@@ -91,7 +91,7 @@ class StringWrapper
      */
     public function stream_open($path, $mode, $options, &$openedPath)
     {
-        $refPath = StringController::getRef(\str_replace('string://', '', $path));
+        $refPath = StringController::getRef(str_replace('string://', '', $path));
         $this->currentString =& $refPath;
         if ($this->currentString) {
             $this->len = \strlen($this->currentString);
@@ -126,10 +126,10 @@ class StringWrapper
      */
     public function url_stat($path, $flags = 0)
     {
-        $now = \time();
-        $refPath = StringController::getRef(\str_replace('string://', '', $path));
+        $now = time();
+        $refPath = StringController::getRef(str_replace('string://', '', $path));
         $string =& $refPath;
-        $stat = array('dev' => 0, 'ino' => 0, 'mode' => 0, 'nlink' => 1, 'uid' => 0, 'gid' => 0, 'rdev' => 0, 'size' => \strlen($string), 'atime' => $now, 'mtime' => $now, 'ctime' => $now, 'blksize' => '512', 'blocks' => \ceil(\strlen($string) / 512));
+        $stat = array('dev' => 0, 'ino' => 0, 'mode' => 0, 'nlink' => 1, 'uid' => 0, 'gid' => 0, 'rdev' => 0, 'size' => \strlen($string), 'atime' => $now, 'mtime' => $now, 'ctime' => $now, 'blksize' => '512', 'blocks' => ceil(\strlen($string) / 512));
         return $stat;
     }
     /**
@@ -146,7 +146,7 @@ class StringWrapper
      */
     public function stream_read($count)
     {
-        $result = \substr($this->currentString, $this->pos, $count);
+        $result = substr($this->currentString, $this->pos, $count);
         $this->pos += $count;
         return $result;
     }
@@ -237,6 +237,6 @@ class StringWrapper
         return \true;
     }
 }
-if (!\stream_wrapper_register('string', '_JchOptimizeVendor\\V91\\Joomla\\Filesystem\\Stream\\StringWrapper')) {
-    die('\\Joomla\\Filesystem\\Stream\\StringWrapper Wrapper Registration Failed');
+if (!stream_wrapper_register('string', '_JchOptimizeVendor\V91\Joomla\Filesystem\Stream\StringWrapper')) {
+    die('\Joomla\Filesystem\Stream\StringWrapper Wrapper Registration Failed');
 }

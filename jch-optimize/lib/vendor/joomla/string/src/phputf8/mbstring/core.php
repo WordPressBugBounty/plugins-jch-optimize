@@ -70,7 +70,7 @@ function utf8_strrpos($str, $search, $offset = \FALSE)
             return \FALSE;
         }
         $str = \mb_substr($str, $offset);
-        if (\FALSE !== ($pos = \mb_strrpos($str, $search))) {
+        if (\FALSE !== $pos = \mb_strrpos($str, $search)) {
             return $pos + $offset;
         }
         return \FALSE;

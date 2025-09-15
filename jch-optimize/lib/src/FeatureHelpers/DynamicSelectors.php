@@ -38,7 +38,7 @@ class DynamicSelectors extends AbstractFeatureHelper
                 //Add all CSS containing any specified dynamic CSS to the critical CSS
         $dynamicSelectors = Helper::getArray($this->params->get('pro_dynamic_selectors', []));
         $dynamicSelectors = array_map(
-            fn($a) => preg_quote($a, '#'),
+            fn($a) => preg_replace('#\x{200B}#u', '\b', preg_quote($a, '#')),
             array_unique(
                 array_merge(
                     $dynamicSelectors,

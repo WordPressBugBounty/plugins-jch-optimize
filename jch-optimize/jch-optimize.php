@@ -4,7 +4,7 @@
  * Plugin Name: JCH Optimize
  * Plugin URI: http://www.jch-optimize.net/
  * Description: Boost your WordPress site's performance with JCH Optimize as measured on PageSpeed
- * Version: 5.0.0
+ * Version: 5.0.1
  * Author: Samuel Marshall
  * License: GNU/GPLv3
  * Text Domain: jch-optimize

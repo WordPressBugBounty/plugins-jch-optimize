@@ -140,7 +140,7 @@ class FontFaceAtRule implements CssComponents
 
     public function getFontFamily(): string
     {
-        return trim($this->descriptors['font-family'], " \t\n\r\0\x0B'\"");
+        return trim($this->descriptors['font-family'] ?? '', " \t\n\r\0\x0B'\"");
     }
 
     public function setFontDisplay(string $value): static

@@ -16,8 +16,6 @@ namespace JchOptimize\Core\Preloads;
 use JchOptimize\Core\Uri\Utils;
 use SplObjectStorage;
 
-use function serialize;
-
 /**
  * @template-extends SplObjectStorage<Preload, null>
  */
@@ -30,10 +28,11 @@ class PreloadsCollection extends SplObjectStorage
 
     /**
      * @param object&Preload $object
-     * @param null $info
+     * @param mixed $info
      * @return void
+     * @psalm-suppress ParamNameMismatch
      */
-    public function attach(object $object, $info = null): void
+    public function attach(object $object, mixed $info = null): void
     {
         $this->rewind();
 

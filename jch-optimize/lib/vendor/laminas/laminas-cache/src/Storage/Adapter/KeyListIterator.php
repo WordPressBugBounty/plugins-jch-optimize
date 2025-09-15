@@ -89,7 +89,7 @@ class KeyListIterator implements IteratorInterface, Countable
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         if ($this->mode === IteratorInterface::CURRENT_AS_SELF) {
@@ -109,7 +109,7 @@ class KeyListIterator implements IteratorInterface, Countable
      *
      * @return string
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function key()
     {
         return $this->keys[$this->position];
@@ -119,7 +119,7 @@ class KeyListIterator implements IteratorInterface, Countable
      *
      * @return bool
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function valid()
     {
         return $this->position < $this->count;
@@ -129,7 +129,7 @@ class KeyListIterator implements IteratorInterface, Countable
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function next()
     {
         $this->position++;
@@ -139,7 +139,7 @@ class KeyListIterator implements IteratorInterface, Countable
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
@@ -149,7 +149,7 @@ class KeyListIterator implements IteratorInterface, Countable
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function count()
     {
         return $this->count;

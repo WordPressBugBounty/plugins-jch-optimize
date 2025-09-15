@@ -200,9 +200,9 @@ class Stream
         }
         $this->filename = $filename;
         $this->openmode = $mode;
-        $url = \parse_url($filename);
+        $url = parse_url($filename);
         if (isset($url['scheme'])) {
-            $scheme = \ucfirst($url['scheme']);
+            $scheme = ucfirst($url['scheme']);
             // If we're dealing with a Joomla! stream, load it
             if (Helper::isJoomlaStream($scheme)) {
                 // Map to StringWrapper if required
@@ -214,7 +214,7 @@ class Stream
             // We have a scheme! force the method to be f
             $this->processingmethod = 'f';
         } elseif ($detectprocessingmode) {
-            $ext = \strtolower(\pathinfo($this->filename, \PATHINFO_EXTENSION));
+            $ext = strtolower(pathinfo($this->filename, \PATHINFO_EXTENSION));
             switch ($ext) {
                 case 'tgz':
                 case 'gz':
@@ -234,45 +234,45 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         // Decide which context to use:
         switch ($this->processingmethod) {
             // Gzip doesn't support contexts or streams
             case 'gz':
-                $this->fh = \gzopen($filename, $mode, $useIncludePath);
+                $this->fh = gzopen($filename, $mode, $useIncludePath);
                 break;
             // Bzip2 is much like gzip except it doesn't use the include path
             case 'bz':
-                $this->fh = \bzopen($filename, $mode);
+                $this->fh = bzopen($filename, $mode);
                 break;
             // Fopen can handle streams
             case 'f':
             default:
                 // One supplied at open; overrides everything
                 if ($context) {
-                    $this->fh = @\fopen($filename, $mode, $useIncludePath, $context);
+                    $this->fh = @fopen($filename, $mode, $useIncludePath, $context);
                 } elseif ($this->context) {
                     // One provided at initialisation
-                    $this->fh = @\fopen($filename, $mode, $useIncludePath, $this->context);
+                    $this->fh = @fopen($filename, $mode, $useIncludePath, $this->context);
                 } else {
                     // No context; all defaults
-                    $this->fh = @\fopen($filename, $mode, $useIncludePath);
+                    $this->fh = @fopen($filename, $mode, $useIncludePath);
                 }
                 break;
         }
         if (!$this->fh) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
-                $error = array('message' => \sprintf('Unknown error opening file %s', $filename));
+                $error = array('message' => sprintf('Unknown error opening file %s', $filename));
             }
             throw new FilesystemException($error['message']);
         }
@@ -298,29 +298,29 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         switch ($this->processingmethod) {
             case 'gz':
-                $res = \gzclose($this->fh);
+                $res = gzclose($this->fh);
                 break;
             case 'bz':
-                $res = \bzclose($this->fh);
+                $res = bzclose($this->fh);
                 break;
             case 'f':
             default:
-                $res = \fclose($this->fh);
+                $res = fclose($this->fh);
                 break;
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to close stream');
@@ -352,26 +352,26 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         switch ($this->processingmethod) {
             case 'gz':
-                $res = \gzeof($this->fh);
+                $res = gzeof($this->fh);
                 break;
             case 'bz':
             case 'f':
             default:
-                $res = \feof($this->fh);
+                $res = feof($this->fh);
                 break;
         }
-        $error = \error_get_last();
+        $error = error_get_last();
         if ($error !== null && $error['message'] !== '') {
             throw new FilesystemException($error['message']);
         }
@@ -394,21 +394,21 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
-        $res = @\filesize($this->filename);
+        $res = @filesize($this->filename);
         if (!$res) {
             $res = Helper::remotefsize($this->filename);
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Failed to get file size. This may not work for all streams.');
@@ -437,27 +437,27 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         switch ($this->processingmethod) {
             case 'gz':
-                $res = $length ? \gzgets($this->fh, $length) : \gzgets($this->fh);
+                $res = $length ? gzgets($this->fh, $length) : gzgets($this->fh);
                 break;
             case 'bz':
             case 'f':
             default:
-                $res = $length ? \fgets($this->fh, $length) : \fgets($this->fh);
+                $res = $length ? fgets($this->fh, $length) : fgets($this->fh);
                 break;
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to read from stream');
@@ -499,32 +499,32 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         $remaining = $length;
         do {
             // Do chunked reads where relevant
             switch ($this->processingmethod) {
                 case 'bz':
-                    $res = $remaining > 0 ? \bzread($this->fh, $remaining) : \bzread($this->fh, $this->chunksize);
+                    $res = $remaining > 0 ? bzread($this->fh, $remaining) : bzread($this->fh, $this->chunksize);
                     break;
                 case 'gz':
-                    $res = $remaining > 0 ? \gzread($this->fh, $remaining) : \gzread($this->fh, $this->chunksize);
+                    $res = $remaining > 0 ? gzread($this->fh, $remaining) : gzread($this->fh, $this->chunksize);
                     break;
                 case 'f':
                 default:
-                    $res = $remaining > 0 ? \fread($this->fh, $remaining) : \fread($this->fh, $this->chunksize);
+                    $res = $remaining > 0 ? fread($this->fh, $remaining) : fread($this->fh, $this->chunksize);
                     break;
             }
             if (!$res) {
-                $error = \error_get_last();
+                $error = error_get_last();
                 if ($error === null || $error['message'] === '') {
                     // Error but nothing from php? Create our own
                     $error = array('message' => 'Unable to read from stream');
@@ -569,28 +569,28 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         switch ($this->processingmethod) {
             case 'gz':
-                $res = \gzseek($this->fh, $offset, $whence);
+                $res = gzseek($this->fh, $offset, $whence);
                 break;
             case 'bz':
             case 'f':
             default:
-                $res = \fseek($this->fh, $offset, $whence);
+                $res = fseek($this->fh, $offset, $whence);
                 break;
         }
         // Seek, interestingly, returns 0 on success or -1 on failure.
         if ($res == -1) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to seek in stream');
@@ -616,28 +616,28 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         switch ($this->processingmethod) {
             case 'gz':
-                $res = \gztell($this->fh);
+                $res = gztell($this->fh);
                 break;
             case 'bz':
             case 'f':
             default:
-                $res = \ftell($this->fh);
+                $res = ftell($this->fh);
                 break;
         }
         // May return 0 so check if it's really false
         if ($res === \false) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to determine the current position in stream');
@@ -688,24 +688,24 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         $remaining = $length;
         $start = 0;
         do {
             // If the amount remaining is greater than the chunk size, then use the chunk
             $amount = $remaining > $chunk ? $chunk : $remaining;
-            $res = \fwrite($this->fh, \substr($string, $start), $amount);
+            $res = fwrite($this->fh, substr($string, $start), $amount);
             // Returns false on error or the number of bytes written
             if ($res === \false) {
-                $error = \error_get_last();
+                $error = error_get_last();
                 if ($error === null || $error['message'] === '') {
                     // Error but nothing from php? Create our own
                     $error = array('message' => 'Unable to write to stream');
@@ -749,16 +749,16 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
-        $sch = \parse_url($filename, \PHP_URL_SCHEME);
+        $sch = parse_url($filename, \PHP_URL_SCHEME);
         // Scheme specific options; ftp's chmod support is fun.
         switch ($sch) {
             case 'ftp':
@@ -766,11 +766,11 @@ class Stream
                 $res = Helper::ftpChmod($filename, $mode);
                 break;
             default:
-                $res = \chmod($filename, $mode);
+                $res = chmod($filename, $mode);
                 break;
         }
         if ($res === \false) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to change mode of stream');
@@ -794,7 +794,7 @@ class Stream
         if (!$this->fh) {
             throw new FilesystemException('File not open');
         }
-        return \stream_get_meta_data($this->fh);
+        return stream_get_meta_data($this->fh);
     }
     /**
      * Stream contexts
@@ -808,7 +808,7 @@ class Stream
     {
         // According to the manual this always works!
         if (\count($this->contextOptions)) {
-            $this->context = @\stream_context_create($this->contextOptions);
+            $this->context = @stream_context_create($this->contextOptions);
         } else {
             $this->context = null;
         }
@@ -894,18 +894,18 @@ class Stream
             // Capture PHP errors
             if (\PHP_VERSION_ID < 70000) {
                 // @Todo Remove this path, when PHP5 support is dropped.
-                \set_error_handler(function () {
+                set_error_handler(function () {
                     return \false;
                 });
-                @\trigger_error('');
-                \restore_error_handler();
+                @trigger_error('');
+                restore_error_handler();
             } else {
                 /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-                \error_clear_last();
+                error_clear_last();
             }
-            $retval = @\stream_context_set_option($this->fh, $this->contextOptions);
+            $retval = @stream_context_set_option($this->fh, $this->contextOptions);
             if (!$retval) {
-                $error = \error_get_last();
+                $error = error_get_last();
                 if ($error === null || $error['message'] === '') {
                     // Error but nothing from php? Create our own
                     $error = array('message' => 'Unable to apply context to stream');
@@ -936,18 +936,18 @@ class Stream
             // Capture PHP errors
             if (\PHP_VERSION_ID < 70000) {
                 // @Todo Remove this path, when PHP5 support is dropped.
-                \set_error_handler(function () {
+                set_error_handler(function () {
                     return \false;
                 });
-                @\trigger_error('');
-                \restore_error_handler();
+                @trigger_error('');
+                restore_error_handler();
             } else {
                 /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-                \error_clear_last();
+                error_clear_last();
             }
-            $res = @\stream_filter_append($this->fh, $filtername, $readWrite, $params);
+            $res = @stream_filter_append($this->fh, $filtername, $readWrite, $params);
             if (!$res) {
-                $error = \error_get_last();
+                $error = error_get_last();
                 if ($error !== null && $error['message'] !== '') {
                     throw new FilesystemException($error['message']);
                 }
@@ -976,23 +976,23 @@ class Stream
             // Capture PHP errors
             if (\PHP_VERSION_ID < 70000) {
                 // @Todo Remove this path, when PHP5 support is dropped.
-                \set_error_handler(function () {
+                set_error_handler(function () {
                     return \false;
                 });
-                @\trigger_error('');
-                \restore_error_handler();
+                @trigger_error('');
+                restore_error_handler();
             } else {
                 /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-                \error_clear_last();
+                error_clear_last();
             }
-            $res = @\stream_filter_prepend($this->fh, $filtername, $readWrite, $params);
+            $res = @stream_filter_prepend($this->fh, $filtername, $readWrite, $params);
             if (!$res) {
-                $error = \error_get_last();
+                $error = error_get_last();
                 if ($error !== null && $error['message'] !== '') {
                     throw new FilesystemException($error['message']);
                 }
             }
-            \array_unshift($this->filters, '');
+            array_unshift($this->filters, '');
             $this->filters[0] =& $res;
         }
         return $res;
@@ -1014,22 +1014,22 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         if ($byindex) {
-            $res = \stream_filter_remove($this->filters[$resource]);
+            $res = stream_filter_remove($this->filters[$resource]);
         } else {
-            $res = \stream_filter_remove($resource);
+            $res = stream_filter_remove($resource);
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to remove filter from stream');
@@ -1057,14 +1057,14 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         $chmodDest = $this->_getFilename($dest, 'w', $usePrefix, $relative);
         // Since we're going to open the file directly we need to get the filename.
@@ -1074,16 +1074,16 @@ class Stream
         // One supplied at copy; overrides everything
         if ($context) {
             // Use the provided context
-            $res = @\copy($src, $dest, $context);
+            $res = @copy($src, $dest, $context);
         } elseif ($this->context) {
             // One provided at initialisation
-            $res = @\copy($src, $dest, $this->context);
+            $res = @copy($src, $dest, $this->context);
         } else {
             // No context; all defaults
-            $res = @\copy($src, $dest);
+            $res = @copy($src, $dest);
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error !== null && $error['message'] !== '') {
                 throw new FilesystemException($error['message']);
             }
@@ -1110,29 +1110,29 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         $src = $this->_getFilename($src, 'w', $usePrefix, $relative);
         $dest = $this->_getFilename($dest, 'w', $usePrefix, $relative);
         if ($context) {
             // Use the provided context
-            $res = @\rename($src, $dest, $context);
+            $res = @rename($src, $dest, $context);
         } elseif ($this->context) {
             // Use the object's context
-            $res = @\rename($src, $dest, $this->context);
+            $res = @rename($src, $dest, $this->context);
         } else {
             // Don't use any context
-            $res = @\rename($src, $dest);
+            $res = @rename($src, $dest);
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to move stream');
@@ -1160,28 +1160,28 @@ class Stream
         // Capture PHP errors
         if (\PHP_VERSION_ID < 70000) {
             // @Todo Remove this path, when PHP5 support is dropped.
-            \set_error_handler(function () {
+            set_error_handler(function () {
                 return \false;
             });
-            @\trigger_error('');
-            \restore_error_handler();
+            @trigger_error('');
+            restore_error_handler();
         } else {
             /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-            \error_clear_last();
+            error_clear_last();
         }
         $filename = $this->_getFilename($filename, 'w', $usePrefix, $relative);
         if ($context) {
             // Use the provided context
-            $res = @\unlink($filename, $context);
+            $res = @unlink($filename, $context);
         } elseif ($this->context) {
             // Use the object's context
-            $res = @\unlink($filename, $this->context);
+            $res = @unlink($filename, $this->context);
         } else {
             // Don't use any context
-            $res = @\unlink($filename);
+            $res = @unlink($filename);
         }
         if (!$res) {
-            $error = \error_get_last();
+            $error = error_get_last();
             if ($error === null || $error['message'] === '') {
                 // Error but nothing from php? Create our own
                 $error = array('message' => 'Unable to delete stream');
@@ -1206,7 +1206,7 @@ class Stream
      */
     public function upload($src, $dest, $context = null, $usePrefix = \true, $relative = \false)
     {
-        if (\is_uploaded_file($src)) {
+        if (is_uploaded_file($src)) {
             // Make sure it's an uploaded file
             return $this->copy($src, $dest, $context, $usePrefix, $relative);
         }
@@ -1254,8 +1254,8 @@ class Stream
     {
         if ($usePrefix) {
             // Get rid of binary or t, should be at the end of the string
-            $tmode = \trim($mode, 'btf123456789');
-            $stream = \explode('://', $filename, 2);
+            $tmode = trim($mode, 'btf123456789');
+            $stream = explode('://', $filename, 2);
             $scheme = '';
             $filename = $stream[0];
             if (\count($stream) >= 2) {
@@ -1270,9 +1270,9 @@ class Stream
             }
             // Get rid of \_JchOptimizeVendor\V91\JPATH_ROOT (legacy compat)
             if (!$relative && $prefixToUse) {
-                $pos = \strpos($filename, \_JchOptimizeVendor\V91\JPATH_ROOT);
+                $pos = strpos($filename, \_JchOptimizeVendor\V91\JPATH_ROOT);
                 if ($pos !== \false) {
-                    $filename = \substr_replace($filename, '', $pos, \strlen(\_JchOptimizeVendor\V91\JPATH_ROOT));
+                    $filename = substr_replace($filename, '', $pos, \strlen(\_JchOptimizeVendor\V91\JPATH_ROOT));
                 }
             }
             $filename = ($prefixToUse ? $prefixToUse : '') . $filename;

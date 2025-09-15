@@ -86,7 +86,7 @@ abstract class AbstractView implements ViewInterface
      */
     public function setData(array $data)
     {
-        $this->data = \array_merge($this->data, $data);
+        $this->data = array_merge($this->data, $data);
         return $this;
     }
 }

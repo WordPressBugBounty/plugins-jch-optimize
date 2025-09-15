@@ -82,7 +82,7 @@ class Container implements ContainerInterface
             if ($this->parent instanceof ContainerInterface && $this->parent->has($key)) {
                 return $this->parent->get($key);
             }
-            throw new KeyNotFoundException(\sprintf("Resource '%s' has not been registered with the container.", $resourceName));
+            throw new KeyNotFoundException(sprintf("Resource '%s' has not been registered with the container.", $resourceName));
         }
         return $this->resources[$key]->getInstance();
     }
@@ -203,7 +203,7 @@ class Container implements ContainerInterface
             // We don't know if the parent supports the 'shared' or 'protected' concept, so we assume the default
             return $default;
         }
-        throw new KeyNotFoundException(\sprintf("Resource '%s' has not been registered with the container.", $resourceName));
+        throw new KeyNotFoundException(sprintf("Resource '%s' has not been registered with the container.", $resourceName));
     }
     /**
      * Assign a tag to services.
@@ -225,7 +225,7 @@ class Container implements ContainerInterface
             $this->tags[$tag][] = $resolvedKey;
         }
         // Prune duplicates
-        $this->tags[$tag] = \array_unique($this->tags[$tag]);
+        $this->tags[$tag] = array_unique($this->tags[$tag]);
         return $this;
     }
     /**
@@ -268,29 +268,29 @@ class Container implements ContainerInterface
         $key = $this->resolveAlias($resourceName);
         if (\in_array($key, $buildStack, \true)) {
             $buildStack = [];
-            throw new DependencyResolutionException(\sprintf('Cannot resolve circular dependency for "%s"', $key));
+            throw new DependencyResolutionException(sprintf('Cannot resolve circular dependency for "%s"', $key));
         }
         $buildStack[] = $key;
         if ($this->has($key)) {
             $resource = $this->get($key);
-            \array_pop($buildStack);
+            array_pop($buildStack);
             return $resource;
         }
         try {
             $reflection = new \ReflectionClass($key);
         } catch (\ReflectionException $e) {
-            \array_pop($buildStack);
+            array_pop($buildStack);
             return \false;
         }
         if (!$reflection->isInstantiable()) {
             $buildStack = [];
             if ($reflection->isInterface()) {
-                throw new DependencyResolutionException(\sprintf('There is no service for "%s" defined, cannot autowire a class service for an interface.', $key));
+                throw new DependencyResolutionException(sprintf('There is no service for "%s" defined, cannot autowire a class service for an interface.', $key));
             }
             if ($reflection->isAbstract()) {
-                throw new DependencyResolutionException(\sprintf('There is no service for "%s" defined, cannot autowire an abstract class.', $key));
+                throw new DependencyResolutionException(sprintf('There is no service for "%s" defined, cannot autowire an abstract class.', $key));
             }
-            throw new DependencyResolutionException(\sprintf('"%s" cannot be instantiated.', $key));
+            throw new DependencyResolutionException(sprintf('"%s" cannot be instantiated.', $key));
         }
         $constructor = $reflection->getConstructor();
         // If there are no parameters, just return a new object.
@@ -307,7 +307,7 @@ class Container implements ContainerInterface
         }
         $this->set($key, $callback, $shared);
         $resource = $this->get($key);
-        \array_pop($buildStack);
+        array_pop($buildStack);
         return $resource;
     }
     /**
@@ -382,7 +382,7 @@ class Container implements ContainerInterface
                         $methodArgs[] = null;
                         continue;
                     }
-                    throw new DependencyResolutionException(\sprintf('Could not resolve the parameter "$%s" of "%s::%s()": Union typehints are not supported.', $param->name, $method->class, $method->name));
+                    throw new DependencyResolutionException(sprintf('Could not resolve the parameter "$%s" of "%s::%s()": Union typehints are not supported.', $param->name, $method->class, $method->name));
                 }
                 // Check for a class, if it doesn't have one then it is a scalar type, which we cannot handle if a mandatory argument
                 if ($dependency->isBuiltin()) {
@@ -390,18 +390,18 @@ class Container implements ContainerInterface
                     if (!$param->isOptional()) {
                         $message = 'Could not resolve the parameter "$%s" of "%s::%s()":';
                         $message .= ' Scalar parameters cannot be autowired and the parameter does not have a default value.';
-                        throw new DependencyResolutionException(\sprintf($message, $param->name, $method->class, $method->name));
+                        throw new DependencyResolutionException(sprintf($message, $param->name, $method->class, $method->name));
                     }
                 } else {
                     $dependencyClassName = $dependency->getName();
                     // Check that class or interface exists
-                    if (!\interface_exists($dependencyClassName) && !\class_exists($dependencyClassName)) {
+                    if (!interface_exists($dependencyClassName) && !class_exists($dependencyClassName)) {
                         // If this is a nullable parameter, then don't error out
                         if ($param->allowsNull()) {
                             $methodArgs[] = null;
                             continue;
                         }
-                        throw new DependencyResolutionException(\sprintf('Could not resolve the parameter "$%s" of "%s::%s()": The "%s" class does not exist.', $param->name, $method->class, $method->name, $dependencyClassName));
+                        throw new DependencyResolutionException(sprintf('Could not resolve the parameter "$%s" of "%s::%s()": The "%s" class does not exist.', $param->name, $method->class, $method->name, $dependencyClassName));
                     }
                     // If the dependency class name is registered with this container or a parent, use it.
                     if ($this->getResource($dependencyClassName) !== null) {
@@ -417,7 +417,7 @@ class Container implements ContainerInterface
                             }
                             $message = 'Could not resolve the parameter "$%s" of "%s::%s()":';
                             $message .= ' No service for "%s" exists and the dependency could not be autowired.';
-                            throw new DependencyResolutionException(\sprintf($message, $param->name, $method->class, $method->name, $dependencyClassName), 0, $exception);
+                            throw new DependencyResolutionException(sprintf($message, $param->name, $method->class, $method->name, $dependencyClassName), 0, $exception);
                         }
                     }
                     if ($depObject instanceof $dependencyClassName) {
@@ -432,7 +432,7 @@ class Container implements ContainerInterface
                     $methodArgs[] = $param->getDefaultValue();
                     continue;
                 } catch (\ReflectionException $exception) {
-                    throw new DependencyResolutionException(\sprintf('Could not resolve the parameter "$%s" of "%s::%s()": Unable to read the default parameter value.', $param->name, $method->class, $method->name), 0, $exception);
+                    throw new DependencyResolutionException(sprintf('Could not resolve the parameter "$%s" of "%s::%s()": Unable to read the default parameter value.', $param->name, $method->class, $method->name), 0, $exception);
                 }
             }
             // If an untyped variadic argument, skip it
@@ -440,7 +440,7 @@ class Container implements ContainerInterface
                 continue;
             }
             // At this point the argument cannot be resolved, most likely cause is an untyped required argument
-            throw new DependencyResolutionException(\sprintf('Could not resolve the parameter "$%s" of "%s::%s()": The argument is untyped and has no default value.', $param->name, $method->class, $method->name));
+            throw new DependencyResolutionException(sprintf('Could not resolve the parameter "$%s" of "%s::%s()": The argument is untyped and has no default value.', $param->name, $method->class, $method->name));
         }
         return $methodArgs;
     }
@@ -462,7 +462,7 @@ class Container implements ContainerInterface
         $key = $this->resolveAlias($key);
         $hasKey = $this->has($key);
         if ($hasKey && $this->isProtected($key)) {
-            throw new ProtectedKeyException(\sprintf("Key %s is protected and can't be overwritten.", $key));
+            throw new ProtectedKeyException(sprintf("Key %s is protected and can't be overwritten.", $key));
         }
         if ($value === null && $hasKey) {
             unset($this->resources[$key]);
@@ -526,7 +526,7 @@ class Container implements ContainerInterface
             return new ContainerResource($this, $this->parent->get($key), ContainerResource::SHARE | ContainerResource::PROTECT);
         }
         if ($bail) {
-            throw new KeyNotFoundException(\sprintf('Key %s has not been registered with the container.', $key));
+            throw new KeyNotFoundException(sprintf('Key %s has not been registered with the container.', $key));
         }
         return null;
     }
@@ -568,6 +568,6 @@ class Container implements ContainerInterface
      */
     public function getKeys()
     {
-        return \array_unique(\array_merge(\array_keys($this->aliases), \array_keys($this->resources)));
+        return array_unique(array_merge(array_keys($this->aliases), array_keys($this->resources)));
     }
 }

@@ -18,8 +18,6 @@ use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
-use CodeAlfa\Minify\Html;
-use CodeAlfa\Minify\Js;
 use JchOptimize\Core\Cdn\Cdn as CdnCore;
 use JchOptimize\Core\Css\Components\CssUrl;
 use JchOptimize\Core\Css\Parser as CssParser;
@@ -29,18 +27,14 @@ use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Html\Callbacks\Cdn as CdnCallback;
 use JchOptimize\Core\Html\Callbacks\CombineJsCss;
+use JchOptimize\Core\Html\Callbacks\JavaScriptConfigureHelper;
 use JchOptimize\Core\Html\Callbacks\LazyLoad;
 use JchOptimize\Core\Html\Elements\Img;
-use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\Elements\Source;
 use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
 
-use function array_column;
-use function array_filter;
-use function array_map;
-use function array_merge;
 use function defined;
 use function implode;
 use function preg_match;
@@ -367,7 +361,6 @@ class HtmlProcessor implements LoggerAwareInterface, ContainerAwareInterface
                 if (JCH_DEBUG && $this->params->get('elements_above_fold_marker', '0')) {
                     $marker = <<<HTML
 <span id="jchoptimize-elements-marker" style="position: relative;">
-   <span style="position: absolute; color: red; font-size: 500px; line-height: 0px; z-index: 1000;">&#x2022;</span> 
 </span>
 HTML;
                 }
@@ -699,173 +692,29 @@ HTML;
 
     public function processJavaScriptForConfigureHelper(): array
     {
-        $criticalJs = array_merge(
-            Helper::getArray($this->params->get('pro_criticalJs', [])),
-            Helper::getArray($this->params->get('pro_criticalModules', []))
-        );
-        $excludeJsPeo = [];
-        $excludeJs = array_filter(array_merge(
-            Helper::getArray($this->params->get('excludeJs_peo', [])),
-            Helper::getArray($this->params->get('excludeJsComponents_peo', []))
-        ), function ($item) use (&$excludeJsPeo) {
-            if (isset($item['ieo'])) {
-                return true;
-            } else {
-                $excludeJsPeo[] = $item['url'];
-                return false;
-            }
-        });
-        $criticalJs = array_map(
-            fn ($a) => preg_quote($a, '#'),
-            array_merge($criticalJs, array_column($excludeJs, 'url'))
-        );
-        $criticalJsRegex = implode('|', $criticalJs);
-
-        $criticalScripts = array_merge(
-            Helper::getArray($this->params->get('pro_criticalScripts', [])),
-            Helper::getArray($this->params->get('pro_criticalModulesScripts', []))
-        );
-        $excludeScriptPeo = [];
-        $excludeScript = array_filter(
-            Helper::getArray($this->params->get('excludeScripts_peo', [])),
-            function ($item) use (&$excludeScriptPeo) {
-                if (isset($item['ieo'])) {
-                    return true;
-                } else {
-                    $excludeScriptPeo[] = $item['script'];
-                    return false;
-                }
-            }
-        );
-        $criticalScripts = array_map(
-            fn ($a) => preg_quote(Js::optimize($a), '#'),
-            array_merge($criticalScripts, array_column($excludeScript, 'script'))
-        );
-        $criticalScriptRegex = implode('|', $criticalScripts);
-
-        $parser = new Parser();
-        $scriptElement = new ElementObject();
-        $scriptElement->setNamesArray(['script']);
-        $scriptElement->addNegAttrCriteriaRegex(
-            "nomodule||type!=(?:module|(?:text|application)/javascript)"
-        );
-        if ($criticalJsRegex) {
-            $scriptElement->addNegAttrCriteriaRegex("src*=(?:{$criticalJsRegex})");
-        }
-        if ($criticalScriptRegex) {
-            $scriptElement->addNegContentCriteriaRegex("(?:{$criticalScriptRegex})");
-        }
-        $parser->addElementObject($scriptElement);
-
-        $html = $this->getFullHtml();
-
-        $minifierOptions = [
-            'jsMinifier' => [Js::class, 'optimize'],
-            'isXhtml' => Helper::isXhtml($html),
-            'isHtml5' => Helper::isHtml5($html),
-        ];
+        $dynamicScripts = [];
 
         try {
-            $dynamicScripts = array_filter($parser->findMatches(Html::optimize($html, $minifierOptions))[0]);
+            $parser = new Parser();
+            $scriptElement = new ElementObject();
+            $scriptElement->setNamesArray(['script']);
+            $scriptElement->addNegAttrCriteriaRegex(
+                "nomodule||type!=(?:module|(?:text|application)/javascript)"
+            );
+            $parser->addElementObject($scriptElement);
+            $configureHelperCallback = $this->getContainer()->get(JavaScriptConfigureHelper::class);
+            if ($configureHelperCallback instanceof JavaScriptConfigureHelper) {
+                $configureHelperCallback->setSection('head');
+                $parser->processMatchesWithCallback($this->getHeadHtml(), $configureHelperCallback);
+                $configureHelperCallback->setSection('body');
+                $parser->processMatchesWithCallback($this->getBodyHtml(), $configureHelperCallback);
+                $dynamicScripts = $configureHelperCallback->getScripts();
+            }
         } catch (PregErrorException $e) {
             $this->logger?->error('ProcessJavaScriptForConfigureHelper failed ' . $e->getMessage());
-            return [$e];
-        }
-
-        $dynamicScripts = array_map(
-            /**
-             * @throws PregErrorException
-             */
-            fn ($a) => HtmlElementBuilder::load($a),
-            array_unique($dynamicScripts)
-        );
-        usort($dynamicScripts, function (Script $a, Script $b) {
-            if (Helper::isScriptDeferred($a) && !Helper::isScriptDeferred($b)) {
-                return 1;
-            }
-
-            if (!Helper::isScriptDeferred($a) && Helper::isScriptDeferred($b)) {
-                return -1;
-            }
-
-            return 0;
-        });
-
-        $excludePeo = array_merge($excludeJsPeo, $excludeScriptPeo);
-        $sliceKey = 0;
-
-        if (!empty($excludePeo)) {
-            /**
-             * @var int $key
-             * @var Script $scriptObj
-             */
-            foreach ($dynamicScripts as $key => $scriptObj) {
-                if (!Helper::isScriptDeferred($scriptObj)) {
-                    if (($src = $scriptObj->getSrc()) !== false) {
-                        if (Helper::findExcludes($excludePeo, (string)$src)) {
-                            $sliceKey = $key + 1;
-                        }
-                    } else {
-                        $content = $scriptObj->getChildren()[0];
-                        if (Helper::findExcludes($excludePeo, $content)) {
-                            $sliceKey = $key + 1;
-                        }
-                    }
-                }
-            }
-            $dynamicScripts = array_slice($dynamicScripts, $sliceKey);
         }
 
         return $dynamicScripts;
-    }
-
-    public function cleanHtml(): string
-    {
-        $aSearch = [
-            '#' . Parser::htmlHeadElementToken() . '#ix',
-            '#' . Parser::htmlCommentToken() . '#ix',
-            '#' . Parser::htmlElementToken('script') . '#ix',
-            '#' . Parser::htmlElementToken('style') . '#ix',
-            '#' . Parser::htmlVoidElementToken('link') . '#six',
-        ];
-
-        $aReplace = [
-            '<head><title></title></head>',
-            '',
-            '',
-            '',
-            ''
-        ];
-
-        $html = preg_replace($aSearch, $aReplace, $this->html);
-
-        //Remove any hidden element from HtmL
-        $html = preg_replace_callback('#(<[^>]*+>)[^<>]*+#ix', function ($aMatches) {
-            if (preg_match('#type\s*+=\s*+["\']?hidden["\'\s>]|\shidden(?=[\s>=])[^>\'"=]*+[>=]#i', $aMatches[1])) {
-                return '';
-            }
-
-            //Add linebreak for readability during debugging
-            return $aMatches[1] . "\n";
-        }, $html);
-
-        //Remove Text nodes
-        //Remove text nodes from HTML elements
-        return preg_replace_callback(
-            '#(<(?>[^<>]++|(?1))*+>)|((?<=>)(?=[^<>\S]*+[^<>\s])[^<>]++)#',
-            function ($m) {
-                if (!empty($m[1])) {
-                    return $m[0];
-                }
-
-                if (!empty($m[2])) {
-                    return ' ';
-                }
-
-                return '';
-            },
-            $html
-        );
     }
 
     public function getAboveFoldHtml(string $html): string

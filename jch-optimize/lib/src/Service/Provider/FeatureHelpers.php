@@ -65,7 +65,6 @@ class FeatureHelpers implements ServiceProviderInterface
                 $container->get(Registry::class),
                 $container->get(CacheManager::class),
                 $container->get(HtmlManager::class),
-                $container->get(FilesManager::class)
             );
         });
 

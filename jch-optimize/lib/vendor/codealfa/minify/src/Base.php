@@ -21,11 +21,11 @@ abstract class Base
 
     protected function __construct()
     {
-        if (!\defined('CODEALFA_MINIFY_CONFIGURED')) {
-            \ini_set('pcre.backtrack_limit', '1000000');
-            \ini_set('pcre.recursion_limit', '1000000');
-            \ini_set('pcre.jit', '0');
-            \define('CODEALFA_MINIFY_CONFIGURED', 1);
+        if (!defined('CODEALFA_MINIFY_CONFIGURED')) {
+            ini_set('pcre.backtrack_limit', '1000000');
+            ini_set('pcre.recursion_limit', '1000000');
+            ini_set('pcre.jit', '0');
+            define('CODEALFA_MINIFY_CONFIGURED', 1);
         }
     }
     /**
@@ -47,12 +47,12 @@ abstract class Base
             $tm = \true;
         }
         if (empty($callback)) {
-            $op_code = \preg_replace($regex, $replacement, $code);
+            $op_code = preg_replace($regex, $replacement, $code);
         } else {
-            $op_code = \preg_replace_callback($regex, $callback, $code);
+            $op_code = preg_replace_callback($regex, $callback, $code);
         }
         $this->_debug($regex, $code, $regexNum);
         self::throwExceptionOnPregError();
-        return $op_code;
+        return $op_code ?? $code;
     }
 }

@@ -20,8 +20,6 @@ use JchOptimize\WordPress\Html\Helper;
 use function __;
 use function array_keys;
 
-use const _PHPStan_a4fa95a42\__;
-
 abstract class Setting
 {
     ## General Tab
@@ -429,11 +427,6 @@ abstract class Setting
         Helper::_('multiselect.pro', __FUNCTION__, [], 'modulesScripts', 'script');
     }
 
-    public static function pro_defer_criticalJs(): void
-    {
-        Helper::_('switch.pro', __FUNCTION__, '1');
-    }
-
     public static function critical_js_configure_helper(): void
     {
         Helper::_('criticaljsmodalbutton', __FUNCTION__, '');
@@ -684,7 +677,7 @@ abstract class Setting
 
     public static function pro_preconnect_domains(): void
     {
-        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'origin', 'origin', 'url', 'anonymous', 'use-credentials', 'Crossorigin: \'anonymous\'', '\'use-credentials\'','', '', 'only-one');
+        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'origin', 'origin', 'url', 'anonymous', 'use-credentials', 'Crossorigin: \'anonymous\'', '\'use-credentials\'', '', '', 'only-one');
     }
 
     public static function dns_prefetch_domains(): void

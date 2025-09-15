@@ -165,12 +165,10 @@ abstract class Glob
                     break;
                 }
                 $current++;
-            } else {
-                if ($pattern[$current] === '}' && $depth-- === 0 || $pattern[$current] === ',' && $depth === 0) {
-                    break;
-                } elseif ($pattern[$current++] === '{') {
-                    $depth++;
-                }
+            } elseif ($pattern[$current] === '}' && $depth-- === 0 || $pattern[$current] === ',' && $depth === 0) {
+                break;
+            } elseif ($pattern[$current++] === '{') {
+                $depth++;
             }
         }
         return $current < $length ? $current : null;

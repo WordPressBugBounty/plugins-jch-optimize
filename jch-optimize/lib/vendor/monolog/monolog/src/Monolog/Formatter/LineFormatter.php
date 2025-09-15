@@ -76,37 +76,37 @@ class LineFormatter extends NormalizerFormatter
         $vars = parent::format($record);
         $output = $this->format;
         foreach ($vars['extra'] as $var => $val) {
-            if (\false !== \strpos($output, '%extra.' . $var . '%')) {
-                $output = \str_replace('%extra.' . $var . '%', $this->stringify($val), $output);
+            if (\false !== strpos($output, '%extra.' . $var . '%')) {
+                $output = str_replace('%extra.' . $var . '%', $this->stringify($val), $output);
                 unset($vars['extra'][$var]);
             }
         }
         foreach ($vars['context'] as $var => $val) {
-            if (\false !== \strpos($output, '%context.' . $var . '%')) {
-                $output = \str_replace('%context.' . $var . '%', $this->stringify($val), $output);
+            if (\false !== strpos($output, '%context.' . $var . '%')) {
+                $output = str_replace('%context.' . $var . '%', $this->stringify($val), $output);
                 unset($vars['context'][$var]);
             }
         }
         if ($this->ignoreEmptyContextAndExtra) {
             if (empty($vars['context'])) {
                 unset($vars['context']);
-                $output = \str_replace('%context%', '', $output);
+                $output = str_replace('%context%', '', $output);
             }
             if (empty($vars['extra'])) {
                 unset($vars['extra']);
-                $output = \str_replace('%extra%', '', $output);
+                $output = str_replace('%extra%', '', $output);
             }
         }
         foreach ($vars as $var => $val) {
-            if (\false !== \strpos($output, '%' . $var . '%')) {
-                $output = \str_replace('%' . $var . '%', $this->stringify($val), $output);
+            if (\false !== strpos($output, '%' . $var . '%')) {
+                $output = str_replace('%' . $var . '%', $this->stringify($val), $output);
             }
         }
         // remove leftover %extra.xxx% and %context.xxx% if any
-        if (\false !== \strpos($output, '%')) {
-            $output = \preg_replace('/%(?:extra|context)\\..+?%/', '', $output);
+        if (\false !== strpos($output, '%')) {
+            $output = preg_replace('/%(?:extra|context)\..+?%/', '', $output);
             if (null === $output) {
-                $pcreErrorCode = \preg_last_error();
+                $pcreErrorCode = preg_last_error();
                 throw new \RuntimeException('Failed to run preg_replace: ' . $pcreErrorCode . ' / ' . Utils::pcreLastErrorMessage($pcreErrorCode));
             }
         }
@@ -147,10 +147,10 @@ class LineFormatter extends NormalizerFormatter
      */
     protected function convertToString($data): string
     {
-        if (null === $data || \is_bool($data)) {
-            return \var_export($data, \true);
+        if (null === $data || is_bool($data)) {
+            return var_export($data, \true);
         }
-        if (\is_scalar($data)) {
+        if (is_scalar($data)) {
             return (string) $data;
         }
         return $this->toJson($data, \true);
@@ -158,16 +158,16 @@ class LineFormatter extends NormalizerFormatter
     protected function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
-            if (0 === \strpos($str, '{')) {
-                $str = \preg_replace('/(?<!\\\\)\\\\[rn]/', "\n", $str);
+            if (0 === strpos($str, '{')) {
+                $str = preg_replace('/(?<!\\\\)\\\\[rn]/', "\n", $str);
                 if (null === $str) {
-                    $pcreErrorCode = \preg_last_error();
+                    $pcreErrorCode = preg_last_error();
                     throw new \RuntimeException('Failed to run preg_replace: ' . $pcreErrorCode . ' / ' . Utils::pcreLastErrorMessage($pcreErrorCode));
                 }
             }
             return $str;
         }
-        return \str_replace(["\r\n", "\r", "\n"], ' ', $str);
+        return str_replace(["\r\n", "\r", "\n"], ' ', $str);
     }
     private function formatException(\Throwable $e): string
     {
@@ -180,9 +180,9 @@ class LineFormatter extends NormalizerFormatter
                 $str .= ' faultactor: ' . $e->faultactor;
             }
             if (isset($e->detail)) {
-                if (\is_string($e->detail)) {
+                if (is_string($e->detail)) {
                     $str .= ' detail: ' . $e->detail;
-                } elseif (\is_object($e->detail) || \is_array($e->detail)) {
+                } elseif (is_object($e->detail) || is_array($e->detail)) {
                     $str .= ' detail: ' . $this->toJson($e->detail, \true);
                 }
             }
@@ -203,6 +203,6 @@ class LineFormatter extends NormalizerFormatter
     }
     private function stacktracesParserCustom(string $trace): string
     {
-        return \implode("\n", \array_filter(\array_map($this->stacktracesParser, \explode("\n", $trace))));
+        return implode("\n", array_filter(array_map($this->stacktracesParser, explode("\n", $trace))));
     }
 }

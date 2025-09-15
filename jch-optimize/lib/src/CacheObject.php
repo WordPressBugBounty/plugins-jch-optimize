@@ -59,7 +59,7 @@ class CacheObject
         return $this->etag;
     }
 
-    public function setFilemtime(int $filemtime = null): CacheObject
+    public function setFilemtime(?int $filemtime = null): CacheObject
     {
         $this->filemtime = $filemtime ?? time();
 

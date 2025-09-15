@@ -81,7 +81,7 @@ class Parameters extends PhpArrayObject implements ParametersInterface
      * @param  TKey $name
      * @return TValue|null
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($name)
     {
         if ($this->offsetExists($name)) {

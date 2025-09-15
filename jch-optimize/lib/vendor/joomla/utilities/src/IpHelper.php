@@ -52,9 +52,9 @@ final class IpHelper
         if (self::$ip === null) {
             $ip = static::detectAndCleanIP();
             if (!empty($ip) && $ip != '0.0.0.0' && \function_exists('inet_pton') && \function_exists('inet_ntop')) {
-                $myIP = @\inet_pton($ip);
+                $myIP = @inet_pton($ip);
                 if ($myIP !== \false) {
-                    $ip = \inet_ntop($myIP);
+                    $ip = inet_ntop($myIP);
                 }
             }
             static::setIp($ip);
@@ -85,7 +85,7 @@ final class IpHelper
      */
     public static function isIPv6($ip)
     {
-        return \strpos($ip, ':') !== \false;
+        return strpos($ip, ':') !== \false;
     }
     /**
      * Checks if an IP is contained in a list of IPs or IP expressions
@@ -105,11 +105,11 @@ final class IpHelper
         }
         // If the IP list is not an array, convert it to an array
         if (!\is_array($ipTable)) {
-            if (\strpos($ipTable, ',') !== \false) {
-                $ipTable = \explode(',', $ipTable);
-                $ipTable = \array_map('trim', $ipTable);
+            if (strpos($ipTable, ',') !== \false) {
+                $ipTable = explode(',', $ipTable);
+                $ipTable = array_map('trim', $ipTable);
             } else {
-                $ipTable = \trim($ipTable);
+                $ipTable = trim($ipTable);
                 $ipTable = array($ipTable);
             }
         }
@@ -122,21 +122,21 @@ final class IpHelper
             return \false;
         }
         // Sanity check
-        if (!\function_exists('inet_pton')) {
+        if (!\function_exists('inet_pton') && !\function_exists('_JchOptimizeVendor\V91\inet_pton')) {
             return \false;
         }
         // Get the IP's in_adds representation
-        $myIP = @\inet_pton($ip);
+        $myIP = @inet_pton($ip);
         // If the IP is in an unrecognisable format, quite
         if ($myIP === \false) {
             return \false;
         }
         $ipv6 = static::isIPv6($ip);
         foreach ($ipTable as $ipExpression) {
-            $ipExpression = \trim($ipExpression);
+            $ipExpression = trim($ipExpression);
             // Inclusive IP range, i.e. 123.123.123.123-124.125.126.127
-            if (\strstr($ipExpression, '-')) {
-                list($from, $to) = \explode('-', $ipExpression, 2);
+            if (strstr($ipExpression, '-')) {
+                list($from, $to) = explode('-', $ipExpression, 2);
                 if ($ipv6 && (!static::isIPv6($from) || !static::isIPv6($to))) {
                     // Do not apply IPv4 filtering on an IPv6 address
                     continue;
@@ -145,8 +145,8 @@ final class IpHelper
                     // Do not apply IPv6 filtering on an IPv4 address
                     continue;
                 }
-                $from = @\inet_pton(\trim($from));
-                $to = @\inet_pton(\trim($to));
+                $from = @inet_pton(trim($from));
+                $to = @inet_pton(trim($to));
                 // Sanity check
                 if ($from === \false || $to === \false) {
                     continue;
@@ -158,9 +158,9 @@ final class IpHelper
                 if ($myIP >= $from && $myIP <= $to) {
                     return \true;
                 }
-            } elseif (\strstr($ipExpression, '/')) {
+            } elseif (strstr($ipExpression, '/')) {
                 $binaryip = static::inetToBits($myIP);
-                list($net, $maskbits) = \explode('/', $ipExpression, 2);
+                list($net, $maskbits) = explode('/', $ipExpression, 2);
                 if ($ipv6 && !static::isIPv6($net)) {
                     // Do not apply IPv4 filtering on an IPv6 address
                     continue;
@@ -169,7 +169,7 @@ final class IpHelper
                     // Do not apply IPv6 filtering on an IPv4 address
                     continue;
                 }
-                if ($ipv6 && \strstr($maskbits, ':')) {
+                if ($ipv6 && strstr($maskbits, ':')) {
                     // Perform an IPv6 CIDR check
                     if (static::checkIPv6CIDR($myIP, $ipExpression)) {
                         return \true;
@@ -177,94 +177,91 @@ final class IpHelper
                     // If we didn't match it proceed to the next expression
                     continue;
                 }
-                if (!$ipv6 && \strstr($maskbits, '.')) {
+                if (!$ipv6 && strstr($maskbits, '.')) {
                     // Convert IPv4 netmask to CIDR
-                    $long = \ip2long($maskbits);
-                    $base = \ip2long('255.255.255.255');
-                    $maskbits = 32 - \log(($long ^ $base) + 1, 2);
+                    $long = ip2long($maskbits);
+                    $base = ip2long('255.255.255.255');
+                    $maskbits = 32 - log(($long ^ $base) + 1, 2);
                 }
                 // Convert network IP to in_addr representation
-                $net = @\inet_pton($net);
+                $net = @inet_pton($net);
                 // Sanity check
                 if ($net === \false) {
                     continue;
                 }
                 // Get the network's binary representation
                 $expectedNumberOfBits = $ipv6 ? 128 : 24;
-                $binarynet = \str_pad(static::inetToBits($net), $expectedNumberOfBits, '0', \STR_PAD_RIGHT);
+                $binarynet = str_pad(static::inetToBits($net), $expectedNumberOfBits, '0', \STR_PAD_RIGHT);
                 // Check the corresponding bits of the IP and the network
-                $ipNetBits = \substr($binaryip, 0, $maskbits);
-                $netBits = \substr($binarynet, 0, $maskbits);
+                $ipNetBits = substr($binaryip, 0, $maskbits);
+                $netBits = substr($binarynet, 0, $maskbits);
                 if ($ipNetBits === $netBits) {
                     return \true;
                 }
+            } elseif ($ipv6) {
+                $ipExpression = trim($ipExpression);
+                if (!static::isIPv6($ipExpression)) {
+                    continue;
+                }
+                $ipCheck = @inet_pton($ipExpression);
+                if ($ipCheck === \false) {
+                    continue;
+                }
+                if ($ipCheck == $myIP) {
+                    return \true;
+                }
             } else {
-                // IPv6: Only single IPs are supported
-                if ($ipv6) {
-                    $ipExpression = \trim($ipExpression);
-                    if (!static::isIPv6($ipExpression)) {
-                        continue;
-                    }
-                    $ipCheck = @\inet_pton($ipExpression);
-                    if ($ipCheck === \false) {
-                        continue;
-                    }
-                    if ($ipCheck == $myIP) {
-                        return \true;
-                    }
-                } else {
-                    // Standard IPv4 address, i.e. 123.123.123.123 or partial IP address, i.e. 123.[123.][123.][123]
-                    $dots = 0;
-                    if (\substr($ipExpression, -1) == '.') {
-                        // Partial IP address. Convert to CIDR and re-match
-                        foreach (\count_chars($ipExpression, 1) as $i => $val) {
-                            if ($i == 46) {
-                                $dots = $val;
-                            }
-                        }
-                        switch ($dots) {
-                            case 1:
-                                $netmask = '255.0.0.0';
-                                $ipExpression .= '0.0.0';
-                                break;
-                            case 2:
-                                $netmask = '255.255.0.0';
-                                $ipExpression .= '0.0';
-                                break;
-                            case 3:
-                                $netmask = '255.255.255.0';
-                                $ipExpression .= '0';
-                                break;
-                            default:
-                                $dots = 0;
-                        }
-                        if ($dots) {
-                            $binaryip = static::inetToBits($myIP);
-                            // Convert netmask to CIDR
-                            $long = \ip2long($netmask);
-                            $base = \ip2long('255.255.255.255');
-                            $maskbits = 32 - \log(($long ^ $base) + 1, 2);
-                            $net = @\inet_pton($ipExpression);
-                            // Sanity check
-                            if ($net === \false) {
-                                continue;
-                            }
-                            // Get the network's binary representation
-                            $expectedNumberOfBits = $ipv6 ? 128 : 24;
-                            $binarynet = \str_pad(static::inetToBits($net), $expectedNumberOfBits, '0', \STR_PAD_RIGHT);
-                            // Check the corresponding bits of the IP and the network
-                            $ipNetBits = \substr($binaryip, 0, $maskbits);
-                            $netBits = \substr($binarynet, 0, $maskbits);
-                            if ($ipNetBits === $netBits) {
-                                return \true;
-                            }
+                // Standard IPv4 address, i.e. 123.123.123.123 or partial IP address, i.e. 123.[123.][123.][123]
+                $dots = 0;
+                if (substr($ipExpression, -1) == '.') {
+                    // Partial IP address. Convert to CIDR and re-match
+                    foreach (count_chars($ipExpression, 1) as $i => $val) {
+                        if ($i == 46) {
+                            $dots = $val;
                         }
                     }
-                    if (!$dots) {
-                        $ip = @\inet_pton(\trim($ipExpression));
-                        if ($ip == $myIP) {
+                    switch ($dots) {
+                        case 1:
+                            $netmask = '255.0.0.0';
+                            $ipExpression .= '0.0.0';
+                            break;
+                        case 2:
+                            $netmask = '255.255.0.0';
+                            $ipExpression .= '0.0';
+                            break;
+                        case 3:
+                            $netmask = '255.255.255.0';
+                            $ipExpression .= '0';
+                            break;
+                        default:
+                            $dots = 0;
+                    }
+                    if ($dots) {
+                        $binaryip = static::inetToBits($myIP);
+                        // Convert netmask to CIDR
+                        $long = ip2long($netmask);
+                        $base = ip2long('255.255.255.255');
+                        $maskbits = 32 - log(($long ^ $base) + 1, 2);
+                        $net = @inet_pton($ipExpression);
+                        // Sanity check
+                        if ($net === \false) {
+                            continue;
+                        }
+                        // Get the network's binary representation
+                        $expectedNumberOfBits = $ipv6 ? 128 : 24;
+                        $binarynet = str_pad(static::inetToBits($net), $expectedNumberOfBits, '0', \STR_PAD_RIGHT);
+                        // Check the corresponding bits of the IP and the network
+                        $ipNetBits = substr($binaryip, 0, $maskbits);
+                        $netBits = substr($binarynet, 0, $maskbits);
+                        if ($ipNetBits === $netBits) {
                             return \true;
                         }
+                    }
+                }
+                if (!$dots) {
+                    $ip = @inet_pton(trim($ipExpression));
+                    if ($ip == $myIP) {
+                        return \true;
                     }
                 }
             }
@@ -287,8 +284,8 @@ final class IpHelper
         if (isset($_SERVER['REMOTE_ADDR'])) {
             $_SERVER['JOOMLA_REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
         } elseif (\function_exists('getenv')) {
-            if (\getenv('REMOTE_ADDR')) {
-                $_SERVER['JOOMLA_REMOTE_ADDR'] = \getenv('REMOTE_ADDR');
+            if (getenv('REMOTE_ADDR')) {
+                $_SERVER['JOOMLA_REMOTE_ADDR'] = getenv('REMOTE_ADDR');
             }
         }
         $_SERVER['REMOTE_ADDR'] = $ip;
@@ -323,17 +320,17 @@ final class IpHelper
     protected static function detectAndCleanIP()
     {
         $ip = static::detectIP();
-        if (\strstr($ip, ',') !== \false || \strstr($ip, ' ') !== \false) {
-            $ip = \str_replace(' ', ',', $ip);
-            $ip = \str_replace(',,', ',', $ip);
-            $ips = \explode(',', $ip);
+        if (strstr($ip, ',') !== \false || strstr($ip, ' ') !== \false) {
+            $ip = str_replace(' ', ',', $ip);
+            $ip = str_replace(',,', ',', $ip);
+            $ips = explode(',', $ip);
             $ip = '';
             while (empty($ip) && !empty($ips)) {
-                $ip = \array_shift($ips);
-                $ip = \trim($ip);
+                $ip = array_shift($ips);
+                $ip = trim($ip);
             }
         } else {
-            $ip = \trim($ip);
+            $ip = trim($ip);
         }
         return $ip;
     }
@@ -365,20 +362,20 @@ final class IpHelper
          * This part is executed on PHP running as CGI, or on SAPIs which do not set the $_SERVER superglobal
          * If getenv() is disabled, you're screwed
          */
-        if (!\function_exists('getenv')) {
+        if (!\function_exists('getenv') && !\function_exists('_JchOptimizeVendor\V91\getenv')) {
             return '';
         }
         // Do we have an x-forwarded-for HTTP header?
-        if (self::$allowIpOverrides && \getenv('HTTP_X_FORWARDED_FOR')) {
-            return \getenv('HTTP_X_FORWARDED_FOR');
+        if (self::$allowIpOverrides && getenv('HTTP_X_FORWARDED_FOR')) {
+            return getenv('HTTP_X_FORWARDED_FOR');
         }
         // Do we have a client-ip header?
-        if (self::$allowIpOverrides && \getenv('HTTP_CLIENT_IP')) {
-            return \getenv('HTTP_CLIENT_IP');
+        if (self::$allowIpOverrides && getenv('HTTP_CLIENT_IP')) {
+            return getenv('HTTP_CLIENT_IP');
         }
         // Normal, non-proxied server or server behind a transparent proxy
-        if (\getenv('REMOTE_ADDR')) {
-            return \getenv('REMOTE_ADDR');
+        if (getenv('REMOTE_ADDR')) {
+            return getenv('REMOTE_ADDR');
         }
         // Catch-all case for broken servers, apparently
         return '';
@@ -395,14 +392,14 @@ final class IpHelper
     protected static function inetToBits($inet)
     {
         if (\strlen($inet) == 4) {
-            $unpacked = \unpack('A4', $inet);
+            $unpacked = unpack('A4', $inet);
         } else {
-            $unpacked = \unpack('A16', $inet);
+            $unpacked = unpack('A16', $inet);
         }
-        $unpacked = \str_split($unpacked[1]);
+        $unpacked = str_split($unpacked[1]);
         $binaryip = '';
         foreach ($unpacked as $char) {
-            $binaryip .= \str_pad(\decbin(\ord($char)), 8, '0', \STR_PAD_LEFT);
+            $binaryip .= str_pad(decbin(\ord($char)), 8, '0', \STR_PAD_LEFT);
         }
         return $binaryip;
     }
@@ -418,13 +415,13 @@ final class IpHelper
      */
     protected static function checkIPv6CIDR($ip, $cidrnet)
     {
-        $ip = \inet_pton($ip);
+        $ip = inet_pton($ip);
         $binaryip = static::inetToBits($ip);
-        list($net, $maskbits) = \explode('/', $cidrnet);
-        $net = \inet_pton($net);
+        list($net, $maskbits) = explode('/', $cidrnet);
+        $net = inet_pton($net);
         $binarynet = static::inetToBits($net);
-        $ipNetBits = \substr($binaryip, 0, $maskbits);
-        $netBits = \substr($binarynet, 0, $maskbits);
+        $ipNetBits = substr($binaryip, 0, $maskbits);
+        $netBits = substr($binarynet, 0, $maskbits);
         return $ipNetBits === $netBits;
     }
 }

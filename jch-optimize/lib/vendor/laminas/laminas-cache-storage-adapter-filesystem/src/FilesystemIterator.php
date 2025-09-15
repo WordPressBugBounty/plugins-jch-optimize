@@ -91,7 +91,7 @@ final class FilesystemIterator implements IteratorInterface
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         if ($this->mode === IteratorInterface::CURRENT_AS_SELF) {

@@ -2,7 +2,7 @@
 
 namespace _JchOptimizeVendor\V91;
 
-if (!\function_exists('getallheaders')) {
+if (!\function_exists('getallheaders') && !\function_exists('_JchOptimizeVendor\V91\getallheaders')) {
     /**
      * Get all HTTP header key/values as an associative array for the current request.
      *

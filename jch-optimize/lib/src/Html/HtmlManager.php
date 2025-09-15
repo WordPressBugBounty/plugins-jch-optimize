@@ -146,7 +146,6 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
 
     public function appendChildToHTML(string $child, string $section): void
     {
-
         $sSearchArea = preg_replace(
         /** @see Parser::htmlClosingHeadTagToken() */
         /** @see Parser::htmlClosingBodyTagToken() */
@@ -172,7 +171,7 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         $deferredJsStorage = $this->filesManager->deferredScriptStorage;
         //Remove deferred files from original location
         $html = $this->processor->getFullHtml();
-        /** @var Script $deferredJs */
+
         foreach ($deferredJsStorage as $deferredJs) {
             $html = str_replace((string)$deferredJs, '', $html);
         }
@@ -182,8 +181,10 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         //If we're loading javascript dynamically add the deferred javascript files to array
         // of files to load dynamically instead
         if ($this->params->get('pro_reduce_unused_js_enable', '0')) {
-            /** @see DynamicJs::prepareJsDynamicUrls() */
-            $this->getContainer()->get(DynamicJs::class)->prepareJsDynamicUrls($deferredJsStorage);
+            $dynamicJs = $this->getContainer()->get(DynamicJs::class);
+            if ($dynamicJs instanceof DynamicJs) {
+                $dynamicJs->prepareJsDynamicUrls($deferredJsStorage);
+            }
         } else {
             //Otherwise if there are any deferredJsStorage we just add them to the bottom of the page
             foreach ($deferredJsStorage as $deferredJs) {
@@ -364,16 +365,21 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
 
     public function loadCssAsync(Link|Style $cssElement): void
     {
-        if ($cssElement instanceof  Style && trim($cssElement->getChildren()[0]) == '') {
+        if ($cssElement instanceof Style && trim($cssElement->getChildren()[0]) == '') {
             return;
         }
 
         if (!$this->params->get('pro_reduce_unused_css', '0')) {
             $this->appendChildToHTML($this->preloadStyleSheet($cssElement, 'low'), 'body');
-        } elseif (JCH_PRO) {
-            $link = $cssElement->type('jchoptimize-text/css')->render();
-            $this->appendChildToHTML($link, 'body');
         }
+    }
+
+    public function loadCssDynamically(Link $dynamicCss): void
+    {
+        $this->appendChildToHTML(
+            $dynamicCss->type('jchoptimize-text/css')->render(),
+            'body'
+        );
     }
 
     public function preloadStyleSheet(Link|Style $element, string $fetchPriority = 'auto'): string
@@ -545,6 +551,14 @@ CSS;
         }
     }
 
+    /**
+     * @template T of Link|Script
+     *
+     * @param T $element The HTML element to add the data-file attribute to.
+     * @param FileInfo $fileInfo The file information.
+     * @return T Returns the same type as the $element input (Link or Script).
+     * @noinspection PhpDocSignatureInspection
+     */
     public function addDataFileToElement(Link|Script $element, FileInfo $fileInfo): Link|Script
     {
         if ($this->params->get('debug', '') && !$this->params->get('combine_files', '0')) {

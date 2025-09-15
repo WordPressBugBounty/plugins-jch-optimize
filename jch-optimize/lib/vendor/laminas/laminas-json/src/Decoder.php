@@ -102,7 +102,7 @@ class Decoder
                     $utf8char = self::utf162utf8($utf16);
                     $search = ['\\', "\n", "\t", "\r", chr(0x8), chr(0xc), '"', '\'', '/'];
                     if (in_array($utf8char, $search)) {
-                        $replace = ['\\\\', '\\n', '\\t', '\\r', '\\b', '\\f', '\\"', '\\\'', '\\/'];
+                        $replace = ['\\\\', '\n', '\t', '\r', '\b', '\f', '\"', '\\\'', '\/'];
                         $utf8char = str_replace($search, $replace, $utf8char);
                     }
                     $utf8 .= $utf8char;
@@ -306,7 +306,7 @@ class Decoder
      */
     protected function eatWhitespace()
     {
-        if (preg_match('/([\\t\\b\\f\\n\\r ])*/s', $this->source, $matches, PREG_OFFSET_CAPTURE, $this->offset) && $matches[0][1] === $this->offset) {
+        if (preg_match('/([\t\b\f\n\r ])*/s', $this->source, $matches, PREG_OFFSET_CAPTURE, $this->offset) && $matches[0][1] === $this->offset) {
             $this->offset += strlen($matches[0][0]);
         }
     }
@@ -414,12 +414,12 @@ class Decoder
         if ($chr !== '-' && $chr !== '.' && ($chr < '0' || $chr > '9')) {
             throw new RuntimeException('Illegal Token');
         }
-        if (preg_match('/-?([0-9])*(\\.[0-9]*)?((e|E)((-|\\+)?)[0-9]+)?/s', $str, $matches, PREG_OFFSET_CAPTURE, $start) && $matches[0][1] === $start) {
+        if (preg_match('/-?([0-9])*(\.[0-9]*)?((e|E)((-|\+)?)[0-9]+)?/s', $str, $matches, PREG_OFFSET_CAPTURE, $start) && $matches[0][1] === $start) {
             $datum = $matches[0][0];
             if (!is_numeric($datum)) {
                 throw new RuntimeException(sprintf('Illegal number format: %s', $datum));
             }
-            if (preg_match('/^0\\d+$/', $datum)) {
+            if (preg_match('/^0\d+$/', $datum)) {
                 throw new RuntimeException(sprintf('Octal notation not supported by JSON (value: %o)', $datum));
             }
             $val = intval($datum);

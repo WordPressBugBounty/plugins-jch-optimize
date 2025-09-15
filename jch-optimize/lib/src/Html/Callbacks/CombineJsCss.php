@@ -52,7 +52,7 @@ class CombineJsCss extends AbstractCallback
      *    }
      *}>  Array of excludes parameters
      */
-    private array $excludes = [
+    protected array $excludes = [
         'head' => [
             'excludes_peo' => [
                 'js' => [[]],
@@ -74,7 +74,7 @@ class CombineJsCss extends AbstractCallback
     /**
      * @var string        Section of the HTML being processed
      */
-    private string $section = 'head';
+    protected string $section = 'head';
 
     /**
      * CombineJsCss constructor.
@@ -82,10 +82,10 @@ class CombineJsCss extends AbstractCallback
     public function __construct(
         Container $container,
         Registry $params,
-        private FilesManager $filesManager,
-        private HtmlProcessor $htmlProcessor,
-        private ProfilerInterface $profiler,
-        private ExcludesInterface $platformExcludes
+        protected FilesManager $filesManager,
+        protected HtmlProcessor $htmlProcessor,
+        protected ProfilerInterface $profiler,
+        protected ExcludesInterface $platformExcludes
     ) {
         parent::__construct($container, $params);
 
@@ -137,11 +137,17 @@ class CombineJsCss extends AbstractCallback
         $aExcludes['excludes_peo']['js_script'] = $aExcludeScript_peo;
         $aExcludes['excludes_peo']['css_script'] = $aExcludeStyle_peo;
 
-        $aExcludes['critical_js']['js'] = Helper::getArray($params->get('pro_criticalJs', ''));
-        $aExcludes['critical_js']['script'] = Helper::getArray($params->get('pro_criticalScripts', ''));
+        $aExcludes['critical_js']['js'] = array_merge(
+            Helper::getArray($params->get('pro_criticalJs', [])),
+            Helper::getArray($params->get('pro_criticalModules', []))
+        );
+        $aExcludes['critical_js']['script'] = array_merge(
+            Helper::getArray($params->get('pro_criticalScripts', [])),
+            Helper::getArray($params->get('pro_criticalModulesScripts', []))
+        );
 
-        $aExcludes['remove']['js'] = Helper::getArray($params->get('remove_js', ''));
-        $aExcludes['remove']['css'] = Helper::getArray($params->get('remove_css', ''));
+        $aExcludes['remove']['js'] = Helper::getArray($params->get('remove_js', []));
+        $aExcludes['remove']['css'] = Helper::getArray($params->get('remove_css', []));
 
         $this->excludes['head'] = $aExcludes;
 

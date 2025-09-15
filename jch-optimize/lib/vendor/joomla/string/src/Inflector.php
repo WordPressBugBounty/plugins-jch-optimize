@@ -58,7 +58,7 @@ class Inflector extends DoctrineInflector
         if ($ruleType === 'countable') {
             foreach ($data as $rule) {
                 // Ensure a string is pushed.
-                \array_push(self::$countable['rules'], (string) $rule);
+                array_push(self::$countable['rules'], (string) $rule);
             }
         } else {
             static::rules($ruleType, $data);
