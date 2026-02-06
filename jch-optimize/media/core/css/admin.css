@@ -73,25 +73,23 @@ div.icons-container {
     padding: 0;
     margin: 0;
     display: grid;
+    justify-items: stretch;
+    width: fit-content;
 }
 
 .jch-checkboxes-grid-wrapper.columns-4 {
-    width: 250px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 .jch-checkboxes-grid-wrapper.columns-5 {
-    width: 300px;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
 .jch-checkboxes-grid-wrapper.columns-6 {
-    width: 350px;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
 .jch-checkboxes-grid-wrapper.columns-7 {
-    width: 400px;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 

@@ -238,17 +238,17 @@ class SystemUri
     }
 
     /**
-     * Returns path to script including host based on current request
+     * Returns path to home page including host
      */
-    public static function siteBaseFull(PathsInterface $pathsUtils): string
+    public static function homePageAbsolute(PathsInterface $pathsUtils): string
     {
         return Helper::appendTrailingSlash($pathsUtils->homeBaseFullPath());
     }
 
     /**
-     * Returns path to script excluding host based on current request
+     * Returns path to home page excluding host
      */
-    public static function siteBasePath(PathsInterface $pathsUtils): string
+    public static function homePagePathReference(PathsInterface $pathsUtils): string
     {
         return Helper::appendTrailingSlash($pathsUtils->homeBasePath());
     }

@@ -34,20 +34,10 @@ class PageCache extends Model
      * @var string
      */
     private string $adapter;
-    /**
-     * @var CorePageCache
-     */
-    private CorePageCache $pageCache;
 
-    public function __construct(Input $input, CorePageCache $pageCache, Container $container)
+    public function __construct(Input $input, private CorePageCache $pageCache, Container $container)
     {
-        $this->pageCache = $pageCache;
         $this->setContainer($container);
-
-        if (JCH_PRO && $pageCache instanceof CaptureCache) {
-            /** @see CaptureCache::updateHtaccess() */
-            $this->getContainer()->get(CaptureCache::class)->updateHtaccess();
-        }
 
         try {
             $registry = $this->populateRegistryFromRequest($input, ['filter', 'list']);
@@ -92,6 +82,14 @@ class PageCache extends Model
         }
 
         return $data;
+    }
+
+    public function updateHtaccess(): void
+    {
+        if (JCH_PRO && $this->pageCache instanceof CaptureCache) {
+            /** @see CaptureCache::updateHtaccess() */
+            $this->getContainer()->get(CaptureCache::class)->updateHtaccess();
+        }
     }
 
     public function getItems(): array

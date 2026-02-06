@@ -2,10 +2,10 @@
 
 Contributors: codealfa
 Tags: performance, pagespeed, cache, optimize, seo
-Tested up to: 6.8.2
-Stable tag: 5.0.1
+Tested up to: 6.9
+Stable tag: 5.1.4
 License: GPLv3 or later
-Requires at least: 5.0
+Requires at least: 6.5.0
 Requires PHP: 8.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -79,6 +79,39 @@ The combined files are accessed by the browser via a jscss.php file in the `/wp-
 Simply deactivate or uninstall the plugin to reverse any changes it has made. The plugin doesn't modify any existing file or code but merely manipulates the HTML before it is sent to the browser. Any apparent persistent change after the plugin is deactivated is due to caching so ensure to flush all your WordPress, third party or browser cache.
 
 == Changelog ==
+= 5.1.4 =
+* [HIGH] Fixed issue with plugin sometimes mutating .htaccess files causing errors on some servers.
+* More Bootstrap usage on Configurations page.
+
+= 5.1.3 =
+* Improve modeswitcher menu
+* Use scoped bootstrap to render form elements
+* Use selectors to capture crossorigin value on the Preloads tab.
+* Added image/avif to htaccess optimization
+* Fix bug with processing scripts containing backslashes
+
+= 5.1.2 =
+* @font-face broken in some CSS files
+
+= 5.1.1 =
+* Add icons to Admin menu
+* Remove unused lazy load settings
+* Update WordPress required version to 6.5.0
+* Added additional LCP settings
+* [HIGH] Fix error on Optimize Image tab
+* [MEDIUM] Fix bug with handling invalid image URLs
+* Improve Optimize CSS Delivery
+* [MEDIUM] Files with integrity attribute were broken
+* [LOW] Fix PHP 8.5 deprecations
+
+= 5.1.0 =
+* Added support for AVIF images
+* Added Cloudflare cache purge integration
+* Improved Optimize CSS Delivery to reduce over-inlining and improve FCP and LCP
+* Improved Reduce Unused JavaScript feature to reduce the need to exclude files and better optimizations
+* Add WP-CRON support for recache feature
+* Add option to set sitemap URL for better recache coverage
+* Added support for HTTP Request feature in Page Caching to Nginx servers. (Server caching)
 
 = 5.0.1 =
 * Fixed a Path Traversal security vulnerability on the Optimize Image page found by Artyom from CleanTalk.

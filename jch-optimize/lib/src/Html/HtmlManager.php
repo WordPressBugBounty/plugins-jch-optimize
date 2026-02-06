@@ -30,9 +30,11 @@ use JchOptimize\Core\Exception\PregErrorException;
 use JchOptimize\Core\FeatureHelpers\DynamicJs;
 use JchOptimize\Core\FileInfo;
 use JchOptimize\Core\Helper;
+use JchOptimize\Core\Html\CssLayout\CssPlacementPlan;
 use JchOptimize\Core\Html\Elements\Link;
 use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\Elements\Style;
+use JchOptimize\Core\Html\JsLayout\JsPlacementPlan;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Preloads\Http2Preload;
@@ -40,17 +42,13 @@ use JchOptimize\Core\Registry;
 use JchOptimize\Core\Uri\Uri;
 use JchOptimize\Core\Uri\Utils;
 
-use function array_key_last;
-use function array_pop;
 use function array_shift;
 use function defined;
 use function extension_loaded;
 use function file_exists;
-use function implode;
 use function ini_get;
 use function preg_replace;
 use function str_replace;
-use function ucfirst;
 
 use const JCH_DEBUG;
 use const JCH_PRO;
@@ -64,6 +62,22 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
     use EventManagerAwareTrait;
 
     protected $events = null;
+
+    /**
+     * Excluded JS grouped by the gate index they "fall" to.
+     * Key: gateIndex (>=0 is an actual dontmove JS index, -1 means bottom-of-section)
+     * Value: array of ['idx' => int, 'html' => string]
+     *
+     * @var array<int, array<int, array{idx:int,html:string}>>
+     */
+    private array $jsExcludedByGate = [];
+
+    /**
+     * Tracks which excluded JS (by idx) have already been emitted for a given gate.
+     *
+     * @var array<int, array<int,bool>>
+     */
+    private array $jsExcludedEmitted = [];
 
     public function __construct(
         private Registry $params,
@@ -84,43 +98,33 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
      */
     public function prependChildToHead(string $child): void
     {
-        $headHtml = preg_replace('#<title[^>]*+>#i', $child . "\n\t" . '\0', $this->processor->getHeadHtml(), 1);
+        $headHtml = preg_replace(
+            '#<title[^>]*+>#i',
+            Helper::cleanReplacement($child) . "\n\t" . '\0',
+            $this->processor->getHeadHtml(),
+            1
+        );
         $this->processor->setHeadHtml($headHtml);
     }
 
-    /**
-     * @throws PregErrorException
-     */
-    public function addCriticalCssToHead(string $criticalCss, string $id): void
+    public function getCriticalCssHtml(string $criticalCss, string $id): string
     {
-        //Remove CSS from HTML
-        $replacements = $this->filesManager->cssReplacements[0];
-        $html = $this->processor->getFullHtml();
-        $html = str_replace($replacements, '', $html);
-        $this->processor->setFullHtml($html);
-
-        $criticalStyle = HtmlElementBuilder::style()
+        return HtmlElementBuilder::style()
             ->class('jchoptimize-critical-css')
-            ->id($id)
+            ->data('id', $id)
             ->addChild(PHP_EOL . $criticalCss . PHP_EOL)
             ->render();
-
-        $this->appendChildToHead($criticalStyle, true);
     }
 
     /**
      * @throws PregErrorException
      */
-    public function appendChildToHead(string $sChild, bool $bCleanReplacement = false): void
+    public function appendChildToHead(string $sChild): void
     {
-        if ($bCleanReplacement) {
-            $sChild = Helper::cleanReplacement($sChild);
-        }
-
         $sHeadHtml = $this->processor->getHeadHtml();
         $sHeadHtml = preg_replace(
             '#' . Parser::htmlClosingHeadTagToken() . '#i',
-            $sChild . PHP_EOL . "\t" . '\0',
+            Helper::cleanReplacement($sChild) . PHP_EOL . "\t" . '\0',
             $sHeadHtml,
             1
         );
@@ -128,29 +132,15 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         $this->processor->setHeadHtml($sHeadHtml);
     }
 
-    public function addExcludedJsToSection(string $section): void
-    {
-        $aExcludedJs = $this->filesManager->aExcludedJs;
-        if (!empty($aExcludedJs)) {
-            $html = $this->processor->getFullHtml();
-            $html = str_replace($aExcludedJs, '', $html);
-            $this->processor->setFullHtml($html);
-
-            //Add excluded javascript files to the bottom of the HTML section
-            $sExcludedJs = implode(PHP_EOL, $aExcludedJs);
-            $sExcludedJs = Helper::cleanReplacement($sExcludedJs);
-
-            $this->appendChildToHTML($sExcludedJs, $section);
-        }
-    }
-
     public function appendChildToHTML(string $child, string $section): void
     {
+        $regex = match ($section) {
+            'head' => Parser::htmlClosingHeadTagToken(),
+            'body' => Parser::htmlClosingBodyTagToken(),
+        };
         $sSearchArea = preg_replace(
-        /** @see Parser::htmlClosingHeadTagToken() */
-        /** @see Parser::htmlClosingBodyTagToken() */
-            '#' . Parser::{'htmlClosing' . ucfirst($section) . 'TagToken'}() . '#si',
-            "\t" . $child . PHP_EOL . '\0',
+            "#{$regex}#si",
+            "\t" . Helper::cleanReplacement($child) . PHP_EOL . '\0',
             $this->processor->getFullHtml(),
             1
         );
@@ -166,33 +156,6 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         return $count;
     }
 
-    public function addDeferredJs(string $section): void
-    {
-        $deferredJsStorage = $this->filesManager->deferredScriptStorage;
-        //Remove deferred files from original location
-        $html = $this->processor->getFullHtml();
-
-        foreach ($deferredJsStorage as $deferredJs) {
-            $html = str_replace((string)$deferredJs, '', $html);
-        }
-
-        $this->processor->setFullHtml($html);
-
-        //If we're loading javascript dynamically add the deferred javascript files to array
-        // of files to load dynamically instead
-        if ($this->params->get('pro_reduce_unused_js_enable', '0')) {
-            $dynamicJs = $this->getContainer()->get(DynamicJs::class);
-            if ($dynamicJs instanceof DynamicJs) {
-                $dynamicJs->prepareJsDynamicUrls($deferredJsStorage);
-            }
-        } else {
-            //Otherwise if there are any deferredJsStorage we just add them to the bottom of the page
-            foreach ($deferredJsStorage as $deferredJs) {
-                $this->appendChildToHTML((string)$deferredJs, $section);
-            }
-        }
-    }
-
     /**
      * @throws PregErrorException
      */
@@ -200,72 +163,6 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
     {
         $sHtml = $this->processor->getBodyHtml();
         $this->processor->setBodyHtml(str_replace($this->processor->images[0], $aCachedImgAttributes, $sHtml));
-    }
-
-    public function replaceLinks(
-        HtmlElementInterface $element,
-        string $type,
-        string $section = 'head',
-        int $linksKey = 0
-    ): void {
-        JCH_DEBUG ? $this->profiler->start('ReplaceLinks - ' . $type) : null;
-
-        $searchArea = $this->processor->getFullHtml();
-
-        //All js files after the last excluded js will be placed at bottom of section
-        if ($element instanceof Script && $this->noMoreExcludedJsFiles($linksKey)) {
-            //If last combined file is being inserted at the bottom of the page then
-            //add the async or defer attribute
-            if ($section == 'body') {
-                if ($this->params->get('loadAsynchronous', '0')) {
-                    //Add async attribute to last combined js file if option is set
-                    $this->deferScript($element);
-                }
-            }
-
-            //Remove replacements for this index
-            $replacements = $this->filesManager->jsReplacements[$linksKey];
-            $searchArea = str_replace($replacements, '', $searchArea);
-
-            //Insert script tag at the appropriate section in the HTML
-            $searchArea = preg_replace(
-            /** @see Parser::htmlClosingHeadTagToken() */
-            /** @see Parser::htmlClosingBodyTagToken() */
-                '#' . Parser::{'htmlClosing' . ucfirst($section) . 'TagToken'}() . '#si',
-                "\t" . $element->render() . PHP_EOL . '\0',
-                $searchArea,
-                1
-            );
-        } else {
-            $newLink = $element->render();
-
-            //Get replacements for this index
-            $replacements = $this->filesManager->{$type . 'Replacements'}[$linksKey];
-            //If CSS, place combined file at location of first file in array
-            if ($type == 'css') {
-                $marker = array_shift($replacements);
-                //Otherwise, place combined file at location of last file in array
-            } elseif (!empty($this->filesManager->jsMarker[$linksKey])) {
-                //If a files was excluded PEO at this index, use as marker
-                $marker = $this->filesManager->jsMarker[$linksKey];
-                $newLink .= PHP_EOL . "\t" . $marker;
-            } else {
-                $marker = array_pop($replacements);
-            }
-
-            $searchArea = str_replace($marker, $newLink, $searchArea);
-            $searchArea = str_replace($replacements, '', $searchArea);
-        }
-
-        $this->processor->setFullHtml($searchArea);
-
-        JCH_DEBUG ? $this->profiler->stop('ReplaceLinks - ' . $type, true) : null;
-    }
-
-    public function noMoreExcludedJsFiles($index): bool
-    {
-        return (empty($this->filesManager->jsMarker)
-            || $index > array_key_last($this->filesManager->jsMarker));
     }
 
     public function buildUrl(string $id, string $type, CacheObject $cacheObj): UriInterface
@@ -363,26 +260,7 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         return $script;
     }
 
-    public function loadCssAsync(Link|Style $cssElement): void
-    {
-        if ($cssElement instanceof Style && trim($cssElement->getChildren()[0]) == '') {
-            return;
-        }
-
-        if (!$this->params->get('pro_reduce_unused_css', '0')) {
-            $this->appendChildToHTML($this->preloadStyleSheet($cssElement, 'low'), 'body');
-        }
-    }
-
-    public function loadCssDynamically(Link $dynamicCss): void
-    {
-        $this->appendChildToHTML(
-            $dynamicCss->type('jchoptimize-text/css')->render(),
-            'body'
-        );
-    }
-
-    public function preloadStyleSheet(Link|Style $element, string $fetchPriority = 'auto'): string
+    public function preloadStyleSheet(Link|Style $element, string $fetchPriority = 'auto'): void
     {
         if ($element instanceof Link) {
             $attr = [
@@ -402,27 +280,334 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
             $attr['fetchpriority'] = $fetchPriority;
         }
 
-        return $element->attributes($attr)->render();
-    }
-
-    public function getPreloadLink(array $attr): string
-    {
-        $link = HtmlElementBuilder::link()->rel('preload')->attributes($attr);
-
-        return $link->render();
-    }
-
-    public function addCriticalJsToSection(): void
-    {
-        if (JCH_PRO) {
-            /** @see DynamicJs::appendCriticalJsToHtml() */
-            $this->getContainer()->get(DynamicJs::class)->appendCriticalJsToHtml();
-        }
+        $element->attributes($attr);
     }
 
     public function removeAutoLcp(): void
     {
         $this->processor->processAutoLcp();
+    }
+
+    public function getDynamicCriticalCssHtml(string $css, string $id): string
+    {
+        return HtmlElementBuilder::style()
+            ->class('jchoptimize-dynamic-critical-css')
+            ->data('id', $id)
+            ->addChild(PHP_EOL . $css . PHP_EOL)
+            ->render();
+    }
+
+    /**
+     * @param CssPlacementPlan $plan
+     * @param (Link|Style)[] $combinedByGroup
+     * @param CacheObject[] $cacheObjectByGroup
+     * @param CacheObject[] $sensitiveCacheObjByOrds
+     * @param Link|null $belowFoldFontsEl
+     * @param Link|null $reducedBundleEl
+     *
+     * @return void
+     */
+    public function applyCssPlan(
+        CssPlacementPlan $plan,
+        array $combinedByGroup,
+        array $cacheObjectByGroup,
+        array $sensitiveCacheObjByOrds,
+        ?Link $belowFoldFontsEl,
+        ?Link $reducedBundleEl
+    ): void {
+        $html = $this->processor->getFullHtml();
+
+        // 1) Remove all CSS except marker.
+        //Remove excluded css
+        $excluded = [];
+        $marker = null;
+        foreach ($plan->headBlocking as $placement) {
+            if (!$placement->isProcessed) {
+                if (!$placement->isMarker) {
+                    $excluded[] = (string)$placement->item->node;
+                } else {
+                    $marker = $placement->item->node;
+                }
+            }
+        }
+
+        if (!empty($excluded)) {
+            $html = str_replace($excluded, '', $html);
+        }
+
+        //Remove processed CSS
+        foreach ($this->filesManager->cssReplacements as $groupIndex => $replacements) {
+            if ($marker === null) {
+                foreach ($plan->headBlocking as $placement) {
+                    if ($placement->groupIndex === $groupIndex && $placement->isProcessed && $placement->isMarker) {
+                        $marker = array_shift($replacements);
+                        break;
+                    }
+                }
+            }
+
+            if (!empty($replacements)) {
+                $html = str_replace($replacements, '', $html);
+            }
+        }
+
+        // 2) Handle headBlocking (processed + excluded) CSS in <head>,
+        //    preserving execution order.
+        if (!empty($plan->headBlocking) && $marker !== null) {
+            $insertion = '';
+
+            foreach ($plan->headBlocking as $placement) {
+                if ($placement->isProcessed) {
+                    $cssEl = $combinedByGroup[$placement->groupIndex] ?? null;
+                    if ($cssEl) {
+                        $insertion .= "\t" . $cssEl->render() . PHP_EOL;
+                    }
+                } else {
+                    $insertion .= "\t" . (string)$placement->item->node . PHP_EOL;
+                }
+            }
+
+            $html = str_replace((string)$marker, $insertion, $html);
+        }
+
+        // 3) Inline critical CSS into <head>.
+        if (!empty($plan->headInlineCritical)) {
+            $insertion = '';
+
+            foreach ($plan->headInlineCritical as $placement) {
+                if ($placement->isSensitive) {
+                    $sCacheObj = $sensitiveCacheObjByOrds[$placement->item->ordinal] ?? null;
+                    if ($sCacheObj !== null && ($sCss = $sCacheObj->getCriticalCss()) !== '') {
+                        $insertion .= "\t" . $this->getCriticalCssHtml($sCss, $sCacheObj->getCriticalCssId()) . PHP_EOL;
+                    }
+                    continue;
+                }
+
+                $cacheObj = $cacheObjectByGroup[$placement->groupIndex] ?? null;
+                if ($cacheObj !== null && ($css = $cacheObj->getCriticalCss()) !== '') {
+                    $insertion .= "\t" . $this->getCriticalCssHtml($css, $cacheObj->getCriticalCssId()) . PHP_EOL;
+                }
+            }
+
+            $html = preg_replace(
+                '#' . Parser::htmlClosingHeadTagToken() . '#si',
+                Helper::cleanReplacement($insertion) . '\0',
+                $html,
+                1
+            );
+        }
+
+        // 4) Dynamic critical CSS in <body>, above async CSS.
+        if (!empty($plan->bodyInlineDynamicCritical)) {
+            $insertion = '';
+
+            foreach ($plan->bodyInlineDynamicCritical as $placement) {
+                if ($placement->isSensitive) {
+                    $sCacheObj = $sensitiveCacheObjByOrds[$placement->item->ordinal] ?? null;
+                    if ($sCacheObj !== null && ($sCss = $sCacheObj->getDynamicCriticalCss()) !== '') {
+                        $insertion .= "\t" . $this->getDynamicCriticalCssHtml(
+                            $sCss,
+                            $sCacheObj->getCriticalCssId()
+                        ) . PHP_EOL;
+                    }
+                    continue;
+                }
+
+                $cacheObj = $cacheObjectByGroup[$placement->groupIndex] ?? null;
+                if ($cacheObj !== null && ($css = $cacheObj->getDynamicCriticalCss()) !== '') {
+                    $insertion .= "\t" . $this->getDynamicCriticalCssHtml(
+                        $css,
+                        $cacheObj->getCriticalCssId()
+                    ) . PHP_EOL;
+                }
+            }
+
+            $html = preg_replace(
+                '#' . Parser::htmlClosingBodyTagToken() . '#si',
+                Helper::cleanReplacement($insertion) . '\0',
+                $html,
+                1
+            );
+        }
+
+        // 5) Async CSS in <body> (full processed CSS per-group).
+        if (!empty($plan->bodyAsync)) {
+            $insertion = '';
+
+            foreach ($plan->bodyAsync as $placement) {
+                if ($placement->isSensitive) {
+                    $el = $placement->item->node;
+                    $this->preloadStyleSheet($el, 'low');
+                    $insertion .= "\t" . $el->render() . PHP_EOL;
+
+                    continue;
+                }
+
+                $cssEl = $combinedByGroup[$placement->groupIndex] ?? null;
+                if ($cssEl) {
+                    $insertion .= "\t" . $cssEl->render() . PHP_EOL;
+                }
+            }
+
+            $html = preg_replace(
+                '#' . Parser::htmlClosingBodyTagToken() . '#si',
+                Helper::cleanReplacement($insertion) . '\0',
+                $html,
+                1
+            );
+        }
+
+        // 6) Extra async CSS blocks: below-the-fold fonts and reduced-unused bundle.
+        $extraBody = '';
+
+        if ($plan->appendBelowFoldFonts && $belowFoldFontsEl) {
+            $extraBody .= "\t" . $belowFoldFontsEl->render() . PHP_EOL;
+        }
+
+        if ($plan->appendReducedUnusedBundle && $reducedBundleEl) {
+            $extraBody .= "\t" . $reducedBundleEl->render() . PHP_EOL;
+        }
+
+        if ($extraBody) {
+            $html = preg_replace(
+                '#' . Parser::htmlClosingBodyTagToken() . '#si',
+                Helper::cleanReplacement($extraBody) . '\0',
+                $html,
+                1
+            );
+        }
+
+        if (!empty($plan->bodySensitiveDynamic)) {
+            $insertion = '';
+
+            foreach ($plan->bodySensitiveDynamic as $placement) {
+                $el = $placement->item->node->type('jchoptimize-text/css');
+                $insertion .= "\t" . $el->render() . PHP_EOL;
+            }
+
+            $html = preg_replace(
+                '#' . Parser::htmlClosingBodyTagToken() . '#si',
+                Helper::cleanReplacement($insertion) . '\0',
+                $html,
+                1
+            );
+        }
+
+        $this->processor->setFullHtml($html);
+    }
+
+    public function applyJsPlan(JsPlacementPlan $plan, array $combinedByGroup, $section): void
+    {
+        $html = $this->processor->getFullHtml();
+
+        // 1. Remove all processed JS that we're going to reinsert.
+        foreach ($combinedByGroup as $groupIndex => $_) {
+            $replacements = $this->filesManager->jsReplacements[$groupIndex] ?? [];
+            if ($replacements) {
+                $html = str_replace($replacements, '', $html);
+            }
+        }
+
+        // 2. Remove excluded PEO scripts that are going to move (i.e. appear in plan).
+        $movableExcluded = [];
+        foreach ($plan->beforeGate as $gateOrdinal => $items) {
+            foreach ($items as $placement) {
+                if (!$placement->isProcessed) {
+                    $movableExcluded[(string)$placement->item->node] = true;
+                }
+            }
+        }
+        foreach ($plan->bottom as $placement) {
+            if (!$placement->isProcessed) {
+                $movableExcluded[(string)$placement->item->node] = true;
+            }
+        }
+
+        if ($movableExcluded) {
+            $html = str_replace(array_keys($movableExcluded), '', $html);
+        }
+
+        // 3. Insert items before each gate.
+        // Gates are JsItem; we have their node HTML to find them in the string.
+        foreach ($plan->gates as $gate) {
+            $gateHtml = (string)$gate->node;
+            $before = $plan->beforeGate[$gate->ordinal] ?? [];
+
+            if (!$before) {
+                continue;
+            }
+
+            $insertion = '';
+            foreach ($before as $placement) {
+                if ($placement->isProcessed) {
+                    $script = $combinedByGroup[$placement->groupIndex] ?? null;
+                    if ($script) {
+                        $insertion .= "\t" . $script->render() . PHP_EOL;
+                    }
+                } else {
+                    $insertion .= "\t" . (string)$placement->item->node . PHP_EOL;
+                }
+            }
+
+            $html = str_replace($gateHtml, $insertion . $gateHtml, $html);
+        }
+
+        // 4. Insert bottom-of-section items.
+        if (!empty($plan->bottom)) {
+            $insertion = '';
+            $dynamicJs = null;
+            if (JCH_PRO) {
+                $dynamicJs = $this->getContainer()->get(DynamicJs::class);
+            }
+            foreach ($plan->bottom as $placement) {
+                if (
+                    JCH_PRO
+                    && $this->params->get('pro_reduce_unused_js_enable', '0')
+                    && $section === 'body'
+                    && ($placement->isDeferable || $placement->isDeferred)
+                    && !$placement->isExcluded
+                    && $dynamicJs instanceof DynamicJs
+                ) {
+                    $script = $dynamicJs->prepareJsDynamicUrl($placement, $combinedByGroup);
+                    if ($script) {
+                        $insertion .= "\t" . (string)$script . PHP_EOL;
+                    }
+                } elseif (
+                    $this->params->get('loadAsynchronous', '0')
+                    && $section === 'body'
+                    && $placement->isDeferable && !$placement->isExcluded
+                ) {
+                    if ($placement->isProcessed) {
+                        $script = $combinedByGroup[$placement->groupIndex] ?? null;
+                    } else {
+                        $script = $placement->item->node;
+                    }
+
+                    if ($script) {
+                        // Add defer/async if loadAsynchronous & bottom_js logic apply
+                        $this->deferScript($script);
+                        $insertion .= "\t" . $script->render() . PHP_EOL;
+                    }
+                } elseif ($placement->isProcessed) {
+                    $script = $combinedByGroup[$placement->groupIndex] ?? null;
+                    if ($script) {
+                        $insertion .= "\t" . $script->render() . PHP_EOL;
+                    }
+                } else {
+                    $insertion .= "\t" . (string)$placement->item->node . PHP_EOL;
+                }
+            }
+
+            $bottomTagRx = $section === 'body' ? Parser::htmlClosingBodyTagToken() : Parser::htmlClosingHeadTagToken();
+            $html = preg_replace(
+                "#{$bottomTagRx}#si",
+                Helper::cleanReplacement($insertion) . '\0',
+                $html,
+                1
+            );
+        }
+
+        $this->processor->setFullHtml($html);
     }
 
     protected function cleanScript(string $script): string
@@ -472,22 +657,6 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         $this->getEventManager()->trigger(__FUNCTION__, $this);
 
         !JCH_DEBUG ?: $this->profiler->stop('PostProcessHtml', true);
-    }
-
-    public function removeCSSLinks(int|string $cssLinksKey): void
-    {
-        $replacements = $this->filesManager->cssReplacements[$cssLinksKey];
-        $html = str_replace($replacements, '', $this->processor->getHtml());
-
-        $this->processor->setHtml($html);
-    }
-
-    public function removeJsLinks(int|string $jsLinksKey): void
-    {
-        $replacements = $this->filesManager->jsReplacements[$jsLinksKey];
-        $html = str_replace($replacements, '', $this->processor->getHtml());
-
-        $this->processor->setHtml($html);
     }
 
     /**
@@ -556,6 +725,7 @@ CSS;
      *
      * @param T $element The HTML element to add the data-file attribute to.
      * @param FileInfo $fileInfo The file information.
+     *
      * @return T Returns the same type as the $element input (Link or Script).
      * @noinspection PhpDocSignatureInspection
      */

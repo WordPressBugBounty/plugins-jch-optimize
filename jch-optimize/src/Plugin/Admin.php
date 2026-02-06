@@ -13,32 +13,38 @@
 
 namespace JchOptimize\WordPress\Plugin;
 
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use Exception;
 use JchOptimize\Core\Admin\Ajax\Ajax;
+use JchOptimize\Core\Mvc\Controller;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Registry;
 use JchOptimize\WordPress\Container\ContainerFactory;
+use JchOptimize\WordPress\Contracts\WillEnqueueAssets;
+use JchOptimize\WordPress\Controller\PageCache;
 use JchOptimize\WordPress\ControllerResolver;
 use JchOptimize\WordPress\Html\Helper;
+use JchOptimize\WordPress\Html\Renderer\Section;
+use JchOptimize\WordPress\Html\Renderer\Setting;
 use JchOptimize\WordPress\Html\TabSettings;
-use WP_Admin_Bar;
+use JetBrains\PhpStorm\NoReturn;
 
 use function __;
 use function add_action;
 use function add_options_page;
-use function add_query_arg;
 use function add_settings_field;
 use function add_settings_section;
+use function add_submenu_page;
 use function admin_url;
 use function check_admin_referer;
 use function current_user_can;
 use function delete_transient;
 use function esc_url_raw;
 use function get_transient;
-use function JchOptimize\WordPress\base64_encode_url;
 use function plugin_basename;
 use function register_setting;
 use function wp_add_inline_script;
@@ -51,14 +57,19 @@ use function wp_register_style;
 use const JCH_PRO;
 use const JCH_VERSION;
 
-class Admin implements LoggerAwareInterface
+class Admin implements LoggerAwareInterface, ContainerAwareInterface
 {
     use LoggerAwareTrait;
+    use ContainerAwareTrait;
+
+    private string $hookSuffix = '';
+
+    private ?Controller $resolvedController = null;
 
     public function __construct(
         private Registry $params,
         private ControllerResolver $controllerResolver,
-        private PathsInterface $paths
+        private PathsInterface $paths,
     ) {
     }
 
@@ -81,32 +92,74 @@ HTML;
     public function addAdminMenu(): void
     {
         $menuTitle = JCH_PRO ? 'JCH Optimize Pro' : 'JCH Optimize';
-        $hook_suffix = add_options_page(
+        $this->hookSuffix = (string)add_options_page(
             __('JCH Optimize Settings', 'jch-optimize'),
             $menuTitle,
             'manage_options',
             'jch_optimize',
-            [
-                $this,
-                'loadAdminPage'
-            ]
+            [$this, 'loadAdminPage']
         );
 
         add_action('admin_enqueue_scripts', [$this, 'loadResourceFiles']);
 
-        if ($hook_suffix !== false) {
-            add_action('admin_head-' . $hook_suffix, [$this, 'addScriptsToHead']);
-            add_action('load-' . $hook_suffix, [$this, 'initializeSettings']);
+        if ($this->hookSuffix !== '') {
+            add_action("load-{$this->hookSuffix}", [$this, 'initializeSettings']);
         }
 
-        add_action('admin_bar_menu', [$this, 'addMenuToAdminBar'], 101);
         add_action('admin_init', [$this, 'checkMessages']);
     }
+
+    public function addPageCacheMenu(): void
+    {
+        if (current_user_can('manage_options')) {
+            return;
+        }
+
+        $this->hookSuffix = (string)add_submenu_page(
+            'tools.php',                               // parent
+            __('JCH Optimize Page Cache', 'jch-optimize'),      // page title
+            __('Page Cache', 'jch-optimize'),      // menu title
+            'jch_clear_page_cache',                    // capability
+            'jch_optimize_page_cache',                 // slug
+            [$this, 'renderPageCacheOnly']
+        );
+
+        if ($this->hookSuffix !== '') {
+            add_action("load-{$this->hookSuffix}", [$this, 'initializeSettings']);
+            add_action("load-{$this->hookSuffix}", [
+                $this->getContainer()->get(PageCache::class),
+                'enqueueAssets'
+            ]);
+        }
+
+        // Show a card on Tools → Available Tools
+        add_action('tool_box', function () {
+            if (!current_user_can('jch_clear_page_cache')) {
+                return;
+            }
+
+            $url = menu_page_url('jch_optimize_page_cache', false);
+            ?>
+            <div class="card">
+                <h2 class="title"><?php
+                    esc_html_e('JCH Optimize Page Cache', 'jch-optimize'); ?></h2>
+                <p><?php
+                    esc_html_e('Delete specific cached pages without accessing full settings.', 'jch-optimize'); ?></p>
+                <p><a href="<?php
+                    echo esc_url($url); ?>">
+                        <?php
+                        esc_html_e('Open Page Cache', 'jch-optimize'); ?>
+                    </a></p>
+            </div>
+            <?php
+        });
+    }
+
 
     public function loadAdminPage(): void
     {
         try {
-            $this->controllerResolver->resolve();
+                $this->resolvedController?->execute() ?? $this->controllerResolver->resolve();
         } catch (Exception $e) {
             $class = get_class($e);
             echo <<<HTML
@@ -116,6 +169,14 @@ HTML;
 <pre class="well"> {$e->getTraceAsString()} </pre>
 HTML;
         }
+    }
+
+    public function renderPageCacheOnly(): void
+    {
+        $this->getContainer()->get(PageCache::class)
+             ->setRedirect('tools.php?page=jch_optimize_page_cache')
+             ->setLayout('page_cache_only.php')
+             ->execute();
     }
 
     public function registerOptions(): void
@@ -133,74 +194,48 @@ HTML;
      */
     public function loadResourceFiles(string $hookSuffix): void
     {
-        if ('settings_page_jch_optimize' != $hookSuffix) {
+        if ($this->hookSuffix !== $hookSuffix) {
             return;
         }
 
-        wp_enqueue_style('jch-bootstrap-css');
-        wp_enqueue_style('jch-verticaltabs-css');
-        wp_enqueue_style('jch-admin-css');
-        wp_enqueue_style('jch-fonts-css');
-        wp_enqueue_style('jch-chosen-css');
-        wp_enqueue_style('jch-wordpress-css');
-        wp_enqueue_style('jch-dashicons-wordpress');
-        wp_enqueue_style('jch-dashicons-css');
+        $this->enqueueGlobalAssets();
 
-        wp_enqueue_script('jch-platformwordpress-js');
-        wp_enqueue_script('jch-bootstrap-js');
-        wp_enqueue_script('jch-adminutility-js');
-
-        wp_enqueue_script('jch-chosen-js');
-        wp_enqueue_script('jch-collapsible-js');
+        if ($this->resolvedController instanceof WillEnqueueAssets) {
+            $this->resolvedController->enqueueAssets();
+        }
     }
 
-    public function addScriptsToHead(): void
+    private function enqueueGlobalAssets(): void
     {
-        echo <<<HTML
-		<style>
-                    .chosen-container-multi .chosen-choices li.search-field input[type=text] {
-                        height: 25px;
-                    }
+        wp_enqueue_style('jch-bootstrap');
+        wp_enqueue_style('jch-admin');
+        wp_enqueue_style('jch-fonts');
+        //wp_enqueue_style('jch-choices-base');
+        wp_enqueue_style('jch-wordpress');
+        wp_enqueue_style('jch-dashicons-wordpress');
+        wp_enqueue_style('jch-dashicons');
 
-                    .chosen-container {
-                        margin-right: 4px;
-                    }
+        wp_enqueue_script('jch-platform-wordpress');
+        wp_enqueue_script('jch-bootstrap');
+        wp_enqueue_script('jch-admin-utility');
 
-		</style>
-		<script type="text/javascript">
-		(function($){
-                    function submitJchSettings() {
-                        $("form.jch-settings-form").submit();
-                    }
-                })(jQuery);
-                </script>
-                    
-HTML;
-        if (JCH_PRO) {
-            $optimizeImageUrl = add_query_arg(
-                [
-                    'page' => 'jch_optimize',
-                    'view' => 'optimizeimage'
-                ],
-                admin_url('options-general.php')
-            );
-        }
+        wp_enqueue_script('jch-collapsible-js');
     }
 
     public function initializeSettings(): void
     {
         //Css files
         wp_register_style(
-            'jch-bootstrap-css',
+            'jch-bootstrap',
             JCH_PLUGIN_URL . 'media/bootstrap/css/bootstrap.min.css',
             [],
             JCH_VERSION
         );
 
-        wp_register_style('jch-admin-css', JCH_PLUGIN_URL . 'media/core/css/admin.css', [], JCH_VERSION);
-        wp_register_style('jch-fonts-css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-        wp_register_style('jch-chosen-css', JCH_PLUGIN_URL . 'media/chosen-js/chosen.css', [], JCH_VERSION);
-        wp_register_style('jch-wordpress-css', JCH_PLUGIN_URL . 'media/css/wordpress.css', [], JCH_VERSION);
+        wp_register_style('jch-admin', JCH_PLUGIN_URL . 'media/core/css/admin.css', [], JCH_VERSION);
+        wp_register_style('jch-fonts', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+        //wp_register_style('jch-choices-base', JCH_PLUGIN_URL . 'media/choices.js/styles/base.css', [], JCH_VERSION);
+        wp_register_style('jch-wordpress', JCH_PLUGIN_URL . 'media/css/wordpress.css', [], JCH_VERSION);
         wp_register_style(
             'jch-dashicons-wordpress',
             JCH_PLUGIN_URL . 'media/css/dashicons-wordpress.css',
@@ -208,42 +243,36 @@ HTML;
             JCH_VERSION
         );
         wp_register_style(
-            'jch-dashicons-css',
+            'jch-dashicons',
             JCH_PLUGIN_URL . 'media/core/css/dashicons.css',
             ['jch-dashicons-wordpress'],
             JCH_VERSION
         );
 
-
         //JavaScript files
         wp_register_script(
-            'jch-bootstrap-js',
+            'jch-bootstrap',
             JCH_PLUGIN_URL . 'media/bootstrap/js/bootstrap.bundle.min.js',
             ['jquery'],
             JCH_VERSION,
             true
         );
         wp_register_script(
-            'jch-platformwordpress-js',
+            'jch-platform-wordpress',
             JCH_PLUGIN_URL . 'media/js/platform-wordpress.js',
             ['jquery'],
             JCH_VERSION,
             true
         );
         wp_register_script(
-            'jch-adminutility-js',
+            'jch-admin-utility',
             JCH_PLUGIN_URL . 'media/core/js/admin-utility.js',
             ['jquery'],
             JCH_VERSION,
             true
         );
-        wp_register_script(
-            'jch-chosen-js',
-            JCH_PLUGIN_URL . 'media/chosen-js/chosen.jquery.js',
-            ['jquery'],
-            JCH_VERSION,
-            true
-        );
+
+        $this->resolvedController = $this->controllerResolver->getController();
 
         $loader_image = $this->paths->mediaUrl() . '/core/images/loader.gif';
         $multiselect_nonce = wp_create_nonce('jch_optimize_multiselect');
@@ -254,20 +283,7 @@ const jch_loader_image_url = "{$loader_image}";
 const jch_multiselect_url_nonce = '{$multiselect_nonce}';
 JS;
 
-        wp_add_inline_script('jch-platformwordpress-js', $imageLoaderJs, 'before');
-        $chosenJs = <<<JS
-(function($){
-  $(document).ready(function () {
-       $(".chzn-custom-value").chosen({
-            disable_search_threshold: 10,
-            width: "400px",
-            placeholder_text_multiple: "Select some options or add items to select"
-        });
-  });
-})(jQuery);
-JS;
-
-        wp_add_inline_script('jch-chosen-js', $chosenJs);
+        wp_add_inline_script('jch-platform-wordpress', $imageLoaderJs, 'before');
 
         $popoverJs = <<<JS
 window.onload = function(){
@@ -275,98 +291,42 @@ window.onload = function(){
    		var popoverList = popoverTriggerList.map(function(popoverTriggerEl){
     		return new bootstrap.Popover(popoverTriggerEl, {
 			html: true,
-			container: 'body',
+			container: '#jch-bs-admin-ui',
 			placement: 'right',
 			trigger: 'hover focus'
 		});
 	});
 }
 JS;
-
-        wp_add_inline_script('jch-bootstrap-js', $popoverJs);
+        wp_add_inline_script('jch-bootstrap', $popoverJs);
 
         /** @psalm-var array<string, array<string, array{0:string, 1:string, 2?:bool}>> $aSettingsArray */
         $aSettingsArray = TabSettings::getSettingsArray();
 
         foreach ($aSettingsArray as $section => $aSettings) {
             add_settings_section('jch-optimize_' . $section . '_section', '', [
-                '\\JchOptimize\\WordPress\\Html\\Renderer\\Section',
+                Section::class,
                 $section
             ], 'jchOptimizeOptionsPage');
 
 
             foreach ($aSettings as $setting => $args) {
-                list($title, $description, $new) = array_pad($args, 3, false);
+                list($title, $description, $new, $class) = array_pad($args, 4, false);
 
                 $id = 'jch-optimize_' . $setting;
                 $title = Helper::description($title, $description, $new);
                 $args = [];
 
-                $aClasses = $this->getSettingsClassMap();
-
-                if (isset($aClasses[$setting])) {
-                    $args['class'] = $aClasses[$setting];
+                if ($class !== false) {
+                    $args['class'] = $class;
                 }
 
                 add_settings_field($id, $title, [
-                    '\\JchOptimize\\WordPress\\Html\\Renderer\\Setting',
+                    Setting::class,
                     $setting
                 ], 'jchOptimizeOptionsPage', 'jch-optimize_' . $section . '_section', $args);
             }
         }
-    }
-
-    /**
-     * Map of classes that should be put on the '<tr>' element containing the associated setting
-     *
-     * @return array<string, string>
-     */
-    private function getSettingsClassMap(): array
-    {
-        return [
-            'memcached_server_host' => 'jch-memcached-wrapper d-none',
-            'memcached_server_port' => 'jch-memcached-wrapper d-none',
-            'redis_server_host'     => 'jch-redis-wrapper d-none',
-            'redis_server_port'     => 'jch-redis-wrapper d-none',
-            'redis_server_password' => 'jch-redis-wrapper d-none',
-            'redis_server_database' => 'jch-redis-wrapper d-none',
-        ];
-    }
-
-    public function addMenuToAdminBar(WP_Admin_Bar $admin_bar): void
-    {
-        if (!current_user_can('manage_options')) {
-            return;
-        }
-
-        $nodes = $admin_bar->get_nodes();
-
-        if (!isset($nodes['jch-optimize-parent'])) {
-            $admin_bar->add_node([
-                'id'    => 'jch-optimize-parent',
-                'title' => 'JCH Optimize'
-            ]);
-        }
-
-        $admin_bar->add_node([
-            'parent' => 'jch-optimize-parent',
-            'id'     => 'jch-optimize-settings',
-            'title'  => __('Settings', 'jch-optimize'),
-            'href'   => add_query_arg([
-                'page' => 'jch_optimize',
-            ], admin_url('options-general.php'))
-        ]);
-
-        $admin_bar->add_node([
-            'parent' => 'jch-optimize-parent',
-            'id'     => 'jch-optimize-cache',
-            'title'  => __('Clean Cache', 'jch-optimize'),
-            'href'   => add_query_arg([
-                'page'   => 'jch_optimize',
-                'task'   => 'cleancache',
-                'return' => base64_encode_url($this->getCurrentAdminUri())
-            ], admin_url('options-general.php'))
-        ]);
     }
 
     public function getCurrentAdminUri(): string
@@ -405,14 +365,15 @@ JS;
 
         if ($pluginFile == $this_plugin) {
             $settingsLink = '<a href="' . admin_url('options-general.php?page=jch_optimize') . '">' . __(
-                    'Settings'
-                ) . '</a>';
+                'Settings'
+            ) . '</a>';
             array_unshift($actionLinks, $settingsLink);
         }
 
         return $actionLinks;
     }
 
+    #[NoReturn]
     public function doAjaxFileTree(): void
     {
         check_admin_referer('jch_optimize_filetree');
@@ -424,9 +385,12 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxMultiSelect(): void
     {
         check_admin_referer('jch_optimize_multiselect');
+        $_POST = wp_unslash($_POST);
+        $_REQUEST = wp_unslash($_REQUEST);
 
         if (current_user_can('manage_options')) {
             echo Ajax::getInstance('MultiSelect')->run();
@@ -435,6 +399,7 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxOptimizeImages(): void
     {
         check_admin_referer('jch_optimize_image');
@@ -446,6 +411,7 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxConfigureSettings(): void
     {
         if (current_user_can('manage_options')) {
@@ -456,6 +422,7 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxOnClickIcon(): void
     {
         if (current_user_can('manage_options')) {
@@ -467,6 +434,7 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxSmartCombine(): void
     {
         if (current_user_can('manage_options')) {
@@ -476,6 +444,7 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxGetCacheInfo(): void
     {
         $container = ContainerFactory::getInstance();
@@ -485,6 +454,7 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxJchConfigureJsTableBody(): void
     {
         $container = ContainerFactory::getInstance();
@@ -494,11 +464,25 @@ JS;
         die();
     }
 
+    #[NoReturn]
     public function doAjaxJchConfigureJsAutoSave(): void
     {
         $container = ContainerFactory::getInstance();
         $container->get(Input::class)->def('task', 'criticaljsautosave');
         $container->get(ControllerResolver::class)->resolve();
+
+        die();
+    }
+
+    #[NoReturn]
+    public function doAjaxJchCfVerify(): void
+    {
+        check_admin_referer('jch_optimize_verify_cf_token');
+        if (current_user_can('manage_options')) {
+            $container = ContainerFactory::getInstance();
+            $container->get(Input::class)->def('task', 'CfVerifyToken');
+            $container->get(ControllerResolver::class)->resolve();
+        }
 
         die();
     }

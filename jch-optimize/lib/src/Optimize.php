@@ -30,7 +30,6 @@ use JchOptimize\Core\Preloads\Http2Preload;
 use function defined;
 use function ini_get;
 use function ini_set;
-use function preg_replace;
 use function version_compare;
 
 defined('_JCH_EXEC') or die('Restricted access');
@@ -44,7 +43,7 @@ class Optimize implements LoggerAwareInterface, ContainerAwareInterface
     use LoggerAwareTrait;
     use ContainerAwareTrait;
 
-    private string $jit = '1';
+    private string $jit;
 
     /**
      * @throws Exception\RuntimeException
@@ -58,23 +57,20 @@ class Optimize implements LoggerAwareInterface, ContainerAwareInterface
         private ProfilerInterface $profiler,
         private UtilityInterface $utility
     ) {
+        $this->jit = ini_get('pcre.jit');
+
+        self::setPcreLimits();
+
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
+            throw new Exception\RuntimeException('PHP Version less than 8.0, Exiting plugin...');
+        }
+    }
+
+    public static function setPcreLimits(): void
+    {
         ini_set('pcre.backtrack_limit', '1000000');
         ini_set('pcre.recursion_limit', '1000000');
-
-        if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-            $this->jit = ini_get('pcre.jit');
-            ini_set('pcre.jit', '0');
-        }
-
-        if (version_compare(PHP_VERSION, '7.3', '<')) {
-            throw new Exception\RuntimeException('PHP Version less than 7.3, Exiting plugin...');
-        }
-
-        $pcre_version = preg_replace('#(^\d++\.\d++).++$#', '$1', PCRE_VERSION);
-
-        if (version_compare($pcre_version, '7.2', '<')) {
-            throw new Exception\RuntimeException('PCRE Version less than 7.2. Exiting plugin...');
-        }
+        ini_set('pcre.jit', '0');
     }
 
     public function process(string $html): string
@@ -106,9 +102,7 @@ class Optimize implements LoggerAwareInterface, ContainerAwareInterface
             $optimizedHtml = $html;
         }
 
-        if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-            ini_set('pcre.jit', (string)$this->jit);
-        }
+        ini_set('pcre.jit', (string)$this->jit);
 
         return $optimizedHtml;
     }
@@ -117,7 +111,7 @@ class Optimize implements LoggerAwareInterface, ContainerAwareInterface
      * If parameter is set will minify HTML before sending to browser;
      * Inline CSS and JS will also be minified if respective parameters are set
      *
-     * @param string $html
+     * @param   string  $html
      *
      * @return string                       Optimized HTML
      */

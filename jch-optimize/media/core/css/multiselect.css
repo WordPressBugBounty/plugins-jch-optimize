@@ -1,0 +1,79 @@
+/**
+ * JCH Optimize - Performs several front-end optimizations for fast downloads
+ *
+ *  @package   jchoptimize/core
+ *  @author    Samuel Marshall <samuel@jch-optimize.net>
+ *  @copyright Copyright (c) 2025 Samuel Marshall / JCH Optimize
+ *  @license   GNU/GPLv3, or later. See LICENSE file
+ *
+ *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
+ */
+
+.jch-ms-fieldset-grid {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-columns: 1fr repeat(var(--jch-ms-subfield-count), minmax(10%,  max-content));
+    align-items: stretch;
+    justify-items: stretch;
+    white-space: nowrap;
+}
+
+.jch-ms-fieldset-grid > .jch-ms-header {
+    overflow: visible;
+    text-decoration-line: underline;
+    text-decoration-color: #ccc;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    max-inline-size: 0;
+    padding-inline: 0;
+    padding-bottom: 3px;
+}
+
+.jch-ms-fieldset-grid > .jch-ms-header:first-child {
+    grid-column: 2;
+}
+
+.jch-ms-fieldset-grid .jch-ms-excludes input {
+    display: none;
+}
+
+.jch-ms-fieldset-grid .jch-ms-cell {
+    border-left: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.jch-ms-fieldset-grid .jch-ms-cell.has-subfield {
+    padding: 0.5px 5px;
+}
+
+
+.jch-ms-fieldset-grid .jch-ms-cell > * {
+    max-width: 100%
+}
+
+.jch-ms-fieldset-grid .jch-ms-excludes,
+.jch-ms-fieldset-grid .jch-ms-excludes + .jch-ms-cell,
+.jch-ms-fieldset-grid .jch-ms-header:first-child {
+    border-left: none;
+}
+
+.jch-ms-fieldset-grid .jch-ms-excludes,
+.jch-ms-fieldset-grid .jch-ms-header:first-child {
+    justify-self: end;
+    justify-content: end;
+}
+
+.jch-ms-fieldset-grid > .jch-ms-header:not(:has(+ .jch-ms-header)){
+    justify-self: start;
+    justify-content: start;
+}
+
+.jch-ms-fieldset-grid:not(:has(> :not(.jch-ms-header))) {
+    display: none;
+}
+
+.jch-ms-fieldset-grid .jch-ms-excludes {
+    overflow: hidden;
+}

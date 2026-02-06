@@ -116,7 +116,7 @@ HTML;
         $profiler = __('Profiler', 'jch-optimize');
 
         return <<<HTML
-<div class="ab-item ab-empty-item" aria-haspopup="true"><span class="wp-admin-bar-arrow" aria-hidden="true"></span>{$profiler}</div><div class="ab-sub-wrapper"><ul id="wp-admin-bar-jch-optimize-profiler-default" class="ab-submenu" style="overflow:auto;max-height: 600px;">
+<div class="ab-item ab-empty-item" aria-haspopup="true"><span class="wp-admin-bar-arrow" aria-hidden="true"></span><span class="dashicons dashicons-dashboard jch-ms-icon"></span><span>{$profiler}</span></div><div class="ab-sub-wrapper"><ul id="wp-admin-bar-jch-optimize-profiler-default" class="ab-submenu" style="overflow:auto;max-height: 600px;">
 HTML;
     }
 

@@ -3,10 +3,10 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2025 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2025 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
@@ -22,6 +22,7 @@ use _JchOptimizeVendor\V91\Laminas\Cache\Storage\TaggableInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use Exception;
+use JchOptimize\Core\Model\CloudflarePurger;
 use JchOptimize\Core\PageCache\PageCache;
 use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Platform\PathsInterface;
@@ -61,9 +62,9 @@ class ClearExpiredByFactor implements LoggerAwareInterface
          */
         private TaggableInterface $taggableCache,
         private PathsInterface $paths,
-        private CacheInterface $cacheUtilities
-    )
-    {
+        private CacheInterface $cacheUtilities,
+        private ?CloudflarePurger $cloudflarePurger = null,
+    ) {
     }
 
     /**
@@ -123,13 +124,17 @@ class ClearExpiredByFactor implements LoggerAwareInterface
 
             $mtime = (int)$metaData['mtime'];
 
+            $urls = [];
             if ($tags[0] == 'pagecache') {
                 if ($mtime && $time > $mtime + (int)$pageCacheTtl) {
                     $this->pageCache->deleteItemById($item);
+                    $urls[] = $tags[1];
                 }
 
                 continue;
             }
+
+            $this->cloudflarePurger?->purge($urls);
 
             if ($mtime && $time > $mtime + (int)$ttl) {
                 $allRelatedPageCachesSuccessfullyProcessed = true; // Initialize flag

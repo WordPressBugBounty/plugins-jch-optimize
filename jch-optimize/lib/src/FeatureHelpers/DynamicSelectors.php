@@ -35,14 +35,14 @@ class DynamicSelectors extends AbstractFeatureHelper
     {
         parent::__construct($container, $params);
 
-                //Add all CSS containing any specified dynamic CSS to the critical CSS
+        //Add all CSS containing any specified dynamic CSS to the critical CSS
         $dynamicSelectors = Helper::getArray($this->params->get('pro_dynamic_selectors', []));
         $dynamicSelectors = array_map(
-            fn($a) => preg_replace('#\x{200B}#u', '\b', preg_quote($a, '#')),
+            fn($a) => preg_quote($a, '#'),
             array_unique(
                 array_merge(
                     $dynamicSelectors,
-                    ['offcanvas', 'off-canvas', 'mobilemenu', 'mobile-menu', '.jch-lazyloaded', ':active']
+                    ['offcanvas', 'off-canvas', 'mobilemenu', 'mobile-menu', '.jch-lazyloaded', '.active']
                 )
             )
         );
@@ -50,9 +50,9 @@ class DynamicSelectors extends AbstractFeatureHelper
         $this->dynamicSelectorRegex = implode('|', $dynamicSelectors);
     }
 
-    public function getDynamicSelectors(string $selectorList): bool
+    public function ruleHasDynamicToken(string $selectorList): bool
     {
-        if (preg_match('#' . $this->dynamicSelectorRegex . '#i', $selectorList)) {
+        if (preg_match('#' . $this->dynamicSelectorRegex . '#', $selectorList)) {
             return true;
         }
 

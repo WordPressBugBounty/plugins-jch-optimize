@@ -2,9 +2,11 @@
 
 namespace CodeAlfa\Css2Xpath\Selector;
 
+use CodeAlfa\Css2Xpath\Collections\AttributeCollection;
+use CodeAlfa\Css2Xpath\Collections\ClassCollection;
+use CodeAlfa\Css2Xpath\Collections\PseudoClassCollection;
 use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 use CodeAlfa\RegexTokenizer\Css;
-use SplObjectStorage;
 
 use function preg_match;
 use function preg_match_all;
@@ -15,41 +17,17 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
 {
     use Css;
 
-    protected SelectorFactoryInterface $selectorFactory;
-    protected ?\CodeAlfa\Css2Xpath\Selector\TypeSelector $type;
-    protected ?\CodeAlfa\Css2Xpath\Selector\IdSelector $id;
-    /**
-     * @var SplObjectStorage<ClassSelector, null>
-     */
-    protected SplObjectStorage $classes;
-    /**
-     * @var SplObjectStorage<AttributeSelector, null>
-     */
-    protected SplObjectStorage $attributes;
-    /**
-     * @var SplObjectStorage<PseudoSelector, null>
-     */
-    protected SplObjectStorage $pseudoSelectors;
-    protected string $combinator;
-    protected \CodeAlfa\Css2Xpath\Selector\CssSelector|string|null $descendant;
-    final public function __construct(SelectorFactoryInterface $selectorFactory, ?\CodeAlfa\Css2Xpath\Selector\TypeSelector $type = null, ?\CodeAlfa\Css2Xpath\Selector\IdSelector $id = null, ?SplObjectStorage $classes = null, ?SplObjectStorage $attributes = null, ?SplObjectStorage $pseudoSelectors = null, string $combinator = '', ?string $descendant = null)
+    final public function __construct(protected SelectorFactoryInterface $selectorFactory, protected ?\CodeAlfa\Css2Xpath\Selector\TypeSelector $type = null, protected ?\CodeAlfa\Css2Xpath\Selector\IdSelector $id = null, protected ?ClassCollection $classes = null, protected ?AttributeCollection $attributes = null, protected ?PseudoClassCollection $pseudoClasses = null, protected ?\CodeAlfa\Css2Xpath\Selector\PseudoElementSelector $pseudoElement = null, protected string $combinator = '', protected \CodeAlfa\Css2Xpath\Selector\CssSelector|string|null $descendant = null)
     {
-        $this->selectorFactory = $selectorFactory;
-        $this->type = $type;
-        $this->id = $id;
-        $this->classes = $classes ?? new SplObjectStorage();
-        $this->attributes = $attributes ?? new SplObjectStorage();
-        $this->pseudoSelectors = $pseudoSelectors ?? new SplObjectStorage();
-        $this->combinator = $combinator;
-        $this->descendant = $descendant;
     }
     public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
         $type = null;
         $id = null;
-        $classes = new SplObjectStorage();
-        $attributes = new SplObjectStorage();
-        $pseudoSelectors = new SplObjectStorage();
+        $classCollection = new ClassCollection();
+        $attributeCollection = new AttributeCollection();
+        $pseudoClassCollection = new PseudoClassCollection();
+        $pseudoElement = null;
         $combinator = '';
         $descendant = null;
         $elRx = self::cssTypeSelectorWithCaptureValueToken();
@@ -69,20 +47,20 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
                 $id = static::createIdSelector($selectorFactory, $match);
             }
             if (!empty($match['class'])) {
-                static::addClassSelector($classes, $selectorFactory, $match);
+                static::addClassSelector($classCollection, $selectorFactory, $match);
             }
             if (!empty($match['attrName'])) {
-                static::addAttributeSelector($attributes, $selectorFactory, $match);
+                static::addAttributeSelector($attributeCollection, $selectorFactory, $match);
             }
             if (!empty($match['pseudoSelector'])) {
-                static::addPseudoSelector($pseudoSelectors, $selectorFactory, $match);
+                static::addPseudoSelector($pseudoClassCollection, $pseudoElement, $type, $selectorFactory, $match);
             }
             if (isset($match['combinator'])) {
                 $combinator = $match['combinator'];
                 $descendant = static::createDescendant($selectorFactory, $match);
             }
         }
-        return new static($selectorFactory, $type, $id, $classes, $attributes, $pseudoSelectors, $combinator, $descendant);
+        return new static($selectorFactory, $type, $id, $classCollection, $attributeCollection, $pseudoClassCollection, $pseudoElement, $combinator, $descendant);
     }
     protected static function createTypeSelector(SelectorFactoryInterface $selectorFactory, array $match): \CodeAlfa\Css2Xpath\Selector\TypeSelector
     {
@@ -92,24 +70,31 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
     {
         return $selectorFactory->createIdSelector($match['id']);
     }
-    protected static function addClassSelector(SplObjectStorage $classesStorage, SelectorFactoryInterface $selectorFactory, array $match): void
+    protected static function addClassSelector(ClassCollection $classCollection, SelectorFactoryInterface $selectorFactory, array $match): void
     {
-        $classesStorage->attach($selectorFactory->createClassSelector($match['class']));
+        $classCollection->offsetSet($selectorFactory->createClassSelector($match['class']));
     }
-    protected static function addAttributeSelector(SplObjectStorage $attributeStorage, SelectorFactoryInterface $selectorFactory, array $match): void
+    protected static function addAttributeSelector(AttributeCollection $attributeStorage, SelectorFactoryInterface $selectorFactory, array $match): void
     {
-        $attributeStorage->attach($selectorFactory->createAttributeSelector($match['attrName'], $match['attrValue'] ?? '', $match['attrOperator'] ?? '', $match['attrSeparator'] ? $match['attrNs'] : null));
+        $attributeStorage->offsetSet($selectorFactory->createAttributeSelector($match['attrName'], $match['attrValue'] ?? '', $match['attrOperator'] ?? '', $match['attrSeparator'] ? $match['attrNs'] : null));
     }
-    protected static function addPseudoSelector(SplObjectStorage $pseudoSelectorsStorage, SelectorFactoryInterface $selectorFactory, array $match): void
+    protected static function addPseudoSelector(PseudoClassCollection $pseudoClassCollection, ?\CodeAlfa\Css2Xpath\Selector\PseudoElementSelector &$pseudoElementSelector, ?\CodeAlfa\Css2Xpath\Selector\TypeSelector $type, SelectorFactoryInterface $selectorFactory, array $match): void
     {
-        if (preg_match("#is|not|where|has#", $match['pseudoSelector']) && !empty($match['pseudoSelectorList'])) {
-            $pseudoSelectorList = $match['pseudoSelectorList'];
-            $modifier = '';
+        $prefix = $match['pseudoPrefix'];
+        $selector = $match['pseudoSelector'];
+        $selectorList = $match['pseudoSelectorList'] ?? '';
+        if ($prefix === '::' || in_array($selector, ['before', 'after', 'first-line', 'first-letter'])) {
+            $pseudoElementSelector = $selectorFactory->createPseudoElementSelector($selectorFactory, $selector);
         } else {
-            $pseudoSelectorList = null;
-            $modifier = !empty($match['pseudoSelectorList']) ? $match['pseudoSelectorList'] : '';
+            if (preg_match("#is|not|where|has#", $selector) && !empty($selectorList)) {
+                $pseudoSelectorList = $selectorList;
+                $modifier = '';
+            } else {
+                $pseudoSelectorList = null;
+                $modifier = !empty($selectorList) ? $selectorList : '';
+            }
+            $pseudoClassCollection->offsetSet($selectorFactory->createPseudoClassSelector($selectorFactory, $selector, $pseudoSelectorList, $modifier, $type?->getName()));
         }
-        $pseudoSelectorsStorage->attach($selectorFactory->createPseudoSelector($selectorFactory, $match['pseudoSelector'], $match['pseudoPrefix'], $pseudoSelectorList, $modifier));
     }
     protected static function createDescendant(SelectorFactoryInterface $selectorFactory, array $match): string
     {
@@ -144,50 +129,61 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
     }
     private function internalRender(): string
     {
-        return $this->renderTypeSelector() . $this->renderIdSelector() . $this->renderClassSelector() . $this->renderAttributeSelector() . $this->renderPseudoSelector() . $this->renderDescendant();
+        $node = $this->renderTypeSelector();
+        $filters = [];
+        $filters = $this->renderIdSelector($filters);
+        $filters = $this->renderClassSelector($filters);
+        $filters = $this->renderAttributeSelector($filters);
+        $filters = $this->renderPseudoClassSelector($filters);
+        $predicate = $this->renderPredicateFromFilters($filters);
+        return "{$node}{$predicate}{$this->renderDescendant()}";
     }
-    public function render(): string
+    private function renderPredicateFromFilters(array $filters): string
+    {
+        if (count($filters) > 1) {
+            $filters = array_map(fn($f) => preg_match('#\bor\b|[=<>]#i', $f) ? "({$f})" : $f, $filters);
+        }
+        return !empty($filters) ? '[' . implode(' and ', $filters) . ']' : '';
+    }
+    public function render(?string $axis = null): string
     {
         $xpath = $this->internalRender();
-        return "descendant-or-self::{$xpath}";
+        $axis = $axis ?? 'descendant-or-self';
+        return "{$axis}::{$xpath}";
     }
     private function renderTypeSelector(): string
     {
-        if (($type = $this->getType()) !== null) {
-            return $type->render();
-        }
-        return "*";
+        return ($type = $this->getType()) !== null ? $type->render() : '*';
     }
-    private function renderIdSelector(): string
+    private function renderIdSelector(array $filters): array
     {
         if (($id = $this->getid()) !== null) {
-            return $id->render();
+            $filters[] = $id->render();
         }
-        return '';
+        return $filters;
     }
-    private function renderClassSelector(): string
+    private function renderClassSelector(array $filters): array
     {
-        $xpath = '';
         foreach ($this->getClasses() as $class) {
-            $xpath .= $class->render();
+            $filters[] = $class->render();
         }
-        return $xpath;
+        return $filters;
     }
-    private function renderAttributeSelector(): string
+    private function renderAttributeSelector(array $filters): array
     {
-        $xpath = '';
         foreach ($this->getAttributes() as $attribute) {
-            $xpath .= $attribute->render();
+            $filters[] = $attribute->render();
         }
-        return $xpath;
+        return $filters;
     }
-    private function renderPseudoSelector(): string
+    private function renderPseudoClassSelector(array $filters): array
     {
-        $pseudoXpath = '';
-        foreach ($this->getPseudoSelectors() as $pseudoSelector) {
-            $pseudoXpath .= $pseudoSelector->render();
+        foreach ($this->getPseudoClasses() as $pseudoClass) {
+            if ($pseudoSelector = $pseudoClass->render()) {
+                $filters[] = $pseudoSelector;
+            }
         }
-        return $pseudoXpath;
+        return $filters;
     }
     private function renderDescendant(): string
     {
@@ -211,32 +207,27 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
     {
         return $this->id;
     }
-    /**
-     * @return SplObjectStorage<ClassSelector, null>
-     */
-    public function getClasses(): SplObjectStorage
+    public function getClasses(): ClassCollection
     {
         return $this->classes;
     }
-    /**
-     * @return SplObjectStorage<AttributeSelector, null>
-     */
-    public function getAttributes(): SplObjectStorage
+    public function getAttributes(): AttributeCollection
     {
         return $this->attributes;
     }
-    /**
-     * @return SplObjectStorage<PseudoSelector, null>
-     */
-    public function getPseudoSelectors(): SplObjectStorage
+    public function getPseudoClasses(): PseudoClassCollection
     {
-        return $this->pseudoSelectors;
+        return $this->pseudoClasses;
+    }
+    public function getPseudoElement(): ?\CodeAlfa\Css2Xpath\Selector\PseudoElementSelector
+    {
+        return $this->pseudoElement;
     }
     public function getCombinator(): string
     {
         return $this->combinator;
     }
-    public function getDescendant(): \CodeAlfa\Css2Xpath\Selector\CssSelector|null
+    public function getDescendant(): static|null
     {
         if (is_string($this->descendant)) {
             $this->descendant = $this->selectorFactory->createCssSelector($this->selectorFactory, $this->descendant);

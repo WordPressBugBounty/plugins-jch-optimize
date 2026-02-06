@@ -34,6 +34,8 @@ class CacheObject
 
     private string $criticalCss = '';
 
+    private string $dynamicCriticalCss = '';
+
     private string $potentialCriticalCssAtRules = '';
 
     private string $belowFoldFontsKeyFrame = '';
@@ -205,6 +207,7 @@ class CacheObject
         $this->contents .= $object->getContents();
         $this->imports .= $object->getImports();
         $this->criticalCss .= $object->getCriticalCss();
+        $this->dynamicCriticalCss .= $object->getDynamicCriticalCss();
         $this->potentialCriticalCssAtRules .= $object->getPotentialCriticalCssAtRules();
         $this->belowFoldFontsKeyFrame .= $object->getBelowFoldFontsKeyFrame();
         $this->images = array_merge($this->images, $object->getImages());
@@ -263,9 +266,23 @@ class CacheObject
         return $this;
     }
 
+    public function setDynamicCriticalCss(string $dynamicCriticalCss): CacheObject
+    {
+        $this->dynamicCriticalCss = $dynamicCriticalCss;
+
+        return $this;
+    }
+
     public function appendCriticalCss(string $criticalCss): CacheObject
     {
         $this->criticalCss .= $criticalCss;
+
+        return $this;
+    }
+
+    public function appendDynamicCriticalCss(string $dynamicCriticalCss): CacheObject
+    {
+        $this->dynamicCriticalCss .= $dynamicCriticalCss;
 
         return $this;
     }
@@ -285,6 +302,11 @@ class CacheObject
     public function getCriticalCss(): string
     {
         return $this->criticalCss;
+    }
+
+    public function getDynamicCriticalCss(): string
+    {
+        return $this->dynamicCriticalCss;
     }
 
     public function getBelowFoldFontsKeyFrame(): string

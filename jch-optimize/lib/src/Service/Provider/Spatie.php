@@ -3,10 +3,10 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
@@ -20,11 +20,13 @@ use _JchOptimizeVendor\V91\Laminas\Cache\Storage\ClearByNamespaceInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IterableInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
 use _JchOptimizeVendor\V91\Spatie\Crawler\CrawlQueues\CrawlQueue;
+use JchOptimize\Core\Admin\API\FileImageQueue;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Laminas\CacheConfigurationContainerFactory;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\Spatie\CrawlQueues\CacheCrawlQueue;
 use JchOptimize\Core\Spatie\CrawlQueues\NonOptimizedCacheCrawlQueue;
+use JchOptimize\Core\Spatie\CrawlQueues\OptimizeImagesCrawlQueue;
 
 class Spatie implements ServiceProviderInterface
 {
@@ -33,6 +35,8 @@ class Spatie implements ServiceProviderInterface
         $container->alias(CacheCrawlQueue::class, CrawlQueue::class)
             ->share(CrawlQueue::class, [$this, 'getCacheCrawlQueueProvider']);
         $container->share(NonOptimizedCacheCrawlQueue::class, [$this, 'getNonOptimizedCacheCrawlQueueProvider']);
+        $container->share(OptimizeImagesCrawlQueue::class, [$this, 'getOptimizeImagesCrawlQueueProvider']);
+        $container->share(FileImageQueue::class, [$this, 'getFileImageQueueProvider']);
     }
 
     public function getCacheCrawlQueueProvider(Container $container): CacheCrawlQueue
@@ -51,6 +55,26 @@ class Spatie implements ServiceProviderInterface
         $adapter = $container->get(Registry::class)->get('pro_cache_storage_adapter', 'filesystem');
 
         return new NonOptimizedCacheCrawlQueue(
+            $this->getStorage($container, $adapter),
+            $this->getStorage($container, $adapter)
+        );
+    }
+
+    public function getOptimizeImagesCrawlQueueProvider(Container $container): OptimizeImagesCrawlQueue
+    {
+        $adapter = $container->get(Registry::class)->get('pro_cache_storage_adapter', 'filesystem');
+
+        return new OptimizeImagesCrawlQueue(
+            $this->getStorage($container, $adapter),
+            $this->getStorage($container, $adapter)
+        );
+    }
+
+    public function getFileImageQueueProvider(Container $container): FileImageQueue
+    {
+        $adapter = $container->get(Registry::class)->get('pro_cache_storage_adapter', 'filesystem');
+
+        return new FileImageQueue(
             $this->getStorage($container, $adapter),
             $this->getStorage($container, $adapter)
         );

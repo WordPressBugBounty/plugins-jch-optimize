@@ -15,27 +15,33 @@ namespace JchOptimize\Core\Html\Callbacks;
 
 use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use Exception;
+use JchOptimize\Core\CacheObject;
+use JchOptimize\Core\Combiner;
 use JchOptimize\Core\Css\Components\CssUrl;
 use JchOptimize\Core\Css\Parser as CssParser;
 use JchOptimize\Core\Exception\InvalidArgumentException;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
-use JchOptimize\Core\FeatureHelpers\Webp;
 use JchOptimize\Core\FeatureHelpers\YouTubeFacade;
+use JchOptimize\Core\FileInfo;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Html\Elements\Audio;
 use JchOptimize\Core\Html\Elements\Iframe;
 use JchOptimize\Core\Html\Elements\Img;
 use JchOptimize\Core\Html\Elements\Picture;
+use JchOptimize\Core\Html\Elements\Style;
 use JchOptimize\Core\Html\Elements\Video;
 use JchOptimize\Core\Html\HtmlElementInterface;
 use JchOptimize\Core\Preloads\Http2Preload;
 use JchOptimize\Core\Registry;
+use JchOptimize\Core\Settings;
 
 use function array_merge;
 use function defined;
 use function implode;
+use function in_array;
 use function preg_match;
 
 use const JCH_PRO;
@@ -49,6 +55,8 @@ class LazyLoad extends AbstractCallback
     protected array $includes = [];
 
     protected array $args = [];
+
+    protected array $classes = [];
     /**
      * @var int Width of <img> element inside <picture>
      */
@@ -57,6 +65,8 @@ class LazyLoad extends AbstractCallback
      * @var int Height of <img> element inside <picture>
      */
     public int $height = 1;
+
+    protected ?HtmlElementInterface $preElement = null;
 
     public function __construct(Container $container, Registry $params, public Http2Preload $http2Preload)
     {
@@ -67,34 +77,34 @@ class LazyLoad extends AbstractCallback
 
     protected function getLazyLoadExcludes(): void
     {
-        $aExcludesFiles = Helper::getArray($this->params->get('excludeLazyLoad', []));
-        $aExcludesFolders = Helper::getArray($this->params->get('pro_excludeLazyLoadFolders', []));
+        $aExcludesFiles = $this->params->getArray(Settings::EXCLUDE_LAZY_LOAD);
+        $aExcludesFolders = $this->params->getArray(Settings::EXCLUDE_LAZY_LOAD_FOLDERS);
         $aExcludesUrl = array_merge(['data:image'], $aExcludesFiles, $aExcludesFolders);
 
-        $aExcludeClass = Helper::getArray($this->params->get('pro_excludeLazyLoadClass', []));
+        $aExcludeClass = $this->params->getArray(Settings::EXCLUDE_LAZY_LOAD_CLASS);
 
         $this->excludes = ['url' => $aExcludesUrl, 'class' => $aExcludeClass];
 
-        $includesFiles = Helper::getArray($this->params->get('includeLazyLoad', []));
-        $includesFolders = Helper::getArray($this->params->get('includeLazyLoadFolders', []));
+        $includesFiles = $this->params->getArray(Settings::INCLUDE_LAZY_LOAD);
+        $includesFolders = $this->params->getArray(Settings::INCLUDE_LAZY_LOAD_FOLDERS);
         $includesUrl = array_merge($includesFiles, $includesFolders);
 
-        $includesClass = Helper::getArray($this->params->get('includeLazyLoadClass', []));
+        $includesClass = $this->params->getArray(Settings::INCLUDE_LAZY_LOAD_CLASS);
 
         $this->includes = ['url' => $includesUrl, 'class' => $includesClass];
     }
 
     protected function internalProcessMatches(HtmlElementInterface $element): string
     {
-        if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
+        if (JCH_PRO && $this->params->isEnabled(Settings::LOAD_RESPONSIVE_IMAGES)) {
             $this->loadResponsiveImages($element);
         }
 
-        if (JCH_PRO && $this->params->get('pro_load_webp_images', '0')) {
-            $this->loadWebpImages($element);
+        if (JCH_PRO && $this->params->isEnabled(Settings::LOAD_AVIF_WEBP_IMAGES)) {
+            $this->loadAvifWebpImages($element);
         }
 
-        if (JCH_PRO && $this->params->get('pro_lcp_images_enable', '0')) {
+        if (JCH_PRO && $this->params->isEnabled(Settings::LCP_IMAGES_ENABLE)) {
             if ($this->lcpImageProcessed($element)) {
                 return $element->render();
             }
@@ -107,11 +117,11 @@ class LazyLoad extends AbstractCallback
             return $element->render();
         }
 
-        if ($options['lazyload'] || $this->params->get('http2_push_enable', '0')) {
+        if ($options['lazyload'] || $this->params->isEnabled(Settings::HTTP2_PUSH_ENABLE)) {
             $element = $this->lazyLoadElement($element, $options);
         }
 
-        return $element->render();
+        return $this->preElement?->render() . $element->render();
     }
 
     private function lazyLoadElement(
@@ -140,12 +150,16 @@ class LazyLoad extends AbstractCallback
                 return $element;
             }
 
-            if (JCH_PRO && $this->params->get('pro_lazyload_bgimages', '0')) {
+            if (JCH_PRO && $this->params->isEnabled(Settings::LAZYLOAD_BGIMAGES)) {
                 /** @see LazyLoadExtended::lazyLoadBgImages() */
                 $this->getContainer()->get(LazyLoadExtended::class)->lazyLoadBgImages($element);
             }
         } elseif ($options['section'] == 'above_fold') {
-            if (JCH_PRO && $element instanceof iFrame && $this->params->get('use_youtube_facade')) {
+            if (
+                JCH_PRO
+                && $element instanceof iFrame
+                && $this->params->isEnabled(Settings::USE_YOUTUBE_FACADE)
+            ) {
                 $facade = $this->getContainer()->get(YouTubeFacade::class)
                     /** @see YouTubeFacade::convert() */
                     ->convert($element);
@@ -155,11 +169,7 @@ class LazyLoad extends AbstractCallback
             }
 
             if ($element->hasAttribute('style')) {
-                preg_match(
-                    '#' . CssParser::cssUrlToken() . '#i',
-                    $element->getStyle(),
-                    $match
-                );
+                preg_match('#' . CssParser::cssUrlToken() . '#i', $element->getStyle(), $match);
 
                 if (!empty($match[0])) {
                     try {
@@ -263,7 +273,7 @@ class LazyLoad extends AbstractCallback
 
                 $imageUri = $cssUrl->getUri();
                 //We check first for LCP images
-                if (JCH_PRO && $this->params->get('pro_lcp_images_enable', '0')) {
+                if (JCH_PRO && $this->params->isEnabled(Settings::LCP_IMAGES_ENABLE)) {
                     $lcpImageObj = $this->getContainer()->get(LCPImages::class);
 
                     if ($lcpImageObj->preloadLcpImagePerViewPort($imageUri)) {
@@ -298,17 +308,18 @@ class LazyLoad extends AbstractCallback
         return $this->filter($element, 'include');
     }
 
-    private function loadWebpImages(HtmlElementInterface $element): void
+    private function loadAvifWebpImages(HtmlElementInterface $element): void
     {
         if ($element->hasChildren()) {
             foreach ($element->getChildren() as $child) {
                 if ($child instanceof HtmlElementInterface) {
-                    $this->loadWebpImages($child);
+                    $this->loadAvifWebpImages($child);
                 }
             }
         }
 
-        $this->getContainer()->get(Webp::class)->convert($element);
+        /** @see AvifWebp::convert() */
+        $this->getContainer()->get(AvifWebp::class)->convert($element);
     }
 
     private function loadResponsiveImages(HtmlElementInterface $element): void
@@ -319,6 +330,54 @@ class LazyLoad extends AbstractCallback
                     $this->loadResponsiveImages($child);
                 }
             }
+        } elseif (
+            $element->hasAttribute('style')
+            && $this->args['section'] == 'above_fold'
+            && preg_match_all('#' . CssParser::cssUrlToken() . '#', $element->getStyle(), $matches)
+        ) {
+            $class = 'jch-' . md5($element);
+
+            $inline = $element->getStyle();
+            $bgUrls = [];
+
+            foreach ($matches as $match) {
+                $bgUrls[] = $match[0];
+                $inline = str_replace($match[0], '', $inline);
+            }
+
+            $bgUrlStr = implode(',', $bgUrls);
+            $inline = preg_replace('#background(?:-image)?:\s*+(;|$)#i', '', $inline);
+
+            if (!in_array($class, $this->classes)) {
+                $style = new Style($this->getContainer());
+                $style->addChild(".{$class}{background-image: {$bgUrlStr} !important;}");
+                $fileInfo = new FileInfo($style);
+                $fileInfo->setAboveFold(true);
+                /**
+                 * @see Combiner::combineFiles()
+                 * @var CacheObject $cacheObject
+                 */
+                $cacheObject = $this->getContainer()->get(Combiner::class)->combineFiles([$fileInfo]);
+
+                foreach ($cacheObject->getLcpImages() as $lcpImage) {
+                    /** @see LCPImages::preloadConfiguredCssLcpImages() */
+                    $this->getContainer()->get(LCPImages::class)->preloadConfiguredCssLcpImages($lcpImage);
+                }
+
+                $style->replaceChild(0, $cacheObject->getDynamicCriticalCss());
+                $this->preElement = $style;
+                $this->classes[] = $class;
+            }
+
+            $element->class($class);
+
+            if ($inline) {
+                $element->style($inline);
+            } else {
+                $element->remove('style');
+            }
+
+            return;
         }
 
         $this->getContainer()->get(ResponsiveImages::class)->convert($element);

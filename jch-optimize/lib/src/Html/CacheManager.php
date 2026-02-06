@@ -15,34 +15,33 @@ namespace JchOptimize\Core\Html;
 
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
+use _JchOptimizeVendor\V91\Laminas\Cache\Exception\ExceptionInterface as LaminasCacheExceptionInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Pattern\CallbackCache;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\IterableInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\StorageInterface;
 use _JchOptimizeVendor\V91\Laminas\Cache\Storage\TaggableInterface;
-use _JchOptimizeVendor\V91\Laminas\Cache\Exception\ExceptionInterface as LaminasCacheExceptionInterface;
 use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
-use CodeAlfa\Minify\Css;
 use Exception;
 use JchOptimize\Core\CacheObject;
 use JchOptimize\Core\Combiner;
 use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDependencies;
+use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDomainProfiler;
 use JchOptimize\Core\Css\CssProcessor;
 use JchOptimize\Core\Exception\ExceptionInterface;
 use JchOptimize\Core\Exception\PregErrorException;
 use JchOptimize\Core\Exception\RuntimeException;
-use JchOptimize\Core\FeatureHelpers\DynamicJs;
 use JchOptimize\Core\FeatureHelpers\Fonts;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FileInfo;
+use JchOptimize\Core\Html\CssLayout\CssLayoutPlanner;
 use JchOptimize\Core\Html\Elements\Link;
 use JchOptimize\Core\Html\Elements\Script;
-use JchOptimize\Core\Html\Elements\Style;
+use JchOptimize\Core\Html\JsLayout\JsLayoutPlanner;
 use JchOptimize\Core\ImageAttributes;
 use JchOptimize\Core\PageCache\PageCache;
-use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Preloads\Http2Preload;
 use JchOptimize\Core\Registry;
@@ -54,12 +53,8 @@ use function array_merge;
 use function defined;
 use function in_array;
 use function is_array;
-use function md5;
-use function preg_replace_callback;
-use function serialize;
+use function str_starts_with;
 use function ucfirst;
-
-use const SORT_STRING;
 
 defined('_JCH_EXEC') or die('Restricted access');
 
@@ -83,7 +78,8 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
         private HtmlProcessor $processor,
         private ImageAttributes $imageAttributes,
         private ProfilerInterface $profiler,
-        private PathsInterface $paths
+        private CssLayoutPlanner $cssLayoutPlanner,
+        private JsLayoutPlanner $jsLayoutPlanner
     ) {
     }
 
@@ -109,7 +105,7 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
             $bCombineJs = (bool)$this->params->get('javascript', 1);
 
             if ($bCombineCss && !empty($aCssLinksArray[0])) {
-                $this->handleCss($aCssLinksArray, $section);
+                $this->handleCss($aCssLinksArray);
             }
 
             if ($bCombineJs) {
@@ -122,10 +118,33 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
      * @throws LaminasCacheExceptionInterface
      * @throws PregErrorException
      */
-    private function handleCss(array $aCssLinksArray, string $section): void
+    private function handleCss(array $aCssLinksArray): void
     {
         $cssCacheIds = [];
         $cssFileInfos = [];
+        $combinedByGroup = [];
+        $cacheObjByGroup = [];
+        $sensitiveCacheObjByOrds = [];
+        $belowFoldFontsEl = null;
+        $reducedBundleEl = null;
+
+        $optimizeDelivery = $this->params->get('optimizeCssDelivery_enable', '0');
+        $reduceUnusedCss = $this->params->get('pro_reduce_unused_css', '0');
+
+        $cssTimeLine = $this->filesManager->cssTimeLine;
+        $layoutPlanner = $this->cssLayoutPlanner->plan($cssTimeLine, $optimizeDelivery, $reduceUnusedCss);
+
+        if ($optimizeDelivery) {
+            foreach ($cssTimeLine as $item) {
+                if ($item->isSensitive) {
+                    $fileInfo = new FileInfo(clone $item->node);
+                    $cacheObj = $this->getCombinedFiles([$fileInfo], $id, 'css', false, $hit);
+                    $this->updateOptimizeCssDelivery($cacheObj, $item->node, $hit, false);
+                    $sensitiveCacheObjByOrds[$item->ordinal] = $cacheObj;
+                }
+            }
+        }
+
         /**
          * @var  int $cssLinksKey
          * @var  FileInfo[] $cssInfosArray
@@ -136,26 +155,27 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
 
             $cssCacheObj = $this->getCombinedFiles($cssInfosArray, $cssCacheId, 'css', $isLastKey, $hit);
             $element = $this->getElementFromCacheId($cssCacheId, $cssInfosArray[0], $cssCacheObj);
+            $combinedByGroup[$cssLinksKey] = $element;
+            $cacheObjByGroup[$cssLinksKey] = $cssCacheObj;
 
             //If Optimize CSS Delivery feature not enabled then we'll need to insert the link to
             //the combined css file in the HTML
-            if ($this->params->get('optimizeCssDelivery_enable', '0')) {
+            if ($optimizeDelivery) {
                 $this->updateOptimizeCssDelivery($cssCacheObj, $element, $hit, $isLastKey);
-                $this->htmlManager->removeCSSLinks($cssLinksKey);
-                $this->handleCriticalCss($cssCacheObj, $element);
-                if (JCH_PRO && $this->params->get('pro_reduce_unused_css', '0')) {
+                $this->htmlManager->preloadStyleSheet($element, 'low');
+                if (JCH_PRO && $reduceUnusedCss) {
                     $cssCacheIds[] = $cssCacheId;
                 }
 
                 if ($isLastKey && $cssCacheObj->getBelowFoldFontsKeyFrame() !== '') {
-                    if (JCH_PRO && $this->params->get('pro_reduce_unused_css', '0')) {
+                    if (JCH_PRO && $reduceUnusedCss) {
                         $cssFileInfos[] = $this->getBelowFoldFontsFileInfo($cssCacheObj);
                     } else {
-                        $this->addBelowFoldFontsKeyFrames($cssCacheObj);
+                        // Build special below-the-fold fonts <link> element,
+                        // but do NOT inject it yet; pass it to applyCssPlan.
+                        $belowFoldFontsEl = $this->getBelowFoldFontsKeyFrame($cssCacheObj);
                     }
                 }
-            } else {
-                $this->htmlManager->replaceLinks($element, 'css', $section, $cssLinksKey);
             }
 
             if (JCH_PRO) {
@@ -165,52 +185,55 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
             $this->handleHttp2Preloads($cssCacheObj);
         }
 
-        if (!empty($cssCacheIds) || !empty($cssFileInfos)) {
+        // Reduced unused CSS bundle: build the appended file and the <link> element.
+        if ($reduceUnusedCss && (!empty($cssCacheIds) || !empty($cssFileInfos))) {
             $appendedCacheObj = $this->getAppendedFiles($cssCacheIds, $cssFileInfos, $appendedCssId, 'css');
-            $this->htmlManager->loadCssDynamically(
-                $this->htmlManager->getNewCssLink(
-                    $this->htmlManager->buildUrl($appendedCssId, 'css', $appendedCacheObj)
-                )
+
+            $reducedBundleEl = $this->htmlManager
+                ->getNewCssLink($this->htmlManager->buildUrl($appendedCssId, 'css', $appendedCacheObj))
+                ->type('jchoptimize-text/css');
+        }
+
+        $this->htmlManager->applyCssPlan(
+            $layoutPlanner,
+            $combinedByGroup,
+            $cacheObjByGroup,
+            $sensitiveCacheObjByOrds,
+            $belowFoldFontsEl,
+            $reducedBundleEl
+        );
+
+        $cssProfiler = $this->getContainer()->get(CriticalCssDomainProfiler::class);
+        $stats = $cssProfiler->snapshot();
+
+        if ($stats) {
+            $this->logger->debug(
+                'Critical CSS profiling: ' . json_encode($stats, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
             );
         }
     }
 
     private function handleJs(array $aJsLinksArray, string $section): void
     {
-        //If combine files successfully completed, proceed to place excluded files at bottom of section
-        $this->htmlManager->addExcludedJsToSection($section);
-
+        $layoutPlan = $this->jsLayoutPlanner->plan($this->filesManager->jsTimeLine);
+        $combinedByGroup = [];
         /**
          * @var int $aJsLinksKey
          * @var FileInfo[] $jsInfosArray
          */
         foreach ($aJsLinksArray as $aJsLinksKey => $jsInfosArray) {
-            //Dynamically load files after the last excluded files if param is enabled
-            if (
-                $this->params->get('pro_reduce_unused_js_enable', '0')
-                && $this->htmlManager->noMoreExcludedJsFiles($aJsLinksKey)
-            ) {
-                /** @var DynamicJs $dynamicJs */
-                $dynamicJs = $this->getContainer()->get(DynamicJs::class);
-                $dynamicJs->addDynamicJsInfoArray($jsInfosArray);
-                $this->htmlManager->removeJsLinks($aJsLinksKey);
-
-                continue;
-            }
-
             if (!empty($jsInfosArray)) {
                 //Optimize and cache javascript files
                 $jsCacheObj = $this->getCombinedFiles($jsInfosArray, $sJsCacheId, 'js');
-                $element = $this->getElementFromCacheId($sJsCacheId, $jsInfosArray[0], $jsCacheObj);
-
-                //Insert link to combined javascript file in HTML
-                $this->htmlManager->replaceLinks($element, 'js', $section, $aJsLinksKey);
+                $combinedByGroup[$aJsLinksKey] = $this->getElementFromCacheId(
+                    $sJsCacheId,
+                    $jsInfosArray[0],
+                    $jsCacheObj
+                );
             }
         }
 
-        //We also now append any deferred javascript files below the
-        //last combined javascript file
-        $this->htmlManager->addDeferredJs($section);
+        $this->htmlManager->applyJsPlan($layoutPlan, $combinedByGroup, $section);
     }
 
     /**
@@ -264,33 +287,12 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
         }
     }
 
-    /**
-     * @throws PregErrorException
-     */
     protected function getHtmlKey(): string
     {
-        if (!$this->params->get('optimizeCssDelivery_enable', '0')) {
-            return '';
-        }
+        /** @var CriticalCssDependencies $deps */
+        $deps = $this->getContainer()->get(CriticalCssDependencies::class);
 
-        $html = $this->processor->getAboveFoldHtml($this->processor->getBodyHtml());
-
-        //Truncate HTML to 400 elements to key cache
-        $htmlTagsArray = [];
-        preg_replace_callback(
-            '#(?>[^<]++|<)*?\K<([a-z0-9]++)[^>]*+>#i',
-            function ($aM) use (&$htmlTagsArray) {
-                $htmlTagsArray[$aM[1]] = $aM[1];
-
-                return $aM[0];
-            },
-            $html,
-        );
-
-        $arrayKey = array_slice($htmlTagsArray, 0, 100, true);
-        ksort($arrayKey, SORT_STRING);
-
-        return md5(serialize($arrayKey));
+        return $deps->getHtmlKey();
     }
 
     public function getAppendedFiles(array $ids, array $fileInfos, ?string &$id, string $type = 'js'): CacheObject
@@ -337,20 +339,34 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
         return $this->imageAttributes->getImageAttributes($images);
     }
 
-    private function getElementFromCacheId(
-        string $cacheId,
-        FileInfo $fileInfo,
-        CacheObject $cacheObj
-    ): Link|Script {
+    private function getElementFromCacheId(string $cacheId, FileInfo $fileInfo, CacheObject $cacheObj): Link|Script
+    {
         $type = $fileInfo->getType();
         $uri = $this->htmlManager->buildUrl($cacheId, $type, $cacheObj);
 
         /** @see HtmlManager::getNewCssLink() */
         /** @see HtmlManager::getNewJsLink() */
-        return $this->htmlManager->addDataFileToElement(
-            $this->htmlManager->{"getNew{$type}Link"}($uri),
-            $fileInfo
-        );
+        $node = $this->htmlManager->{'getNew' . ucfirst($type) . 'Link'}($uri);
+
+        if (!$this->params->get('combine_files', '0')) {
+            $el = $fileInfo->getElement();
+
+            if ($el instanceof HtmlElementInterface) {
+                foreach ($el->getAttributes() as $attr) {
+                    $name = $attr->getName();
+                    $value = $attr->getValue();
+
+                    if (
+                        in_array($name, ['id', 'class', 'nonce'])
+                        || (str_starts_with('data-', $name))
+                    ) {
+                        $node->attribute($name, $value);
+                    }
+                }
+            }
+        }
+
+        return $this->htmlManager->addDataFileToElement($node, $fileInfo);
     }
 
     private function handleHttp2Preloads(CacheObject $cssCacheObj): void
@@ -361,23 +377,6 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
             $as = $http2Preload['as'];
             unset($http2Preload['as']);
             $this->http2Preload->add($src, $as, $http2Preload);
-        }
-    }
-
-    /**
-     * @throws PregErrorException
-     */
-    private function handleCriticalCss(CacheObject $cssCacheObj, Style|Link $element): void
-    {
-        if (Css::optimize($cssCacheObj->getCriticalCss()) != '') {
-            $this->htmlManager->addCriticalCssToHead(
-                $cssCacheObj->getCriticalCss(),
-                $cssCacheObj->getCriticalCssId()
-            );
-        }
-
-        if ($cssCacheObj->getContents() != '') {
-            $this->htmlManager->loadCssAsync($element);
         }
     }
 
@@ -457,10 +456,12 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
             if ($criticalCssAlreadyExisted) {
                 $this->getContainer()->get(CriticalCssDependencies::class)
                     ->addToCriticalCssAggregate($criticalCssObj->getCriticalCss())
+                    ->addToDynamicCriticalCssAggregate($criticalCssObj->getDynamicCriticalCss())
                     ->addToPotentialCriticalCssAtRules($criticalCssObj->getPotentialCriticalCssAtRules());
             }
 
             $cssCacheObj->setCriticalCss($criticalCssObj->getImports() . $criticalCssObj->getCriticalCss());
+            $cssCacheObj->setDynamicCriticalCss($criticalCssObj->getDynamicCriticalCss());
         } else {
             $this->callbackCache->getStorage()->setItem($criticalCssId, [$cssCacheObj]);
             $this->tagStorage($criticalCssId);
@@ -478,21 +479,21 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
     ): CacheObject {
         $cssProcessor->setCssInfos(new FileInfo($element));
         $this->getContainer()->get(CriticalCssDependencies::class)
-            ->addToPotentialCriticalCssAtRules(
-                $cssProcessor->getCacheObj()->getPotentialCriticalCssAtRules()
-            );
+            ->addToPotentialCriticalCssAtRules($cssProcessor->getCacheObj()->getPotentialCriticalCssAtRules());
         $cssProcessor->optimizeCssDelivery();
 
         return $cssProcessor->getCacheObj();
     }
 
-    private function addBelowFoldFontsKeyFrames(CacheObject $cssCacheObj): void
+    private function getBelowFoldFontsKeyFrame(CacheObject $cssCacheObj): Link
     {
         $fileInfo = $this->getBelowFoldFontsFileInfo($cssCacheObj);
         $cacheObj = $this->getCombinedFiles([$fileInfo], $id, 'css');
         $url = $this->htmlManager->buildUrl($id, 'css', $cacheObj);
         $link = $this->htmlManager->getNewCssLink($url);
-        $this->htmlManager->loadCssAsync($link);
+        $this->htmlManager->preloadStyleSheet($link, 'low');
+
+        return $link;
     }
 
     private function getBelowFoldFontsFileInfo(CacheObject $cssCacheObj): FileInfo

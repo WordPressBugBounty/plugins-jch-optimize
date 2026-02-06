@@ -45,6 +45,9 @@ box-shadow: rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset;
     &.disabled {
         border-color: #ccc;
     }
+    &.pro-only {
+        border-color: #999;
+    }
 }
 
 .jch-dash-icons .dashicon-start {
@@ -75,8 +78,8 @@ box-shadow: rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset;
     color: var(--jch-dashicon-icon-color)
 }
 
-.jch-dash-icons .pro-only .dashicon-icon > * {
-    color: var(--secondary);
+.quickicon .pro-only .quickicon-icon > * {
+    color: var(--icon-color-hvr);
 }
 
 .jch-dash-icons .dashicon-title {
@@ -156,14 +159,16 @@ box-shadow: rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset;
 }
 
 .popover .fa-toggle-on {
-    color: var(--success);
+    color: var(--bs-success, var(--success, #198754));
 }
 
 .popover .fa-toggle-off {
-    color: var(--danger);
+    color: var(--bs-danger, var(--danger, #dc3545));
 }
 
-.jch-dash-icons .pro-only a{
-    pointer-events: none;
+.quickicon a.pro-only{
     cursor: default;
+    background: var(--bg-color-hvr);
+    color: #fff;
+    opacity: .25 !important;
 }

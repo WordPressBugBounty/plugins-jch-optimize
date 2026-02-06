@@ -15,6 +15,7 @@ namespace JchOptimize\WordPress\Platform;
 
 defined('_WP_EXEC') or die('Restricted access');
 
+use JchOptimize\Core\Helper;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\SystemUri;
 use JchOptimize\Core\Uri\Utils;
@@ -154,12 +155,10 @@ class Paths implements PathsInterface
         $abs_path = str_replace(DIRECTORY_SEPARATOR, '/', self::rootPath());
         $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
 
-        $sUriPath = (string)$oUri->withPath(
+        return (string)$oUri->withPath(
             $sBaseFolder .
             (str_replace($abs_path . DIRECTORY_SEPARATOR, '', $path))
         );
-
-        return $sUriPath;
     }
 
     /**
@@ -174,16 +173,16 @@ class Paths implements PathsInterface
 
     public function nextGenImagesPath(bool $isRootRelative = false): string
     {
-        $wp_upload_dir = wp_upload_dir(null, true, true);
-        $sRelJchUploadPath = '/jch-optimize/ng';
+        $wp_upload_dir = wp_upload_dir();
+        $dir = '/jch-optimize/ng';
 
         if ($isRootRelative) {
-            $uri = Utils::uriFor($wp_upload_dir['baseurl'] . $sRelJchUploadPath);
+            $uri = Utils::uriFor($wp_upload_dir['baseurl'] . $dir);
 
             return (string)$uri->withScheme('')->withHost('')->withUserInfo('');
         }
 
-        return $wp_upload_dir['basedir'] . $sRelJchUploadPath;
+        return $wp_upload_dir['basedir'] . $dir;
     }
 
     public function iconsUrl(): string
@@ -198,12 +197,18 @@ class Paths implements PathsInterface
 
     public function homeBasePath(): string
     {
-        return site_url('', 'relative');
+        $home = (string) get_option('home');
+        $home = set_url_scheme($home, 'relative');
+
+        return trailingslashit($home);
     }
 
     public function homeBaseFullPath(): string
     {
-        return site_url('/');
+        $home = (string) get_option('home');
+        $home = set_url_scheme($home);
+
+        return trailingslashit($home);
     }
 
     /**
@@ -284,16 +289,16 @@ class Paths implements PathsInterface
 
     public function responsiveImagePath(bool $isRootRelative = false): string
     {
-        $wp_upload_dir = wp_upload_dir(null, true, true);
-        $sRelJchUploadPath = '/jch-optimize/rs';
+        $wp_upload_dir = wp_upload_dir();
+        $dir = '/jch-optimize/rs';
 
         if ($isRootRelative) {
-            $uri = Utils::uriFor($wp_upload_dir['baseurl'] . $sRelJchUploadPath);
+            $uri = Utils::uriFor($wp_upload_dir['baseurl'] . $dir);
 
             return (string)$uri->withScheme('')->withHost('')->withUserInfo('');
         }
 
-        return $wp_upload_dir['basedir'] . $sRelJchUploadPath;
+        return $wp_upload_dir['basedir'] . $dir;
     }
 
     public function liveSite(): string

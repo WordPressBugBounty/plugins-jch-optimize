@@ -26,7 +26,6 @@ use function implode;
 use function preg_match_all;
 use function preg_replace;
 use function preg_replace_callback;
-use function str_contains;
 
 defined('_JCH_EXEC') or die('Restricted access');
 
@@ -49,9 +48,11 @@ class Parser
     //language=RegExp
     public static function htmlBodyElementToken(): string
     {
-        $htmlHead = self::htmlHeadElementToken();
+        $bodyStartTag = self::htmlStartTagToken('body');
+        $htmlString = self::htmlStringToken(['script', 'style', 'template']);
+        $bodyEndTag = self::htmlEndTagToken('body');
 
-        return "{$htmlHead}\K.*+$";
+        return "{$bodyStartTag}{$htmlString}?{$bodyEndTag}";
     }
 
     //language=RegExp
@@ -107,7 +108,7 @@ class Parser
         }
 
         $sProcessedHtml = (string)preg_replace_callback(
-            '#' . $regex . '#si',
+            '#' . $regex . '#siJ',
             [$callbackObject, 'processMatches'],
             $html
         );
@@ -208,7 +209,7 @@ class Parser
     public function findMatches(string $sHtml, int $flags = PREG_PATTERN_ORDER): array
     {
         $regex = $this->getHtmlSearchRegex();
-        preg_match_all('#' . $regex . '#si', $sHtml, $aMatches, $flags);
+        preg_match_all('#' . $regex . '#siJ', $sHtml, $aMatches, $flags);
 
         self::throwExceptionOnPregError();
 
@@ -232,7 +233,7 @@ class Parser
     public function removeMatches(string $html): string
     {
         $regex = $this->getHtmlSearchRegex();
-        $result = preg_replace("#{$regex}#si", "", $html);
+        $result = preg_replace("#{$regex}#siJ", "", $html);
 
         self::throwExceptionOnPregError();
 
@@ -245,30 +246,57 @@ class Parser
         $criterionRegexArray = [];
 
         foreach ($attrCriteria as $criterion) {
-            if (str_contains($criterion, '!=')) {
-                list($name, $value) = explode('!=', $criterion);
-                $criterionRegexArray[] = "{$name}\s*+=\s*+(?!\"{$value}\"|'{$value}'|(?<=[=])(?!['\"]){$value}[\s/> ])";
-            } elseif (str_contains($criterion, '==')) {
-                list($name, $value) = explode('==', $criterion);
-
-                $criterionRegexArray[] = "$name\s*+=\s*+(?:\"{$value}\"|'{$value}'|(?<=[=])(?!['\"]){$value}[\s/> ])";
-            } elseif (str_contains($criterion, '~=')) {
-                list($name, $value) = explode('~=', $criterion);
-
-                $criterionRegexArray[] = "{$name}\s*+=\s*+(?:\"[^\"]*?(?<=[\" ]){$value}[\" ]|"
-                    . "'[^']*?(?<=[' ]){$value}[ ']|(?<==)(?!['\"]){$value}[ />])";
-            } elseif (str_contains($criterion, '*=')) {
-                list($name, $value) = explode('*=', $criterion);
-
-                $criterionRegexArray[] = "{$name}\s*+=\s*+(?:\"[^\"]*?{$value}|'[^']*?{$value}|(?<==)(?!['\"])[^\s]*?{$value})";
-            } else {
-                $criterionRegexArray[] = $criterion;
-            }
+            $criterionRegexArray[] = $this->buildCriterionRegex($criterion);
         }
 
         $criterionRegexString = implode('|', $criterionRegexArray);
 
         return "(?:$criterionRegexString)";
+    }
+
+    private function buildCriterionRegex(string $criterion): string
+    {
+        // Find the operator once
+        if (!preg_match('#(==|!=|~=|\*=)#', $criterion, $m)) {
+            // No operator we care about → return as-is
+            return $criterion;
+        }
+
+        $op = $m[1];
+
+        // Split on the operator (only once)
+        [$name, $value] = explode($op, $criterion, 2);
+
+        return match ($op) {
+            '!=' => $this->buildNotEqualsRegex($name, $value),
+            '==' => $this->buildEqualsRegex($name, $value),
+            '~=' => $this->buildContainsWordRegex($name, $value),
+            '*=' => $this->buildContainsSubstringRegex($name, $value),
+        };
+    }
+
+    private function buildNotEqualsRegex(string $name, string $value): string
+    {
+        return "{$name}\s*+=\s*+(?!\"{$value}\"|'{$value}'|(?<=[=])(?!['\"]){$value}[\s/> ])";
+    }
+
+    private function buildEqualsRegex(string $name, string $value): string
+    {
+        return "{$name}\s*+=\s*+(?:\"{$value}\"|'{$value}'|(?<=[=])(?!['\"]){$value}[\s/> ])";
+    }
+
+    private function buildContainsWordRegex(string $name, string $value): string
+    {
+        return "{$name}\s*+=\s*+(?:\"[^\"]*?(?<=[\" ]){$value}[\" ]"
+            . "|"
+            . "'[^']*?(?<=[' ]){$value}[ ']"
+            . "|"
+            . "(?<==)(?!['\"]){$value}[ />])";
+    }
+
+    private function buildContainsSubstringRegex(string $name, string $value): string
+    {
+        return "{$name}\s*+=\s*+(?:\"[^\"]*?{$value}|'[^']*?{$value}|(?<==)(?!['\"])[^\s]*?{$value})";
     }
 
     private function processCriteriaMatches(): string
@@ -298,16 +326,36 @@ class Parser
             $matches = [];
             foreach ($names as $name) {
                 $matches[] = self::htmlNestedElementToken($name);
-
-                return implode('|', $matches);
             }
+
+            return implode('|', $matches);
         }
 
-        $namesRegex = '(?:' . implode('|', $names) . ')';
+        return self::htmlElementMatchForBuilder(
+            $names,
+            $elementObject->voidElementOrStartTagOnly ?? false
+        );
+    }
 
-        return $elementObject->voidElementOrStartTagOnly ?
-            '(?:' . self::htmlVoidElementToken($namesRegex) . '|' . self::htmlStartTagToken($namesRegex) . ')' :
-            self::htmlElementsToken($names);
+    // in Parser
+    private static function htmlElementMatchForBuilder(array $names, bool $voidOrStartTagOnly): string
+    {
+        $nameRegex = '(?:' . implode('|', $names) . ')';
+        $attrsToken = self::htmlAttributesListToken();
+        $endTagRegex = self::htmlEndTagToken($nameRegex);
+        $contentRegex = self::htmlTextContentToken($nameRegex);
+
+        if ($voidOrStartTagOnly) {
+            // e.g. <link ...>, <meta ...>, <img ...>
+            return "<(?<name>{$nameRegex})\b(?:\s++(?<attributes>{$attrsToken}+))?/?>";
+        }
+
+        // Non-void element: capture inner content
+        $startTag = "<(?<name>{$nameRegex})\b(?:\s++(?<attributes>{$attrsToken}+))?>";
+        $content = "(?<content>{$contentRegex})";
+        $endTag = "(?<endTag>{$endTagRegex})";
+
+        return $startTag . $content . $endTag;
     }
 
     private function processNegContentCriteria(mixed $negContentCriteria): string

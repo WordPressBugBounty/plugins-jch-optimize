@@ -28,7 +28,7 @@ trait Css
     /**
      * Regex token for a CSS url, optionally capturing the value in a capture group
      *
-     * @param   bool  $shouldCaptureValue Whether to capture the value in a capture group
+     * @param bool $shouldCaptureValue Whether to capture the value in a capture group
      *
      * @return string
      * @deprecated Will be removed in 3.0

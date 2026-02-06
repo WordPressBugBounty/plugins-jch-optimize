@@ -22,14 +22,15 @@ use JchOptimize\Core\Css\Components\CssUrl;
 use JchOptimize\Core\Css\CssComponents;
 use JchOptimize\Core\Css\ModifyCssUrlsProcessor;
 use JchOptimize\Core\Css\ModifyCssUrlsTrait;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
-use JchOptimize\Core\FeatureHelpers\Webp;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Preloads\Http2Preload;
 use JchOptimize\Core\Registry;
+use JchOptimize\Core\Settings;
 use JchOptimize\Core\SystemUri;
 use JchOptimize\Core\Uri\Uri;
 use JchOptimize\Core\Uri\UriComparator;
@@ -102,30 +103,29 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
     public function processUri(UriInterface $originalUri): UriInterface
     {
         if (
-            $originalUri->getScheme() !== 'data'
-            && $originalUri->getPath() != ''
-            && $originalUri->getPath() != '/'
+            $originalUri->getScheme() === 'data'
+            || trim($originalUri->getPath(), " \n\r\t\v\x00/") === ''
         ) {
-            $imageUri = $this->resolveImageToFileUrl($originalUri);
-            $paths = $this->getContainer()->get(PathsInterface::class);
-
-            if (UriComparator::existsLocally($imageUri, $this->cdn, $paths)) {
-                $this->cacheImageForAdminUsers($imageUri);
-                $imageUri = $this->cdn->loadCdnResource($imageUri);
-            } elseif ($this->params->get('pro_preconnect_domains_enable', '0')) {
-                $this->prefetchExternalDomains($imageUri);
-            }
-
-            if ($this->context == 'css-rule') {
-                $imageUri = $this->applyFeatureHelpers($imageUri);
-            }
-
-            $this->addHttpPreloadsToCacheObject($imageUri);
-
-            return $imageUri;
+            return $originalUri;
         }
 
-        return $originalUri;
+        $imageUri = $this->resolveImageToFileUrl($originalUri);
+        $paths = $this->getContainer()->get(PathsInterface::class);
+
+        if (UriComparator::existsLocally($imageUri, $this->cdn, $paths)) {
+            $this->cacheImageForAdminUsers($imageUri);
+            $imageUri = $this->cdn->loadCdnResource($imageUri);
+        } elseif ($this->params->get('pro_preconnect_domains_enable', '0')) {
+            $this->prefetchExternalDomains($imageUri);
+        }
+
+        if ($this->context == 'css-rule') {
+            $imageUri = $this->applyFeatureHelpers($imageUri);
+        }
+
+        $this->addHttpPreloadsToCacheObject($imageUri);
+
+        return $imageUri;
     }
 
     private function resolveImageToFileUrl(UriInterface $originalUri): UriInterface
@@ -133,6 +133,7 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
         //Get the url of the file that contained the CSS
         $cssFileUri = $this->getCssInfo()->hasUri() ? $this->getCssInfo()->getUri() : new Uri();
         $cssFileUri = UriResolver::resolve(SystemUri::currentUri(), $cssFileUri);
+
         return UriResolver::resolve($cssFileUri, $originalUri);
     }
 
@@ -164,26 +165,26 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
         if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
             $responsiveImages = $this->getContainer()->get(ResponsiveImages::class)
                 /** @see ResponsiveImages::getResponsiveImages() */
-               ->getResponsiveImages($imageUri);
+                                     ->getResponsiveImages($imageUri);
         }
 
-        if (JCH_PRO && $this->params->get('pro_load_webp_images', '0')) {
-            /** @see Webp::getWebpImages() */
-            $webpImageUri = $this->getContainer()->get(Webp::class)->getWebpImages($imageUri);
+        if (JCH_PRO && $this->params->get('load_avif_webp_images', '0')) {
+            /** @see AvifWebp::getAvifWebpImages() */
+            $avifWebpImageUri = $this->getContainer()->get(AvifWebp::class)->getAvifWebpImages($imageUri);
 
             //If Webp were generated, add them to ResponsiveImages, so we can identify them later
-            if ($webpImageUri !== $imageUri && !empty($responsiveImages)) {
+            if ($avifWebpImageUri !== $imageUri && !empty($responsiveImages)) {
                 $this->getContainer()->get(ResponsiveImages::class)
-                   ->responsiveImages[(string)$webpImageUri] = $responsiveImages;
+                    ->responsiveImages[(string)$avifWebpImageUri] = $responsiveImages;
             }
 
-            $imageUri = $webpImageUri;
+            $imageUri = $avifWebpImageUri;
         }
 
         if (JCH_PRO && $this->handlingCriticalCss && $this->params->get('pro_lcp_images_enable', '0')) {
             $this->getContainer()->get(LCPImages::class)
                 /** @see LCPImages::prepareBackgroundLcpImages() */
-                ->prepareBackgroundLcpImages($imageUri, $this->cacheObject);
+                 ->prepareBackgroundLcpImages($imageUri, $this->cacheObject);
         }
 
         return $imageUri;
@@ -192,18 +193,18 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
     private function lazyLoadCssRule(CssRule $cssRule, &$lazyLoaded = false): void
     {
         if (
-            JCH_PRO && $this->params->get('lazyload_enable', '0')
-            && $this->params->get('pro_lazyload_bgimages', '0')
+            JCH_PRO && $this->params->isEnabled(Settings::LAZYLOAD_ENABLE)
+            && $this->params->isEnabled(Settings::LAZYLOAD_BGIMAGES)
             && !$this->handlingCriticalCss
             && !str_contains($cssRule->render(), '.jch-lazyload')
         ) {
             $this->getContainer()->get(LazyLoadExtended::class)
                 /** @see LazyLoadExtended::handleCssBgImages() */
-                ->handleCssBgImages(
-                    $this,
-                    $cssRule,
-                    $lazyLoaded
-                );
+                 ->handleCssBgImages(
+                     $this,
+                     $cssRule,
+                     $lazyLoaded
+                 );
         }
     }
 
@@ -229,13 +230,13 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
             $cacheItems = [
                 [
                     'src' => $imageUri,
-                    'as' => $fileType
+                    'as'  => $fileType
                 ]
             ];
             if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0') && $fileType == 'image') {
                 $cacheItems = $this->getContainer()->get(ResponsiveImages::class)
                     /** @see ResponsiveImages::mergeResponsiveImageCacheItems() */
-                        ->mergeResponsiveImageCacheItems($cacheItems);
+                                   ->mergeResponsiveImageCacheItems($cacheItems);
             }
             foreach ($cacheItems as $cacheItem) {
                 $this->cacheObject->addHttp2Preloads($cacheItem);
@@ -260,7 +261,7 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
         if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
             $this->getContainer()->get(ResponsiveImages::class)
                 /** @see ResponsiveImages::makeCssRuleResponsive() */
-                ->makeCssRuleResponsive($cssRule);
+                 ->makeCssRuleResponsive($cssRule);
         }
     }
 }

@@ -16,10 +16,12 @@ namespace JchOptimize\WordPress\Controller;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Admin\Icons;
 use JchOptimize\Core\Mvc\Controller;
+use JchOptimize\Core\PageCache\CaptureCache;
+use JchOptimize\WordPress\Contracts\WillEnqueueAssets;
 use JchOptimize\WordPress\Model\NotificationIcons;
 use JchOptimize\WordPress\View\MainHtml;
 
-class Main extends Controller
+class Main extends Controller implements WillEnqueueAssets
 {
     public function __construct(
         private MainHtml $view,
@@ -32,16 +34,23 @@ class Main extends Controller
 
     public function execute(): bool
     {
-        $this->view->setData([
-                'tab'      => 'main',
-                'icons'    => $this->icons,
-                'notifications' => $this->notificationIcons->getNotificationIcons(),
-        ]);
+        if (JCH_PRO) {
+            $this->getContainer()->get(CaptureCache::class)->updateHtaccess();
+        }
 
-        $this->view->loadResources();
+        $this->view->setData([
+            'tab'           => 'main',
+            'icons'         => $this->icons,
+            'notifications' => $this->notificationIcons->getNotificationIcons(),
+        ]);
 
         echo $this->view->render();
 
         return true;
+    }
+
+    public function enqueueAssets(): void
+    {
+        $this->view->loadResources();
     }
 }

@@ -13,10 +13,12 @@
 
 namespace JchOptimize\WordPress\Controller;
 
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Laminas\ArrayPaginator;
 use JchOptimize\Core\Mvc\Controller;
 use JchOptimize\Core\Registry;
+use JchOptimize\WordPress\Contracts\WillEnqueueAssets;
 use JchOptimize\WordPress\Log\WordpressNoticeLogger;
 use JchOptimize\WordPress\Model\PageCache as PageCacheModel;
 use JchOptimize\WordPress\Model\ReCache;
@@ -27,16 +29,27 @@ use function __;
 use function check_admin_referer;
 use function wp_redirect;
 
-class PageCache extends Controller
+class PageCache extends Controller implements WillEnqueueAssets
 {
+    private ?ReCache $reCache = null;
+
     public function __construct(
         private Registry $params,
         private PageCacheHtml $view,
         private PageCacheModel $model,
+        Container $container,
         ?Input $input = null
     ) {
         parent::__construct($input);
+
+        $this->setContainer($container);
+
+        if (JCH_PRO) {
+            $this->reCache = $this->getContainer()->get(ReCache::class);
+        }
     }
+
+    private string $redirect = 'options-general.php?page=jch_optimize&tab=pagecache';
 
     /**
      * @inheritDoc
@@ -65,9 +78,11 @@ class PageCache extends Controller
         }
 
         if (JCH_PRO && $input->get('action') == 'recache') {
-            /** @var ReCache $reCacheModel */
-            $reCacheModel = $this->getContainer()->get(ReCache::class);
-            $reCacheModel->reCache('options-general.php?page=jch_optimize&tab=pagecache');
+            $this->reCache->runOnce();
+            $logger->success(__('ReCache successfully started.'));
+
+            wp_redirect($this->redirect);
+            exit();
         }
 
         if (isset($success)) {
@@ -77,18 +92,21 @@ class PageCache extends Controller
                 $logger->error(__('Error deleting page cache.'));
             }
 
-            wp_redirect('options-general.php?page=jch_optimize&tab=pagecache');
+            wp_redirect($this->redirect);
             exit();
         }
 
         if (!$this->params->get('cache_enable', '0')) {
             $logger->warning(
                 __(
-                    'Page Cache is not enabled. Please enable it on the Dashboard or Configurations tab. You may also want to disable other page cache plugins.'
+                    'Page Cache is not enabled. Please enable it on the Dashboard or Configurations tab.'
+                    . ' You may also want to disable other page cache plugins.'
                 )
             );
             Admin::publishAdminNotices();
         }
+
+        $this->model->updateHtaccess();
 
         $limit = (int)$this->model->getState()->get('list_limit', '20');
         $page = (int)$input->get('list_page', '1');
@@ -101,16 +119,35 @@ class PageCache extends Controller
             'items'       => $paginator,
             'tab'         => 'pagecache',
             'paginator'   => $paginator->getPages(),
-            'pageLink'    => 'options-general.php?page=jch_optimize&tab=pagecache',
+            'pageLink'    => $this->redirect,
+            'action'      => $this->redirect,
             'adapter'     => $this->model->getAdapterName(),
-            'httpRequest' => $this->model->isCaptureCacheEnabled()
+            'httpRequest' => $this->model->isCaptureCacheEnabled(),
         ]);
 
-        $this->view->loadResources();
         $this->view->renderStatefulElements($this->model->getState());
 
         echo $this->view->render();
 
         return true;
+    }
+
+    public function setRedirect(string $redirect): PageCache
+    {
+        $this->redirect = $redirect;
+
+        return $this;
+    }
+
+    public function setLayout(string $layout): PageCache
+    {
+        $this->view->getRenderer()->getRenderer()->setLayout($layout);
+
+        return $this;
+    }
+
+    public function enqueueAssets(): void
+    {
+        $this->view->loadResources();
     }
 }

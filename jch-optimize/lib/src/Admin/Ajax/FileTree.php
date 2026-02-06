@@ -51,7 +51,7 @@ class FileTree extends Ajax
 
         // Strict allow-list for relative path tokens. Adjust if you truly need more.
         // Disallow control chars, backslashes, wildcard chars, and fragments.
-        if ($dirRaw !== '' && !preg_match('#^[A-Za-z0-9/_\.\-]*$#', $dirRaw)) {
+        if ($dirRaw !== '' && !preg_match('#^[A-Za-z0-9/_\.\- ]*$#', $dirRaw)) {
             return ''; // or JSON error in your framework; path rejected
         }
         if (str_contains($dirRaw, "\0") || str_contains($dirRaw, '\\') || str_contains($dirRaw, '://')) {

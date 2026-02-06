@@ -3,18 +3,18 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2025 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2025 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
 namespace JchOptimize\Core;
 
-use _JchOptimizeVendor\V91\Joomla\DI\Container;
-use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\Container as VendoredContainer;
+use _JchOptimizeVendor\V91\Psr\Container\ContainerInterface as VendoredContainerInterface;
 use JchOptimize\Core\Html\HtmlElementBuilder;
 use JchOptimize\Core\Service\Provider\Admin;
 use JchOptimize\Core\Service\Provider\Callbacks;
@@ -23,10 +23,12 @@ use JchOptimize\Core\Service\Provider\FeatureHelpers;
 use JchOptimize\Core\Service\Provider\LaminasCache;
 use JchOptimize\Core\Service\Provider\SharedEvents;
 use JchOptimize\Core\Service\Provider\Spatie;
+use Joomla\DI\Container as JoomlaContainer;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 
 abstract class AbstractContainerFactory
 {
-    private static ?Container $container = null;
+    private static ?VendoredContainer $container = null;
 
     final public function __construct()
     {
@@ -35,11 +37,12 @@ abstract class AbstractContainerFactory
     /**
      * Will return a new instance of the container every time
      */
-    public static function create(ContainerInterface|\Psr\Container\ContainerInterface|null $parent = null): Container
-    {
+    public static function create(
+        VendoredContainerInterface|PsrContainerInterface|null $parent = null
+    ): VendoredContainer {
         $ContainerFactory = new static();
 
-        $container = new Container($parent);
+        $container = new VendoredContainer($parent);
 
         $ContainerFactory->registerCoreServiceProviders($container);
         $ContainerFactory->registerPlatformServiceProviders($container);
@@ -51,26 +54,27 @@ abstract class AbstractContainerFactory
     }
 
     /**
-     * @param Container $container
+     * @param   VendoredContainer  $container
      *
      * @return void
      */
-    public function registerCoreServiceProviders(Container $container): void
+    public function registerCoreServiceProviders(VendoredContainer $container): void
     {
         $container->registerServiceProvider(new SharedEvents())
-            ->registerServiceProvider(new Core())
-            ->registerServiceProvider(new Callbacks())
-            ->registerServiceProvider(new LaminasCache())
-            ->registerServiceProvider(new Admin());
+                  ->registerServiceProvider(new Core())
+                  ->registerServiceProvider(new Callbacks())
+                  ->registerServiceProvider(new LaminasCache())
+                  ->registerServiceProvider(new Admin());
 
         if (JCH_PRO) {
             $container->registerServiceProvider(new FeatureHelpers())
-                ->registerServiceProvider(new Spatie());
+                      ->registerServiceProvider(new Spatie());
         }
     }
 
-    public static function resetContainer(Container|\Joomla\DI\Container $container): Container|\Joomla\DI\Container
-    {
+    public static function resetContainer(
+        VendoredContainer|JoomlaContainer $container
+    ): VendoredContainer|JoomlaContainer {
         foreach ((clone $container)->getKeys() as $key) {
             if ($resource = $container->getResource($key)) {
                 $resource->reset();
@@ -81,8 +85,8 @@ abstract class AbstractContainerFactory
     }
 
     public static function getInstance(
-        ContainerInterface|\Psr\Container\ContainerInterface|null $parent = null
-    ): Container {
+        VendoredContainerInterface|PsrContainerInterface|null $parent = null
+    ): VendoredContainer {
         if (null === self::$container) {
             self::$container = self::create($parent);
         }
@@ -93,9 +97,9 @@ abstract class AbstractContainerFactory
     /**
      * To be implemented by JchOptimize/Container to attach service providers specific to the particular platform
      *
-     * @param Container $container
+     * @param   VendoredContainer  $container
      *
      * @return void
      */
-    abstract protected function registerPlatformServiceProviders(Container $container): void;
+    abstract protected function registerPlatformServiceProviders(VendoredContainer $container): void;
 }

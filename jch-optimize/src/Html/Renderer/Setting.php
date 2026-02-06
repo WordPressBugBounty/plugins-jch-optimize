@@ -48,9 +48,33 @@ abstract class Setting
         Helper::_('switch', __FUNCTION__, '1');
     }
 
+    /*
+     Elements Above Fold
+     */
+
+    public static function elements_above_fold_home(): void
+    {
+        Helper::_('text', __FUNCTION__, '300');
+    }
+
     public static function elements_above_fold(): void
     {
         Helper::_('text', __FUNCTION__, '300');
+    }
+
+    public static function elements_above_fold_per_page(): void
+    {
+        $subfields = [
+            [
+                'name'         => 'elements',
+                'type'         => 'text',
+                /*'header'       => 'Number of elements',*/
+                'defaultValue' => '300',
+                'class'        => 'small-text bg-white'
+            ]
+        ];
+
+        Helper::_('multiselectjs', __FUNCTION__, [], 'url', 'file', 'url', $subfields);
     }
 
     public static function elements_above_fold_marker(): void
@@ -61,7 +85,6 @@ abstract class Setting
     /*
     Exclude Menu Urls Section
     */
-
     public static function menuexcludedurl(): void
     {
         Helper::_('multiselect', __FUNCTION__, [], 'url', 'file');
@@ -70,7 +93,6 @@ abstract class Setting
     /*
     Cache Storage Section
     */
-
     public static function pro_cache_storage_adapter(): void
     {
         $options = [
@@ -147,6 +169,11 @@ abstract class Setting
      Recache Section
      */
 
+    public static function recache_base_url(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '');
+    }
+
     public static function recache_crawl_limit(): void
     {
         Helper::_('text.pro', __FUNCTION__, '100');
@@ -160,6 +187,24 @@ abstract class Setting
     public static function recache_max_depth(): void
     {
         Helper::_('text.pro', __FUNCTION__, '3');
+    }
+
+    public static function recache_delete_cache(): void
+    {
+        Helper::_('switch.pro', __FUNCTION__, '1');
+    }
+
+    public static function recache_frequency(): void
+    {
+        $options = [
+            '0'          => __('Disabled', 'jch-optimize'),
+            '1'          => __('On save only', 'jch-optimize'),
+            'hourly'     => __('Hourly', 'jch-optimize'),
+            'twicedaily' => __('Twice Daily', 'jch-optimize'),
+            'daily'      => __('Daily', 'jch-optimize'),
+        ];
+
+        Helper::_('select.pro', __FUNCTION__, '1', $options);
     }
 
     ## Combine Files tab
@@ -328,7 +373,7 @@ abstract class Setting
 
     public static function pro_dynamic_selectors(): void
     {
-        Helper::_('multiselect.pro', __FUNCTION__, [], 'selectors', 'style');
+        Helper::_('multiselect', __FUNCTION__, [], 'selectors', 'style');
     }
 
     public static function critical_css_configure_helper(): void
@@ -372,17 +417,32 @@ abstract class Setting
 
     public static function excludeJs_peo(): void
     {
-        Helper::_('multiselectjs', __FUNCTION__, [], 'js', 'file', 'url');
+        $subfields = [
+            ['name' => 'ieo', 'type' => 'checkbox', 'header' => 'Ignore execution order',],
+            ['name' => 'dontmove', 'type' => 'checkbox', 'header' => 'Don\'t move to bottom',]
+        ];
+
+        Helper::_('multiselectjs', __FUNCTION__, [], 'js', 'file', 'url', $subfields);
     }
 
     public static function excludeJsComponents_peo(): void
     {
-        Helper::_('multiselectjs', __FUNCTION__, [], 'js', 'extension', 'url');
+        $subfields = [
+            ['name' => 'ieo', 'type' => 'checkbox', 'header' => 'Ignore execution order',],
+            ['name' => 'dontmove', 'type' => 'checkbox', 'header' => 'Don\'t move to bottom',]
+        ];
+
+        Helper::_('multiselectjs', __FUNCTION__, [], 'js', 'extension', 'url', $subfields);
     }
 
     public static function excludeScripts_peo(): void
     {
-        Helper::_('multiselectjs', __FUNCTION__, [], 'js', 'script', 'script');
+        $subfields = [
+            ['name' => 'ieo', 'type' => 'checkbox', 'header' => 'Ignore execution order',],
+            ['name' => 'dontmove', 'type' => 'checkbox', 'header' => 'Don\'t move to bottom',]
+        ];
+
+        Helper::_('multiselectjs', __FUNCTION__, [], 'js', 'script', 'script', $subfields);
     }
 
     public static function excludeAllScripts(): void
@@ -429,7 +489,7 @@ abstract class Setting
 
     public static function critical_js_configure_helper(): void
     {
-        Helper::_('criticaljsmodalbutton', __FUNCTION__, '');
+        Helper::_('criticaljsmodalbutton.pro', __FUNCTION__, '');
     }
 
     ## Page Cache Tab
@@ -486,6 +546,25 @@ abstract class Setting
         Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
+    /*
+     Cloudflare Cache Purge Section
+     */
+
+    public static function cf_enable(): void
+    {
+        Helper::_('switch.pro', __FUNCTION__, '0');
+    }
+
+    public static function cf_api_token(): void
+    {
+        Helper::_('verifycftoken.pro', __FUNCTION__, '');
+    }
+
+    public static function cf_zone_id(): void
+    {
+        Helper::_('text.pro', __FUNCTION__, '');
+    }
+
     ## Media Tab
 
     /*
@@ -538,16 +617,6 @@ abstract class Setting
     public static function lazyload_enable(): void
     {
         Helper::_('switch', __FUNCTION__, '0');
-    }
-
-    public static function lazyload_autosize(): void
-    {
-        Helper::_('switch', __FUNCTION__, '1');
-    }
-
-    public static function pro_lazyload_effects(): void
-    {
-        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     public static function pro_lazyload_iframe(): void
@@ -625,7 +694,33 @@ abstract class Setting
 
     public static function pro_http2_include(): void
     {
-        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'http2', 'file', 'url', 'anonymous', 'use-credentials', 'Crossorigin: \'anonymous\'', '\'use-credentials\'', '', '', 'only-one');
+        $subfields = [
+            [
+                'name'    => 'crossorigin',
+                'type'    => 'select',
+                'header'  => 'Crossorigin',
+                'options' => [
+                    ['value' => '', 'text' => '- None -'],
+                    ['value' => 'anonymous', 'text' => 'anonymous'],
+                    ['value' => 'use-credentials', 'text' => 'use-credentials'],
+                ],
+                'legacy'  => ['anonymous', 'use-credentials'],
+                'class' => 'bg-white'
+            ]
+            /*      ['name' => 'anonymous', 'type' => 'checkbox', 'header' => 'Crossorigin: \'anonymous\''],
+                  ['name' => 'use-credentials', 'type' => 'checkbox', 'header' => '\'use-credentials\''] */
+        ];
+
+        Helper::_(
+            'multiselectjs.pro',
+            __FUNCTION__,
+            [],
+            'http2',
+            'file',
+            'url',
+            $subfields,
+            'only-one'
+        );
     }
 
     public static function pro_http2_exclude(): void
@@ -643,6 +738,21 @@ abstract class Setting
     }
 
     public static function pro_lcp_images(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'file');
+    }
+
+    public static function pro_lcp_identifiers(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'file');
+    }
+
+    public static function lcp_images_mobile(): void
+    {
+        Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'file');
+    }
+
+    public static function lcp_images_desktop(): void
     {
         Helper::_('multiselect.pro', __FUNCTION__, [], 'lazyload', 'file');
     }
@@ -677,7 +787,33 @@ abstract class Setting
 
     public static function pro_preconnect_domains(): void
     {
-        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'origin', 'origin', 'url', 'anonymous', 'use-credentials', 'Crossorigin: \'anonymous\'', '\'use-credentials\'', '', '', 'only-one');
+        $subfields = [
+            [
+                'name'    => 'crossorigin',
+                'type'    => 'select',
+                'header'  => 'Crossorigin',
+                'options' => [
+                    ['value' => '', 'text' => '- None -'],
+                    ['value' => 'anonymous', 'text' => 'anonymous'],
+                    ['value' => 'use-credentials', 'text' => 'use-credentials'],
+                ],
+                'legacy'  => ['anonymous', 'use-credentials'],
+                'class' => 'bg-white'
+            ],
+            /*   ['name' => 'anonymous', 'type' => 'checkbox', 'header' => 'Crossorigin: \'anonymous\''],
+               ['name' => 'use-credentials', 'type' => 'checkbox', 'header' => '\'use-credentials\'']*/
+        ];
+
+        Helper::_(
+            'multiselectjs.pro',
+            __FUNCTION__,
+            [],
+            'origin',
+            'origin',
+            'url',
+            $subfields,
+            'only-one'
+        );
     }
 
     public static function dns_prefetch_domains(): void
@@ -781,6 +917,16 @@ abstract class Setting
         Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
+    public static function gen_avif_images(): void
+    {
+        Helper::_('switch.pro', __FUNCTION__, '1');
+    }
+
+    public static function load_avif_webp_images(): void
+    {
+        Helper::_('switch.pro', __FUNCTION__, '0');
+    }
+
     public static function pro_web_old_browsers(): void
     {
         Helper::_('switch.pro', __FUNCTION__, '0');
@@ -788,7 +934,12 @@ abstract class Setting
 
     public static function pro_load_webp_images(): void
     {
-        Helper::_('switch.pro', __FUNCTION__, '0');
+        Helper::_('switch.pro', __FUNCTION__, '1');
+    }
+
+    public static function load_avif_images(): void
+    {
+        Helper::_('switch.pro', __FUNCTION__, '1');
     }
 
     /*
@@ -807,23 +958,39 @@ abstract class Setting
     public static function cropgravity(): void
     {
         if (JCH_PRO) {
-            $breakpoint = ResponsiveImages::$breakpoints[0];
-            $option1Obj = "{
-                        type: \"select\", 
-                        name: \"gravity\", 
-                        htmlOptions: [
-                            {value: \"West\", selected: \"\", text: \"Left\"},
-                            {value: \"Center\", selected: \"selected\", text: \"Center\"},
-                            {value: \"East\", selected: \"\", text: \"Right\"}
-                        ]
-                    }";
-            $option2Obj = "{type: \"text\", name: \"cropwidth\", defaultValue: \"$breakpoint\"}";
+            $subfields = [
+                [
+                    'name'    => 'gravity',
+                    'type'    => 'select',
+                    'header'  => 'Position',
+                    'options' => [
+                        ['value' => 'West', 'text' => 'Left', 'selected' => false],
+                        ['value' => 'Center', 'text' => 'Center', 'selected' => true],
+                        ['value' => 'East', 'text' => 'Right', 'selected' => false],
+                    ],
+                    'class' => 'bg-white'
+                ],
+                [
+                    'name'         => 'cropwidth',
+                    'type'         => 'text',
+                    'header'       => 'Width (px)',
+                    'defaultValue' => ResponsiveImages::$breakpoints[0],
+                    'class'        => 'small-text bg-white'
+                ]
+            ];
         } else {
-            $option1Obj = "{}";
-            $option2Obj = "{}";
+            $subfields = [];
         }
 
-        Helper::_('multiselectjs.pro', __FUNCTION__, [], 'lazyload', 'file', 'url', 'gravity', 'cropwidth', 'Position', 'Width (px)', $option1Obj, $option2Obj, '', '', 'select', 'text');
+        Helper::_(
+            'multiselectjs.pro',
+            __FUNCTION__,
+            [],
+            'lazyload',
+            'file',
+            'url',
+            $subfields
+        );
     }
 
     /*
@@ -844,7 +1011,7 @@ abstract class Setting
      */
     public static function pro_api_concurrency(): void
     {
-        Helper::_('text.pro', __FUNCTION__, '5');
+        Helper::_('text.pro', __FUNCTION__, '2');
     }
 
     public static function pro_api_num_files(): void
@@ -868,7 +1035,7 @@ abstract class Setting
 
     public static function pro_api_resize_mode(): void
     {
-        Helper::_('switch.pro', __FUNCTION__, '1');
+        Helper::_('switch.pro', __FUNCTION__, '0');
     }
 
     /*
@@ -894,9 +1061,9 @@ abstract class Setting
     public static function pro_html_sections(): void
     {
         $options = [
-            'header' => 'header',
+            'header'  => 'header',
             'nav'     => 'nav',
-            'main' => 'main',
+            'main'    => 'main',
             'article' => 'article',
             'section' => 'section',
             'aside'   => 'aside',
@@ -920,7 +1087,6 @@ abstract class Setting
     {
         Helper::_('multiselect.pro', __FUNCTION__, [], 'reducedom', 'class');
     }
-
 
     /*
     Mode Switcher Menu Section

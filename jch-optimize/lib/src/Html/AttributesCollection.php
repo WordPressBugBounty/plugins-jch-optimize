@@ -74,6 +74,7 @@ class AttributesCollection extends SplObjectStorage
     public function setAttribute(string $name, mixed $value, ?string $delimiter = null): void
     {
         $this->rewind();
+        $name = strtolower($name);
 
         while ($this->valid()) {
             $attribute = $this->current();
@@ -93,12 +94,13 @@ class AttributesCollection extends SplObjectStorage
 
         $attribute = new Attribute($name, $value, $delimiter);
 
-        $this->attach($attribute);
+        $this->offsetSet($attribute);
     }
 
     public function getValue(string $name): UriInterface|bool|array|string
     {
         $this->rewind();
+        $name = strtolower($name);
 
         while ($this->valid()) {
             $attribute = $this->current();
@@ -116,7 +118,8 @@ class AttributesCollection extends SplObjectStorage
     }
 
     /**
-     * @param array<string, string|array|bool|UriInterface> $attributes
+     * @param   array<string, string|array|bool|UriInterface>  $attributes
+     *
      * @return void
      */
     public function setAttributes(array $attributes): void
@@ -129,12 +132,13 @@ class AttributesCollection extends SplObjectStorage
     public function removeAttribute(string $name): void
     {
         $this->rewind();
+        $name = strtolower($name);
 
         while ($this->valid()) {
             $attribute = $this->current();
 
             if ($attribute->getName() == $name) {
-                $this->detach($attribute);
+                $this->offsetUnset($attribute);
 
                 return;
             }
@@ -152,7 +156,7 @@ class AttributesCollection extends SplObjectStorage
         return Utils::uriFor($value);
     }
 
-    private function prepareClassValue(mixed $value, UriInterface|bool|array|string $prevValue = null): array
+    private function prepareClassValue(mixed $value, UriInterface|bool|array|string|null $prevValue = null): array
     {
         if (!is_string($value) && !is_array($value)) {
             $value = [];
@@ -185,14 +189,18 @@ class AttributesCollection extends SplObjectStorage
 
     public function isBoolean(string $name): bool
     {
+        $name = strtolower($name);
+
         return in_array(preg_replace('#^data-#', '', $name), $this->booleanAttributes);
     }
 
     private function prepareValue(
         string $name,
         mixed $value,
-        UriInterface|bool|array|string $prevValue = null
+        UriInterface|bool|array|string|null $prevValue = null
     ): UriInterface|bool|array|string {
+        $name = strtolower($name);
+
         if (array_key_exists($name, $this->enumeratedEmptyStringValue) && empty($value)) {
             $value = $this->enumeratedEmptyStringValue[$name];
         }
@@ -240,7 +248,7 @@ class AttributesCollection extends SplObjectStorage
 
         if ($this->isXhtml) {
             if ($value === true) {
-                return (string) preg_replace('#^data-#', '', $attribute->getName());
+                return (string)preg_replace('#^data-#', '', $attribute->getName());
             }
         }
 
@@ -248,7 +256,7 @@ class AttributesCollection extends SplObjectStorage
             return implode(' ', $value);
         }
 
-        return (string) $value;
+        return (string)$value;
     }
 
     private function renderDelimiter(Attribute $attribute, string $value): string
@@ -265,5 +273,10 @@ class AttributesCollection extends SplObjectStorage
     public function getHash($object): string
     {
         return md5($object->getName());
+    }
+
+    public function current(): Attribute
+    {
+        return parent::current();
     }
 }

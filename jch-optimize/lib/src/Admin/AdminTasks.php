@@ -24,11 +24,13 @@ use _JchOptimizeVendor\V91\Psr\Log\NullLogger;
 use JchOptimize\Core\Admin\AdminHelper as AdminHelper;
 use JchOptimize\Core\Admin\Ajax\OptimizeImage;
 use JchOptimize\Core\Exception;
-use JchOptimize\Core\FeatureHelpers\Webp;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\Htaccess;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\PluginInterface;
 use JchOptimize\Core\Registry;
+
+use Throwable;
 
 use function clearstatcache;
 use function defined;
@@ -84,6 +86,7 @@ class AdminTasks implements LoggerAwareInterface, ContainerAwareInterface
 	ExpiresByType image/jpg "access plus 1 year"
 	ExpiresByType image/jpeg "access plus 1 year"
 	ExpiresByType image/webp "access plus 1 year"
+	ExpiresByType image/avif "access plus 1 year"
 	ExpiresByType audio/ogg "access plus 1 year"
 	ExpiresByType video/ogg "access plus 1 year"
 	ExpiresByType video/mp4 "access plus 1 year"
@@ -187,6 +190,8 @@ APACHECONFIG;
             return null;
         } catch (Exception\FileNotFoundException $e) {
             return 'FILEDOESNTEXIST';
+        } catch (Throwable) {
+            return 'CODEUPDATEDFAIL';
         }
     }
 
@@ -202,7 +207,7 @@ APACHECONFIG;
             $this->logger = new NullLogger();
         }
 
-        $backupPath = $this->getBackupImagesParentDir() . OptimizeImage::$backup_folder_name;
+        $backupPath = $this->getBackupImagesParentDir() . OptimizeImage::BACKUP_FOLDER_NAME;
 
         if (!is_dir($backupPath)) {
             return 'BACKUPPATHDOESNTEXIST';
@@ -210,7 +215,7 @@ APACHECONFIG;
 
         $aFiles = Folder::files($backupPath, '.', false, true, []);
         $failure = false;
-        $webp = $this->getContainer()->get(Webp::class);
+        $avifWebp = $this->getContainer()->get(AvifWebp::class);
 
         foreach ($aFiles as $backupContractedFile) {
             $success = false;
@@ -226,12 +231,12 @@ APACHECONFIG;
                     //Attempt to restore backup images
                     if ($this->adminHelper->copyImage($backupContractedFile, $originalFilePath)) {
                         try {
-                            if (file_exists($webp->getWebpPath($originalFilePath))) {
-                                File::delete($webp->getWebpPath($originalFilePath));
+                            if (file_exists($avifWebp->getWebpPath($originalFilePath))) {
+                                File::delete($avifWebp->getWebpPath($originalFilePath));
                             }
 
-                            if (file_exists($webp->getWebpPathLegacy($originalFilePath))) {
-                                File::delete($webp->getWebpPathLegacy($originalFilePath));
+                            if (file_exists($avifWebp->getAvifPath($originalFilePath))) {
+                                File::delete($avifWebp->getAvifPath($originalFilePath));
                             }
 
                             if (file_exists($backupContractedFile)) {
@@ -243,7 +248,7 @@ APACHECONFIG;
                             break;
                         } catch (FilesystemException $e) {
                             $this->logger->debug(
-                                'Error deleting ' . $webp->getWebpPath(
+                                'Error deleting ' . $avifWebp->getWebpPath(
                                     $originalFilePath
                                 ) . ' with message: ' . $e->getMessage()
                             );
@@ -274,7 +279,7 @@ APACHECONFIG;
 
     public function deleteBackupImages(): bool|string
     {
-        $backupPath = $this->getBackupImagesParentDir() . OptimizeImage::$backup_folder_name;
+        $backupPath = $this->getBackupImagesParentDir() . OptimizeImage::BACKUP_FOLDER_NAME;
 
         if (!is_dir($backupPath)) {
             return 'BACKUPPATHDOESNTEXIST';

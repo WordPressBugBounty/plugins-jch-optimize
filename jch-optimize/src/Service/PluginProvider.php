@@ -13,6 +13,7 @@ use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Registry;
 use JchOptimize\WordPress\ControllerResolver;
+use JchOptimize\WordPress\Model\ReCache;
 use JchOptimize\WordPress\Plugin\Admin;
 use JchOptimize\WordPress\Plugin\Installer;
 use JchOptimize\WordPress\Plugin\Loader;
@@ -46,11 +47,11 @@ class PluginProvider implements ServiceProviderInterface
 
     public function getAdminService(Container $container): Admin
     {
-        return new Admin(
+        return (new Admin(
             $container->get('params'),
             $container->get(ControllerResolver::class),
-            $container->get(PathsInterface::class)
-        );
+            $container->get(PathsInterface::class),
+        ))->setContainer($container);
     }
 
     public function getUpdaterService(Container $container): ?Updater
@@ -64,7 +65,8 @@ class PluginProvider implements ServiceProviderInterface
             $container->get(Registry::class),
             $container->get(AdminTasks::class),
             $container->get(AdminHelper::class),
-            $container->get(CacheMaintainer::class)
+            $container->get(CacheMaintainer::class),
+            $container
         );
     }
 }

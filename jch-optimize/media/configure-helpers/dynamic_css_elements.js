@@ -9,69 +9,63 @@
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+(function(){
     console.info('Checking for Dynamic CSS Selectors. Please wait...');
-    const observedSelectors = new Set();
+    const observedCounts = new Map(); // selector -> count
     let finalSelectors = [];
 
-    const simplify = (items) => {
-        const raw = [...items];
-
-        // ---------- PASS 1: Longest-prefix reduction (threshold > 3) ----------
-        // Build prefix -> Set(selectors that start with it), for prefixes length >= 4
-        const prefixMap = new Map();
-        for (const s of raw) {
-            for (let i = 4; i <= s.length; i++) {
-                const p = s.slice(0, i);
-                let set = prefixMap.get(p);
-                if (!set) prefixMap.set(p, (set = new Set()));
-                set.add(s);
-            }
-        }
-
-        // Candidates that cover > 3 selectors, pick LONGEST first
-        const candidates = [...prefixMap.entries()]
-            .filter(([, set]) => set.size > 3)
-            .sort((a, b) => b[0].length - a[0].length);
-
-        const chosenPrefixes = [];
-        const covered = new Set();
-
-        for (const [p, set] of candidates) {
-            // If an already-chosen LONGER prefix starts with this p, skip p (redundant broader)
-            const shadowedByLonger = chosenPrefixes.some(lp => lp.startsWith(p));
-            if (shadowedByLonger) continue;
-
-            chosenPrefixes.push(p);
-            for (const s of set) covered.add(s);
-        }
-
-        // After pass 1: keep chosen longest prefixes + any selectors not covered by them
-        const pass1Set = new Set([...chosenPrefixes, ...raw.filter(s => !covered.has(s))]);
-
-        // ---------- PASS 2: Exact-first collapse (shorter/broader wins) ----------
-        // Sort by length ASC so exact/shorter prefixes are seen first
-        const pass1Arr = [...pass1Set].sort((a, b) => (a.length - b.length) || (a < b ? -1 : 1));
-        const out = [];
-
-        for (const current of pass1Arr) {
-            // If 'current' starts with any already kept prefix of length >= 4, drop it
-            const hasAncestor = out.some(existing => existing.length >= 4 && current.startsWith(existing));
-            if (!hasAncestor) out.push(current);
-        }
-
-        // ---------- Final formatting (preserve your ZWSP behavior) ----------
-        const fmt = (s) => {
-            if (!s.startsWith('.') && !s.startsWith('#') && !s.startsWith('[')) {
-                // Tag names -> wrap both sides with ZWSP so they don't get glued to neighbors
-                return '\u200B' + s + '\u200B';
-            }
-            // Very short fragments get a trailing ZWSP (matches your original)
-            return s.length < 4 ? s + '\u200B' : s;
-        };
-
-        return [...new Set(out.map(fmt))].sort();
+    const bump = (sel) => {
+        const prev = observedCounts.get(sel) || 0;
+        observedCounts.set(sel, prev + 1);
     };
+
+    const simplify = (itemsMap) => {
+        const entries = [...itemsMap.entries()]; // [selector, count]
+
+        const MIN_MUTATIONS = 1;   // must appear at least this many times
+        const MAX_MUTATIONS = 50;  // drop super-global utility stuff
+
+        const filtered = entries.filter(([sel, count]) => {
+            if (count < MIN_MUTATIONS) return false;
+            if (count > MAX_MUTATIONS) return false; // e.g. .btn, .col-*, etc.
+            return true;
+        });
+
+        const out = new Set();
+
+        for (const [sel] of filtered) {
+            let s = sel.trim();
+            if (!s) continue;
+
+            // classes/ids: keep exact
+            if (s.startsWith('.') || s.startsWith('#')) {
+                if (s.length >= 4) out.add(s);
+                continue;
+            }
+
+            // attributes: optionally collapse data-/aria-
+            if (s.startsWith('[')) {
+                const m = s.match(/^\[([a-zA-Z0-9_-]+)/);
+                if (m) {
+                    const name = m[1];
+                    if (name.startsWith('data-')) {
+                        out.add('[data-');
+                        continue;
+                    }
+                    if (name.startsWith('aria-')) {
+                        out.add('[aria-');
+                        continue;
+                    }
+                }
+                if (s.length >= 4) out.add(s);
+            }
+
+            // tags: just skip for dynamic selectors
+        }
+
+        return [...out].sort();
+    };
+
 
     const isInTargetArea = (el) => {
         const rect = el.getBoundingClientRect();
@@ -142,14 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const stack = [node];
                     while (stack.length > 0) {
                         const current = stack.pop();
-                        extractSelectors(current).forEach(sel => observedSelectors.add(sel));
+                        extractSelectors(current).forEach(sel => bump(sel));
                         if (current.children) {
                             stack.push(...current.children);
                         }
                     }
                 }
             } else if (mutation.type === 'attributes') {
-                extractAttributeChanges(mutation).forEach(sel => observedSelectors.add(sel));
+                extractAttributeChanges(mutation).forEach(sel => bump(sel));
             }
         }
     });
@@ -179,8 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', () => {
         setTimeout(() => {
             observer.disconnect();
-            finalSelectors = simplify(observedSelectors);
-            finalSelectors.sort();
+            finalSelectors = simplify(observedCounts);
 
             if (finalSelectors.length > 0) {
                 console.table(finalSelectors.map(selector => ({'CSS Dynamic Selectors': selector})));
@@ -191,4 +184,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 3000);
     });
-});
+
+})();

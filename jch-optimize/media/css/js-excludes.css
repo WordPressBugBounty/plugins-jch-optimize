@@ -1,4 +1,3 @@
-
 /** JavaScript Excludes **/
 div.jch-js-fieldset-children:only-child {
     display: none;
@@ -8,13 +7,15 @@ div.jch-js-fieldset-children:only-child {
     display: flex;
     flex-direction: row;
     clear: both;
-    width: 400px;
+    width: 450px;
 
     #fieldset-cropgravity & {
         width: 450px;
+
         .jch-js-excludes {
             width: 72%;
         }
+
         .jch-js-ieo {
             width: 18%;
         }
@@ -22,6 +23,7 @@ div.jch-js-fieldset-children:only-child {
         .jch-js-ieo-header {
             width: 90%;
         }
+
         .jch-js-dontmove, .jch-js-dontmove-header {
             width: 10%;
         }
@@ -49,15 +51,29 @@ div.jch-js-fieldset-children:only-child {
     padding-bottom: 3px;
 }
 
-.jch-js-excludes-container .jch-js-ieo {
+.jch-js-excludes-container .jch-js-ieo,
+.jch-js-excludes-container .jch-js-anonymous,
+.jch-js-excludes-container .jch-js-gravity {
     width: 12%;
     border-right: 1px solid #aaaaaa;
     text-align: center;
+    padding-top: 3px;
 }
 
-.jch-js-excludes-container .jch-js-dontmove {
+.jch-js-excludes-container .jch-js-dontmove,
+.jch-js-excludes-container .jch-js-use-credentials,
+.jch-js-excludes-container .jch-js-cropwidth {
     width: 12%;
     text-align: center;
+    padding-top: 3px;
+}
+
+.jch-js-excludes-container .jch-js-gravity {
+    width: 18%;
+}
+
+.jch-js-excludes-container .jch-js-cropwidth {
+    width: 10%;
 }
 
 .jch-js-excludes-container .jch-js-excludes {
@@ -69,28 +85,20 @@ div.jch-js-fieldset-children:only-child {
 }
 
 .jch-js-excludes-container .jch-js-excludes span {
-    position: relative;
-    margin: 0 2px 3px 0;
-    padding: 1px 20px 1px 5px;
-    border: 1px solid #aaaaaa;
-    max-width: 100%;
-    border-radius: 3px;
-    background-color: #eeeeee;
-    background-image: linear-gradient(#f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%);
-    background-size: 100% 19px;
-    background-repeat: repeat-x;
-    background-clip: padding-box;
-    box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05);
-    color: #333333;
-    line-height: 1;
-    cursor: default;
-    font-size: 13px;
-    font-weight: 400;
-    height: 19px;
-    white-space: nowrap;
-    display: inline-table;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 20px;
+    padding: 4px 5px 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 3.75px;
+    margin-bottom: 3.75px;
+    background-color: #005F75;
+    border: 1px solid #004a5c;
+    color: #fff;
+    word-break: break-all;
     box-sizing: border-box;
-    border-collapse: separate;
+    cursor: pointer;
 }
 
 .jch-js-excludes-container .jch-js-excludes input {
@@ -98,24 +106,47 @@ div.jch-js-fieldset-children:only-child {
 }
 
 .jch-js-excludes .jch-multiselect-remove-button {
-    position: absolute;
-    top: 4px;
-    right: -1px;
-    display: block;
-    width: 12px;
-    height: 12px;
-    background: url(../chosen-js/chosen-sprite.png) -42px 1px no-repeat;
-    font-size: 1px;
+    position: relative;
+    display: inline-block;
+    margin: 0 -4px 0 8px;
+    padding-left: 16px;
+    border: 0;
+    border-left: 1px solid #003642;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==);
+    background-size: 8px;
+    width: 8px;
+    line-height: 1;
+    opacity: 0.75;
+    border-radius: 0;
+    text-indent: -9999px;
+    appearance: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
     cursor: pointer;
-    border: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    height: 12px;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &:focus {
+        outline: none;
+    }
 }
 
-.jch-js-excludes .jch-multiselect-remove-button:hover {
-    background-position: -42px -10px;
+.jch-multiselect-row {
+    display: flex;
+    align-items: end !important;
+    gap: 0.5rem;
 }
 
 .jch-js-excludes-container span.has-select select {
-     margin: 0 0 3px 0;
+    margin: 0 0 3px 0;
     height: 21px;
     min-height: 20px;
     line-height: 1;

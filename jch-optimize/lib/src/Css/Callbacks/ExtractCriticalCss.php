@@ -16,6 +16,7 @@ namespace JchOptimize\Core\Css\Callbacks;
 use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 use DOMNodeList;
+use JchOptimize\Core\CacheObject;
 use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDependencies;
 use JchOptimize\Core\Css\Components\CssRule;
 use JchOptimize\Core\Css\CssComponents;
@@ -26,6 +27,7 @@ use JchOptimize\Core\Registry;
 
 use function defined;
 use function in_array;
+use function microtime;
 use function preg_split;
 use function str_contains;
 
@@ -33,7 +35,13 @@ defined('_JCH_EXEC') or die('Restricted access');
 
 class ExtractCriticalCss extends AbstractCallback
 {
-    private SelectorFactoryInterface $selectorFactory;
+    private bool $correctUrlsConfigured = false;
+
+    private ?float $budgetSeconds = null;
+
+    private float $startedAt = 0.0;
+
+    private bool $budgetExceeded = false;
 
     public function getDependencies(): CriticalCssDependencies
     {
@@ -44,11 +52,29 @@ class ExtractCriticalCss extends AbstractCallback
         Container $container,
         Registry $params,
         private CriticalCssDependencies $dependencies,
-        private DynamicSelectors $dynamicSelectors
+        private DynamicSelectors $dynamicSelectors,
+        private CorrectUrls $correctUrls,
+        private ?SelectorFactoryInterface $selectorFactory = null
     ) {
         parent::__construct($container, $params);
 
-        $this->selectorFactory = new SelectorFactory();
+        $this->selectorFactory = $selectorFactory ?? new SelectorFactory();
+    }
+
+    public function initBudget(?float $budgetSeconds): void
+    {
+        $this->budgetSeconds = $budgetSeconds;
+        $this->startedAt = microtime(true);
+        $this->budgetExceeded = false;
+    }
+
+    private function isOutOfBudget(): bool
+    {
+        if ($this->budgetSeconds === null) {
+            return false;
+        }
+
+        return (microtime(true) - $this->startedAt) > $this->budgetSeconds;
     }
 
     protected function internalProcessMatches(CssComponents $cssComponent): string
@@ -57,114 +83,155 @@ class ExtractCriticalCss extends AbstractCallback
             return $cssComponent->render();
         }
 
+        $profiler = $this->dependencies->getProfiler();
+
+        $p = 'internal_process_matches';
+        $profiler?->start($p);
         $selectorList = $cssComponent->getSelectorList();
+        $selectorListKey = $this->normalizeSelectorList($selectorList);
+
+        if ($this->getCssInfo()->isAboveFold() === true) {
+            $this->dependencies->selectorListCache[$selectorListKey] = true;
+        }
 
         if (
-            ($this->dependencies->selectorListCache[$selectorList]
+            ($this->dependencies->selectorListCache[$selectorListKey]
                 ??= $this->evaluateSelectorLists($cssComponent)) === true
         ) {
             $this->modifyUrls($cssComponent, true);
-            $this->addToSecondaryCss($cssComponent);
+
+            if ($this->isStaticSelectorList($selectorListKey)) {
+                $this->addToSecondaryCss($cssComponent);
+            }
+            $this->addToTertiaryCss($cssComponent);
         } else {
             $this->modifyUrls($cssComponent, false);
         }
+        $profiler?->stop($p);
 
         return $cssComponent->render();
     }
 
     protected function evaluateSelectorLists(CssRule $cssComponent): bool
     {
-        $selectorList = strtolower($cssComponent->getSelectorList());
+        $profiler = $this->dependencies->getProfiler();
+        $selectorList = $cssComponent->getSelectorList();
+        $selectorListKey = $this->normalizeSelectorList($selectorList);
 
-        if ($this->dynamicSelectors->getDynamicSelectors($selectorList)) {
-            return true;
-        }
-
-        $selectors = preg_split("#\s*+,\s*+#", $selectorList);
+        $s = 'selector_split';
+        $profiler?->start($s);
+        $selectors = preg_split("#(?>[^,(]++|\([^)]*+\))*?\K(?:,|$)#", $selectorList, 0, PREG_SPLIT_NO_EMPTY);
+        $profiler?->stop($s);
 
         foreach ($selectors as $selector) {
-            $cssSelectorXpath = CssSelectorXpath::create($this->selectorFactory, $selector);
-
-            if (!$cssSelectorXpath->isValid()) {
-                return false;
-            }
-
+            $hasPseudoElement = false;
             if (
-                ($this->dependencies->selectorCache[$selector]
-                    ??= $this->evaluateSelectorXpath($cssSelectorXpath)) === true
+                ($this->dependencies->selectorCache[$this->normalizeSelectorList($selector)]
+                    ??= $this->evaluateSelector($selector, $hasPseudoElement)) === true
             ) {
+                if (!$hasPseudoElement) {
+                    $this->dependencies->criticalTypeBySelectorListCache[$selectorListKey] = 'static';
+                } else {
+                    $this->dependencies->criticalTypeBySelectorListCache[$selectorListKey] = 'dynamic';
+                }
+
                 return true;
             }
         }
 
+        $d = 'dynamic_tokens';
+        $profiler?->start($d);
+        $hasDynamicToken = ($this->dynamicSelectors->ruleHasDynamicToken($selectorList) === true);
+        $profiler?->stop($d);
+
+        if ($hasDynamicToken) {
+            $this->dependencies->criticalTypeBySelectorListCache[$selectorListKey] = 'dynamic';
+
+            return true;
+        }
+
         return false;
     }
 
-    protected function evaluateSelectorXpath(CssSelectorXpath $cssSelectorXpath): bool
+    protected function evaluateSelector(string $selector, bool &$hasPseudoElement): bool
     {
+        $profiler = $this->dependencies->getProfiler();
+
+        $s = 'selector_create';
+        $profiler?->start($s);
+        $cssSelectorXpath = CssSelectorXpath::create($this->selectorFactory, $selector);
+        $profiler?->stop($s);
+
+        if (!$cssSelectorXpath->isValid()) {
+            return false;
+        }
+
+        $r = 'xpath_render';
+        $profiler?->start($r);
+        $xPath = $cssSelectorXpath->renderFirstPerBranch();
+        $profiler?->stop($r);
+
         //Check CSS selector chain against HTMl above the fold to find a match
-        if (!$this->checkCssAgainstHtml($cssSelectorXpath, $this->dependencies->getHtmlAboveFold())) {
+        $c = 'check_dom';
+        $profiler?->start($c);
+        $candidate = $this->checkCssAgainstDom($cssSelectorXpath);
+        $profiler?->stop($c);
+
+        if (!$candidate) {
             return false;
         }
 
-        if ($cssSelectorXpath->hasPseudoClass(['hover', 'active', 'focus', 'focus-visible', 'focus-within'])) {
-            return false;
-        }
+        if ($cssSelectorXpath->hasPseudoElement()) {
+            $hasPseudoElement = true;
 
-        $xPath = $cssSelectorXpath->render();
-
-        if (str_contains($xPath, 'descendant-or-self::*[1]')) {
             return true;
         }
 
+        $x = 'xpath_query';
+        $profiler?->start($x);
         $element = $this->dependencies->getDOMXPath()->query($xPath);
+        $profiler?->stop($x);
 
-        if ($element instanceof DOMNodeList && $element->length) {
-            return true;
-        }
-
-        return false;
+        return $element instanceof DOMNodeList && $element->length > 0;
     }
 
-    protected function checkCssAgainstHtml(CssSelectorXpath $selector, string $html): bool
+    protected function checkCssAgainstDom(CssSelectorXpath $selector): bool
     {
+        $deps = $this->dependencies;
+
         if (
             !empty($type = $selector->getType())
-            && !in_array($type->getName(), ['*', 'tbody', 'thead', 'tfoot'])
-            && !preg_match("#<{$type->getName()}\b(?:\s|>)#", $html)
+            && !in_array($type->getName(), ['*', 'tbody', 'thead', 'tfoot'], true)
+            && !$deps->hasTag($type->getName())
         ) {
             return false;
         }
 
-        if (
-            !empty($id = $selector->getId())
-            && !str_contains($html, "{$id->getName()}")
-        ) {
+        if (!empty($id = $selector->getId()) && !$deps->hasId($id->getName())) {
             return false;
         }
 
         foreach ($selector->getClasses() as $class) {
-            if (!str_contains($html, "{$class->getName()}")) {
+            if (!$deps->hasClass($class->getName())) {
                 return false;
             }
         }
 
         foreach ($selector->getAttributes() as $attribute) {
-            if (
-                !empty($attribute->getName())
-                && (!str_contains($html, "{$attribute->getValue()}")
-                    || !str_contains($html, " {$attribute->getName()}="))
-            ) {
-                return false;
-            }
+            $name = $attribute->getName();
+            $value = $attribute->getValue();
 
-            if (!str_contains($html, "{$attribute->getName()}")) {
+            if ($value !== '') {
+                if (!$deps->hasAttrValue($name, $value)) {
+                    return false;
+                }
+            } elseif (!$deps->hasAttrName($name)) {
                 return false;
             }
         }
 
         if (($descendant = $selector->getDescendant()) instanceof CssSelectorXpath) {
-            return $this->checkCssAgainstHtml($descendant, $html);
+            return $this->checkCssAgainstDom($descendant);
         }
 
         return true;
@@ -177,14 +244,49 @@ class ExtractCriticalCss extends AbstractCallback
         ];
     }
 
+    private function normalizeSelectorList(string $selectorList): string
+    {
+        $profiler = $this->dependencies->getProfiler();
+        $profiler?->start($normal = 'selector_normalize');
+        $normalized = preg_replace('#\s*([,>+~])\s*#', '\1', strtolower($selectorList));
+        $profiler?->stop($normal);
+
+        return $normalized;
+    }
+
+    private function isStaticSelectorList(string $selectorListKey): bool
+    {
+        return ($this->dependencies->criticalTypeBySelectorListCache[$selectorListKey] ?? null) === 'static';
+    }
+
     private function modifyUrls(CssRule $cssComponent, bool $isCriticalCss): void
     {
-        if (str_contains($cssComponent->getDeclarationList(), "url(")) {
-            $correctUrlObj = $this->getContainer()->get(CorrectUrls::class)
-                ->setCssInfo($this->getCssInfo())
-                ->setHandlingCriticalCss($isCriticalCss);
-            $correctUrlObj->processCssRule($cssComponent);
-            $this->cacheObject->merge($correctUrlObj->getCacheObject());
+        if (!str_contains($cssComponent->getDeclarationList(), "url(")) {
+            return;
         }
+
+        $profiler = $this->dependencies->getProfiler();
+
+        $profiler?->start($modify = 'modify_urls');
+        $this->getConfiguredCorrectUrls()
+            ->setHandlingCriticalCss($isCriticalCss)
+            ->processCssRule($cssComponent);
+        $profiler?->stop($modify);
+    }
+
+    private function getConfiguredCorrectUrls(): CorrectUrls
+    {
+        if (!$this->correctUrlsConfigured) {
+            $this->correctUrls->setCssInfo($this->getCssInfo());
+        }
+
+        return $this->correctUrls;
+    }
+
+    public function getMergedCacheObject(): CacheObject
+    {
+        $this->cacheObject->merge($this->correctUrls->getCacheObject());
+
+        return $this->cacheObject;
     }
 }

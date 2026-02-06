@@ -13,20 +13,22 @@
 
 namespace JchOptimize\Core\Css\Components;
 
-use CodeAlfa\Css2Xpath\Selector\AttributeSelector;
+use CodeAlfa\Css2Xpath\Collections\AttributeCollection;
+use CodeAlfa\Css2Xpath\Collections\ClassCollection;
+use CodeAlfa\Css2Xpath\Collections\PseudoClassCollection;
 use CodeAlfa\Css2Xpath\Selector\ClassSelector;
 use CodeAlfa\Css2Xpath\Selector\IdSelector;
-use CodeAlfa\Css2Xpath\Selector\PseudoSelector;
+use CodeAlfa\Css2Xpath\Selector\PseudoElementSelector;
 use CodeAlfa\Css2Xpath\Selector\TypeSelector;
 use JchOptimize\Core\Css\CssComponents;
 use JchOptimize\Core\Css\CssSelectorFactory;
-use SplObjectStorage;
 
 use function is_string;
-use function preg_match;
 
 class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements CssComponents
 {
+    protected ?ClassSelector $appendedClass = null;
+
     public static function load(string $css): static
     {
         $selectorFactory = new CssSelectorFactory();
@@ -34,13 +36,15 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
         return parent::create($selectorFactory, $css);
     }
 
-    public function render(): string
+    public function render(?string $axis = null): string
     {
         return $this->renderTypeSelector()
             . $this->renderIdSelector()
             . $this->renderClassSelector()
             . $this->renderAttributeSelector()
-            . $this->renderPseudoSelector()
+            . $this->renderPseudoClassSelector()
+            . $this->renderAppendedClass()
+            . $this->renderPseudoElementSelector()
             . $this->renderDescendant();
     }
 
@@ -78,20 +82,21 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
         $css = '';
 
         foreach ($this->getAttributes() as $attribute) {
-            $css .= "[{$attribute->getName()}{$attribute->getOperator()}{$attribute->getValue()}]";
+            $attributeValue = $attribute->getValue() ? "\"{$attribute->getValue()}\"" : '';
+            $css .= "[{$attribute->getName()}{$attribute->getOperator()}{$attributeValue}]";
         }
 
         return $css;
     }
 
-    private function renderPseudoSelector(): string
+    private function renderPseudoClassSelector(): string
     {
         $css = '';
 
-        foreach ($this->getPseudoSelectors() as $pseudoSelector) {
-            $css .= "{$this->getPseudoPrefix($pseudoSelector)}{$pseudoSelector->getName()}";
+        foreach ($this->getPseudoClasses() as $pseudoClass) {
+            $css .= ":{$pseudoClass->getName()}";
 
-            if (($selectorList = $pseudoSelector->getSelectorList()) instanceof CssSelectorList) {
+            if (($selectorList = $pseudoClass->getSelectorList()) instanceof CssSelectorList) {
                 $css .= "({$selectorList->render()})";
             }
         }
@@ -99,12 +104,22 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
         return $css;
     }
 
-    private function getPseudoPrefix(PseudoSelector $pseudoSelector): string
+    private function renderAppendedClass(): string
     {
-        return preg_match(
-            "#before|after|first-(?:line|letter)#i",
-            $pseudoSelector->getName()
-        ) ? '::' : $pseudoSelector->getPrefix();
+        if ($this->appendedClass instanceof ClassSelector) {
+            return ".{$this->appendedClass->getName()}";
+        }
+
+        return '';
+    }
+
+    private function renderPseudoElementSelector(): string
+    {
+        if (($pseudoElement = $this->getPseudoElement()) instanceof PseudoElementSelector) {
+            return "::{$pseudoElement->getName()}";
+        }
+
+        return '';
     }
 
     private function renderDescendant(): string
@@ -120,57 +135,43 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
         return '';
     }
 
-    public function addClass(string $class): static
+    public function appendClass(string $class): static
     {
         if (($descendant = $this->getDescendant()) instanceof CssSelector) {
-            $descendant->addClass($class);
+            $descendant->appendClass($class);
 
             return $this;
         }
 
-        foreach ($this->pseudoSelectors as $pseudoSelector) {
-            if (($pseudoSelectorList = $pseudoSelector->getSelectorList()) instanceof CssSelectorList) {
-                $pseudoSelectorList->addClass($class);
-
-                return $this;
-            }
-        }
-
-        $this->classes->attach(new ClassSelector($class));
+        $this->appendedClass = new ClassSelector($class);
 
         return $this;
     }
 
-    public function hasNonFunctionalPseudoSelector(): bool
+    public function hasPseudoElement(): bool
     {
         if (($descendant = $this->getDescendant()) instanceof CssSelector) {
-            return $descendant->hasNonFunctionalPseudoSelector();
+            return $descendant->hasPseudoElement();
         }
 
-        foreach ($this->pseudoSelectors as $pseudoSelector) {
-            if (!$pseudoSelector->getSelectorList() instanceof CssSelectorList) {
-                return true;
-            }
+        if ($this->pseudoElement instanceof PseudoElementSelector) {
+            return true;
         }
 
         return false;
     }
 
-    public function removeLastDescendantNonFunctionalPseudoSelectors(): static
+    public function removePseudoElement(): static
     {
         $descendant = $this->getDescendant();
 
         if ($descendant instanceof CssSelector) {
-            $descendant->removeLastDescendantNonFunctionalPseudoSelectors();
+            $descendant->removePseudoElement();
 
             return $this;
         }
 
-        foreach ($this->pseudoSelectors as $pseudoSelector) {
-            if (!$pseudoSelector->getSelectorList() instanceof CssSelectorList) {
-                $this->pseudoSelectors->detach($pseudoSelector);
-            }
-        }
+        $this->pseudoElement = null;
 
         return $this;
     }
@@ -185,38 +186,49 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
             $this->id = clone $this->id;
         }
 
-        /** @var SplObjectStorage<ClassSelector, null> $classes */
-        $classes = new SplObjectStorage();
-        foreach ($this->classes as $class) {
-            $classes->attach(clone $class);
+        if ($this->classes instanceof ClassCollection) {
+            $classes = new ClassCollection();
+            foreach ($this->classes as $class) {
+                $classes->offsetSet(clone $class);
+            }
+            $this->classes = $classes;
         }
-        $this->classes = $classes;
 
-        /** @var SplObjectStorage<AttributeSelector, null> $attributes */
-        $attributes = new SplObjectStorage();
-        foreach ($this->attributes as $attribute) {
-            $attributes->attach(clone $attribute);
+        if ($this->attributes instanceof AttributeCollection) {
+            $attributes = new AttributeCollection();
+            foreach ($this->attributes as $attribute) {
+                $attributes->offsetSet(clone $attribute);
+            }
+            $this->attributes = $attributes;
         }
-        $this->attributes = $attributes;
 
-        /** @var SplObjectStorage<PseudoSelector, null> $pseudoSelectors */
-        $pseudoSelectors = new SplObjectStorage();
-        foreach ($this->pseudoSelectors as $pseudoSelector) {
-            $pseudoSelectors->attach(clone $pseudoSelector);
+        if ($this->pseudoClasses instanceof PseudoClassCollection) {
+            $pseudoClasses = new PseudoClassCollection();
+            foreach ($this->pseudoClasses as $pseudoSelector) {
+                $pseudoClasses->offsetSet(clone $pseudoSelector);
+            }
+            $this->pseudoClasses = $pseudoClasses;
         }
-        $this->pseudoSelectors = $pseudoSelectors;
+
+        if ($this->appendedClass instanceof ClassSelector) {
+            $this->appendedClass = clone $this->appendedClass;
+        }
+
+        if ($this->pseudoElement instanceof PseudoElementSelector) {
+            $this->pseudoElement = clone $this->pseudoElement;
+        }
 
         if ($this->descendant instanceof CssSelector) {
             $this->descendant = $this->descendant->render();
         }
     }
 
-    public function renderLastDescendantNonFunctionalPseudoSelector($combinator = ''): string
+    public function renderPseudoElement(string $combinator = ''): string
     {
         $descendant = $this->getDescendant();
 
         if ($descendant instanceof CssSelector) {
-            return $descendant->renderLastDescendantNonFunctionalPseudoSelector($this->combinator);
+            return $descendant->renderPseudoElement($this->combinator);
         }
 
         $css = '';
@@ -230,11 +242,8 @@ class CssSelector extends \CodeAlfa\Css2Xpath\Selector\CssSelector implements Cs
             $css = $combinator;
         }
 
-        /** @var PseudoSelector $pseudoSelector */
-        foreach ($this->pseudoSelectors as $pseudoSelector) {
-            if (!$pseudoSelector->getSelectorList() instanceof CssSelectorList) {
-                $css .= "{$this->getPseudoPrefix($pseudoSelector)}{$pseudoSelector->getName()}";
-            }
+        if (($pseudoElement = $this->getPseudoElement()) instanceof PseudoElementSelector) {
+            $css .= "::{$pseudoElement->getName()}";
         }
 
         return $css;

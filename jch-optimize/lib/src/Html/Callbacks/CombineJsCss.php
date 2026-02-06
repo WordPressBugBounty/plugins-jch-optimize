@@ -18,6 +18,7 @@ use JchOptimize\Core\Helper;
 use JchOptimize\Core\Html\Elements\Link;
 use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\Elements\Style;
+use JchOptimize\Core\Html\Excludes\SectionExcludes;
 use JchOptimize\Core\Html\FilesManager;
 use JchOptimize\Core\Html\HtmlElementInterface;
 use JchOptimize\Core\Html\HtmlProcessor;
@@ -35,41 +36,9 @@ defined('_JCH_EXEC') or die('Restricted access');
 class CombineJsCss extends AbstractCallback
 {
     /**
-     * @var array<string, array{
-     *    excludes_peo:array{
-     *        js:list<array{ url?:string, script?:string, ieo?:string, dontmove?:string }>,
-     *        css:string[],
-     *        js_script:list<array{ url?:string, script?:string, ieo?:string, dontmove?:string }>,
-     *        css_script:string[]
-     *    },
-     *    critical_js:array{
-     *        js:string[],
-     *        script:string[]
-     *    },
-     *    remove:array{
-     *        js:string[],
-     *        css:string[]
-     *    }
-     *}>  Array of excludes parameters
+     * @var array<string, SectionExcludes> Section keyed by 'head', 'body'
      */
-    protected array $excludes = [
-        'head' => [
-            'excludes_peo' => [
-                'js' => [[]],
-                'css' => [],
-                'js_script' => [[]],
-                'css_script' => []
-            ],
-            'critical_js' => [
-                'js' => [],
-                'script' => []
-            ],
-            'remove' => [
-                'js' => [],
-                'css' => []
-            ]
-        ]
-    ];
+    protected array $excludes = [];
 
     /**
      * @var string        Section of the HTML being processed
@@ -149,7 +118,7 @@ class CombineJsCss extends AbstractCallback
         $aExcludes['remove']['js'] = Helper::getArray($params->get('remove_js', []));
         $aExcludes['remove']['css'] = Helper::getArray($params->get('remove_css', []));
 
-        $this->excludes['head'] = $aExcludes;
+        $this->excludes['head'] = SectionExcludes::fromArray($aExcludes);
 
         if ($this->params->get('bottom_js', '0') == 1) {
             $aExcludes['excludes_peo']['js_script'] = array_merge(
@@ -171,7 +140,7 @@ class CombineJsCss extends AbstractCallback
                 $this->platformExcludes->body('js')
             );
 
-            $this->excludes['body'] = $aExcludes;
+            $this->excludes['body'] = SectionExcludes::fromArray($aExcludes);
         }
 
         !JCH_DEBUG ?: $this->profiler->stop('SetUpExcludes', true);
@@ -208,36 +177,32 @@ class CombineJsCss extends AbstractCallback
     {
         if ($element instanceof Script && $element->hasAttribute('src')) {
             if (Helper::uriInvalid($element->getSrc())) {
-                return $element->render();
+                return '';
             }
         }
 
         if ($element instanceof Link && $element->hasAttribute('href')) {
             if (Helper::uriInvalid($element->getHref())) {
-                return $element->render();
+                return '';
             }
         }
 
+        $sectionExcludes = $this->excludes[$this->section];
         //Remove js files
         if (
-            $element instanceof Script && $element->hasAttribute('src') && Helper::findExcludes(
-                @$this->excludes[$this->section]['remove']['js'],
-                $element->getSrc()
-            )
+            $element instanceof Script && $element->hasAttribute('src')
+            && Helper::findExcludes($sectionExcludes->remove->js, $element->getSrc())
         ) {
             return '';
         }
 
         //Remove css files
         if (
-            $element instanceof Link && Helper::findExcludes(
-                @$this->excludes[$this->section]['remove']['css'],
-                $element->getHref()
-            )
+            $element instanceof Link
+            && Helper::findExcludes($sectionExcludes->remove->css, $element->getHref())
         ) {
             return '';
         }
-
 
         if (
             $element instanceof Script && (!$this->params->get('javascript', '1')

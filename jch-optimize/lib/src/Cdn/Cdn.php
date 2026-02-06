@@ -121,7 +121,7 @@ class Cdn implements ContainerAwareInterface
                 $customExtArray = $this->params->get('pro_customcdnextensions', []);
                 $staticFiles1Array = array_merge($staticFiles1Array, $customExtArray);
 
-                $this->domains->attach(new CdnDomain($domain1, $staticFiles1Array, $this->getScheme()));
+                $this->domains->offsetSet(new CdnDomain($domain1, $staticFiles1Array, $this->getScheme()));
             }
 
             if (JCH_PRO) {

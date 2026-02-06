@@ -16,6 +16,7 @@ namespace JchOptimize\WordPress\Controller;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Admin\Icons;
 use JchOptimize\Core\Mvc\Controller;
+use JchOptimize\WordPress\Contracts\WillEnqueueAssets;
 use JchOptimize\WordPress\Log\WordpressNoticeLogger;
 use JchOptimize\WordPress\View\OptimizeImageHtml;
 
@@ -24,7 +25,7 @@ use function is_null;
 use function sprintf;
 use function wp_redirect;
 
-class OptimizeImages extends Controller
+class OptimizeImages extends Controller implements WillEnqueueAssets
 {
     public function __construct(private OptimizeImageHtml $view, private Icons $icons, ?Input $input)
     {
@@ -41,11 +42,7 @@ class OptimizeImages extends Controller
         $status = $input->get('status');
 
         if (is_null($status)) {
-            $this->view->loadResources();
-            $this->view->setData([
-                'tab'   => 'optimizeimages',
-                'icons' => $this->icons
-            ]);
+            $this->view->setData(['tab' => 'optimizeimages', 'icons' => $this->icons]);
 
             echo $this->view->render();
         } else {
@@ -53,7 +50,16 @@ class OptimizeImages extends Controller
                 $cnt = $input->getString('cnt');
                 $webp = $input->getString('webp');
 
-                $logger->success(sprintf(__('%1$d images successfully optimized, %2$s WEBPs generated.', 'jch-optimize'), $cnt, $webp));
+                $logger->success(
+                    sprintf(
+                        __(
+                            '%1$d images successfully optimized, %2$s WEBPs generated.',
+                            'jch-optimize'
+                        ),
+                        $cnt,
+                        $webp
+                    )
+                );
             } else {
                 $msg = $input->getString('msg');
                 $logger->error(__('The Optimize Image function failed with message "' . $msg, 'jch-optimize'));
@@ -63,5 +69,12 @@ class OptimizeImages extends Controller
         }
 
         return true;
+    }
+
+    public function enqueueAssets(): void
+    {
+        if ($this->getInput()->get('status') === null) {
+            $this->view->loadResources();
+        }
     }
 }

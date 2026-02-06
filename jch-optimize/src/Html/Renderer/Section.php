@@ -39,6 +39,14 @@ class Section
         echo TabContent::addSection($title, $description);
     }
 
+    public static function elementsAboveFoldSection(): void
+    {
+        $title = __('Elements Above Fold', 'jch-optimize');
+        $description = __('This is used by the Optimize CSS Delivery, Lazy Load, and Reduce DOM features. Enter the value that represents the amount of HTML elements above the fold so these features can find the critical CSS for the section above the fold, and lazy load images and HTML sections below the fold respectively.', 'jch-optimize');
+
+        echo TabContent::addSection($title, $description);
+    }
+
     public static function cacheStorageSection(): void
     {
         $title = __('Cache Storage', 'jch-optimize');
@@ -49,10 +57,10 @@ class Section
         echo TabContent::addSection($title, $description);
     }
 
-    public static function recacheSection(): void
+    public static function recacheSettingsSection(): void
     {
         $title = __('Recache Settings', 'jch-optimize');
-        $description = __('You can configure your options for the Recache feature here.');
+        $description = __('You can configure your options for the Recache feature here.', 'jch-optimize');
 
         echo TabContent::addSection($title, $description);
     }
@@ -61,7 +69,7 @@ class Section
     {
         echo TabContent::addTab('combine-files-tab');
 
-        $title = __('Optimize CSS/Js', 'jch-optimize');
+        $title = __('Optimize CSS/JS', 'jch-optimize');
         $description = __(
             'Info These settings are concerned with optimizing CSS and JavaScript files, primarily minifying the contents, but also performing other optimization techniques. By default, files will not be combined together',
             'jch-optimize'
@@ -195,13 +203,35 @@ class Section
         echo TabContent::addSection($title, $description);
     }
 
+    public static function cloudflareCachePurgeIntegrationSection(): void
+    {
+        $title = __('Cloudflare Cache Purge Integration', 'jch-optimize');
+
+        $cf_url = 'https://developers.cloudflare.com/fundamentals/api/get-started/create-token/';
+        /* translators: %s: URL to Cloudflare "create token" docs */
+        $raw = __(
+            'Integrate Cloudflare to purge cache when JCH Optimize deletes its cache. This DOES NOT configure Cloudflare; It ONLY purges cache. <a href="%s" target="_blank" rel="noopener noreferrer">Use or create a custom token</a> with Cache Purge access on the zone associated with this site',
+            'jch-optimize'
+        );
+
+        $description = sprintf(
+            wp_kses(
+                $raw,
+                ['a' => ['href' => true, 'target' => true, 'rel' => true]]
+            ),
+            esc_url($cf_url)
+        );
+
+        echo TabContent::addSection($title, $description);
+    }
+
     public static function addImageAttributesSection(): void
     {
         echo TabContent::addTab('media-tab');
 
         $title = __('Add Image Attributes', 'jch-optimize');
         $description = __(
-            'When enabled, the plugin will add missing \'width\' and \'height\' attributes to &lt;img/&gt; elements. PLEASE NOTE: This works best when the images are scaled to the size they are shown onscreen. If images appear the wrong size, try rescaling the images correctly or disable this option.',
+            'When enabled, the plugin will add missing \'width\' and \'height\' attributes to &lt;img/&gt; elements. PLEASE NOTE: This works best when the images are scaled to the size they are shown onscreen. If images appear the wrong size, try rescaling the images correctly or disabling this option.',
             'jch-optimize'
         );
 
@@ -326,7 +356,10 @@ class Section
     public static function uploadSettings(): void
     {
         $title = __('Upload Settings', 'jch-optimize');
-        $description = __('Images are packaged in batches for upload to speed up the process. These settings determine how these batches are packaged and handled.', 'jch-optimize');
+        $description = __(
+            'Images are packaged in batches for upload to speed up the process. These settings determine how these batches are packaged and handled.',
+            'jch-optimize'
+        );
 
         echo TabContent::addSection($title, $description);
     }

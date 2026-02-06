@@ -508,13 +508,13 @@ HTML;
                 'tooltip' => $this->utility->translate('Defer images that fall below the fold.')
             ],
             [
-                'name'    => 'Load Webp',
-                'setting' => ($setting = 'pro_load_webp_images'),
+                'name'    => 'Load WEBP/AVIF',
+                'setting' => ($setting = 'load_avif_webp_images'),
                 'icon' => 'fa fa-file-image',
                 'enabled' => $this->params->get($setting, '0'),
                 'proonly' => true,
                 'tooltip' => $this->utility->translate(
-                    'Loads generated WEBP images in place of the original ones.'
+                    'Loads generated WEBP or AVIF images in place of the original ones.'
                     . 'These images must be generated on the Optimize Image tab first.'
                 )
             ],

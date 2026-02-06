@@ -2,28 +2,27 @@
     "packages": [
         {
             "name": "codealfa\/css2xpath",
-            "version": "dev-main",
-            "version_normalized": "dev-main",
+            "version": "dev-development",
+            "version_normalized": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/codealfa\/css2xpath.git",
-                "reference": "ecd8675ff798b003e448ea53f955b621cfd087b2"
+                "reference": "fa8b53f7b3407ad9e518533ec6ac8c5e42af212d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/codealfa\/css2xpath\/zipball\/ecd8675ff798b003e448ea53f955b621cfd087b2",
-                "reference": "ecd8675ff798b003e448ea53f955b621cfd087b2",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/css2xpath\/zipball\/fa8b53f7b3407ad9e518533ec6ac8c5e42af212d",
+                "reference": "fa8b53f7b3407ad9e518533ec6ac8c5e42af212d",
                 "shasum": ""
             },
             "require": {
-                "codealfa\/regextokenizer": "^2.0",
+                "codealfa\/regextokenizer": "dev-development",
                 "php": ">=8.0"
             },
             "require-dev": {
                 "phpunit\/phpunit": "^9.6"
             },
-            "time": "2025-07-30T01:42:37+00:00",
-            "default-branch": true,
+            "time": "2025-12-08T19:50:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -47,32 +46,31 @@
             ],
             "description": "CSS to XPath Converter",
             "support": {
-                "source": "https:\/\/github.com\/codealfa\/css2xpath\/tree\/main",
+                "source": "https:\/\/github.com\/codealfa\/css2xpath\/tree\/development",
                 "issues": "https:\/\/github.com\/codealfa\/css2xpath\/issues"
             },
             "install-path": "..\/codealfa\/css2xpath"
         },
         {
             "name": "codealfa\/minify",
-            "version": "dev-master",
-            "version_normalized": "dev-master",
+            "version": "dev-development",
+            "version_normalized": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/codealfa\/minify.git",
-                "reference": "0e29f477287ce393dd0d1a51c6825c1918778b9f"
+                "reference": "77841764688124bd73b38b2e4dac1709b9b93266"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/codealfa\/minify\/zipball\/0e29f477287ce393dd0d1a51c6825c1918778b9f",
-                "reference": "0e29f477287ce393dd0d1a51c6825c1918778b9f",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/minify\/zipball\/77841764688124bd73b38b2e4dac1709b9b93266",
+                "reference": "77841764688124bd73b38b2e4dac1709b9b93266",
                 "shasum": ""
             },
             "require": {
-                "codealfa\/regextokenizer": "^2.0",
+                "codealfa\/regextokenizer": "dev-development",
                 "php": ">=7.0"
             },
-            "time": "2025-07-25T11:19:26+00:00",
-            "default-branch": true,
+            "time": "2025-11-20T00:19:46+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -93,23 +91,23 @@
             "description": "An extremely fast PHP based minification library for Javascript, CSS, Html and Json scripts using Regex Parsing",
             "support": {
                 "issues": "https:\/\/github.com\/codealfa\/minify\/issues",
-                "source": "https:\/\/github.com\/codealfa\/minify\/tree\/master"
+                "source": "https:\/\/github.com\/codealfa\/minify\/tree\/development"
             },
             "install-path": "..\/codealfa\/minify"
         },
         {
             "name": "codealfa\/regextokenizer",
-            "version": "2.0.1",
-            "version_normalized": "2.0.1.0",
+            "version": "dev-development",
+            "version_normalized": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/codealfa\/regextokenizer.git",
-                "reference": "9aaebd4e06f415dc860066c91bf8b609e5844bc4"
+                "reference": "b903789abb93de151b541e527d546516da7e2f69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/codealfa\/regextokenizer\/zipball\/9aaebd4e06f415dc860066c91bf8b609e5844bc4",
-                "reference": "9aaebd4e06f415dc860066c91bf8b609e5844bc4",
+                "url": "https:\/\/api.github.com\/repos\/codealfa\/regextokenizer\/zipball\/b903789abb93de151b541e527d546516da7e2f69",
+                "reference": "b903789abb93de151b541e527d546516da7e2f69",
                 "shasum": ""
             },
             "require": {
@@ -119,7 +117,7 @@
             "require-dev": {
                 "phpunit\/phpunit": "^9.6"
             },
-            "time": "2025-05-13T00:03:35+00:00",
+            "time": "2025-12-02T16:39:25+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -143,7 +141,7 @@
             ],
             "description": "A collection of regex tokens for use with Regex Parsing.",
             "support": {
-                "source": "https:\/\/github.com\/codealfa\/regextokenizer\/tree\/2.0.1",
+                "source": "https:\/\/github.com\/codealfa\/regextokenizer\/tree\/development",
                 "issues": "https:\/\/github.com\/codealfa\/regextokenizer\/issues"
             },
             "install-path": "..\/codealfa\/regextokenizer"
@@ -155,12 +153,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/composer\/ca-bundle.git",
-                "reference": "ffca07b74cd354c1114a536f1c65eb827d740d2e"
+                "reference": "1905981ee626e6f852448b7aaa978f8666c5bc54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/composer\/ca-bundle\/zipball\/ffca07b74cd354c1114a536f1c65eb827d740d2e",
-                "reference": "ffca07b74cd354c1114a536f1c65eb827d740d2e",
+                "url": "https:\/\/api.github.com\/repos\/composer\/ca-bundle\/zipball\/1905981ee626e6f852448b7aaa978f8666c5bc54",
+                "reference": "1905981ee626e6f852448b7aaa978f8666c5bc54",
                 "shasum": ""
             },
             "require": {
@@ -174,7 +172,7 @@
                 "psr\/log": "^1.0 || ^2.0 || ^3.0",
                 "symfony\/process": "^4.0 || ^5.0 || ^6.0 || ^7.0"
             },
-            "time": "2025-07-29T08:38:30+00:00",
+            "time": "2025-11-06T11:46:17+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
@@ -220,10 +218,6 @@
                 {
                     "url": "https:\/\/github.com\/composer",
                     "type": "github"
-                },
-                {
-                    "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/composer\/composer",
-                    "type": "tidelift"
                 }
             ],
             "install-path": ".\/ca-bundle"
@@ -268,7 +262,6 @@
                 "psr\/log": "Required for using the Log middleware"
             },
             "time": "2025-03-27T13:37:11+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -360,17 +353,17 @@
         },
         {
             "name": "guzzlehttp\/promises",
-            "version": "2.2.x-dev",
-            "version_normalized": "2.2.9999999.9999999-dev",
+            "version": "2.3.x-dev",
+            "version_normalized": "2.3.9999999.9999999-dev",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/guzzle\/promises.git",
-                "reference": "7c69f28996b0a6920945dd20b3857e499d9ca96c"
+                "reference": "481557b130ef3790cf82b713667b43030dc9c957"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/guzzle\/promises\/zipball\/7c69f28996b0a6920945dd20b3857e499d9ca96c",
-                "reference": "7c69f28996b0a6920945dd20b3857e499d9ca96c",
+                "url": "https:\/\/api.github.com\/repos\/guzzle\/promises\/zipball\/481557b130ef3790cf82b713667b43030dc9c957",
+                "reference": "481557b130ef3790cf82b713667b43030dc9c957",
                 "shasum": ""
             },
             "require": {
@@ -378,9 +371,9 @@
             },
             "require-dev": {
                 "bamarni\/composer-bin-plugin": "^1.8.2",
-                "phpunit\/phpunit": "^8.5.39 || ^9.6.20"
+                "phpunit\/phpunit": "^8.5.44 || ^9.6.25"
             },
-            "time": "2025-03-27T13:27:01+00:00",
+            "time": "2025-08-22T14:34:08+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
@@ -427,7 +420,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/guzzle\/promises\/issues",
-                "source": "https:\/\/github.com\/guzzle\/promises\/tree\/2.2.0"
+                "source": "https:\/\/github.com\/guzzle\/promises\/tree\/2.3.0"
             },
             "funding": [
                 {
@@ -447,17 +440,17 @@
         },
         {
             "name": "guzzlehttp\/psr7",
-            "version": "2.7.x-dev",
-            "version_normalized": "2.7.9999999.9999999-dev",
+            "version": "2.8.x-dev",
+            "version_normalized": "2.8.9999999.9999999-dev",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/guzzle\/psr7.git",
-                "reference": "c2270caaabe631b3b44c85f99e5a04bbb8060d16"
+                "reference": "21dc724a0583619cd1652f673303492272778051"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/guzzle\/psr7\/zipball\/c2270caaabe631b3b44c85f99e5a04bbb8060d16",
-                "reference": "c2270caaabe631b3b44c85f99e5a04bbb8060d16",
+                "url": "https:\/\/api.github.com\/repos\/guzzle\/psr7\/zipball\/21dc724a0583619cd1652f673303492272778051",
+                "reference": "21dc724a0583619cd1652f673303492272778051",
                 "shasum": ""
             },
             "require": {
@@ -473,12 +466,12 @@
             "require-dev": {
                 "bamarni\/composer-bin-plugin": "^1.8.2",
                 "http-interop\/http-factory-tests": "0.9.0",
-                "phpunit\/phpunit": "^8.5.39 || ^9.6.20"
+                "phpunit\/phpunit": "^8.5.44 || ^9.6.25"
             },
             "suggest": {
                 "laminas\/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
-            "time": "2025-03-27T12:30:47+00:00",
+            "time": "2025-08-23T21:21:41+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {
@@ -547,7 +540,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/guzzle\/psr7\/issues",
-                "source": "https:\/\/github.com\/guzzle\/psr7\/tree\/2.7.1"
+                "source": "https:\/\/github.com\/guzzle\/psr7\/tree\/2.8.0"
             },
             "funding": [
                 {
@@ -838,7 +831,6 @@
                 "joomla\/input": "The joomla\/input package is required to use Joomla\\Controller\\AbstractController"
             },
             "time": "2023-06-05T19:36:12+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1024,12 +1016,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/joomla-framework\/filter.git",
-                "reference": "6a2bb23f765d4060da72044d9f7ef92932d552f8"
+                "reference": "1de47c07883c01216f6e76869add79fe57cba329"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/filter\/zipball\/6a2bb23f765d4060da72044d9f7ef92932d552f8",
-                "reference": "6a2bb23f765d4060da72044d9f7ef92932d552f8",
+                "url": "https:\/\/api.github.com\/repos\/joomla-framework\/filter\/zipball\/1de47c07883c01216f6e76869add79fe57cba329",
+                "reference": "1de47c07883c01216f6e76869add79fe57cba329",
                 "shasum": ""
             },
             "require": {
@@ -1047,7 +1039,7 @@
             "suggest": {
                 "joomla\/language": "Required only if you want to use `OutputFilter::stringURLSafe`."
             },
-            "time": "2024-08-20T15:37:30+00:00",
+            "time": "2025-09-30T15:42:11+00:00",
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1075,16 +1067,6 @@
                 "issues": "https:\/\/github.com\/joomla-framework\/filter\/issues",
                 "source": "https:\/\/github.com\/joomla-framework\/filter\/tree\/2.0-dev"
             },
-            "funding": [
-                {
-                    "url": "https:\/\/community.joomla.org\/sponsorship-campaigns.html",
-                    "type": "custom"
-                },
-                {
-                    "url": "https:\/\/github.com\/joomla",
-                    "type": "github"
-                }
-            ],
             "install-path": "..\/joomla\/filter"
         },
         {
@@ -1113,7 +1095,6 @@
                 "phpunit\/phpunit": "^8.5|^9.0"
             },
             "time": "2023-06-05T20:02:37+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1182,7 +1163,6 @@
                 "joomla\/registry": "^2.0 Allows using stateful models"
             },
             "time": "2023-06-05T20:05:42+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1255,7 +1235,6 @@
                 "symfony\/yaml": "Install symfony\/yaml if you require YAML support."
             },
             "time": "2023-08-21T09:27:18+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1411,7 +1390,6 @@
                 "ext-mbstring": "For improved processing"
             },
             "time": "2023-06-05T20:15:46+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1492,7 +1470,6 @@
                 "phpunit\/phpunit": "^8.5|^9.0"
             },
             "time": "2023-03-13T09:14:13+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1559,7 +1536,6 @@
                 "joomla\/renderer": "Required to use Joomla\\View\\BaseHtmlView"
             },
             "time": "2023-06-05T20:17:32+00:00",
-            "default-branch": true,
             "type": "joomla-package",
             "extra": {
                 "branch-alias": {
@@ -1732,7 +1708,6 @@
                 "vimeo\/psalm": "^4.26"
             },
             "time": "2022-08-31T08:12:20+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -1800,7 +1775,6 @@
                 "vimeo\/psalm": "^4.9"
             },
             "time": "2021-11-08T06:06:27+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -1872,7 +1846,6 @@
                 "vimeo\/psalm": "^4.27.0"
             },
             "time": "2022-09-16T08:23:26+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -1946,7 +1919,6 @@
                 "vimeo\/psalm": "^4.10"
             },
             "time": "2022-08-11T18:08:33+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -2018,7 +1990,6 @@
                 "vimeo\/psalm": "^4.7"
             },
             "time": "2022-02-18T12:09:35+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -2092,7 +2063,6 @@
                 "psr\/container": "^1.1.2 || ^2.0.2, to use the lazy listeners feature"
             },
             "time": "2023-10-10T08:29:58+00:00",
-            "default-branch": true,
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2236,7 +2206,6 @@
                 "laminas\/laminas-view": "Laminas\\View component"
             },
             "time": "2021-10-14T15:59:50+00:00",
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -2397,7 +2366,6 @@
                 "ocramius\/proxy-manager": "ProxyManager ^2.1.1 to handle lazy initialization of services"
             },
             "time": "2022-12-01T17:03:38+00:00",
-            "default-branch": true,
             "bin": [
                 "bin\/generate-deps-for-config-factory",
                 "bin\/generate-factory-for-class"
@@ -2728,12 +2696,12 @@
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/Seldaek\/monolog.git",
-                "reference": "cd82b5069148dd811ef54b4b92ce1b3aad84209b"
+                "reference": "d817927c928b235f293cc07e0d7c7f0c18a44a66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/Seldaek\/monolog\/zipball\/cd82b5069148dd811ef54b4b92ce1b3aad84209b",
-                "reference": "cd82b5069148dd811ef54b4b92ce1b3aad84209b",
+                "url": "https:\/\/api.github.com\/repos\/Seldaek\/monolog\/zipball\/d817927c928b235f293cc07e0d7c7f0c18a44a66",
+                "reference": "d817927c928b235f293cc07e0d7c7f0c18a44a66",
                 "shasum": ""
             },
             "require": {
@@ -2751,7 +2719,7 @@
                 "graylog2\/gelf-php": "^1.4.2 || ^2@dev",
                 "guzzlehttp\/guzzle": "^7.4",
                 "guzzlehttp\/psr7": "^2.2",
-                "mongodb\/mongodb": "^1.8",
+                "mongodb\/mongodb": "^1.8 || ^2.0",
                 "php-amqplib\/php-amqplib": "~2.4 || ^3",
                 "phpspec\/prophecy": "^1.15",
                 "phpstan\/phpstan": "^1.10",
@@ -2779,7 +2747,7 @@
                 "rollbar\/rollbar": "Allow sending log messages to Rollbar",
                 "ruflin\/elastica": "Allow sending log messages to an Elastic Search server"
             },
-            "time": "2025-03-20T09:26:28+00:00",
+            "time": "2025-10-24T07:28:53+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -3406,7 +3374,7 @@
                 "view"
             ],
             "support": {
-                "source": "https:\/\/github.com\/codealfa\/PHP-Renderer\/tree\/joomla"
+                "source": "https:\/\/github.com\/codealfa\/PHP-Renderer\/tree\/3.x"
             },
             "install-path": "..\/slim\/php-view"
         },
@@ -4021,7 +3989,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-ctype\/tree\/v1.32.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-ctype\/tree\/v1.33.0"
             },
             "funding": [
                 {
@@ -4110,7 +4078,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-mbstring\/tree\/v1.32.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-mbstring\/tree\/v1.33.0"
             },
             "funding": [
                 {
@@ -4198,7 +4166,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-php80\/tree\/v1.32.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-php80\/tree\/v1.33.0"
             },
             "funding": [
                 {
@@ -4285,7 +4253,7 @@
                 "uuid"
             ],
             "support": {
-                "source": "https:\/\/github.com\/symfony\/polyfill-uuid\/tree\/v1.32.0"
+                "source": "https:\/\/github.com\/symfony\/polyfill-uuid\/tree\/v1.33.0"
             },
             "funding": [
                 {
@@ -4451,31 +4419,31 @@
         },
         {
             "name": "webmozart\/assert",
-            "version": "1.11.0",
-            "version_normalized": "1.11.0.0",
+            "version": "1.12.1",
+            "version_normalized": "1.12.1.0",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/webmozarts\/assert.git",
-                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991"
+                "reference": "9be6926d8b485f55b9229203f962b51ed377ba68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/webmozarts\/assert\/zipball\/11cb2199493b2f8a3b53e7f19068fc6aac760991",
-                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991",
+                "url": "https:\/\/api.github.com\/repos\/webmozarts\/assert\/zipball\/9be6926d8b485f55b9229203f962b51ed377ba68",
+                "reference": "9be6926d8b485f55b9229203f962b51ed377ba68",
                 "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
+                "ext-date": "*",
+                "ext-filter": "*",
                 "php": "^7.2 || ^8.0"
             },
-            "conflict": {
-                "phpstan\/phpstan": "<0.12.20",
-                "vimeo\/psalm": "<4.6.1 || 4.6.2"
+            "suggest": {
+                "ext-intl": "",
+                "ext-simplexml": "",
+                "ext-spl": ""
             },
-            "require-dev": {
-                "phpunit\/phpunit": "^8.5.13"
-            },
-            "time": "2022-06-03T18:03:27+00:00",
+            "time": "2025-10-29T15:56:20+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4506,7 +4474,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/webmozarts\/assert\/issues",
-                "source": "https:\/\/github.com\/webmozarts\/assert\/tree\/1.11.0"
+                "source": "https:\/\/github.com\/webmozarts\/assert\/tree\/1.12.1"
             },
             "install-path": "..\/webmozart\/assert"
         }

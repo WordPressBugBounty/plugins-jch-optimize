@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
+class ComposerStaticInitf654702ad75e1383ba038506d4967f04
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -284,6 +284,10 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
     );
 
     public static $classMap = array (
+        'CodeAlfa\\Css2Xpath\\Collections\\AttributeCollection' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Collections/AttributeCollection.php',
+        'CodeAlfa\\Css2Xpath\\Collections\\ClassCollection' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Collections/ClassCollection.php',
+        'CodeAlfa\\Css2Xpath\\Collections\\CssSelectorCollection' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Collections/CssSelectorCollection.php',
+        'CodeAlfa\\Css2Xpath\\Collections\\PseudoClassCollection' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Collections/PseudoClassCollection.php',
         'CodeAlfa\\Css2Xpath\\Css2XpathConverter' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Css2XpathConverter.php',
         'CodeAlfa\\Css2Xpath\\SelectorFactory' => __DIR__ . '/..' . '/codealfa/css2xpath/src/SelectorFactory.php',
         'CodeAlfa\\Css2Xpath\\SelectorFactoryInterface' => __DIR__ . '/..' . '/codealfa/css2xpath/src/SelectorFactoryInterface.php',
@@ -293,6 +297,8 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'CodeAlfa\\Css2Xpath\\Selector\\CssSelector' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/CssSelector.php',
         'CodeAlfa\\Css2Xpath\\Selector\\CssSelectorList' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/CssSelectorList.php',
         'CodeAlfa\\Css2Xpath\\Selector\\IdSelector' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/IdSelector.php',
+        'CodeAlfa\\Css2Xpath\\Selector\\PseudoClassSelector' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/PseudoClassSelector.php',
+        'CodeAlfa\\Css2Xpath\\Selector\\PseudoElementSelector' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/PseudoElementSelector.php',
         'CodeAlfa\\Css2Xpath\\Selector\\PseudoSelector' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/PseudoSelector.php',
         'CodeAlfa\\Css2Xpath\\Selector\\SelectorInterface' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/SelectorInterface.php',
         'CodeAlfa\\Css2Xpath\\Selector\\TypeSelector' => __DIR__ . '/..' . '/codealfa/css2xpath/src/Selector/TypeSelector.php',
@@ -304,12 +310,15 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'CodeAlfa\\RegexTokenizer\\Base' => __DIR__ . '/..' . '/codealfa/regextokenizer/src/Base.php',
         'CodeAlfa\\RegexTokenizer\\Css' => __DIR__ . '/..' . '/codealfa/regextokenizer/src/Css.php',
         'CodeAlfa\\RegexTokenizer\\Debug\\Debug' => __DIR__ . '/..' . '/codealfa/regextokenizer/src/Debug/Debug.php',
+        'CodeAlfa\\RegexTokenizer\\Debug\\Profiler' => __DIR__ . '/..' . '/codealfa/regextokenizer/src/Debug/Profiler.php',
         'CodeAlfa\\RegexTokenizer\\Html' => __DIR__ . '/..' . '/codealfa/regextokenizer/src/Html.php',
         'CodeAlfa\\RegexTokenizer\\Js' => __DIR__ . '/..' . '/codealfa/regextokenizer/src/Js.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'JchOptimize\\Core\\AbstractContainerFactory' => __DIR__ . '/../..' . '/src/AbstractContainerFactory.php',
         'JchOptimize\\Core\\Admin\\API\\AbstractProcessImages' => __DIR__ . '/../..' . '/src/Admin/API/AbstractProcessImages.php',
         'JchOptimize\\Core\\Admin\\API\\EventSource' => __DIR__ . '/../..' . '/src/Admin/API/EventSource.php',
+        'JchOptimize\\Core\\Admin\\API\\FileImageQueue' => __DIR__ . '/../..' . '/src/Admin/API/FileImageQueue.php',
+        'JchOptimize\\Core\\Admin\\API\\FulfillImageOptimization' => __DIR__ . '/../..' . '/src/Admin/API/FulfillImageOptimization.php',
         'JchOptimize\\Core\\Admin\\API\\MessageEventFactory' => __DIR__ . '/../..' . '/src/Admin/API/MessageEventFactory.php',
         'JchOptimize\\Core\\Admin\\API\\MessageEventInterface' => __DIR__ . '/../..' . '/src/Admin/API/MessageEventInterface.php',
         'JchOptimize\\Core\\Admin\\API\\NullEventMessenger' => __DIR__ . '/../..' . '/src/Admin/API/NullEventMessenger.php',
@@ -337,6 +346,7 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\Css\\Callbacks\\AbstractCallback' => __DIR__ . '/../..' . '/src/Css/Callbacks/AbstractCallback.php',
         'JchOptimize\\Core\\Css\\Callbacks\\CorrectUrls' => __DIR__ . '/../..' . '/src/Css/Callbacks/CorrectUrls.php',
         'JchOptimize\\Core\\Css\\Callbacks\\Dependencies\\CriticalCssDependencies' => __DIR__ . '/../..' . '/src/Css/Callbacks/Dependencies/CriticalCssDependencies.php',
+        'JchOptimize\\Core\\Css\\Callbacks\\Dependencies\\CriticalCssDomainProfiler' => __DIR__ . '/../..' . '/src/Css/Callbacks/Dependencies/CriticalCssDomainProfiler.php',
         'JchOptimize\\Core\\Css\\Callbacks\\ExtractCriticalCss' => __DIR__ . '/../..' . '/src/Css/Callbacks/ExtractCriticalCss.php',
         'JchOptimize\\Core\\Css\\Callbacks\\FormatCss' => __DIR__ . '/../..' . '/src/Css/Callbacks/FormatCss.php',
         'JchOptimize\\Core\\Css\\Callbacks\\HandleAtRules' => __DIR__ . '/../..' . '/src/Css/Callbacks/HandleAtRules.php',
@@ -365,7 +375,7 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\Css\\Sprite\\Handler\\Gd' => __DIR__ . '/../..' . '/src/Css/Sprite/Handler/Gd.php',
         'JchOptimize\\Core\\Css\\Sprite\\Handler\\Imagick' => __DIR__ . '/../..' . '/src/Css/Sprite/Handler/Imagick.php',
         'JchOptimize\\Core\\Css\\Xpath\\CssSelector' => __DIR__ . '/../..' . '/src/Css/Xpath/CssSelector.php',
-        'JchOptimize\\Core\\Css\\Xpath\\PseudoSelector' => __DIR__ . '/../..' . '/src/Css/Xpath/PseudoSelector.php',
+        'JchOptimize\\Core\\Css\\Xpath\\PseudoClassSelector' => __DIR__ . '/../..' . '/src/Css/Xpath/PseudoClassSelector.php',
         'JchOptimize\\Core\\Css\\Xpath\\SelectorFactory' => __DIR__ . '/../..' . '/src/Css/Xpath/SelectorFactory.php',
         'JchOptimize\\Core\\Debugger' => __DIR__ . '/../..' . '/src/Debugger.php',
         'JchOptimize\\Core\\Exception\\BadMethodCallException' => __DIR__ . '/../..' . '/src/Exception/BadMethodCallException.php',
@@ -379,6 +389,7 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\Exception\\RuntimeException' => __DIR__ . '/../..' . '/src/Exception/RuntimeException.php',
         'JchOptimize\\Core\\Exception\\StringableTrait' => __DIR__ . '/../..' . '/src/Exception/StringableTrait.php',
         'JchOptimize\\Core\\FeatureHelpers\\AbstractFeatureHelper' => __DIR__ . '/../..' . '/src/FeatureHelpers/AbstractFeatureHelper.php',
+        'JchOptimize\\Core\\FeatureHelpers\\AvifWebp' => __DIR__ . '/../..' . '/src/FeatureHelpers/AvifWebp.php',
         'JchOptimize\\Core\\FeatureHelpers\\CdnDomains' => __DIR__ . '/../..' . '/src/FeatureHelpers/CdnDomains.php',
         'JchOptimize\\Core\\FeatureHelpers\\DynamicJs' => __DIR__ . '/../..' . '/src/FeatureHelpers/DynamicJs.php',
         'JchOptimize\\Core\\FeatureHelpers\\DynamicSelectors' => __DIR__ . '/../..' . '/src/FeatureHelpers/DynamicSelectors.php',
@@ -388,7 +399,6 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\FeatureHelpers\\LazyLoadExtended' => __DIR__ . '/../..' . '/src/FeatureHelpers/LazyLoadExtended.php',
         'JchOptimize\\Core\\FeatureHelpers\\ReduceDom' => __DIR__ . '/../..' . '/src/FeatureHelpers/ReduceDom.php',
         'JchOptimize\\Core\\FeatureHelpers\\ResponsiveImages' => __DIR__ . '/../..' . '/src/FeatureHelpers/ResponsiveImages.php',
-        'JchOptimize\\Core\\FeatureHelpers\\Webp' => __DIR__ . '/../..' . '/src/FeatureHelpers/Webp.php',
         'JchOptimize\\Core\\FeatureHelpers\\YouTubeFacade' => __DIR__ . '/../..' . '/src/FeatureHelpers/YouTubeFacade.php',
         'JchOptimize\\Core\\FileInfo' => __DIR__ . '/../..' . '/src/FileInfo.php',
         'JchOptimize\\Core\\FileUtils' => __DIR__ . '/../..' . '/src/FileUtils.php',
@@ -406,6 +416,10 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\Html\\Callbacks\\JavaScriptConfigureHelper' => __DIR__ . '/../..' . '/src/Html/Callbacks/JavaScriptConfigureHelper.php',
         'JchOptimize\\Core\\Html\\Callbacks\\LazyLoad' => __DIR__ . '/../..' . '/src/Html/Callbacks/LazyLoad.php',
         'JchOptimize\\Core\\Html\\Callbacks\\ReduceDom' => __DIR__ . '/../..' . '/src/Html/Callbacks/ReduceDom.php',
+        'JchOptimize\\Core\\Html\\CssLayout\\CssItem' => __DIR__ . '/../..' . '/src/Html/CssLayout/CssItem.php',
+        'JchOptimize\\Core\\Html\\CssLayout\\CssLayoutPlanner' => __DIR__ . '/../..' . '/src/Html/CssLayout/CssLayoutPlanner.php',
+        'JchOptimize\\Core\\Html\\CssLayout\\CssPlacementItem' => __DIR__ . '/../..' . '/src/Html/CssLayout/CssPlacementItem.php',
+        'JchOptimize\\Core\\Html\\CssLayout\\CssPlacementPlan' => __DIR__ . '/../..' . '/src/Html/CssLayout/CssPlacementPlan.php',
         'JchOptimize\\Core\\Html\\ElementObject' => __DIR__ . '/../..' . '/src/Html/ElementObject.php',
         'JchOptimize\\Core\\Html\\Elements\\A' => __DIR__ . '/../..' . '/src/Html/Elements/A.php',
         'JchOptimize\\Core\\Html\\Elements\\Audio' => __DIR__ . '/../..' . '/src/Html/Elements/Audio.php',
@@ -422,17 +436,27 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\Html\\Elements\\Style' => __DIR__ . '/../..' . '/src/Html/Elements/Style.php',
         'JchOptimize\\Core\\Html\\Elements\\Template' => __DIR__ . '/../..' . '/src/Html/Elements/Template.php',
         'JchOptimize\\Core\\Html\\Elements\\Video' => __DIR__ . '/../..' . '/src/Html/Elements/Video.php',
+        'JchOptimize\\Core\\Html\\Excludes\\CriticalJsConfig' => __DIR__ . '/../..' . '/src/Html/Excludes/CriticalJsConfig.php',
+        'JchOptimize\\Core\\Html\\Excludes\\ExcludesPeoConfig' => __DIR__ . '/../..' . '/src/Html/Excludes/ExcludesPeoConfig.php',
+        'JchOptimize\\Core\\Html\\Excludes\\JsPeoRule' => __DIR__ . '/../..' . '/src/Html/Excludes/JsPeoRule.php',
+        'JchOptimize\\Core\\Html\\Excludes\\RemoveConfig' => __DIR__ . '/../..' . '/src/Html/Excludes/RemoveConfig.php',
+        'JchOptimize\\Core\\Html\\Excludes\\SectionExcludes' => __DIR__ . '/../..' . '/src/Html/Excludes/SectionExcludes.php',
         'JchOptimize\\Core\\Html\\FilesManager' => __DIR__ . '/../..' . '/src/Html/FilesManager.php',
         'JchOptimize\\Core\\Html\\HtmlElementBuilder' => __DIR__ . '/../..' . '/src/Html/HtmlElementBuilder.php',
         'JchOptimize\\Core\\Html\\HtmlElementInterface' => __DIR__ . '/../..' . '/src/Html/HtmlElementInterface.php',
         'JchOptimize\\Core\\Html\\HtmlManager' => __DIR__ . '/../..' . '/src/Html/HtmlManager.php',
         'JchOptimize\\Core\\Html\\HtmlProcessor' => __DIR__ . '/../..' . '/src/Html/HtmlProcessor.php',
+        'JchOptimize\\Core\\Html\\JsLayout\\JsItem' => __DIR__ . '/../..' . '/src/Html/JsLayout/JsItem.php',
+        'JchOptimize\\Core\\Html\\JsLayout\\JsLayoutPlanner' => __DIR__ . '/../..' . '/src/Html/JsLayout/JsLayoutPlanner.php',
+        'JchOptimize\\Core\\Html\\JsLayout\\JsPlacementItem' => __DIR__ . '/../..' . '/src/Html/JsLayout/JsPlacementItem.php',
+        'JchOptimize\\Core\\Html\\JsLayout\\JsPlacementPlan' => __DIR__ . '/../..' . '/src/Html/JsLayout/JsPlacementPlan.php',
         'JchOptimize\\Core\\Html\\Parser' => __DIR__ . '/../..' . '/src/Html/Parser.php',
         'JchOptimize\\Core\\ImageAttributes' => __DIR__ . '/../..' . '/src/ImageAttributes.php',
         'JchOptimize\\Core\\Laminas\\ArrayPaginator' => __DIR__ . '/../..' . '/src/Laminas/ArrayPaginator.php',
         'JchOptimize\\Core\\Laminas\\CacheConfigurationContainerFactory' => __DIR__ . '/../..' . '/src/Laminas/CacheConfigurationContainerFactory.php',
         'JchOptimize\\Core\\Laminas\\ClearExpiredByFactor' => __DIR__ . '/../..' . '/src/Laminas/ClearExpiredByFactor.php',
         'JchOptimize\\Core\\Model\\CacheMaintainer' => __DIR__ . '/../..' . '/src/Model/CacheMaintainer.php',
+        'JchOptimize\\Core\\Model\\CloudflarePurger' => __DIR__ . '/../..' . '/src/Model/CloudflarePurger.php',
         'JchOptimize\\Core\\Model\\PopulateModalBodyTrait' => __DIR__ . '/../..' . '/src/Model/PopulateModalBodyTrait.php',
         'JchOptimize\\Core\\Mvc\\Controller' => __DIR__ . '/../..' . '/src/Mvc/Controller.php',
         'JchOptimize\\Core\\Mvc\\Model' => __DIR__ . '/../..' . '/src/Mvc/Model.php',
@@ -469,8 +493,10 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
         'JchOptimize\\Core\\Service\\Provider\\PsrLogger' => __DIR__ . '/../..' . '/src/Service/Provider/PsrLogger.php',
         'JchOptimize\\Core\\Service\\Provider\\SharedEvents' => __DIR__ . '/../..' . '/src/Service/Provider/SharedEvents.php',
         'JchOptimize\\Core\\Service\\Provider\\Spatie' => __DIR__ . '/../..' . '/src/Service/Provider/Spatie.php',
+        'JchOptimize\\Core\\Settings' => __DIR__ . '/../..' . '/src/Settings.php',
         'JchOptimize\\Core\\Spatie\\CrawlQueues\\CacheCrawlQueue' => __DIR__ . '/../..' . '/src/Spatie/CrawlQueues/CacheCrawlQueue.php',
         'JchOptimize\\Core\\Spatie\\CrawlQueues\\NonOptimizedCacheCrawlQueue' => __DIR__ . '/../..' . '/src/Spatie/CrawlQueues/NonOptimizedCacheCrawlQueue.php',
+        'JchOptimize\\Core\\Spatie\\CrawlQueues\\OptimizeImagesCrawlQueue' => __DIR__ . '/../..' . '/src/Spatie/CrawlQueues/OptimizeImagesCrawlQueue.php',
         'JchOptimize\\Core\\Spatie\\Crawler' => __DIR__ . '/../..' . '/src/Spatie/Crawler.php',
         'JchOptimize\\Core\\Spatie\\Crawlers\\HtmlCollector' => __DIR__ . '/../..' . '/src/Spatie/Crawlers/HtmlCollector.php',
         'JchOptimize\\Core\\SystemUri' => __DIR__ . '/../..' . '/src/SystemUri.php',
@@ -955,9 +981,9 @@ class ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit5e54cf9a1bb50c3df6e613f1ebc94e52::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf654702ad75e1383ba038506d4967f04::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf654702ad75e1383ba038506d4967f04::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitf654702ad75e1383ba038506d4967f04::$classMap;
         }, null, ClassLoader::class);
     }
 }

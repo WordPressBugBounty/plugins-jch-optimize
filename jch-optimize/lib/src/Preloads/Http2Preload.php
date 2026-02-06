@@ -313,22 +313,22 @@ class Http2Preload implements ContainerAwareInterface
         switch ($preload->getAs()) {
             case 'font':
                 if ($this->fontPreloads->count() < 2) {
-                    $this->fontPreloads->attach($preload);
+                    $this->fontPreloads->offsetSet($preload);
                 }
                 break;
             case 'image':
                 if ($this->imagePreloads->count() < 4 || $preload->getFetchPriority() == 'high') {
-                    $this->imagePreloads->attach($preload);
+                    $this->imagePreloads->offsetSet($preload);
                 }
                 break;
             case 'style':
-                $this->stylePreloads->attach($preload);
+                $this->stylePreloads->offsetSet($preload);
                 break;
             case 'script':
-                $this->scriptPreloads->attach($preload);
+                $this->scriptPreloads->offsetSet($preload);
                 break;
             default:
-                $this->otherPreloads->attach($preload);
+                $this->otherPreloads->offsetSet($preload);
                 break;
         }
     }

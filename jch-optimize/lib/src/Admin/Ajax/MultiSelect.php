@@ -25,7 +25,7 @@ class MultiSelect extends Ajax
 {
     public function run(): Json
     {
-        $aData = $this->input->get('data', [], 'array');
+        $aData = json_decode($this->input->getRaw('data'), true);
 
         $container = $this->getContainer();
 
@@ -37,7 +37,7 @@ class MultiSelect extends Ajax
         } catch (Exception $e) {
         }
 
-        $response = array();
+        $response = [];
 
         foreach ($aData as $sData) {
             $options = $oAdmin->prepareFieldOptions($sData['type'], $sData['param'], $sData['group'], false);

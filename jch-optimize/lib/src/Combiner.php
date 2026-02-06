@@ -30,6 +30,7 @@ use CodeAlfa\Minify\Html;
 use CodeAlfa\Minify\Js;
 use Exception;
 use JchOptimize\Core\Cdn\Cdn;
+use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDomainProfiler;
 use JchOptimize\Core\Css\CssProcessor;
 use JchOptimize\Core\Exception\FileNotFoundException;
 use JchOptimize\Core\Exception\PropertyNotFoundException;
@@ -44,11 +45,14 @@ use Serializable;
 use function defined;
 use function file_exists;
 use function function_exists;
+use function json_encode;
 use function preg_match;
 use function sprintf;
 use function str_ends_with;
 use function trim;
 
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
 use const PHP_EOL;
 
 defined('_JCH_EXEC') or die('Restricted access');
@@ -423,9 +427,9 @@ JS;
             $resultObj->prependContents($resultObj->getImports());
             $this->addCharset($resultObj);
         }
-        if ($type == 'js') {
+     /*   if ($type == 'js') {
             $resultObj->appendContents("\n" . 'jchOptimizeDynamicScriptLoader.next();');
-        }
+        } */
         $resultObj->prepareForCaching();
 
         return $resultObj;

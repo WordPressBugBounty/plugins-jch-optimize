@@ -117,7 +117,7 @@ class AdminHelper
                 GuzzleUtils::streamFor($srcStream),
                 GuzzleUtils::streamFor(GuzzleUtils::tryFopen($dest, 'wb'))
             );
-        } catch (Exception|GuzzleException $e) {
+        } catch (Exception | GuzzleException $e) {
             return false;
         }
 
@@ -140,7 +140,7 @@ class AdminHelper
 
     public function contractFileName(string $filePath): string
     {
-        $path = (string) UriConverter::filePathToUri($filePath, $this->pathsUtils)
+        $path = (string)UriConverter::filePathToUri($filePath, $this->pathsUtils)
             ->withScheme('')
             ->withHost('')
             ->withPort(null);
@@ -150,6 +150,11 @@ class AdminHelper
             ['__', '_'],
             $this->normalizePath(Helper::removeLeadingSlash($path))
         );
+    }
+
+    public function createClientFileName(string $filePath): string
+    {
+        return str_replace('.', '__', $this->contractFileName($filePath));
     }
 
     public function stringToBytes(string $value): int

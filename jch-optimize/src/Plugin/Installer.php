@@ -13,6 +13,9 @@
 
 namespace JchOptimize\WordPress\Plugin;
 
+use _JchOptimizeVendor\V91\Joomla\DI\Container;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
+use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use _JchOptimizeVendor\V91\Joomla\Filesystem\File;
 use _JchOptimizeVendor\V91\Joomla\Filesystem\Folder;
 use Exception;
@@ -20,11 +23,13 @@ use JchOptimize\Core\Admin\AdminHelper;
 use JchOptimize\Core\Admin\AdminTasks;
 use JchOptimize\Core\Model\CacheMaintainer;
 use JchOptimize\Core\Registry;
+use JchOptimize\WordPress\Model\ReCache;
 
 use function defined;
 use function delete_option;
 use function dirname;
 use function file_exists;
+use function file_get_contents;
 use function is_dir;
 use function json_decode;
 use function md5_file;
@@ -33,16 +38,27 @@ use function update_option;
 use const ABSPATH;
 use const JCH_PLUGIN_DIR;
 use const JCH_PRO;
+use const JCH_VERSION;
 use const WPMU_PLUGIN_DIR;
 
-class Installer
+class Installer implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
+    private ?ReCache $recache = null;
+
     public function __construct(
         private Registry $params,
         private AdminTasks $tasks,
         private AdminHelper $helper,
         private CacheMaintainer $cacheMaintainer,
+        Container $container
     ) {
+        $this->setContainer($container);
+
+        if (JCH_PRO) {
+            $this->recache = $this->getContainer()->get(ReCache::class);
+        }
     }
 
     /**
@@ -64,6 +80,7 @@ PHPCODE;
         $this->tasks->leverageBrowserCaching();
 
         $this->installMUPlugin();
+        $this->rescheduleRecacheCron();
     }
 
     public function installMUPlugin(): void
@@ -77,10 +94,24 @@ PHPCODE;
                 Folder::create($mu_folder);
             }
 
-            File::copy(
-                JCH_PLUGIN_DIR . 'mu-plugins/jch-optimize-mode-switcher.php',
-                $mu_folder . '/jch-optimize-mode-switcher.php'
-            );
+            $src = JCH_PLUGIN_DIR . 'mu-plugins/jch-optimize-mode-switcher.php';
+            $target = $mu_folder . '/jch-optimize-mode-switcher.php';
+
+            $header = <<<PHP
+<?php
+
+/**
+ * Plugin Name: JCH Optimize Mode Switcher
+ * Plugin URI: https://www.jch-optimize.net/
+ * Description: Boost your WordPress site's performance with JCH Optimize as measured on PageSpeed
+ * Version: {VERSION}
+ * Author: Samuel Marshall
+ * License: GNU/GPLv3
+ */
+PHP;
+
+            $buffer = str_replace(['<?php', '{VERSION}'], [$header, JCH_VERSION], file_get_contents($src));
+            File::write($target, $buffer);
         }
     }
 
@@ -101,6 +132,7 @@ PHPCODE;
         $this->cacheMaintainer->cleanCache();
         $this->tasks->cleanHtaccess();
         $this->deleteMUPlugin();
+        $this->clearRecacheCron();
     }
 
     public function deleteMUPlugin(): void
@@ -233,7 +265,8 @@ PHPCODE;
 
 
         if (
-            file_exists($installedMU) && md5_file(
+            file_exists($installedMU)
+            && md5_file(
                 JCH_PLUGIN_DIR . 'mu-plugins/jch-optimize-mode-switcher.php'
             ) !== md5_file($installedMU)
         ) {
@@ -258,5 +291,15 @@ PHPCODE;
                 $this->helper->markOptimized($files);
             }
         }
+    }
+
+    private function rescheduleRecacheCron(): void
+    {
+        $this->recache?->reSchedule();
+    }
+
+    private function clearRecacheCron(): void
+    {
+        $this->recache?->clearSchedule();
     }
 }

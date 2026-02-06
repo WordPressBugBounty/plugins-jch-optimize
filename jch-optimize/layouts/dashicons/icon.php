@@ -11,6 +11,9 @@
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @var array $displayData
+ */
 $showProOnly = false;
 if (!JCH_PRO && !empty($displayData['proonly'])) :
     $displayData['link'] = '';
@@ -22,7 +25,7 @@ endif;
 <li id="<?= $displayData['id']; ?>" class="dashicon-wrapper <?= implode(' ', $displayData['class']) ?? ''; ?>">
     <a class="w-100 dashicon"
        href="<?= $displayData['link'] ?: '#' ?>" <?= $displayData['script'] ?? ''; ?>>
-        <ul class="list-unstyled d-flex w-100 h-100 p-0">
+        <ul class="list-unstyled d-flex w-100 h-100 p-0 position-relative overflow-visible">
             <li class="dashicon-start">
                 <div class="dashicon-inner ps-3">
                     <div class="dashicon-info">
@@ -41,12 +44,12 @@ endif;
 
                     </div>
                     <div class="dashicon-title">
-                                  <span><?= $displayData['name']; ?>
+                                  <span class="d-inline-flex align-items-center gap-1 flex-nowrap text-nowrap overflow-visible me-5"><?= $displayData['name']; ?>
 
                                       <?php
                                         if (!empty($displayData['tooltip'])) :
                                             ?>
-                                          <span class="hasPopover ms-2"
+                                          <span class="hasPopover ms-2 d-inline-flex align-items-center"
                                                 data-bs-content="<?= $displayData['tooltip']; ?>"
                                                 data-bs-original-title="<?= $displayData['name']; ?>">
                                                 <div class="far fa-question-circle"> </div>
@@ -58,7 +61,7 @@ endif;
                     </div>
                 </div>
             </li>
-            <li class="dashicon-end align-items-start pe-2 pb-1">
+            <li class="dashicon-end pe-2 pb-1 position-absolute end-0 top-50 translate-middle-y">
                 <div class="dashicon-configure align-self-end h-25">
                     <?php
                     if (!empty($displayData['configure'])) :
@@ -68,7 +71,7 @@ endif;
                     endif;
                     ?>
                 </div>
-                <div class="dashicon-toggle align-self-center fs-1 h-50 d-flex align-items-center">
+                <div class="dashicon-toggle d-inline-flex align-items-center flex-nowrap text-nowrap overflow-visible">
                     <?php
                     if (!$showProOnly && isset($displayData['enabled'])) :
                         $state = $displayData['enabled'] ? 'on' : 'off';
@@ -80,7 +83,9 @@ endif;
                     <?php
                     if ($showProOnly) :
                         ?>
-                        <span class="fs-6"><span class="fa fa-ban mx-1"></span>Pro</span>
+                        <small class="d-inline-flex align-items-center gap-1 text-nowrap">
+                            <span class="fa fa-ban"></span>
+                            <span class="text-small">Pro</span></small>
                         <?php
                     endif;
                     ?>

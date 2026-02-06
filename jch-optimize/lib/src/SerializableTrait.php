@@ -11,7 +11,7 @@
 namespace JchOptimize\Core;
 
 use Exception;
-use JchOptimize\Core\FeatureHelpers\Webp;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 
 use function defined;
 use function json_encode;
@@ -28,7 +28,7 @@ trait SerializableTrait
     private function serializedArray(): array
     {
         try {
-            $webpUsage = $this->getContainer()->get(Webp::class)->getCanIUse();
+            $webpUsage = $this->getContainer()->get(AvifWebp::class)->getCanIUse();
         } catch (Exception $e) {
             $webpUsage = true;
         }

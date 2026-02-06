@@ -34,7 +34,7 @@ class Utils
     {
         $cdnDomains = $cdn->getCdnDomains();
 
-        $systemDomain = new Uri(SystemUri::siteBaseFull($paths));
+        $systemDomain = new Uri(SystemUri::homePageAbsolute($paths));
         $originDomains = [$systemDomain];
         //We count each configured CDN domain as 'equivalent' to the system domain, so we just
         //build an array by swapping the CDN domains

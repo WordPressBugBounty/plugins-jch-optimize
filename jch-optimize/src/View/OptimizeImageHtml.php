@@ -37,12 +37,12 @@ class OptimizeImageHtml extends View
 
     public function loadResources(): void
     {
-        wp_register_style('jch-filetree-css', JCH_PLUGIN_URL . 'media/filetree/jquery.filetree.css', [], JCH_VERSION);
+        wp_register_style('jch-file-tree', JCH_PLUGIN_URL . 'media/filetree/jquery.filetree.css', [], JCH_VERSION);
 
         wp_register_script(
-            'jch-filetree-js',
+            'jch-file-tree',
             JCH_PLUGIN_URL . 'media/filetree/jquery.filetree.js',
-            ['jquery', 'jch-platformwordpress-js'],
+            ['jquery', 'jch-platform-wordpress'],
             JCH_VERSION,
             true
         );
@@ -52,61 +52,47 @@ class OptimizeImageHtml extends View
 const jch_filetree_url_nonce = '{$filetree_nonce}';
 JS;
 
-        wp_add_inline_script('jch-platformwordpress-js', $js, 'before');
-
-        wp_register_script('jch-uuid', JCH_PLUGIN_URL . 'media/uuid/uuidv4.js');
-        wp_enqueue_script('jch-uuid');
+        wp_add_inline_script('jch-platform-wordpress', $js, 'before');
 
         if (JCH_PRO) {
-            wp_register_style('jch-progressbar-css', JCH_PLUGIN_URL . 'media/jquery-ui/jquery-ui.css', [], JCH_VERSION);
-            wp_register_script('jch-optimizeimage-js', JCH_PLUGIN_URL . 'media/core/js/optimize-image.js', [
-                'jquery',
-                'jch-adminutility-js',
-                'jch-platformwordpress-js',
-                'jch-bootstrap-js',
-                'jch-uuid'
-            ], JCH_VERSION, true);
-            wp_register_script(
-                'jch-progressbar-js',
-                JCH_PLUGIN_URL . 'media/jquery-ui/jquery-ui.js',
-                ['jquery'],
-                JCH_VERSION,
-                true
+            wp_register_script_module(
+                'jch-optimize-image',
+                JCH_PLUGIN_URL . 'media/core/js/optimize-image.js',
+                [],
+                JCH_VERSION
             );
-
-            wp_enqueue_style('jch-progressbar-css');
-            wp_enqueue_script('jquery-ui-progressbar');
-            wp_enqueue_script('jch-optimizeimage-js');
+            wp_enqueue_script_module('jch-optimize-image');
         }
 
-        wp_enqueue_style('jch-filetree-css');
+        wp_enqueue_style('jch-file-tree');
+        wp_enqueue_script('jch-file-tree');
 
-        wp_enqueue_script('jch-filetree-js');
+        $params = json_encode([
+            'auth'          => [
+                'dlid' => $this->params->get('pro_downloadid', ''),
+                'secret' => '11e603aa',
+            ],
+            'resize_mode'   => $this->params->get('pro_api_resize_mode', '1') ? 'auto' : 'manual',
+            'webp'          => (bool)$this->params->get('pro_next_gen_images', '1'),
+            'avif'          => (bool)$this->params->get('gen_avif_images', '1'),
+            'lossy'         => (bool)$this->params->get('lossy', '1'),
+            'save_metadata' => (bool)$this->params->get('save_metadata', '0'),
+            'quality'       => $this->params->get('quality', '85'),
+            'cropgravity'   => $this->params->get('cropgravity', []),
+            'responsive'    => (bool)$this->params->get('pro_gen_responsive_images', '1')
+        ]);
 
-        $jch_params = json_encode([
-                'auth' => [
-                    'dlid' => $this->params->get('pro_downloadid', ''),
-                    'secret' => '11e603aa',
-                ],
-                'resize_mode' => $this->params->get('pro_api_resize_mode', '1') ? 'auto' : 'manual',
-                'webp' => (bool)$this->params->get('pro_next_gen_images', '1'),
-                'lossy' => (bool)$this->params->get('lossy', '1'),
-                'save_metadata' => (bool)$this->params->get('save_metadata', '0'),
-                'quality' => $this->params->get('quality', '85'),
-                'cropgravity' => $this->params->get('cropgravity', []),
-                'responsive' => (bool)$this->params->get('pro_gen_responsive_images', '1')
-            ]);
 
+        $message = __('Please open a directory to optimize images.', 'jch-optimize');
+        $noProID = __('Please enter your Download ID on the Configurations tab.', 'jch-optimize');
 
-        $jch_message = __('Please open a directory to optimize images.', 'jch-optimize');
-        $jch_noproid = __('Please enter your Download ID on the Configurations tab.', 'jch-optimize');
-
-        $script =  <<<JS
-const jch_message = '{$jch_message}'
-const jch_noproid = '{$jch_noproid}'
-const jch_params = JSON.parse('{$jch_params}')
+        $script = <<<JS
+window.jchOptimizeImageData ={
+    message : '{$message}',
+    noproid: '{$noProID}',
+    params: JSON.parse('{$params}')
+}
 JS;
-        wp_add_inline_script('jch-platformwordpress-js', $script, 'before');
-
+        wp_add_inline_script('jch-platform-wordpress', $script, 'before');
     }
 }

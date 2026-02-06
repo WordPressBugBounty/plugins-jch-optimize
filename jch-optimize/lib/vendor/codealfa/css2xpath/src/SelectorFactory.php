@@ -7,7 +7,8 @@ use CodeAlfa\Css2Xpath\Selector\ClassSelector;
 use CodeAlfa\Css2Xpath\Selector\CssSelector;
 use CodeAlfa\Css2Xpath\Selector\CssSelectorList;
 use CodeAlfa\Css2Xpath\Selector\IdSelector;
-use CodeAlfa\Css2Xpath\Selector\PseudoSelector;
+use CodeAlfa\Css2Xpath\Selector\PseudoClassSelector;
+use CodeAlfa\Css2Xpath\Selector\PseudoElementSelector;
 use CodeAlfa\Css2Xpath\Selector\TypeSelector;
 
 class SelectorFactory implements \CodeAlfa\Css2Xpath\SelectorFactoryInterface
@@ -36,8 +37,12 @@ class SelectorFactory implements \CodeAlfa\Css2Xpath\SelectorFactoryInterface
     {
         return new AttributeSelector($name, $value, $operator, $namespace);
     }
-    public function createPseudoSelector(\CodeAlfa\Css2Xpath\SelectorFactoryInterface $selectorFactory, string $name, string $prefix, ?string $selectorList = null, string $modifier = ''): PseudoSelector
+    public function createPseudoClassSelector(\CodeAlfa\Css2Xpath\SelectorFactoryInterface $selectorFactory, string $name, ?string $selectorList = null, string $modifier = '', ?string $elementName = null): PseudoClassSelector
     {
-        return new PseudoSelector($selectorFactory, $name, $prefix, $selectorList, $modifier);
+        return new PseudoClassSelector($selectorFactory, $name, $selectorList, $modifier, $elementName);
+    }
+    public function createPseudoElementSelector(\CodeAlfa\Css2Xpath\SelectorFactoryInterface $selectorFactory, string $name): PseudoElementSelector
+    {
+        return new PseudoElementSelector($selectorFactory, $name);
     }
 }

@@ -23,13 +23,13 @@ class SelectorFactory extends XpathSelectorFactory
         return CssSelector::create($selectorFactory, $cssSelector);
     }
 
-    public function createPseudoSelector(
+    public function createPseudoClassSelector(
         SelectorFactoryInterface $selectorFactory,
         string $name,
-        string $prefix,
         ?string $selectorList = null,
-        string $modifier = ''
-    ): PseudoSelector {
-        return new PseudoSelector($selectorFactory, $name, $prefix, $selectorList, $modifier);
+        string $modifier = '',
+        ?string $elementName = null
+    ): PseudoClassSelector {
+        return new PseudoClassSelector($selectorFactory, $name, $selectorList, $modifier, $elementName);
     }
 }

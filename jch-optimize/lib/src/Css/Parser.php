@@ -58,7 +58,7 @@ class Parser
         $callback->setParser($this);
 
         $sProcessedCss = preg_replace_callback(
-            '#' . $regex . '#six',
+            '#' . $regex . '#siJ',
             [$callback, 'processMatches'],
             $sCss
         );
@@ -81,7 +81,7 @@ class Parser
      */
     public function replaceMatches(string $css, string $replace): string
     {
-        $processedCss = preg_replace('#' . $this->getCssSearchRegex() . '#i', $replace, $css);
+        $processedCss = preg_replace('#' . $this->getCssSearchRegex() . '#iJ', $replace, $css);
 
         self::throwExceptionOnPregError();
 

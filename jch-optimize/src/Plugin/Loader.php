@@ -21,14 +21,15 @@ use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareInterface;
 use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use _JchOptimizeVendor\V91\Psr\Log\LogLevel;
 use Exception;
-use JchOptimize\Core\Platform\UtilityInterface;
-use JchOptimize\WordPress\Container\ContainerFactory;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Optimize;
+use JchOptimize\Core\PageCache\CaptureCache;
 use JchOptimize\Core\PageCache\PageCache;
+use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
-use JchOptimize\WordPress\Platform\Utility;
+use JchOptimize\WordPress\Container\ContainerFactory;
+use JchOptimize\WordPress\Model\ReCache;
 use WP_Admin_Bar;
 
 use function add_action;
@@ -103,18 +104,20 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
                 add_action('wp_ajax_onclickicon', [$this->admin, 'doAjaxOnClickIcon']);
                 add_action('wp_ajax_jch_configure_js_table_body', [$this->admin, 'doAjaxJchConfigureJsTableBody']);
                 add_action('wp_ajax_jch_configure_js_auto_save', [$this->admin, 'doAjaxJchConfigureJsAutoSave']);
+                add_action('wp_ajax_jch_cf_verify', [$this->admin, 'doAjaxJchCfVerify']);
             } else {
                 add_action('admin_menu', [$this->admin, 'addAdminMenu']);
+                add_action('admin_menu', [$this->admin, 'addPageCacheMenu']);
                 add_action('admin_init', [$this->admin, 'registerOptions']);
                 add_filter('plugin_action_links', [$this->admin, 'loadActionLinks'], 10, 2);
                 $this->installer->updateSettings();
                 $this->installer->fixMetaFileSecurity();
             }
         } else {
-            $url_exclude = (array) $this->params->get('menuexcludedurl', []);
+            $url_exclude = (array)$this->params->get('menuexcludedurl', []);
             /** @var Input $input */
             $input = $this->container->get(Input::class);
-            $jch_backend = (string) $input->get('jchbackend');
+            $jch_backend = (string)$input->get('jchbackend');
             /** @var string|null $nooptimize */
             $nooptimize = $input->get('jchnooptimize');
 
@@ -159,6 +162,11 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
             if ($this->params->get('pro_cache_platform', '0')) {
                 add_filter('jch_optimize_get_page_cache_id', [$this, 'getPageCacheHash'], 10, 2);
             }
+
+            $reCacheModel = $this->getContainer()->get(ReCache::class);
+            /** @see ReCache::reCache() */
+            add_action(ReCache::RECACHE_CRON_HOOK, [$reCacheModel, 'reCache']);
+            add_action('update_option_jch-optimize_settings', [$this, 'respondToOptionUpdates']);
         }
     }
 
@@ -179,6 +187,38 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
                 && !file_exists($mu_folder . '/jch-optimize-mode-switcher.php'))
         ) {
             $this->installer->activate();
+        }
+    }
+
+    public function respondToOptionUpdates($old): void
+    {
+        $new = get_option('jch-optimize_settings');
+        $container = $this->getContainer();
+
+        if (JCH_PRO) {
+            if ($this->params->get('recache_frequency') != '0') {
+                /** @see ReCache::reSchedule() */
+                $container->get(ReCache::class)->reSchedule();
+            }
+
+            $pageCacheSettings = [
+                'cache_enable',
+                'pro_cache_platform',
+                'pro_capture_cache_enable'
+            ];
+
+            $updateHtaccess = false;
+
+            foreach ($pageCacheSettings as $pageCacheSetting) {
+                if ($old[$pageCacheSetting] != $new[$pageCacheSetting]) {
+                    $this->params->set($pageCacheSetting, $new[$pageCacheSetting]);
+                    $updateHtaccess = true;
+                }
+            }
+
+            if ($updateHtaccess) {
+                $container->get(CaptureCache::class)->updateHtaccess();
+            }
         }
     }
 
@@ -203,7 +243,7 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
         }
 
         $disableOptimizing = apply_filters('jch_optimize_no_optimize', false);
-        $disableLoggedInUsers = (bool) $this->params->get('disable_logged_in_users', '1');
+        $disableLoggedInUsers = (bool)$this->params->get('disable_logged_in_users', '1');
 
         //Need to call Utility::isGuest after init has been called
         if ($disableOptimizing || ($disableLoggedInUsers && !$this->utility->isGuest())) {
@@ -280,7 +320,7 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
 
         if (!isset($nodes['jch-optimize-parent'])) {
             $aArgs = [
-                'id' => 'jch-optimize-parent',
+                'id'    => 'jch-optimize-parent',
                 'title' => __('JCH Optimize', 'jch-optimize')
             ];
 
@@ -289,8 +329,8 @@ class Loader implements LoggerAwareInterface, ContainerAwareInterface
 
         $aArgs = [
             'parent' => 'jch-optimize-parent',
-            'id' => 'jch-optimize-profiler',
-            'title' => __('Profiler', 'jch-optimize'),
+            'id'     => 'jch-optimize-profiler',
+            'title'  => __('Profiler', 'jch-optimize'),
         ];
 
         $admin_bar->add_node($aArgs);

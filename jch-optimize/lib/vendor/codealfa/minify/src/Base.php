@@ -53,6 +53,6 @@ abstract class Base
         }
         $this->_debug($regex, $code, $regexNum);
         self::throwExceptionOnPregError();
-        return $op_code ?? $code;
+        return $op_code;
     }
 }

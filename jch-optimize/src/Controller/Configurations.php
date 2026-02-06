@@ -16,9 +16,10 @@ namespace JchOptimize\WordPress\Controller;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use JchOptimize\Core\Mvc\Controller;
 use JchOptimize\Core\Platform\PathsInterface;
+use JchOptimize\WordPress\Contracts\WillEnqueueAssets;
 use JchOptimize\WordPress\View\ConfigurationsHtml;
 
-class Configurations extends Controller
+class Configurations extends Controller implements WillEnqueueAssets
 {
     public function __construct(private ConfigurationsHtml $view, private PathsInterface $paths, ?Input $input = null)
     {
@@ -29,10 +30,14 @@ class Configurations extends Controller
     {
         $this->view->addData('tab', 'configurations');
         $this->view->addData('pathsUtils', $this->paths);
-        $this->view->loadResources();
 
         echo $this->view->render();
 
         return true;
+    }
+
+    public function enqueueAssets(): void
+    {
+        $this->view->loadResources();
     }
 }

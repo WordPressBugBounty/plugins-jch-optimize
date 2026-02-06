@@ -22,6 +22,7 @@ use _JchOptimizeVendor\V91\Psr\Log\LoggerInterface;
 use JchOptimize\Container\ContainerFactory;
 use JchOptimize\Core\Admin\AdminHelper;
 use JchOptimize\Core\Admin\Json;
+use JchOptimize\Core\Optimize;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Registry;
@@ -55,16 +56,11 @@ abstract class Ajax implements ContainerAwareInterface, LoggerAwareInterface
 
     protected function __construct()
     {
-        ini_set('pcre.backtrack_limit', '1000000');
-        ini_set('pcre.recursion_limit', '1000000');
+        Optimize::setPcreLimits();
 
         if (!JCH_DEVELOP) {
             error_reporting(0);
             @ini_set('display_errors', 'Off');
-        }
-
-        if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-            ini_set('pcre.jit', '0');
         }
 
         $this->container = ContainerFactory::create();

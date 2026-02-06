@@ -39,11 +39,13 @@ $appName = JCH_PRO ? 'JCH Optimize Pro' : 'JCH Optimize';
            class="nav-tab <?= $tab == 'configurations' ? 'nav-tab-active' : ''; ?>">
             <?php _e('Configurations', 'jch-optimize'); ?>
         </a>
-<!--        <a href="?page=jch_optimize&tab=help" class="nav-tab <?= $tab == 'help' ? 'nav-tab-active' : ''; ?>">
+        <!--        <a href="?page=jch_optimize&tab=help" class="nav-tab <?= $tab == 'help' ? 'nav-tab-active' : ''; ?>">
             <?php _e('Help', 'jch-optimize'); ?>
         </a> -->
     </nav>
-    <div class="tab-content pt-5">
-        <?=$content?>
+    <div id="jch-bs-admin-ui">
+        <div class="tab-content pt-5">
+            <?= $content ?>
+        </div>
     </div>
 </div>

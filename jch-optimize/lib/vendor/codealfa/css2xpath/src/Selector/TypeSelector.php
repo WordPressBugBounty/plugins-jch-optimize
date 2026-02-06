@@ -4,12 +4,8 @@ namespace CodeAlfa\Css2Xpath\Selector;
 
 class TypeSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
 {
-    protected ?string $namespace;
-    protected string $name;
-    public function __construct(string $name, ?string $namespace = null)
+    public function __construct(protected string $name, protected ?string $namespace = null)
     {
-        $this->name = $name;
-        $this->namespace = $namespace;
     }
     public function render(): string
     {

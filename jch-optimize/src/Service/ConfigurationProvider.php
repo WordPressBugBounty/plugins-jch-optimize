@@ -19,31 +19,24 @@ use JchOptimize\Core\Registry;
 
 use function define;
 use function defined;
+use function get_option;
 
 class ConfigurationProvider implements ServiceProviderInterface
 {
-    /**
-     * @var Registry
-     */
-    private Registry $params;
-
-    public function __construct()
-    {
-        $this->params = new Registry(get_option('jch-optimize_settings'));
-
-        if (!defined('JCH_DEBUG')) {
-            define('JCH_DEBUG', ($this->params->get('debug', 0)));
-        }
-    }
-
     public function register(Container $container): void
     {
         $container->alias('params', Registry::class)
-                  ->share(
-                      Registry::class,
-                      function (): Registry {
-                          return $this->params;
-                      },
-                  );
+            ->share(
+                Registry::class,
+                function (): Registry {
+                    $params = new Registry(get_option('jch-optimize_settings'));
+
+                    if (!defined('JCH_DEBUG')) {
+                        define('JCH_DEBUG', ($params->get('debug', 0)));
+                    }
+
+                    return $params;
+                },
+            );
     }
 }

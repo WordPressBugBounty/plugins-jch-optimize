@@ -25,6 +25,7 @@ use JchOptimize\Core\Html\HtmlManager;
 use JchOptimize\Core\Html\HtmlProcessor;
 use JchOptimize\Core\Html\Parser;
 use JchOptimize\Core\Registry;
+use JchOptimize\Core\Settings;
 use JchOptimize\Core\Uri\Uri;
 use JchOptimize\Core\Uri\Utils;
 
@@ -50,7 +51,7 @@ class Preconnector implements LoggerAwareInterface
         $this->preconnects = new PreconnectsCollection();
         $this->prefetches = new PreconnectsCollection();
 
-        $this->enable = (bool)$this->params->get('pro_preconnect_domains_enable', '0');
+        $this->enable = $this->params->isEnabled(Settings::PRECONNECT_DOMAINS_ENABLE);
     }
 
     public function isEnabled(): bool
@@ -62,6 +63,7 @@ class Preconnector implements LoggerAwareInterface
     {
         $this->googleFontsOptimized = $googleFontsOptimized;
     }
+
     /**
      * Listener to prepend all external domains preconnect to the HEAD section of the document
      * on the postProcessHtml event
@@ -74,18 +76,18 @@ class Preconnector implements LoggerAwareInterface
     {
         //If google fonts were optimized then add the fonts domain to preconnects if necessary
         if ($this->googleFontsOptimized) {
-            $this->preconnects->attach(
+            $this->preconnects->offsetSet(
                 new Preconnect(Utils::uriFor('https://fonts.gstatic.com'), 'anonymous')
             );
         }
 
         if ($this->enable) {
             if (JCH_PRO) {
-                $preconnectDomains = Helper::getArray($this->params->get('pro_preconnect_domains', []));
+                $preconnectDomains = Helper::getArray($this->params->getArray(Settings::PRECONNECT_DOMAINS));
                 $this->pushDomainsToPreconnects($preconnectDomains);
             }
 
-            $prefetchDomains = Helper::getArray($this->params->get('dns_prefetch_domains', []));
+            $prefetchDomains = Helper::getArray($this->params->getArray(Settings::DNS_PREFETCH_DOMAINS));
             $this->pushDomainsToPrefetches($prefetchDomains);
         }
 
@@ -128,15 +130,16 @@ class Preconnector implements LoggerAwareInterface
             $uri = Utils::uriFor($domain['url']);
 
             if (Uri::isAbsolute($uri) || Uri::isNetworkPathReference($uri)) {
+                $crossorigin = $domain['crossorigin'] ?? null;
+
+                //For backwards compatibility
                 if (isset($domain['anonymous'])) {
                     $crossorigin = 'anonymous';
                 } elseif (isset($domain['use-credentials'])) {
                     $crossorigin = 'use-credentials';
-                } else {
-                    $crossorigin = null;
                 }
 
-                $this->preconnects->attach(new Preconnect($uri, $crossorigin));
+                $this->preconnects->offsetSet(new Preconnect($uri, $crossorigin));
             }
         }
     }
@@ -147,7 +150,7 @@ class Preconnector implements LoggerAwareInterface
             $uri = Utils::uriFor($domain);
 
             if (Uri::isAbsolute($uri) || Uri::isNetworkPathReference($uri)) {
-                $this->prefetches->attach(new DnsPrefetch($uri));
+                $this->prefetches->offsetSet(new DnsPrefetch($uri));
             }
         }
     }
@@ -181,7 +184,7 @@ class Preconnector implements LoggerAwareInterface
                     /** @var Link $linkObj */
                     $linkObj = HtmlElementBuilder::load($preconnect);
 
-                    $this->preconnects->attach(
+                    $this->preconnects->offsetSet(
                         new Preconnect(
                             $linkObj->getHref(),
                             $linkObj->getCrossorigin() === false ? null : $linkObj->getCrossorigin()

@@ -8,15 +8,14 @@
  *
  * If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
-const jchPlatform = (function () {
+let jchPlatform = (function () {
     
     let jch_ajax_url_optimizeimages = ajaxurl + '?action=optimizeimages&_wpnonce=' + jch_optimize_image_url_nonce;
-    let jch_ajax_url_smartcombine = ajaxurl + '?action=smartcombine';
     let jch_ajax_url_multiselect = ajaxurl + '?action=multiselect&_wpnonce=' + jch_multiselect_url_nonce;
     
     let configure_url = ajaxurl + '?action=configuresettings';
     
-    const setting_prefix = 'jch-optimize_settings';
+    const formPrefix = 'jch-optimize_settings';
     
     const applyAutoSettings = function (int, id, nonce) {
         const auto_settings = document.querySelectorAll('li.dashicon-wrapper.auto-setting');
@@ -199,9 +198,8 @@ const jchPlatform = (function () {
     return {
         //properties
         jch_ajax_url_optimizeimages: jch_ajax_url_optimizeimages,
-        jch_ajax_url_smartcombine: jch_ajax_url_smartcombine,
         jch_ajax_url_multiselect: jch_ajax_url_multiselect,
-        setting_prefix: setting_prefix,
+        formPrefix: formPrefix,
         //methods
         applyAutoSettings: applyAutoSettings,
         toggleSetting: toggleSetting,
@@ -211,3 +209,5 @@ const jchPlatform = (function () {
     }
     
 })()
+
+window.jchPlatform = jchPlatform;

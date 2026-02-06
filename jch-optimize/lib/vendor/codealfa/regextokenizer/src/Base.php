@@ -160,11 +160,15 @@ trait Base
      */
     protected static function throwExceptionOnPregError(): void
     {
-        $error = array_flip(array_filter(get_defined_constants(\true)['pcre'], function (string $value) {
-            return str_ends_with($value, '_ERROR');
-        }, \ARRAY_FILTER_USE_KEY))[preg_last_error()];
-        if (preg_last_error() != \PREG_NO_ERROR) {
-            throw new Exception($error);
+        $error = preg_last_error();
+        if ($error === \PREG_NO_ERROR) {
+            return;
         }
+        $pcreConstants = get_defined_constants(\true)['pcre'] ?? [];
+        $errorMap = array_flip(array_filter($pcreConstants, static function (string $name): bool {
+            return str_ends_with($name, '_ERROR');
+        }, \ARRAY_FILTER_USE_KEY));
+        $name = $errorMap[$error] ?? 'PREG_UNKNOWN_ERROR_' . $error;
+        throw new Exception($name);
     }
 }

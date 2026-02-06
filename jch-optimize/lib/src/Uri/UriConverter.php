@@ -60,7 +60,7 @@ final class UriConverter
         $rootUri = Utils::uriFor(Helper::appendTrailingSlash($pathsUtils->rootPath()));
         $relPath = str_replace((string)$rootUri, '', (string)$uri);
 
-        $uri = UriResolver::resolve(Utils::uriFor(SystemUri::siteBaseFull($pathsUtils)), Utils::uriFor($relPath));
+        $uri = UriResolver::resolve(Utils::uriFor(SystemUri::homePageAbsolute($pathsUtils)), Utils::uriFor($relPath));
 
         if ($cdn) {
             return $cdn->loadCdnResource($uri);

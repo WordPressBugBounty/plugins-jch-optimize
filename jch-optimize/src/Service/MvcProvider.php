@@ -17,6 +17,8 @@ use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use _JchOptimizeVendor\V91\Joomla\DI\ServiceProviderInterface;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use _JchOptimizeVendor\V91\Joomla\Renderer\RendererInterface;
+use _JchOptimizeVendor\V91\Psr\Http\Client\ClientInterface;
+use _JchOptimizeVendor\V91\Psr\Log\LoggerInterface;
 use _JchOptimizeVendor\V91\Slim\Views\PhpRenderer;
 use JchOptimize\Core\Admin\AdminTasks;
 use JchOptimize\Core\Admin\Icons;
@@ -29,6 +31,7 @@ use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Registry;
 use JchOptimize\WordPress\Controller\ApplyAutoSetting;
 use JchOptimize\WordPress\Controller\BrowserCaching;
+use JchOptimize\WordPress\Controller\CfVerifyToken;
 use JchOptimize\WordPress\Controller\CleanCache;
 use JchOptimize\WordPress\Controller\Configurations;
 use JchOptimize\WordPress\Controller\DeleteBackups;
@@ -54,6 +57,7 @@ use JchOptimize\WordPress\Model\PageCache as PageCacheModel;
 use JchOptimize\WordPress\Model\ReCache as ReCacheModel;
 use JchOptimize\WordPress\Plugin\Loader;
 use JchOptimize\WordPress\Plugin\Updater;
+use JchOptimize\WordPress\View\CfVerifyJson;
 use JchOptimize\WordPress\View\ConfigurationsHtml;
 use JchOptimize\WordPress\View\MainHtml;
 use JchOptimize\WordPress\View\OptimizeImageHtml;
@@ -94,8 +98,6 @@ class MvcProvider implements ServiceProviderInterface
                   ->share('togglesetting', [$this, 'getControllerToggleSettingService']);
         $container->alias(PageCache::class, 'pagecache')
                   ->share('pagecache', [$this, 'getControllerPageCacheService']);
-        $container->alias(ReCache::class, 'recache')
-                  ->share('recache', [$this, 'getControllerReCacheService']);
         $container->alias(SetDefaultSettings::class, 'setdefaultsettings')
                   ->share('setdefaultsettings', [$this, 'getControllerSetDefaultSettingsService']);
         $container->alias(ExportSettings::class, 'exportsettings')
@@ -105,11 +107,9 @@ class MvcProvider implements ServiceProviderInterface
         $container->alias(GetCacheInfo::class, 'getcacheinfo')
                   ->share('getcacheinfo', [$this, 'getControllerGetCacheInfoService']);
 
-
         //Models
         $container->share(Configure::class, [$this, 'getModelConfigureService']);
         $container->share(PageCacheModel::class, [$this, 'getModelPageCacheModelService']);
-        $container->share(ReCacheModel::class, [$this, 'getModelReCacheModelService']);
         $container->share(BulkSettings::class, [$this, 'getModelBulkSettingsService']);
         $container->share(NotificationIcons::class, [$this, 'getModelNotificationIconsService']);
 
@@ -118,10 +118,18 @@ class MvcProvider implements ServiceProviderInterface
         $container->share(MainHtml::class, [$this, 'getViewMainHtmlService']);
         $container->share(ConfigurationsHtml::class, [$this, 'getViewConfigurationsHtmlService']);
         $container->share(PageCacheHtml::class, [$this, 'getViewPageCacheHtmlService']);
-        $container->share(OptimizeImageHtml::class, [$this,'getViewOptimizeImageHtmlService']);
+        $container->share(OptimizeImageHtml::class, [$this, 'getViewOptimizeImageHtmlService']);
 
         //Renderer
         $container->share(RendererInterface::class, [$this, 'getRendererService']);
+
+        if (JCH_PRO) {
+            $container->alias(ReCache::class, 'recache')
+                      ->share('recache', [$this, 'getControllerReCacheService']);
+            $container->alias(CfVerifyToken::class, 'CfVerifyToken')
+                      ->share('CfVerifyToken', [$this, 'getControllerCfVerifyTokenService']);
+            $container->share(ReCacheModel::class, [$this, 'getModelReCacheModelService']);
+        }
     }
 
     public function getWordpressNoticeLoggerService(): WordpressNoticeLogger
@@ -216,12 +224,12 @@ class MvcProvider implements ServiceProviderInterface
 
     public function getControllerMainService(Container $container): Main
     {
-        return new Main(
+        return (new Main(
             $container->get(MainHtml::class),
             $container->get(Icons::class),
             $container->get(NotificationIcons::class),
             $container->get(Input::class)
-        );
+        ))->setContainer($container);
     }
 
     public function getControllerOptimizeImagesService(Container $container): OptimizeImages
@@ -276,12 +284,13 @@ class MvcProvider implements ServiceProviderInterface
 
     public function getControllerPageCacheService(Container $container): PageCache
     {
-        $controller = (new PageCache(
+        $controller = new PageCache(
             $container->get(Registry::class),
             $container->get(PageCacheHtml::class),
             $container->get(PageCacheModel::class),
+            $container,
             $container->get(Input::class)
-        ))->setContainer($container);
+        );
 
         $controller->setLogger($container->get(WordpressNoticeLogger::class));
 
@@ -292,6 +301,7 @@ class MvcProvider implements ServiceProviderInterface
     {
         return new ReCache(
             $container->get(ReCacheModel::class),
+            $container->get(WordpressNoticeLogger::class),
         );
     }
 
@@ -337,6 +347,15 @@ class MvcProvider implements ServiceProviderInterface
         );
     }
 
+    public function getControllerCfVerifyTokenService(Container $container): CfVerifyToken
+    {
+        return new CfVerifyToken(
+            $container->get(ClientInterface::class),
+            new CfVerifyJson(),
+            $container->get(Input::class)
+        );
+    }
+
     public function getModelConfigureService(Container $container): Configure
     {
         $model = new Configure($container->get(CacheInterface::class));
@@ -365,8 +384,13 @@ class MvcProvider implements ServiceProviderInterface
 
     public function getModelReCacheModelService(Container $container): ReCacheModel
     {
-        $reCacheModel = new ReCacheModel($container->get(PathsInterface::class));
-        $reCacheModel->setLogger($container->get(WordpressNoticeLogger::class));
+        $reCacheModel = new ReCacheModel(
+            $container->get(Registry::class),
+            $container->get(PathsInterface::class),
+            $container->get(CacheMaintainer::class)
+        );
+        $reCacheModel->setLogger($container->get(LoggerInterface::class));
+        $reCacheModel->setContainer($container);
 
         return $reCacheModel;
     }

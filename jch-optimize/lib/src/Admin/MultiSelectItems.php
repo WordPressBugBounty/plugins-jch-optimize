@@ -23,6 +23,7 @@ use CodeAlfa\Minify\Js;
 use JchOptimize\Container\ContainerFactory;
 use JchOptimize\Core\Combiner;
 use JchOptimize\Core\Css\Sprite\Generator;
+use JchOptimize\Core\Debugger;
 use JchOptimize\Core\Exception;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FileInfo;
@@ -36,6 +37,7 @@ use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\FilesManager;
 use JchOptimize\Core\Html\HtmlElementBuilder;
 use JchOptimize\Core\Html\HtmlProcessor;
+use JchOptimize\Core\Html\JsLayout\JsLayoutPlanner;
 use JchOptimize\Core\Html\Parser;
 use JchOptimize\Core\Platform\ExcludesInterface;
 use JchOptimize\Core\Platform\HtmlInterface;
@@ -134,7 +136,7 @@ class MultiSelectItems implements Serializable, ContainerAwareInterface
 
         $params = $container->get('params');
         $params->set('combine_files_enable', '1');
-        $params->set('combine_files', '1');
+        $params->set('combine_files', '0');
         $params->set('pro_smart_combine', '0');
         $params->set('javascript', '1');
         $params->set('css', '1');
@@ -189,9 +191,11 @@ class MultiSelectItems implements Serializable, ContainerAwareInterface
             /** @var FilesManager $oFilesManager */
             $oFilesManager = $container->get(FilesManager::class);
             $aLinks = [
-                'css' => $oFilesManager->aCss,
-                'js' => $oFilesManager->aJs
+                'css' => [array_merge(...$oFilesManager->aCss)],
+                'js' => [array_merge(...$oFilesManager->aJs)]
             ];
+            $jsPlanner = $container->get(JsLayoutPlanner::class);
+            $plan = $jsPlanner->plan($oFilesManager->jsTimeLine);
 
             //Only need css and js links if we're doing smart combine
             if ($bCssJsOnly) {
@@ -205,33 +209,38 @@ class MultiSelectItems implements Serializable, ContainerAwareInterface
                 $css = $resultObj->getContents();
             }
 
-            if (JCH_PRO) {
-                $aLinks['criticaljs'] = $aLinks['js'];
-                $aLinks['modules'] = [];
+            $aLinks['modules'] = [];
+            $aLinks['moduleScripts'] = [];
 
-                /** @var Script $defer */
-                foreach ($oFilesManager->deferredScriptStorage as $defer) {
-                    if ($defer->getType() == 'module') {
-                        if ($defer->getSrc() instanceof UriInterface) {
-                            $aLinks['modules'][0][] = new FileInfo($defer);
-                        } else {
-                            $aLinks['modulesScripts'][0][] = new FileInfo($defer);
-                        }
-                    } elseif (
-                        !$defer->hasAttribute('nomodule')
-                        && ($defer->hasAttribute('defer') || $defer->hasAttribute('async'))
-                        && ($defer->getSrc()) instanceof UriInterface
+            foreach ($plan->bottom as $placement) {
+                $node = $placement->item->node;
+
+                if ($node instanceof Script) {
+                    if (
+                        $placement->item->isDeferred
+                        && !$node->hasAttribute('nomodule')
+                        && $node->getType() !== 'module'
+                        && $node->getSrc() instanceof UriInterface
                     ) {
-                            $aLinks['criticaljs'][0][] = new FileInfo($defer);
+                        $aLinks['js'][0][] = new FileInfo($node);
+                    }
+                    if ($node->getType() === 'module') {
+                        if ($node->getSrc() instanceof UriInterface) {
+                            $aLinks['modules'][0][] = new FileInfo($node);
+                        } else {
+                            $aLinks['modulesScripts'][0][] = new FileInfo($node);
+                        }
                     }
                 }
             }
+
+            $aLinks['criticaljs'] = $aLinks['js'];
             /** @var Generator $oSpriteGenerator */
             $oSpriteGenerator = $container->get(Generator::class);
             $aLinks['images'] = $oSpriteGenerator->processCssUrls($css, true);
 
             $oHtmlParser = new Parser();
-            $oHtmlParser->addExcludes(['script','noscript','textarea']);
+            $oHtmlParser->addExcludes(['script', 'noscript', 'textarea']);
 
             $oElement = new ElementObject();
             $oElement->setNamesArray(['img', 'iframe', 'input']);
@@ -263,6 +272,7 @@ class MultiSelectItems implements Serializable, ContainerAwareInterface
                 }
             }
         } catch (Exception\ExceptionInterface $e) {
+            Debugger::printr((string)$e, 'error');
             $aLinks = [];
         }
 
@@ -377,7 +387,7 @@ class MultiSelectItems implements Serializable, ContainerAwareInterface
                 //$sImage = array_pop($aImage);
 
                 $aOptions = array_merge($aOptions, [
-                        FileUtils::prepareUrlValue($sImage) => FileUtils::prepareFileForDisplay($sImage)
+                    FileUtils::prepareUrlValue($sImage) => FileUtils::prepareFileForDisplay($sImage)
                 ]);
             }
         }

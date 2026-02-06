@@ -46,11 +46,14 @@ use JchOptimize\Core\Css\Sprite\Generator;
 use JchOptimize\Core\FeatureHelpers\DynamicSelectors;
 use JchOptimize\Core\FileUtils;
 use JchOptimize\Core\Html\CacheManager;
+use JchOptimize\Core\Html\CssLayout\CssLayoutPlanner;
 use JchOptimize\Core\Html\FilesManager;
 use JchOptimize\Core\Html\HtmlManager;
 use JchOptimize\Core\Html\HtmlProcessor;
+use JchOptimize\Core\Html\JsLayout\JsLayoutPlanner;
 use JchOptimize\Core\ImageAttributes;
 use JchOptimize\Core\Model\CacheMaintainer;
+use JchOptimize\Core\Model\CloudflarePurger;
 use JchOptimize\Core\Optimize;
 use JchOptimize\Core\PageCache\CaptureCache as CoreCaptureCache;
 use JchOptimize\Core\PageCache\PageCache;
@@ -66,6 +69,8 @@ use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
 
 use function defined;
+
+use const JCH_PRO;
 
 defined('_JCH_EXEC') or die('Restricted access');
 
@@ -107,6 +112,7 @@ class Core implements ServiceProviderInterface
         $container->share(ConfigureHelper::class, [$this, 'getConfigureHelperService']);
         //Utility
         $container->share(CacheMaintainer::class, [$this, 'getCacheMaintainerService']);
+        $container->share(CloudflarePurger::class, [$this, 'getCloudflarePurgerService']);
         //Feature Helpers
         $container->share(DynamicSelectors::class, function (Container $container): DynamicSelectors {
             return new DynamicSelectors(
@@ -114,6 +120,9 @@ class Core implements ServiceProviderInterface
                 $container->get(Registry::class)
             );
         });
+        //Domain
+        $container->share(CssLayoutPlanner::class, fn() => new CssLayoutPlanner());
+        $container->share(JsLayoutPlanner::class, fn() => new JsLayoutPlanner());
 
         //Set up events management
         /** @var SharedEventManager $sharedEvents */
@@ -222,7 +231,8 @@ class Core implements ServiceProviderInterface
             $container->get(HtmlProcessor::class),
             $container->get(ImageAttributes::class),
             $container->get(ProfilerInterface::class),
-            $container->get(PathsInterface::class),
+            $container->get(CssLayoutPlanner::class),
+            $container->get(JsLayoutPlanner::class)
         );
         $cacheManager->setContainer($container);
         $cacheManager->setLogger($container->get(LoggerInterface::class));
@@ -234,9 +244,7 @@ class Core implements ServiceProviderInterface
     {
         return (new FilesManager(
             $container->get(Registry::class),
-            $container->get(FileUtils::class),
             $container->get(ExcludesInterface::class),
-            $container->get(ClientInterface::class)
         ))->setContainer($container);
     }
 
@@ -365,10 +373,7 @@ class Core implements ServiceProviderInterface
      */
     public function getPageCacheService(Container $container): PageCache
     {
-        $params = $container->get(Registry::class);
-        $cacheUtils = $container->get(CacheInterface::class);
-
-        if (JCH_PRO && $params->get('pro_capture_cache_enable', '0') && !$cacheUtils->isCaptureCacheIncompatible()) {
+        if (JCH_PRO) {
             return $container->get(CoreCaptureCache::class);
         }
 
@@ -379,7 +384,8 @@ class Core implements ServiceProviderInterface
             $container->get(TaggableInterface::class),
             $container->get(CacheInterface::class),
             $container->get(HooksInterface::class),
-            $container->get(UtilityInterface::class)
+            $container->get(UtilityInterface::class),
+            $container->get(CloudflarePurger::class)
         ))->setContainer($container);
         $pageCache->setLogger($container->get(LoggerInterface::class));
 
@@ -401,6 +407,7 @@ class Core implements ServiceProviderInterface
             $container->get(HooksInterface::class),
             $container->get(UtilityInterface::class),
             $container->get(PathsInterface::class),
+            $container->get(CloudflarePurger::class)
         ))->setContainer($container);
         $captureCache->setLogger($container->get(LoggerInterface::class));
 
@@ -497,8 +504,24 @@ class Core implements ServiceProviderInterface
             $container->get(TaggableInterface::class),
             $container->get(PageCache::class),
             $container->get(PathsInterface::class),
-            $container->get(CacheInterface::class)
+            $container->get(CacheInterface::class),
+            $container->get(CloudflarePurger::class)
         );
+    }
+
+    public function getCloudflarePurgerService(Container $container): ?CloudflarePurger
+    {
+        if (!JCH_PRO) {
+            return null;
+        }
+
+        $purger = new CloudflarePurger(
+            $container->get(Registry::class),
+            $container->get(ClientInterface::class)
+        );
+        $purger->setLogger($container->get(LoggerInterface::class));
+
+        return $purger;
     }
 
     public function getHtmlCrawlerService(Container $container): HtmlCrawler

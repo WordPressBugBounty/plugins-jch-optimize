@@ -31,8 +31,11 @@ use JchOptimize\Core\Html\Callbacks\JavaScriptConfigureHelper;
 use JchOptimize\Core\Html\Callbacks\LazyLoad;
 use JchOptimize\Core\Html\Elements\Img;
 use JchOptimize\Core\Html\Elements\Source;
+use JchOptimize\Core\Optimize;
+use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Registry;
+use JchOptimize\Core\Settings;
 use JchOptimize\Core\SystemUri;
 
 use function defined;
@@ -41,6 +44,7 @@ use function preg_match;
 use function preg_quote;
 use function preg_replace;
 use function preg_replace_callback;
+use function str_contains;
 use function str_replace;
 use function strlen;
 use function substr;
@@ -308,19 +312,20 @@ class HtmlProcessor implements LoggerAwareInterface, ContainerAwareInterface
         if (
             $lazyLoadFlag
             || $this->params->get('http2_push_enable', '0')
-            || $this->params->get('pro_load_webp_images', '0')
+            || $this->params->get('load_avif_webp_images', '0')
             || $this->params->get('pro_load_responsive_images', '0')
             || $this->params->get('pro_lcp_images_enable', '0')
             || (JCH_DEBUG && $this->params->get('elements_above_fold_marker', '0'))
         ) {
             !JCH_DEBUG ?: $this->profiler->start('LazyLoadImages');
 
-            $html = $this->getBodyHtml();
+            $bodyHtml = $this->getBodyHtml();
 
-            $aboveFoldBody = $this->getAboveFoldHtml($html);
-            $belowFoldHtml = substr($html, strlen($aboveFoldBody));
-            $fullHtml = $this->getFullHtml();
-            $aboveFoldHtml = substr($fullHtml, 0, strlen($fullHtml) - strlen($belowFoldHtml)) . $this->regexMarker;
+            $aboveFoldBody = $this->getAboveFoldHtml($bodyHtml);
+            $aboveFoldBodyLen = strlen($aboveFoldBody);
+            $belowFoldBody = substr($bodyHtml, $aboveFoldBodyLen);
+
+            $headHtml = $this->getHeadHtml();
 
             try {
                 $http2Args = [
@@ -335,10 +340,9 @@ class HtmlProcessor implements LoggerAwareInterface, ContainerAwareInterface
                 /** @var LazyLoad $http2Callback */
                 $http2Callback = $this->getContainer()->get(LazyLoad::class);
                 $http2Callback->setLazyLoadArgs($http2Args);
-                $processedAboveFoldHtml = $aboveFoldParser->processMatchesWithCallback(
-                    $aboveFoldHtml,
-                    $http2Callback
-                );
+                $processedHeadHtml = $aboveFoldParser->processMatchesWithCallback($headHtml, $http2Callback);
+                $this->setHeadHtml($processedHeadHtml);
+                $processedAboveFoldBody = $aboveFoldParser->processMatchesWithCallback($aboveFoldBody, $http2Callback);
 
                 $belowFoldParser = new Parser();
                 $lazyLoadArgs = [
@@ -352,7 +356,7 @@ class HtmlProcessor implements LoggerAwareInterface, ContainerAwareInterface
                 $lazyLoadCallback = $this->getContainer()->get(LazyLoad::class);
                 $lazyLoadCallback->setLazyLoadArgs($lazyLoadArgs);
                 $processedBelowFoldHtml = $belowFoldParser->processMatchesWithCallback(
-                    $belowFoldHtml,
+                    $belowFoldBody,
                     $lazyLoadCallback
                 );
 
@@ -365,8 +369,8 @@ class HtmlProcessor implements LoggerAwareInterface, ContainerAwareInterface
 HTML;
                 }
 
-                $this->setFullHtml(
-                    $this->cleanRegexMarker($processedAboveFoldHtml) . $marker . $processedBelowFoldHtml
+                $this->setBodyHtml(
+                    $this->cleanRegexMarker($processedAboveFoldBody) . $marker . $processedBelowFoldHtml
                 );
             } catch (PregErrorException $oException) {
                 $this->logger?->error('Lazy-load failed: ' . $oException->getMessage());
@@ -441,10 +445,12 @@ HTML;
     public function processCdn(): void
     {
         if (
-            !$this->params->get('cookielessdomain_enable', '0') ||
-            (trim($this->params->get('cookielessdomain', '')) == '' &&
-                trim($this->params->get('pro_cookielessdomain_2', '')) == '' &&
-                trim($this->params->get('pro_cookieless_3', '')) == '')
+            !$this->params->isEnabled(Settings::COOKIELESSDOMAIN_ENABLE) ||
+            (
+                $this->params->isEmpty(Settings::COOKIELESSDOMAIN) &&
+                $this->params->isEmpty(Settings::COOKIELESSDOMAIN_2) &&
+                $this->params->isEmpty(Settings::COOKIELESSDOMAIN_3)
+            )
         ) {
             return;
         }
@@ -686,12 +692,14 @@ HTML;
             return $parser->removeMatches($html);
         } catch (PregErrorException $e) {
             $this->logger?->error('RemoveScriptsFromHtml failed ' . $e->getMessage());
+
             return $html;
         }
     }
 
     public function processJavaScriptForConfigureHelper(): array
     {
+        Optimize::setPcreLimits();
         $dynamicScripts = [];
 
         try {
@@ -733,9 +741,32 @@ HTML;
                 return $m[0];
             },
             $html,
-            (int)$this->params->get('elements_above_fold', 300)
+            $this->getElementAboveFoldCount()
         );
 
         return $aboveFoldHtml;
+    }
+
+    public function getElementAboveFoldCount(): int
+    {
+        $currentUrl = (string)SystemUri::currentUri();
+        $default = $this->params->getInt(Settings::ELEMENTS_ABOVE_FOLD);
+        /** @var PathsInterface $paths */
+        $paths = $this->getContainer()->get(PathsInterface::class);
+
+        if (SystemUri::homePageAbsolute($paths) == $currentUrl) {
+            //Use default here for backwards compatibility
+            return (int) $this->params->get(Settings::ELEMENTS_ABOVE_FOLD_HOME, $default);
+        }
+
+        $candidates = $this->params->getArray(Settings::ELEMENTS_ABOVE_FOLD_PER_PAGE);
+
+        foreach ($candidates as $candidate) {
+            if (str_contains($currentUrl, $candidate['url'])) {
+                return (int) $candidate['elements'];
+            }
+        }
+
+        return $default;
     }
 }

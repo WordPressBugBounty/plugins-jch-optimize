@@ -3,10 +3,10 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,7 @@ trait ModifyCssUrlsTrait
 
     protected function internalModifyCssUrls(ModifyCssUrlsProcessor $cssUrlProcessor, string $css): string
     {
-        $regex = self::cssUrlStringToken();
+        $regex = '(' . self::cssUrlToken() . ')(\s*,)?';
 
         $css = preg_replace_callback("#{$regex}#i", function ($matches) use ($cssUrlProcessor, $css) {
             if (empty($matches[0])) {
@@ -34,7 +34,7 @@ trait ModifyCssUrlsTrait
             }
 
             try {
-                $cssUrl = CssUrl::load($matches[0]);
+                $cssUrl = CssUrl::load($matches[1]);
             } catch (InvalidArgumentException) {
                 return $matches[0];
             }
@@ -51,13 +51,15 @@ trait ModifyCssUrlsTrait
                 return '';
             }
 
-            return $modifiedCssUrl->render();
+            $trailingComma = $matches[2] ?? '';
+
+            return $modifiedCssUrl->render() . $trailingComma;
         }, $css);
 
-        //Remove any empty background declarations
+        //Remove any empty background declarations, or trailing commas from multiple URLs
         return preg_replace(
-            '#background(?:-image)?\s*+:\s*+(?:!important)?\s*+(?:;\s*+|(?=(?:}|$)))#',
-            '',
+            ['#background(?:-image)?\s*+:\s*+(?:!important)?\s*+(?:;\s*+|(?=(?:}|$)))#', '#,\s*+;#'],
+            ['', ';'],
             $css
         );
     }
@@ -76,6 +78,8 @@ trait ModifyCssUrlsTrait
 
     private function evaluateImportantContext(string $cssDeclaration): bool
     {
-        return (bool) preg_match('#background[^:]*?:[^;}]*?!important#i', $cssDeclaration);
+        $cssUrl = self::cssUrlToken();
+
+        return (bool)preg_match("#background[^;]*?{$cssUrl}[^;]*?!important#i", $cssDeclaration);
     }
 }

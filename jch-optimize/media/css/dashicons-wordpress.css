@@ -21,34 +21,6 @@
     --jch-dashicon-border-color: #D8DDE2;
 }
 
-.jch-dash-icons .dashicon-wrapper .dashicon {
-    --jch-dashicon-text-color: #2271b1;
-    --jch-dashicon-bg-color: #f0f6fc;
-    --jch-dashicon-icon-color: #2271b1;
-    --jch-dashicon-bg-color-hvr:#184f7c;
-}
-
-.jch-dash-icons .dashicon-wrapper.success .dashicon {
-    --jch-dashicon-text-color: #457254;
-    --jch-dashicon-bg-color: #f3f9f3;
-    --jch-dashicon-icon-color: #55a258;
-    --jch-dashicon-bg-color-hvr: #457254;
-}
-
-.jch-dash-icons .dashicon-wrapper.danger .dashicon {
-    --jch-dashicon-text-color: #c52827;
-    --jch-dashicon-bg-color: #f4f0f0;
-    --jch-dashicon-icon-color: #ce8484;
-    --jch-dashicon-bg-color-hvr: #c52827;
-}
-
-.jch-dash-icons .dashicon-wrapper.warning .dashicon {
-    --jch-dashicon-text-color: #996900;
-    --jch-dashicon-bg-color: #fffcf4;
-    --jch-dashicon-icon-color: #ffb514;
-    --jch-dashicon-bg-color-hvr: #996900;
-}
-
 .jch-dash-icons-switcher .form-check-input:checked {
     background-color: hsl(var(--hue), 30%, 40%);
     border-color: hsl(var(--hue), 30%, 40%);

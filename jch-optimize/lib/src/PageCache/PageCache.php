@@ -26,6 +26,7 @@ use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use Exception;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Laminas\ClearExpiredByFactor;
+use JchOptimize\Core\Model\CloudflarePurger;
 use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Platform\HooksInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
@@ -51,6 +52,7 @@ use function usort;
 
 // phpcs:disable PSR1.Files.SideEffects
 defined('_JCH_EXEC') or die('Restricted Access');
+
 // phpcs:enable PSR1.Files.SideEffects
 
 class PageCache implements ContainerAwareInterface, LoggerAwareInterface
@@ -72,28 +74,18 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
 
     protected bool $isCachingSet = false;
 
-    /**
-     * Constructor
-     *
-     * @param Registry $params
-     * @param Input $input
-     * @param StorageInterface $pageCacheStorage
-     * @param StorageInterface&TaggableInterface&IterableInterface $taggableCache
-     * @param CacheInterface $cacheUtils
-     * @param HooksInterface $hooks
-     * @param UtilityInterface $utility
-     */
     public function __construct(
         protected Registry $params,
         protected Input $input,
         protected StorageInterface $pageCacheStorage,
         /**
-         * @property StorageInterface&TaggableInterface&IterableInterface
+         * @var StorageInterface&TaggableInterface&IterableInterface $taggableCache
          */
         protected $taggableCache,
         protected CacheInterface $cacheUtils,
         protected HooksInterface $hooks,
-        protected UtilityInterface $utility
+        protected UtilityInterface $utility,
+        protected ?CloudflarePurger $cloudflarePurger = null
     ) {
         $reflection = new ReflectionClass($this->pageCacheStorage);
         $this->adapter = $reflection->getShortName();
@@ -360,10 +352,14 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
     public function deleteItemsByIds(array $ids): bool
     {
         $result = 1;
+        $urls = [];
 
         foreach ($ids as $id) {
+            $urls[] = $this->getUrlFromId($id);
             $result &= (int)$this->deleteItemById($id);
         }
+
+        $this->cloudflarePurger?->purge($urls);
 
         return (bool)$result;
     }
@@ -402,7 +398,7 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
         $this->cacheId = $this->getPageCacheId();
 
         if ($this->input->server->get('REQUEST_METHOD') == 'POST') {
-            if ($this->params->get('page_cache_exclude_form_users', '1')) {
+            if ($this->params->get('page_cache_exclude_form_users', '1') && !empty($_POST)) {
                 $this->hooks->onUserPostForm();
 
                 if (!$this->input->cookie->get('jch_optimize_no_cache_user_activity') == 'user_posted_form') {
@@ -438,9 +434,8 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
             $data = $this->cacheUtils->prepareDataFromCache($data);
 
             if (
-                !is_null($data) && $this->input->cookie->get(
-                    'jch_optimize_no_cache_user_activity'
-                ) != 'user_posted_form'
+                !is_null($data)
+                && $this->input->cookie->get('jch_optimize_no_cache_user_activity') != 'user_posted_form'
             ) {
                 if (!empty($data['body'])) {
                     $this->setCaptureCache($data['body']);
@@ -454,6 +449,7 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
             }
         }
     }
+
     public function getPageCacheId(?UriInterface $currentUri = null): string
     {
         if ($currentUri === null) {
@@ -505,6 +501,8 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
             }
         }
 
+        $this->cloudflarePurger?->purge();
+
         return (bool)$return;
     }
 
@@ -533,5 +531,12 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
     public function hasCaptureCache(UriInterface $uri): bool
     {
         return false;
+    }
+
+    public function getUrlFromId(string $id): string
+    {
+        $tags = $this->taggableCache->getTags($id);
+
+        return $tags['1'];
     }
 }

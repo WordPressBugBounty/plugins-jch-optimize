@@ -3,10 +3,10 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
@@ -49,8 +49,18 @@ class NestingAtRule implements CssComponents
             throw new InvalidArgumentException('Invalid nested at-rule rule: ');
         }
 
+        return self::loadFromMatch($matches);
+    }
+
+    public static function loadFromMatch(array $matches): static
+    {
+        // If for some reason we didn't get the groups, fall back.
+        if (empty($matches['identifier']) && empty($matches['rule']) && empty($matches['cssRuleList'])) {
+            return static::load($matches[0]);
+        }
+
         $identifier = $matches['identifier'];
-        $vendor = $matches['vendor'];
+        $vendor = $matches['vendor'] ?? '';
         $rule = $matches['rule'];
         $cssRuleList = $matches['cssRuleList'];
 
@@ -62,8 +72,7 @@ class NestingAtRule implements CssComponents
         return "@{$this->vendor}{$this->identifier} {$this->rule} {{$this->cssRuleList}}";
     }
 
-
-    private static function cssNestingAtRuleWithCaptureGroupToken(): string
+    public static function cssNestingAtRuleWithCaptureGroupToken(): string
     {
         $esc = self::cssEscapedString();
         $dqStr = self::doubleQuoteStringToken();
@@ -72,8 +81,10 @@ class NestingAtRule implements CssComponents
         $url = self::cssUrlToken();
 
         return "@(?<vendor>(?:-[^-]++-)?)(?<identifier>[a-zA-Z-]++)\s*+"
-        . "(?<rule>(?>[^{}@/\\\\'\";\su]++|{$bc}|{$esc}|{$dqStr}|{$sqStr}|{$url}|[/u]|\s++)*?)\s*+"
-        . "(?P<cssBlock>{(?<cssRuleList>(?>(?:[^{}/\\\\'\"]++|{$bc}|{$esc}|{$dqStr}|{$sqStr}|/)++|(?&cssBlock))*+)})";
+            . "(?<rule>(?>[^{}@/\\\\'\";\su]++|{$bc}|{$esc}|{$dqStr}|{$sqStr}|{$url}|[/u]|\s++)*?)\s*+"
+            . "(?P<cssBlock>{"
+            . "(?<cssRuleList>(?>(?:[^{}/\\\\'\"]++|{$bc}|{$esc}|{$dqStr}|{$sqStr}|/)++|(?&cssBlock))*+)"
+            . "})";
     }
 
     public function setIdentifier(string $identifier): static

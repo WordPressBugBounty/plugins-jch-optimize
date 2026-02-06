@@ -29,7 +29,7 @@ class MainHtml extends View
         wp_register_script(
             'jch-fileupload-js',
             JCH_PLUGIN_URL . 'media/core/js/file_upload.js',
-            ['jch-bootstrap-js'],
+            ['jch-bootstrap'],
             JCH_VERSION,
             true
         );

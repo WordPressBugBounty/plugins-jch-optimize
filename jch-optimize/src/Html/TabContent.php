@@ -50,9 +50,9 @@ HMTL;
         return <<<HTML
 			</div>
 		</fieldset>
-		<fieldset class="jch-group">
+		<fieldset class="jch-group p-4 mb-4 border border-1 rounded">
 			{$header}
-			<div class="{$class}"><p><em>{$description}</em></p></div>
+			<p class="text-muted">{$description}</p>
 			<div>		
 HTML;
     }

@@ -18,21 +18,24 @@ use _JchOptimizeVendor\V91\Joomla\DI\ServiceProviderInterface;
 use JchOptimize\Core\Cdn\Cdn;
 use JchOptimize\Core\Css\Callbacks\CorrectUrls;
 use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDependencies;
+use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDomainProfiler;
 use JchOptimize\Core\Css\Callbacks\ExtractCriticalCss;
 use JchOptimize\Core\Css\Callbacks\FormatCss;
 use JchOptimize\Core\Css\Callbacks\HandleAtRules;
 use JchOptimize\Core\Css\Callbacks\PostProcessCriticalCss;
+use JchOptimize\Core\FeatureHelpers\DynamicJs;
 use JchOptimize\Core\FeatureHelpers\DynamicSelectors;
 use JchOptimize\Core\Html\Callbacks\Cdn as CdnCallback;
 use JchOptimize\Core\Html\Callbacks\CombineJsCss;
 use JchOptimize\Core\Html\Callbacks\JavaScriptConfigureHelper;
 use JchOptimize\Core\Html\Callbacks\LazyLoad;
 use JchOptimize\Core\Html\FilesManager;
-use JchOptimize\Core\Preloads\Http2Preload;
+use JchOptimize\Core\Html\HtmlProcessor;
+use JchOptimize\Core\Html\JsLayout\JsLayoutPlanner;
 use JchOptimize\Core\Platform\ExcludesInterface;
 use JchOptimize\Core\Platform\ProfilerInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
-use JchOptimize\Core\Html\HtmlProcessor;
+use JchOptimize\Core\Preloads\Http2Preload;
 use JchOptimize\Core\Registry;
 
 use function defined;
@@ -56,6 +59,7 @@ class Callbacks implements ServiceProviderInterface
         $container->set(PostProcessCriticalCss::class, [$this, 'getPostProcessCriticalCssService']);
 
         $container->share(CriticalCssDependencies::class, [$this, 'getDependenciesProviderService']);
+        $container->share(CriticalCssDomainProfiler::class, [$this, 'getCriticalCssDomainProfilerService']);
     }
 
     public function getCdnCallbackService(Container $container): CdnCallback
@@ -96,7 +100,9 @@ class Callbacks implements ServiceProviderInterface
             $container->get(FilesManager::class),
             $container->get(HtmlProcessor::class),
             $container->get(ProfilerInterface::class),
-            $container->get(ExcludesInterface::class)
+            $container->get(ExcludesInterface::class),
+            $container->get(JsLayoutPlanner::class),
+            $container->get(DynamicJs::class)
         );
     }
 
@@ -117,7 +123,8 @@ class Callbacks implements ServiceProviderInterface
             $container,
             $container->get(Registry::class),
             $container->get(CriticalCssDependencies::class),
-            $container->get(DynamicSelectors::class)
+            $container->get(DynamicSelectors::class),
+            $container->get(CorrectUrls::class)
         );
     }
 
@@ -148,8 +155,17 @@ class Callbacks implements ServiceProviderInterface
 
     public function getDependenciesProviderService(Container $container): CriticalCssDependencies
     {
-        return new CriticalCssDependencies(
-            $container->get(HtmlProcessor::class),
-        );
+        $deps = new CriticalCssDependencies($container->get(HtmlProcessor::class));
+
+        if (getenv('JCH_CRITICAL_PROFILER') === '1') {
+            $deps->setProfiler($container->get(CriticalCssDomainProfiler::class));
+        }
+
+        return $deps;
+    }
+
+    public function getCriticalCssDomainProfilerService(Container $container): CriticalCssDomainProfiler
+    {
+        return new CriticalCssDomainProfiler();
     }
 }

@@ -16,30 +16,30 @@ namespace JchOptimize\Core\Html;
 use _JchOptimizeVendor\V91\GuzzleHttp\Psr7\UriResolver;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
-use _JchOptimizeVendor\V91\Psr\Http\Client\ClientInterface;
 use _JchOptimizeVendor\V91\Psr\Http\Message\UriInterface;
 use CodeAlfa\Minify\Css;
 use CodeAlfa\Minify\Js;
 use JchOptimize\Core\Cdn\Cdn;
 use JchOptimize\Core\Exception\ExcludeException;
 use JchOptimize\Core\Exception\PropertyNotFoundException;
-use JchOptimize\Core\FeatureHelpers\DynamicJs;
 use JchOptimize\Core\FeatureHelpers\Fonts;
 use JchOptimize\Core\FileInfo;
-use JchOptimize\Core\FileUtils;
 use JchOptimize\Core\Helper;
+use JchOptimize\Core\Html\CssLayout\CssItem;
 use JchOptimize\Core\Html\Elements\Link;
 use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\Elements\Style;
+use JchOptimize\Core\Html\Excludes\SectionExcludes;
+use JchOptimize\Core\Html\JsLayout\JsItem;
 use JchOptimize\Core\Platform\ExcludesInterface;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
 use JchOptimize\Core\Uri\Uri;
 use JchOptimize\Core\Uri\UriComparator;
-use SplObjectStorage;
 
-use function array_pad;
+use function array_column;
+use function array_filter;
 use function defined;
 use function extension_loaded;
 use function get_class;
@@ -77,6 +77,15 @@ class FilesManager implements ContainerAwareInterface
     public bool $jsExcludedIeo = false;
 
     /**
+     * @var bool Flagged when a sensitive CSS file is encountered
+     */
+    protected bool $cssSensitive = false;
+
+    /**
+     * @var bool Flagged when a sensitive JS file is encountered
+     */
+    protected bool $jsSensitive = false;
+    /**
      * @var array $aCss Multidimensional array of css files to combine
      */
     public array $aCss = [[]];
@@ -96,63 +105,9 @@ class FilesManager implements ContainerAwareInterface
      */
     public int $iIndex_css = 0;
 
-    /** @var array $aExcludedJs Javascript matches that will be excluded.
-     *        Will be moved to the bottom of section if not selected in "don't move"
-     */
-    public array $aExcludedJs = [];
-
-    /**
-     * @var int $jsExcludedIndex Recorded incremented index of js files when the last file was excluded
-     */
-    public int $jsExcludedIndex = 0;
-
-    /**
-     * @var SplObjectStorage<Script, mixed>
-     */
-    public SplObjectStorage $deferredScriptStorage;
-
-
     protected ?HtmlElementInterface $element = null;
 
-    /**
-     * @var array{
-     *     excludes_peo:array{
-     *         js:array<array-key, array{url?:string, script?:string, ieo?:string, dontmove?:string}>,
-     *         css:string[],
-     *         js_script:array<array-key, array{url?:string, script?:string, ieo?:string, dontmove?:string}>,
-     *         css_script:string[]
-     *     },
-     *     critical_js:array{
-     *         js:string[],
-     *         script:string[]
-     *     },
-     *     remove:array{
-     *         js:string[],
-     *         css:string[]
-     *     }
-     * } $aExcludes Multidimensional array of excludes set in the parameters.
-     */
-    public array $aExcludes = [
-        'excludes_peo' => [
-            'js' => [[]],
-            'css' => [],
-            'js_script' => [[]],
-            'css_script' => []
-        ],
-        'critical_js' => [
-            'js' => [],
-            'script' => [],
-        ],
-        'remove' => [
-            'js' => [],
-            'css' => []
-        ]
-    ];
-
-    /**
-     * @var array $aMatches Array of matched elements holding links to CSS/Js files on the page
-     */
-    protected array $aMatches = [];
+    public ?SectionExcludes $sectionExcludes = null;
 
     /**
      * @var array $cssReplacements Array of CSS matches to be removed
@@ -163,12 +118,6 @@ class FilesManager implements ContainerAwareInterface
      * @var array $jsReplacements Array of JavaScript matched to be removed
      */
     public array $jsReplacements = [[]];
-
-    /**
-     * @var array Marks the place where combined JavaScript files will be placed in the HTML for the
-     *            indicated index
-     */
-    public array $jsMarker = [];
 
     /**
      * @var string|HtmlElementInterface $replacement String to replace the matched link
@@ -190,44 +139,24 @@ class FilesManager implements ContainerAwareInterface
      */
     protected array $aUrls = [];
 
-    /**
-     * @var string Previous match of a script with module/async/defer attribute
-     */
-    private string $prevDeferMatches = '';
-    /**
-     * @var int Current index of the defers array
-     */
-    private int $deferIndex = -1;
-    /**
-     * @var array|null[]
-     */
-    private array $smartCombinePreviousParts = [
-        'js' => null,
-        'css' => null
-    ];
-    /**
-     * @var array|int[]
-     */
-    private array $smartCombineCounters = [
-        'js' => 0,
-        'css' => 0
-    ];
+    /** @var CssItem[] */
+    public array $cssTimeLine = [];
+
+    /** @var JsItem[] */
+    public array $jsTimeLine = [];
 
     /**
      * Private constructor, need to implement a singleton of this class
      */
     public function __construct(
         private Registry $params,
-        private FileUtils $fileUtils,
-        private ExcludesInterface $excludes,
-        private ?ClientInterface $http
+        private ExcludesInterface $platformExcludes,
     ) {
-        $this->deferredScriptStorage = new SplObjectStorage();
     }
 
-    public function setExcludes(array $aExcludes): void
+    public function setExcludes(SectionExcludes $sectionExcludes): void
     {
-        $this->aExcludes = $aExcludes;
+        $this->sectionExcludes = $sectionExcludes;
     }
 
     /**
@@ -284,7 +213,7 @@ class FilesManager implements ContainerAwareInterface
             && ($uri = $element->getSrc()) instanceof UriInterface
             && $uri->getScheme() == 'data'
         ) {
-            $this->excludeJsIEO();
+            $this->excludeJsIEO($element);
         } elseif (
             $element instanceof Link
             && ($uri = $element->getHref()) instanceof UriInterface
@@ -335,38 +264,37 @@ class FilesManager implements ContainerAwareInterface
             $this->excludeCssIEO();
         }
 
-        if ($this->isDuplicated($uri)) {
-            $this->replacement = '';
-            $this->excludeCssIEO();
+        if ($this->isSensitiveExternal($link, $uri)) {
+            $this->recordSensitiveCss($link, $media);
+
+            // No PEO/IEO excludes, no adding to $aCss; planner will later:
+            // - use it for critical CSS extraction
+            // - schedule original href async/dynamic
+            return;
         }
 
         //process excludes for css urls
         if (
             $this->excludeGenericUrls($uri)
-            || Helper::findExcludes(@$this->aExcludes['excludes_peo']['css'], (string)$uri)
+            || (
+                $this->sectionExcludes !== null
+                && Helper::findExcludes($this->sectionExcludes->peo->cssUrls, (string)$uri)
+            )
         ) {
             //If Optimize CSS Delivery enabled, always exclude IEO
             if ($this->params->get('optimizeCssDelivery_enable', '0')) {
                 $this->excludeCssIEO();
             } else {
-                $this->excludeCssPEO();
+                $this->excludeCssPEO($link, $media);
             }
         }
 
-        $this->updateIndex();
-
-        //File was not excluded
-        $this->cssExcludedPeo = false;
-        $this->cssExcludedIeo = false;
-        //Record file info for download
-        $this->aCss[$this->iIndex_css][] = new FileInfo(clone $link);
-        //Record match to be replaced
-        $this->cssReplacements[$this->iIndex_css][] = $link;
+        $this->processCssElement($link, $media);
     }
 
     private function getMediaAttribute(): string
     {
-        return (string) ($this->getElement()->attributeValue('media') ?: '');
+        return (string)($this->getElement()->attributeValue('media') ?: '');
     }
 
     /**
@@ -397,7 +325,7 @@ class FilesManager implements ContainerAwareInterface
         if (!$this->params->get('includeAllExtensions', '0')) {
             if (
                 UriComparator::existsLocally($resolvedUri, $cdn, $path)
-                && preg_match('#' . $this->excludes->extensions() . '#i', (string)$uri)
+                && preg_match('#' . $this->platformExcludes->extensions() . '#i', (string)$uri)
             ) {
                 return true;
             }
@@ -422,15 +350,24 @@ class FilesManager implements ContainerAwareInterface
      * @return never
      * @throws ExcludeException
      */
-    private function excludeCssPEO()
+    private function excludeCssPEO(Link|Style $element, ?string $media = null)
     {
-        //if previous file was not excluded increment css index
-        if (!$this->cssExcludedPeo && !empty($this->cssReplacements[0])) {
-            $this->iIndex_css++;
-        }
-
         $this->cssExcludedPeo = true;
         $this->sCssExcludeType = 'peo';
+
+        $ordinal = count($this->cssTimeLine);
+
+        $this->cssTimeLine[] = new CssItem(
+            ordinal: count($this->cssTimeLine),
+            groupIndex: null,
+            isProcessed: false,
+            isExcluded: true,
+            isInline: $element instanceof Style,
+            isMarker: $ordinal === 0,
+            isSensitive: false,
+            media: $media,
+            node: $element
+        );
 
         throw new ExcludeException();
     }
@@ -457,17 +394,24 @@ class FilesManager implements ContainerAwareInterface
 
     private function updateIndex(): void
     {
-        if (!$this->params->get('combine_files', '0')) {
-            $type = ($this->getElement() instanceof Script) ? 'js' : 'css';
+        $combineFiles = $this->params->get('combine_files', '0');
+        $element = $this->getElement();
 
-            if ($type == 'js') {
-                //Don't increase index if we're in an exclude. Index already incremented
-                if (!$this->jsExcludedPeo && !empty($this->aJs[0])) {
-                    $this->iIndex_js++;
-                }
-                //Don't increase index if we're in an exclude. Index already incremented
-            } elseif (!$this->cssExcludedPeo && !empty($this->aCss[0])) {
-                    $this->iIndex_css++;
+        if ($element instanceof Script && !empty($this->aJs[$this->iIndex_js] ?? [])) {
+            if (!$combineFiles) {
+                $this->iIndex_js++;
+            } elseif ($this->jsExcludedPeo || $this->jsSensitive) {
+                $this->iIndex_js++;
+            }
+        } elseif (
+            ($element instanceof Link || $element instanceof Style)
+            && !empty($this->aCss[$this->iIndex_css] ?? [])
+        ) {
+            // Same logic for CSS
+            if (!$combineFiles) {
+                $this->iIndex_css++;
+            } elseif ($this->cssExcludedPeo || $this->cssSensitive) {
+                $this->iIndex_css++;
             }
         }
     }
@@ -478,25 +422,21 @@ class FilesManager implements ContainerAwareInterface
     private function processCssContent(Style $style): void
     {
         $content = $style->getChildren()[0];
-
+        $contentOpt = Css::optimize($content);
         if (
-            Helper::findExcludes(@$this->aExcludes['excludes_peo']['css_script'], Css::optimize($content), 'css')
+            $this->sectionExcludes !== null
+            && Helper::findExcludes($this->sectionExcludes->peo->cssScriptPatterns, $contentOpt, 'css')
             || !$this->params->get('inlineStyle', '0')
             || $this->params->get('excludeAllStyles', '0')
         ) {
             if ($this->params->get('optimizeCssDelivery_enable', '0')) {
                 $this->excludeCssIEO();
             } else {
-                $this->excludeCssPEO();
+                $this->excludeCssPEO($style);
             }
         }
 
-        $this->updateIndex();
-        $this->cssExcludedPeo = false;
-        $this->cssExcludedIeo = false;
-
-        $this->aCss[$this->iIndex_css][] = new FileInfo(clone $style);
-        $this->cssReplacements[$this->iIndex_css][] = $style;
+        $this->processCssElement($style);
     }
 
     /**
@@ -507,62 +447,66 @@ class FilesManager implements ContainerAwareInterface
         $uri = $script->getSrc();
 
         if (!$uri instanceof UriInterface) {
-            $this->excludeJsIEO();
+            $this->excludeJsIEO($script);
         }
 
         if ($this->isDuplicated($uri)) {
             $this->replacement = '';
-            $this->excludeJsIEO(false);
+            return;
         }
 
-        foreach ($this->aExcludes['excludes_peo']['js'] as $exclude) {
-            if (!empty($exclude['url']) && Helper::findExcludes([$exclude['url']], (string)$uri)) {
-                //If dont move, don't add to excludes
-                $addToExcludes = !isset($exclude['dontmove']);
-                //Handle js files IEO
-                if (isset($exclude['ieo']) || Helper::isScriptDeferred($script)) {
-                    $this->excludeJsIEO($addToExcludes);
-                } else {
-                    //Prepare PEO excludes for js urls
-                    $this->excludeJsPEO($addToExcludes);
+        // --- sensitivity check for external JS ---
+        if ($this->isSensitiveExternal($script, $uri)) {
+            $this->recordSensitiveJs($script);
+
+            // We don't process or exclude it; just keep it in the timeline for the planner.
+            return;
+        }
+
+        if ($this->sectionExcludes !== null) {
+            // Process PEO / IEO excludes for JS URLs (including dontmove)
+            foreach ($this->sectionExcludes->peo->jsUrlRules as $rule) {
+                if ($rule->url !== null && Helper::findExcludes([$rule->url], (string)$uri)) {
+                    $dontMove = $rule->dontMove;
+
+                    // Handle IEO
+                    if ($rule->ignoreExecutionOrder) {
+                        $this->excludeJsIEO($script, $dontMove);
+                    } else {
+                        // Normal PEO excludes
+                        $this->excludeJsPEO($script, $dontMove);
+                    }
                 }
             }
         }
 
-        //This is placed below exclusions because sometimes we want to be able to prevent deferred files from
-        //moving to the bottom.
-        if (Helper::isScriptDeferred($script)) {
-            $this->deferredScriptStorage->attach($script);
-
-            $this->excludeJsIEO(false);
-        }
-
         if ($this->excludeGenericUrls($uri)) {
-            $this->excludeJsPEO();
+            $this->excludeJsPEO($script);
         }
 
-        $this->updateIndex();
-        $this->responseToPreviousExclude();
-        $this->jsExcludedPeo = false;
-        $this->jsExcludedIeo = false;
-
-        $this->aJs[$this->iIndex_js][] = new FileInfo(clone $script);
-
-        $this->jsReplacements[$this->iIndex_js][] = $script;
+        $this->maybeProcessScript($script);
     }
 
     /**
      * @return never
      * @throws ExcludeException
      */
-    public function excludeJsIEO($addToExcludes = true)
+    public function excludeJsIEO(Script $script, $dontMove = false)
     {
         $this->jsExcludedIeo = true;
         $this->sJsExcludeType = 'ieo';
 
-        if ($addToExcludes) {
-            $this->aExcludedJs[] = $this->getElement();
-        }
+        $this->jsTimeLine[] = new JsItem(
+            ordinal: count($this->jsTimeLine),
+            groupIndex: null,
+            isProcessed: false,
+            isExcluded: true,
+            isGate: $dontMove,
+            isIeo: true,
+            isDeferred: Helper::isScriptDeferred($script),
+            isSensitive: false,
+            node: $script
+        );
 
         throw new ExcludeException();
     }
@@ -571,24 +515,22 @@ class FilesManager implements ContainerAwareInterface
      * @return never
      * @throws ExcludeException
      */
-    private function excludeJsPEO($addToExcludes = true)
+    private function excludeJsPEO(Script $script, $dontMove = false)
     {
-        //If previous file was not excluded, update marker
-        if (!$this->jsExcludedPeo) {
-            $marker = $this->getElement()->data('jch', 'js' . $this->iIndex_js);
-
-            $this->jsMarker = array_pad($this->jsMarker, ($this->iIndex_js + 1), $marker);
-        }
-
-        if ($addToExcludes) {
-            $this->aExcludedJs[] = $this->getElement();
-        }
-
-        //Record index of last excluded file
-        $this->jsExcludedIndex = $this->iIndex_js;
-
         $this->jsExcludedPeo = true;
         $this->sJsExcludeType = 'peo';
+
+        $this->jsTimeLine[] = new JsItem(
+            ordinal: count($this->jsTimeLine),
+            groupIndex: null,
+            isProcessed: false,
+            isExcluded: true,
+            isGate: $dontMove,
+            isIeo: false,
+            isDeferred: Helper::isScriptDeferred($script),
+            isSensitive: false,
+            node: $script
+        );
 
         throw new ExcludeException();
     }
@@ -600,53 +542,171 @@ class FilesManager implements ContainerAwareInterface
     {
         $content = $script->getChildren()[0];
 
-        foreach ($this->aExcludes['excludes_peo']['js_script'] as $exclude) {
-            if (!empty($exclude['script']) && Helper::findExcludes([$exclude['script']], Js::optimize($content))) {
-                //If 'dontmove', don't add to excludes
-                $addToExcludes = !isset($exclude['dontmove']);
-
-                if (isset($exclude['ieo'])) {
-                    //process IEO excludes for js scripts
-                    $this->excludeJsIEO($addToExcludes);
-                } else {
-                    //Prepare PEO excludes for js scripts
-                    $this->excludeJsPEO($addToExcludes);
-                }
-            }
-        }
-
         //Exclude all scripts if options set
         if (
             !$this->params->get('inlineScripts', '0')
             || $this->params->get('excludeAllScripts', '0')
         ) {
-            $this->excludeJsPEO();
+            $this->excludeJsPEO($script);
         }
 
-        if (Helper::isScriptDeferred($script)) {
-            $this->deferredScriptStorage->attach($script);
-            $this->excludeJsIEO(false);
+        if ($this->sectionExcludes !== null) {
+            foreach ($this->sectionExcludes->peo->jsScriptRules as $rule) {
+                if ($rule->script !== null && Helper::findExcludes([$rule->script], Js::optimize($content))) {
+                    //If 'dontmove', don't add to excludes
+                    $dontMove = $rule->dontMove;
+
+                    if ($rule->ignoreExecutionOrder) {
+                        //process IEO excludes for js scripts
+                        $this->excludeJsIEO($script, $dontMove);
+                    } else {
+                        //Prepare PEO excludes for js scripts
+                        $this->excludeJsPEO($script, $dontMove);
+                    }
+                }
+            }
         }
 
-        $this->updateIndex();
-        $this->responseToPreviousExclude();
-        $this->jsExcludedPeo = false;
-        $this->jsExcludedIeo = false;
-
-        $this->aJs[$this->iIndex_js][] = new FileInfo(clone $script);
-        $this->jsReplacements[$this->iIndex_js][] = $script;
-    }
-
-    private function responseToPreviousExclude(): void
-    {
-        //If previous file was excluded PEO, update index
-        if ($this->jsExcludedPeo) {
-            $this->iIndex_js++;
-        }
+        $this->maybeProcessScript($script);
     }
 
     private function mediaValueWillChangeOnLoad(Link $link): bool
     {
         return str_contains((string)$link->attributeValue('onload'), 'media');
+    }
+
+    /**
+     * @param Script $script
+     * @return void
+     */
+    private function maybeProcessScript(Script $script): void
+    {
+        $isDeferred = Helper::isScriptDeferred($script);
+        $isProcessed = false;
+        $groupIndex = null;
+
+        if (!$isDeferred) {
+            $this->updateIndex();
+            $this->aJs[$this->iIndex_js][] = new FileInfo(clone $script);
+            $this->jsReplacements[$this->iIndex_js][] = $script;
+            $isProcessed = true;
+            $groupIndex = $this->iIndex_js;
+        }
+
+        //These properties must only be set after index is (maybe) updated
+        $this->jsExcludedPeo = false;
+        $this->jsExcludedIeo = false;
+        $this->cssSensitive = false;
+
+        $existingGroupIndexes = array_filter(
+            array_column($this->jsTimeLine, 'groupIndex'),
+            fn($a) => $a !== null
+        );
+
+        if ($groupIndex === null || !in_array($groupIndex, $existingGroupIndexes)) {
+            $this->jsTimeLine[] = new JsItem(
+                ordinal: count($this->jsTimeLine),
+                groupIndex: $groupIndex,
+                isProcessed: $isProcessed,
+                isExcluded: false,
+                isGate: false,
+                isIeo: false,
+                isDeferred: $isDeferred,
+                isSensitive: false,
+                node: !$this->params->get('combine_files', 0) ? clone $script : null
+            );
+        }
+    }
+
+    private function processCssElement(Link|Style $element, ?string $media = null): void
+    {
+        $this->updateIndex();
+        //These properties must be set only after index is updated
+        $this->cssExcludedPeo = false;
+        $this->cssExcludedIeo = false;
+        $this->cssSensitive = false;
+
+        $this->aCss[$this->iIndex_css][] = new FileInfo(clone $element);
+        $this->cssReplacements[$this->iIndex_css][] = $element;
+        $groupIndex = $this->iIndex_css;
+        $ordinal = count($this->cssTimeLine);
+
+        $existingGroupIndexes = array_filter(
+            array_column($this->cssTimeLine, 'groupIndex'),
+            fn($a) => $a !== null
+        );
+
+        if (!in_array($groupIndex, $existingGroupIndexes)) {
+            $this->cssTimeLine[] = new CssItem(
+                ordinal: $ordinal,
+                groupIndex: $groupIndex,
+                isProcessed: true,
+                isExcluded: false,
+                isInline: false,
+                isMarker: $ordinal === 0,
+                isSensitive: false,
+                media: $media,
+                node: !$this->params->get('combine_files', 0) ? clone $element : null
+            );
+        }
+    }
+
+    private function hasSensitiveAttributes(HtmlElementInterface $element): bool
+    {
+        return $element->hasAttribute('integrity')
+            || $element->hasAttribute('crossorigin')
+            || $element->hasAttribute('referrerpolicy');
+    }
+
+    private function isExternal(UriInterface $uri): bool
+    {
+        $resolvedUri = UriResolver::resolve(SystemUri::currentUri(), $uri);
+
+        $cdn = $this->getContainer()->get(Cdn::class);
+        $path = $this->getContainer()->get(PathsInterface::class);
+
+        return !UriComparator::existsLocally($resolvedUri, $cdn, $path);
+    }
+
+    private function isSensitiveExternal(HtmlElementInterface $element, UriInterface $uri): bool
+    {
+        return $this->hasSensitiveAttributes($element) && $this->isExternal($uri);
+    }
+
+    private function recordSensitiveJs(Script $script): void
+    {
+        $this->jsSensitive = true;
+        $this->replacement = '';
+
+        $this->jsTimeLine[] = new JsItem(
+            ordinal: count($this->jsTimeLine),
+            groupIndex: null,               // not part of any processed group
+            isProcessed: false,
+            isExcluded: false,
+            isGate: false,
+            isIeo: false,
+            isDeferred: Helper::isScriptDeferred($script),
+            isSensitive: true,
+            node: clone $script
+        );
+    }
+
+    private function recordSensitiveCss(Link $link, ?string $media): void
+    {
+        $this->cssSensitive = true;
+        $this->replacement = '';
+        $ordinal = count($this->cssTimeLine);
+
+        $this->cssTimeLine[] = new CssItem(
+            ordinal: $ordinal,
+            groupIndex: null,               // not part of any processed group
+            isProcessed: false,
+            isExcluded: false,
+            isInline: false,
+            isMarker: $ordinal === 0,
+            isSensitive: true,
+            media: $media,
+            node: clone $link
+        );
     }
 }

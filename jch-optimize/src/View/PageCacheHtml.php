@@ -26,7 +26,7 @@ class PageCacheHtml extends View
         //Generate HTML for Search Input box
         $filterSearchState = (string)$state->get('filter_search');
         //language=HTML
-        $searchInput = '<input type="text" id="filter_search" name="filter[search]" class="form-control" value="' . $filterSearchState . '" placeholder="Search by URL" aria-label="Search by URL" aria-describedby="filter-search-button">';
+        $searchInput = '<input type="text" id="filter_search" name="filter[search]" class="form-control bg-white" value="' . $filterSearchState . '" placeholder="Search by URL" aria-label="Search by URL" aria-describedby="filter-search-button">';
 
         $this->addData('searchInput', $searchInput);
 
@@ -97,24 +97,26 @@ class PageCacheHtml extends View
         $filterAdapterSelectHtml  = $this->selectListGenerator('filter', $filterAdapterOptionsHtml, 'adapter');
         $this->addData('filterAdapterSelectHtml', $filterAdapterSelectHtml);
 
-        //Generate HTML for filter HTTP Request
-        $filterHttpRequestOptions     = [
+        if (JCH_PRO) {
+            //Generate HTML for filter HTTP Request
+            $filterHttpRequestOptions = [
                 ''    => '- Filter by HTTP Request -',
                 'yes' => 'Yes',
                 'no'  => 'No'
-        ];
-        /** @var string|null $filterHttpRequestState */
-        $filterHttpRequestState = $state->get('filter_http-request');
-        $filterHttpRequestOptionsHtml = Helper::option(
-            $filterHttpRequestOptions,
-            $filterHttpRequestState
-        );
-        $filterHttpRequestSelectHtml  = $this->selectListGenerator(
-            'filter',
-            $filterHttpRequestOptionsHtml,
-            'http-request'
-        );
-        $this->addData('filterHttpRequestSelectHtml', $filterHttpRequestSelectHtml);
+            ];
+            /** @var string|null $filterHttpRequestState */
+            $filterHttpRequestState = $state->get('filter_http-request');
+            $filterHttpRequestOptionsHtml = Helper::option(
+                $filterHttpRequestOptions,
+                $filterHttpRequestState
+            );
+            $filterHttpRequestSelectHtml = $this->selectListGenerator(
+                'filter',
+                $filterHttpRequestOptionsHtml,
+                'http-request'
+            );
+            $this->addData('filterHttpRequestSelectHtml', $filterHttpRequestSelectHtml);
+        }
 
         //Generate option value for ordering list
         $orderOptions = [
@@ -154,7 +156,7 @@ class PageCacheHtml extends View
     private function selectListGenerator(string $type, string $optionsHtml, string $value): string
     {
         return <<<HTML
-<select id="{$type}_{$value}" name="{$type}[{$value}]" class="ms-2" onchange="this.form.submit();"
+<select id="{$type}_{$value}" name="{$type}[{$value}]" class="ms-2 form-select form-select-sm w-auto bg-white" onchange="this.form.submit();"
                 aria-label="{$type} {$value}">
             {$optionsHtml}
         </select>
@@ -168,7 +170,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   		return new bootstrap.Tooltip(tooltipTriggerEl,{
-      			placement: 'right'
+      			placement: 'right',
+      			container: '#jch-bs-amin-ui'
   		})
 	})
 });

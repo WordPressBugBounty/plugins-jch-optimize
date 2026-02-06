@@ -58,4 +58,6 @@ interface HtmlElementInterface
     public function getParent(): string;
 
     public function __toString(): string;
+
+    public function getAttributes(): AttributesCollection;
 }

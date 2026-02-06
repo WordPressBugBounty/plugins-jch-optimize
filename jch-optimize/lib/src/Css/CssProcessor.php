@@ -23,6 +23,8 @@ use JchOptimize\Core\Css\Callbacks\ExtractCriticalCss;
 use JchOptimize\Core\Css\Callbacks\FormatCss;
 use JchOptimize\Core\Css\Callbacks\HandleAtRules;
 use JchOptimize\Core\Css\Callbacks\PostProcessCriticalCss;
+use JchOptimize\Core\Css\Components\CssRule;
+use JchOptimize\Core\Css\Components\NestingAtRule;
 use JchOptimize\Core\Css\Sprite\Generator;
 use JchOptimize\Core\Exception;
 use JchOptimize\Core\Exception\PregErrorException;
@@ -130,11 +132,11 @@ class CssProcessor implements LoggerAwareInterface, ContainerAwareInterface, Ser
 
         $oParser = new Parser();
         $cssRule = new CssSearchObject();
-        $cssRule->setCssMatch(Parser::cssRuleToken());
+        $cssRule->setCssMatch(CssRule::cssRuleWithCaptureValueToken());
         $oParser->setCssSearchObject($cssRule);
 
         $nestedAtRule = new CssSearchObject();
-        $nestedAtRule->setCssMatch(Parser::cssNestingAtRulesToken());
+        $nestedAtRule->setCssMatch(NestingAtRule::cssNestingAtRuleWithCaptureGroupToken());
         $oParser->setCssSearchObject($nestedAtRule);
 
         try {
@@ -246,35 +248,47 @@ class CssProcessor implements LoggerAwareInterface, ContainerAwareInterface, Ser
 
     public function optimizeCssDelivery(): void
     {
-        if (!$this->optimizeCssDeliveryEnabled()) {
+        if (!$this->optimizeCssDeliveryEnabled() && $this->getCssInfos()->isAboveFold() !== true) {
             return;
         }
 
         !JCH_DEBUG ?: $this->profiler->start('OptimizeCssDelivery');
+        $callback = $this->extractCriticalCssCallback;
+        $profiler = $callback->getDependencies()->getProfiler();
+        $callback->setProfiler($profiler);
+
+        $o = 'Optimize Css Delivery: ' . $this->getCssInfos()->display();
+        $profiler?->start($o);
 
         $oParser = new Parser();
         $oCssSearchObject = new CssSearchObject();
-        $oCssSearchObject->setCssMatch(Parser::cssRuleToken());
+        $oCssSearchObject->setCssMatch(CssRule::cssRuleWithCaptureValueToken());
         $oParser->setCssSearchObject($oCssSearchObject);
 
         $atRuleSearchObject = new CssSearchObject();
-        $atRuleSearchObject->setCssMatch(Parser::cssNestingAtRulesToken());
+        $atRuleSearchObject->setCssMatch(NestingAtRule::cssNestingAtRuleWithCaptureGroupToken());
         $oParser->setCssSearchObject($atRuleSearchObject);
 
+        $callback->initBudget(null);
+
         try {
-            $this->cacheObj->setContents(
-                $oParser->processMatchesWithCallback(
-                    $this->cacheObj->getContents(),
-                    $this->extractCriticalCssCallback
-                )
-            );
-            $this->cacheObj->setCriticalCss($this->extractCriticalCssCallback->getAndResetSecondaryCss());
+            $p = 'process_match_with_callback';
+            $profiler?->start($p);
+            $processed = $oParser->processMatchesWithCallback($this->cacheObj->getContents(), $callback);
+            $profiler?->stop($p);
+
+            $this->cacheObj->setContents($processed);
+            $this->cacheObj->setCriticalCss($callback->getAndResetSecondaryCss());
+            $this->cacheObj->setDynamicCriticalCss($callback->getAndResetTertiaryCss());
         } catch (PregErrorException $e) {
             $this->logger?->error('Extracting Critical CSS failed: ' . $e->getMessage());
         }
-        $this->cacheObj->merge($this->extractCriticalCssCallback->getCacheObject());
-        $this->extractCriticalCssCallback->getDependencies()
-            ->addToCriticalCssAggregate($this->cacheObj->getCriticalCss());
+        $this->cacheObj->merge($callback->getMergedCacheObject());
+        $callback->getDependencies()
+            ->addToCriticalCssAggregate($this->cacheObj->getCriticalCss())
+            ->addToDynamicCriticalCssAggregate($this->cacheObj->getDynamicCriticalCss());
+
+        $profiler?->stop($o);
 
         !JCH_DEBUG ?: $this->profiler->stop('OptimizeCssDelivery', true);
     }
@@ -293,7 +307,7 @@ class CssProcessor implements LoggerAwareInterface, ContainerAwareInterface, Ser
 
         $parser = new Parser();
         $atRuleSearchObject = new CssSearchObject();
-        $atRuleSearchObject->setCssMatch(Parser::cssNestingAtRulesToken());
+        $atRuleSearchObject->setCssMatch(NestingAtRule::cssNestingAtRuleWithCaptureGroupToken());
         $parser->setCssSearchObject($atRuleSearchObject);
 
         $criticalCssDependencies = $this->postProcessCriticalCssCallback->getDependencies();

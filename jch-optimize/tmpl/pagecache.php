@@ -16,7 +16,7 @@ defined('_JCH_EXEC') or die('Restricted Access');
 
 ?>
 <!-- Administrator form for browse views -->
-<form action="options-general.php?page=jch_optimize&tab=pagecache" method="post" name="adminForm" id="adminForm">
+<form action="<?= $action ?>" method="post" name="adminForm" id="adminForm">
     <div id="j-main-container" class="j-main-container">
         <!-- Filters and ordering -->
         <?= $this->fetch('pagecache_filters.php', $data); ?>

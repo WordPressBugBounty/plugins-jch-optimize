@@ -19,6 +19,7 @@ use _JchOptimizeVendor\V91\Psr\Log\NullLogger;
  * Trait Debug  - To use the Debug trait you must add a PSR-3 compliant Logger to the class using this trait
  *
  * @package CodeAlfa\RegexTokenizer\Debug
+ * @deprecated use Profiler instead
  */
 trait Debug
 {

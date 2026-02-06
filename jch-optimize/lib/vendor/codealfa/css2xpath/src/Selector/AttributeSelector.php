@@ -4,16 +4,9 @@ namespace CodeAlfa\Css2Xpath\Selector;
 
 class AttributeSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
 {
-    protected ?string $namespace;
-    protected string $name;
-    protected string $operator;
-    protected string $value;
-    public function __construct(string $name, string $value = '', string $operator = '', ?string $namespace = null)
+    public function __construct(protected string $name, protected string $value = '', protected string $operator = '', protected ?string $namespace = null)
     {
-        $this->name = $name;
         $this->value = $this->cssStripSlash($value);
-        $this->operator = $operator;
-        $this->namespace = $namespace;
     }
     public function render(): string
     {
@@ -28,7 +21,7 @@ class AttributeSelector extends \CodeAlfa\Css2Xpath\Selector\AbstractSelector
             '*=' => "contains(@{$attrName}, {$delim}{$this->getValue()}{$delim})",
             default => "@{$attrName}",
         };
-        return "[{$attrExpression}]";
+        return "{$attrExpression}";
     }
     public function getNamespace(): ?string
     {

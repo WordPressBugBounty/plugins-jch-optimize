@@ -20,15 +20,15 @@ use JchOptimize\Core\SystemUri;
 use JchOptimize\WordPress\Html\TabContent;
 
 /**
- * @var PathsInterface $pathsUtils
+ * @var PathsInterface  $pathsUtils
  * @var PluginInterface $plugin
  */
 
 $modalData = [
-    'baseUrl' => SystemUri::siteBaseFull($pathsUtils),
-    'loadingImageUrl' => $pathsUtils->mediaUrl() . '/core/images/loader.gif',
+    'baseUrl'          => SystemUri::homePageAbsolute($pathsUtils),
+    'loadingImageUrl'  => $pathsUtils->mediaUrl() . '/core/images/loader.gif',
     'tableBodyAjaxUrl' => admin_url('admin-ajax.php') . '?action=jch_configure_js_table_body',
-    'autoSaveAjaxUrl' => admin_url('admin-ajax.php') . '?action=jch_configure_js_auto_save',
+    'autoSaveAjaxUrl'  => admin_url('admin-ajax.php') . '?action=jch_configure_js_auto_save',
 ];
 /** @var PhpRenderer $modalRenderer */
 $modalRenderer = clone $this;
@@ -37,7 +37,7 @@ $modalRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/configure_helper');
 ?>
 
 <form action="options.php" method="post" id="jch-optimize-settings-form">
-    <div class="jch-bs-container-fluid box-sizing-border-box mt-n3">
+    <div class="container-fluid box-sizing-border-box mt-n3">
         <div class="row box-sizing-border-box">
             <div id="settings-navigation" class="col-12 col-md-2 box-sizing-border-box">
                 <ul class="nav flex-wrap flex-md-column nav-pills">
@@ -142,8 +142,8 @@ $modalRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/configure_helper');
                     <li class="nav-item">
                         <a class="nav-link" href="#miscellaneous-tab" data-bs-toggle="tab">
                             <div>
-                                <div class="fs-6 fw-bold mb-1"><?= __('Misc', 'jch-optimize') ?><span
-                                            class="d-md-none d-lg-inline"><?= __('ellaneous', 'jch-optimize') ?></span>
+                                <div class="fs-6 fw-bold mb-1">
+                                    <span><?= __('Misc', 'jch-optimize') ?></span><span class="d-md-none d-lg-inline"><?= __('ellaneous', 'jch-optimize') ?></span>
                                 </div>
                                 <small class="text-wrap d-none d-lg-block"><?= __(
                                     'Reduce DOM, Mode Switcher',
@@ -167,10 +167,12 @@ $modalRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/configure_helper');
                        name="jch-optimize_settings[hidden_api_secret]"
                        value="11e603aa">
 
-                <div id="sticky-submit-button" class="position-sticky bottom-0 pb-1 px-4 border-top border-5" style="background-color: #f0f0f1; z-index: 100;">
-                <?php submit_button('Save Settings', 'primary large', 'jch-optimize_settings_submit') ?>
+                <div id="sticky-submit-button" class="position-sticky bottom-0 pb-1 px-4 border-top border-5"
+                     style="background-color: #f0f0f1; z-index: 100;">
+                    <?php submit_button('Save Settings', 'primary large', 'jch-optimize_settings_submit') ?>
                 </div>
-                <div id="sticky-overlap-sentinel" class="position-absolute bottom-0 start-0 w-100 pe-none" style="height: 1px"></div>
+                <div id="sticky-overlap-sentinel" class="position-absolute bottom-0 start-0 w-100 pe-none"
+                     style="height: 1px"></div>
             </div>
         </div>
     </div>

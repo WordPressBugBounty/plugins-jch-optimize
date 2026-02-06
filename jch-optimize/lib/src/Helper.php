@@ -34,6 +34,7 @@ use function is_object;
 use function preg_match;
 use function preg_replace;
 use function rmdir;
+use function strtolower;
 use function unlink;
 
 defined('_JCH_EXEC') or die('Restricted access');
@@ -163,8 +164,8 @@ class Helper
 
         foreach ($needles as $needle) {
             //Remove all spaces from test string and excluded string
-            $needle = preg_replace('#\s#', '', $needle);
-            $haystack = preg_replace('#\s#', '', html_entity_decode($haystack));
+            $needle = strtolower((string)preg_replace('#\s#', '', $needle));
+            $haystack = strtolower((string)preg_replace('#\s#', '', html_entity_decode($haystack)));
 
             if ($needle && str_contains($haystack, $needle)) {
                 return true;

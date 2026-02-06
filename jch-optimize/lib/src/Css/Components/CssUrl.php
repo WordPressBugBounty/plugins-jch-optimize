@@ -79,7 +79,7 @@ class CssUrl implements CssComponents
         $esc = self::cssEscapedString();
 
         return "url\(\s*+(?<delimiter>['\"]?)(?<url>"
-         . "(?<=\")(?>[^\"\\\\]++|{$esc})++|(?<=')(?>[^'\\\\]++|{$esc})++|(?>[^)\\\\]++|{$esc})++"
+         . "(?<=\")(?>[^\"\\\\]++|{$esc})++|(?<=')(?>[^'\\\\]++|{$esc})++|(?>[^)\\\\]++|{$esc})*?"
         . ")['\"]?\s*+\)";
     }
 

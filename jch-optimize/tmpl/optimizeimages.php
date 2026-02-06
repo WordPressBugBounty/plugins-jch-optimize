@@ -58,7 +58,7 @@ $iconsRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/dashicons');
 /** @var Icons $icons */
 ?>
 
-<div class="jch-bs-container-fluid box-sizing-border-box">
+<div class="container-fluid box-sizing-border-box">
     <div class="row g-3 box-sizing-border-box">
         <div class="col-12 col-md-8 box-sizing-border-box">
             <div class="bg-white p-4" style="min-height: 470px">
@@ -76,7 +76,7 @@ $iconsRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/dashicons');
                     })
                 </script>
                 <div id="optimize-images-container">
-                        <div class="jch-bs-container-fluid box-sizing-border-box">
+                        <div class="container-fluid box-sizing-border-box">
                             <div class="row box-sizing-border-box">
                                 <div class="col-12 col-md-4 box-sizing-border-box">
                                     <div id="file-tree-container">
@@ -107,16 +107,14 @@ $iconsRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/dashicons');
             </div>
         </div>
         <div class="col box-sizing-border-box">
-            <div class="jch-bs-card mb-3">
-                <div class="jch-bs-card-header">
-                    <h2>
+            <div class="card mb-3">
+                <div class="card-header fs-5 py-3">
                         <span class="fa fa-folder-open"></span>
                         <?php _e('Optimize By Folders', 'jch-optimize') ?>
-                    </h2>
                 </div>
-                <div class="jch-bs-card-body">
-                    <nav class="jch-dash-icons px-3 pb-3">
-                        <ul class="nav flex-wrap">
+                <div class="card-body">
+                    <nav class="jch-dash-icons p-3">
+                        <ul class="nav d-grid flex-wrap m-0">
                             <?= $iconsRenderer->fetch('icon.php', ['displayData' => $aManualOptimize]) ?>
                         </ul>
                     </nav>
@@ -124,31 +122,27 @@ $iconsRenderer->setTemplatePath(JCH_PLUGIN_DIR . 'layouts/dashicons');
             </div>
         </div>
         <div class="col box-sizing-border-box">
-            <div class="jch-bs-card mb-3">
-                <div class="jch-bs-card-header">
-                    <h2>
+            <div class="card mb-3">
+                <div class="card-header fs-5 py-3">
                         <span class="fa fa-external-link-square-alt"></span>
                         <?php _e('Optimize By URLs', 'jch-optimize') ?>
-                    </h2>
                 </div>
-                <div class="jch-bs-card-body">
-                    <nav class="jch-dash-icons px-3 pb-3">
-                        <ul class="nav flex-wrap">
+                <div class="card-body">
+                    <nav class="jch-dash-icons p-3">
+                        <ul class="nav d-grid flex-wrap m-0">
                             <?= $iconsRenderer->fetch('icon.php', ['displayData' => $aAutoOptimize]) ?>
                         </ul>
                     </nav>
                 </div>
             </div>
-            <div class="jch-bs-card mb-3">
-                <div class="jch-bs-card-header">
-                    <h2>
+            <div class="card mb-3">
+                <div class="card-header fs-5 py-3">
                         <span class="fa fa-tools"></span>
                         <?php _e('Utility Settings', 'jch-optimize') ?>
-                    </h2>
                 </div>
-                <div class="jch-bs-card-body">
-                    <nav class="jch-dash-icons px-3 pb-3">
-                        <ul class="nav flex-wrap">
+                <div class="card-body">
+                    <nav class="jch-dash-icons p-3">
+                        <ul class="nav d-grid flex-wrap m-0">
                             <?php $buttons = $icons->compileUtilityIcons($icons->getApi2UtilityArray()) ?>
                             <?php foreach ($buttons as $button): ?>
                             <?= $iconsRenderer->fetch('icon.php', ['displayData' => $button]) ?>

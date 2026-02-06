@@ -81,8 +81,18 @@ class HtmlElementBuilder
     public static function load(string $html): HtmlElementInterface
     {
         $builder = new BuildHtmlElement();
-
         $builder->build($html);
+
+        return $builder->getElement();
+    }
+
+    /**
+     * @throws PregErrorException
+     */
+    public static function loadFromMatch(array $matches): HtmlElementInterface
+    {
+        $builder = new BuildHtmlElement();
+        $builder->buildFromMatch($matches);
 
         return $builder->getElement();
     }

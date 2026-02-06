@@ -28,7 +28,7 @@ use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FeatureHelpers\ReduceDom;
 use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
-use JchOptimize\Core\FeatureHelpers\Webp;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\FeatureHelpers\YouTubeFacade;
 use JchOptimize\Core\Html\AsyncManager;
 use JchOptimize\Core\Html\CacheManager;
@@ -63,8 +63,6 @@ class FeatureHelpers implements ServiceProviderInterface
             return new DynamicJs(
                 $container,
                 $container->get(Registry::class),
-                $container->get(CacheManager::class),
-                $container->get(HtmlManager::class),
             );
         });
 
@@ -116,8 +114,8 @@ class FeatureHelpers implements ServiceProviderInterface
             );
         });
 
-        $container->share(Webp::class, function (Container $container): Webp {
-            return new Webp(
+        $container->share(AvifWebp::class, function (Container $container): AvifWebp {
+            return new AvifWebp(
                 $container,
                 $container->get(Registry::class),
                 $container->get(Cdn::class),
@@ -232,7 +230,7 @@ class FeatureHelpers implements ServiceProviderInterface
             new LazyListener([
                 /** @see AsyncManager::loadAsyncManagerAssets() */
                 'listener' => AsyncManager::class,
-                 'method' => 'loadAsyncManagerAssets'
+                'method' => 'loadAsyncManagerAssets'
             ], $container)
         );
 

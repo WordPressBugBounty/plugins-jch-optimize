@@ -57,7 +57,7 @@ abstract class AbstractCallback implements ContainerAwareInterface, CallbackInte
         }
 
         try {
-            $element = HtmlElementBuilder::load($matches[0]);
+            $element = HtmlElementBuilder::loadFromMatch($matches);
         } catch (PregErrorException) {
             return $matches[0];
         }

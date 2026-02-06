@@ -50,33 +50,42 @@ class FileUtils
         }
     }
 
-    public static function prepareFileForDisplay(UriInterface $uri, bool $truncate = true, int $length = 80): string
+    public static function prepareFileForDisplay(UriInterface $uri, bool $truncate = true, int $length = 65): string
     {
         if (!$truncate) {
             return (string) $uri;
         }
 
+        $newUri = clone $uri;
         $eps = '';
         $preEps = '';
-        $url = $uri->getPath();
+        $path = $newUri->getPath();
 
-        if (UriComparator::isCrossOrigin($uri)) {
-            $host  = $uri->getHost();
-            $length -= strlen($host) - 10;
-            $preEps = $host;
+        if ($path === '/' && ($query = $newUri->getQuery()) !== '') {
+            $queryLen = strlen($query);
+            if ($queryLen > $length - 1) {
+                $query = substr($query, 0, -($queryLen - $length + 4)) . '...';
+            }
+
+            $path .= '?' . $query;
         }
 
-        if (strlen($url) > $length) {
-            $url = substr($url, -$length);
-            $url = preg_replace('#^[^/]*+/#', '/', $url);
+        if (UriComparator::isCrossOrigin($newUri)) {
+            $domain  = $newUri->withPort(null)->withPath('')->withQuery('')->withFragment('');
+            $length -= strlen($domain);
+            $preEps = $domain;
+        }
+
+        if (strlen($path) > $length) {
+            $path = substr($path, -$length);
             $preEps = $preEps !== '' ? $preEps . '/' : '';
             $eps = '...';
         }
 
-        return $preEps . $eps . $url;
+        return $preEps . $eps . $path;
     }
 
-    public static function prepareContentForDisplay(string $content, bool $truncate = true, int $length = 80): string
+    public static function prepareContentForDisplay(string $content, bool $truncate = true, int $length = 60): string
     {
         if (!$truncate) {
             return $content;
@@ -101,7 +110,13 @@ class FileUtils
                $uri = $uri->withScheme('')->withHost('')->withPort(null)->withUserInfo('');
         }
 
-         return (string) $uri->withQuery('')->withFragment('');
+        $query = '';
+        if ($uri->getPath() === '/' && ($query = $uri->getQuery()) !== '') {
+            $queryLen = strlen($query);
+            $query = substr($query, 0, -($queryLen - 60));
+        }
+
+        return (string) $uri->withQuery($query)->withFragment('');
     }
 
     public static function prepareOriginValue(UriInterface $uri): string

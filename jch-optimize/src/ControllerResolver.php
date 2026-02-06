@@ -18,6 +18,7 @@ use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use _JchOptimizeVendor\V91\Joomla\Input\Input;
 use InvalidArgumentException;
+use JchOptimize\Core\Mvc\Controller;
 
 use function call_user_func;
 use function is_null;
@@ -33,41 +34,47 @@ class ControllerResolver implements ContainerAwareInterface
         $this->container = $container;
         $this->input = $input;
     }
+
     /**
      */
     public function resolve(): void
     {
-        $controller = $this->getController();
-
-        if ($this->container->has($controller)) {
-            call_user_func([$this->container->get($controller), 'execute']);
-        } else {
-            throw new InvalidArgumentException(sprintf('Cannot resolve controller aliased: %s', $controller));
-        }
+        call_user_func([$this->getController(), 'execute']);
     }
 
-    private function getController(): string
+    private function getControllerKey(): string
     {
         /** @var string|null $task */
         $task = $this->input->get('task');
 
-        if (! is_null($task)) {
+        if (!is_null($task)) {
             return $task;
         }
 
         /** @var string|null $view */
         $view = $this->input->get('view');
         /** @var string|null $tab */
-        $tab  = $this->input->get('tab');
+        $tab = $this->input->get('tab');
 
-        if (! is_null($tab) && is_null($view)) {
+        if (!is_null($tab) && is_null($view)) {
             return $tab;
         }
 
-        if (! is_null($view)) {
+        if (!is_null($view)) {
             return $view;
         }
 
         return 'main';
+    }
+
+    public function getController(): Controller
+    {
+        $key = $this->getControllerKey();
+
+        if ($this->container->has($key)) {
+            return $this->container->get($key);
+        } else {
+            throw new InvalidArgumentException(sprintf('Cannot resolve controller aliased: %s', $key));
+        }
     }
 }

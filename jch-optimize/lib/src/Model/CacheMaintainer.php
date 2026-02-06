@@ -61,7 +61,8 @@ class CacheMaintainer
         protected TaggableInterface $taggableCache,
         protected PageCache $pageCache,
         protected PathsInterface $paths,
-        protected CacheInterface $cacheUtils
+        protected CacheInterface $cacheUtils,
+        protected ?CloudflarePurger $cloudflarePurger = null
     ) {
         $this->pageCacheStorage = $pageCache->getStorage();
     }
@@ -210,6 +211,7 @@ class CacheMaintainer
         }
 
         //Clean third party cache
+        $this->cloudflarePurger?->purge();
         $this->cacheUtils->cleanThirdPartyPageCache();
 
         return (bool)$success;

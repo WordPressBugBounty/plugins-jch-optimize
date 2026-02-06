@@ -32,7 +32,7 @@ class PreloadsCollection extends SplObjectStorage
      * @return void
      * @psalm-suppress ParamNameMismatch
      */
-    public function attach(object $object, mixed $info = null): void
+    public function offsetSet(mixed $object, mixed $info = null): void
     {
         $this->rewind();
 
@@ -52,7 +52,7 @@ class PreloadsCollection extends SplObjectStorage
                     && $existingFilename == $newFilename
                 ) {
                     if ($newExt == 'woff2') {
-                        $this->detach($preload);
+                        $this->offsetUnset($preload);
                         break;
                     }
 
@@ -64,7 +64,7 @@ class PreloadsCollection extends SplObjectStorage
                     }
 
                     if ($newExt == 'woff' && $existingExt == 'ttf') {
-                        $this->detach($preload);
+                        $this->offsetUnset($preload);
                         break;
                     }
 
@@ -78,6 +78,19 @@ class PreloadsCollection extends SplObjectStorage
             $this->next();
         }
 
-        parent::attach($object, $info);
+        parent::offsetSet($object, $info);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function attach(object $object, mixed $info = null): void
+    {
+        $this->offsetSet($object, $info);
+    }
+
+    public function current(): Preload
+    {
+        return parent::current();
     }
 }

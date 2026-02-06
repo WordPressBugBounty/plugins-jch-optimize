@@ -17,6 +17,7 @@ use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use JchOptimize\Core\CacheObject;
+use JchOptimize\Core\Css\Callbacks\Dependencies\CriticalCssDomainProfiler;
 use JchOptimize\Core\Css\Components\NestingAtRule;
 use JchOptimize\Core\Css\CssComponents;
 use JchOptimize\Core\Css\Parser;
@@ -34,7 +35,14 @@ abstract class AbstractCallback implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    protected array $conditionalAtRules = ['media', 'supports', 'layer', 'scope', 'container', 'document'];
+    protected array $conditionalAtRules = [
+        'media',
+        'supports',
+        'layer',
+        'scope',
+        'container',
+        'document',
+    ];
 
     private ?Parser $parser = null;
 
@@ -42,19 +50,36 @@ abstract class AbstractCallback implements ContainerAwareInterface
 
     protected array $secondaryCssByLevels = [0 => ''];
 
+    protected array $tertiaryCssByLevels = [0 => ''];
+
     protected CacheObject $cacheObject;
 
     private FileInfo|null $cssInfo = null;
+
+    private array $supportedComponents;
+
+    private ?CriticalCssDomainProfiler $profiler = null;
+
+    private string $conditionalAtRulesRegex;
 
     public function __construct(Container $container, protected Registry $params)
     {
         $this->container = $container;
         $this->cacheObject = new CacheObject();
+        $this->supportedComponents = $this->supportedCssComponents();
+        $this->conditionalAtRulesRegex = '^@(?:' . implode('|', $this->conditionalAtRules) . ')';
     }
 
     public function setCssInfo(FileInfo $cssInfo): static
     {
         $this->cssInfo = $cssInfo;
+
+        return $this;
+    }
+
+    public function setProfiler(?CriticalCssDomainProfiler $profiler): static
+    {
+        $this->profiler = $profiler;
 
         return $this;
     }
@@ -77,25 +102,32 @@ abstract class AbstractCallback implements ContainerAwareInterface
             return $matches[0];
         }
 
-        try {
-            $nestingAtRule = NestingAtRule::load($matches[0]);
+        if (preg_match("#{$this->conditionalAtRulesRegex}#", $matches[0])) {
+            $n = 'nesting_at_rule_load';
+            $this->profiler?->start($n);
+            $nestingAtRule = NestingAtRule::loadFromMatch($matches);
+            $this->profiler?->stop($n);
 
-            if (in_array($nestingAtRule->getIdentifier(), $this->conditionalAtRules)) {
-                $this->incrementRecursion();
-                $processedContent = $this->getParser()->processMatchesWithCallback(
-                    $nestingAtRule->getCssRuleList(),
-                    $this
-                );
-                $this->decrementRecursion($nestingAtRule);
+            $this->incrementRecursion();
+            $processedContent = $this->getParser()->processMatchesWithCallback(
+                $nestingAtRule->getCssRuleList(),
+                $this
+            );
+            $this->decrementRecursion($nestingAtRule);
 
-                return $nestingAtRule->setCssRuleList($processedContent)->render();
-            }
-        } catch (InvalidArgumentException) {
+            return $nestingAtRule->setCssRuleList($processedContent)->render();
         }
 
-        foreach ($this->supportedCssComponents() as $component) {
+        foreach ($this->supportedComponents as $component) {
             try {
-                $cssComponent = $component::load($matches[0]);
+                $d = 'component_load';
+                $this->profiler?->start($d);
+                if (method_exists($component, 'loadFromMatch')) {
+                    $cssComponent = $component::loadFromMatch($matches);
+                } else {
+                    $cssComponent = $component::load($matches[0]);
+                }
+                $this->profiler?->stop($d);
             } catch (InvalidArgumentException) {
                 continue;
             }
@@ -134,6 +166,14 @@ abstract class AbstractCallback implements ContainerAwareInterface
         return $css;
     }
 
+    public function getAndResetTertiaryCss(): string
+    {
+        $css = $this->tertiaryCssByLevels[$this->recursionLevel];
+        $this->tertiaryCssByLevels[$this->recursionLevel] = '';
+
+        return $css;
+    }
+
     public function getCacheObject(): CacheObject
     {
         return $this->cacheObject;
@@ -144,10 +184,16 @@ abstract class AbstractCallback implements ContainerAwareInterface
         $this->secondaryCssByLevels[$this->recursionLevel] .= $cssComponent->render();
     }
 
+    protected function addToTertiaryCss(CssComponents $cssComponent): void
+    {
+        $this->tertiaryCssByLevels[$this->recursionLevel] .= $cssComponent->render();
+    }
+
     private function incrementRecursion(): void
     {
         $this->recursionLevel++;
         $this->secondaryCssByLevels[$this->recursionLevel] = '';
+        $this->tertiaryCssByLevels[$this->recursionLevel] = '';
     }
 
     private function decrementRecursion(NestingAtRule $nestingAtRule): void
@@ -158,7 +204,15 @@ abstract class AbstractCallback implements ContainerAwareInterface
                 ->render();
         }
 
+        if ($this->tertiaryCssByLevels[$this->recursionLevel] !== '') {
+            $this->tertiaryCssByLevels[$this->recursionLevel - 1] .= $nestingAtRule
+                ->setCssRuleList($this->tertiaryCssByLevels[$this->recursionLevel])
+                ->render();
+        }
+
         unset($this->secondaryCssByLevels[$this->recursionLevel]);
+        unset($this->tertiaryCssByLevels[$this->recursionLevel]);
+
         $this->recursionLevel--;
     }
 }

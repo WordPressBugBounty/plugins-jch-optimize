@@ -28,34 +28,69 @@ class ConfigurationsHtml extends View
 {
     public function loadResources(): void
     {
-        wp_register_style('jch-excludesjs-css', JCH_PLUGIN_URL . 'media/css/js-excludes.css');
-        wp_register_script('jch-tabstate-js', JCH_PLUGIN_URL . 'media/js/tabs-state.js', [
-                'jquery',
-                'jch-bootstrap-js'
-        ], JCH_VERSION, true);
-        wp_register_script('jch-sticky-overlap-observer', JCH_PLUGIN_URL . 'media/js/sticky-overlap-observer.js', [], JCH_VERSION, true);
-        wp_register_script('jch-multiselect-js', JCH_PLUGIN_URL . 'media/core/js/multiselect.js', [
+        wp_register_style(
+            'jch-multiselect',
+            JCH_PLUGIN_URL . 'media/core/css/multiselect.css',
+            [],
+            JCH_VERSION
+        );
+        wp_register_style(
+            'jch-wp-multiselect',
+            JCH_PLUGIN_URL . 'media/css/wp-multiselect.css',
+            ['jch-multiselect'],
+            JCH_VERSION
+        );
+        wp_register_style(
+            'jch-choices',
+            JCH_PLUGIN_URL . 'media/choices.js/styles/choices.css',
+            [],
+            JCH_VERSION
+        );
+
+        wp_enqueue_style('jch-multiselect');
+        wp_enqueue_style('jch-wp-multiselect');
+        wp_enqueue_style('jch-choices');
+
+        wp_register_script('jch-tab-state', JCH_PLUGIN_URL . 'media/js/tabs-state.js', [
             'jquery',
-            'jch-adminutility-js',
-            'jch-platformwordpress-js'
-        ], JCH_VERSION, true);
-        wp_enqueue_style('jch-excludesjs-css');
-        wp_enqueue_script('jch-tabstate-js');
+            'jch-bootstrap'
+        ], JCH_VERSION, ['in_footer' => false]);
+        wp_register_script(
+            'jch-sticky-overlap-observer',
+            JCH_PLUGIN_URL . 'media/js/sticky-overlap-observer.js',
+            [],
+            JCH_VERSION,
+        );
+        wp_register_script('jch-multiselect', JCH_PLUGIN_URL . 'media/core/js/multiselect.js', [
+            'jquery',
+            'jch-admin-utility',
+            'jch-platform-wordpress'
+        ],JCH_VERSION, ['in_footer' => false]);
+        wp_register_script(
+            'jch-choices',
+            JCH_PLUGIN_URL . 'media/choices.js/scripts/choices.min.js',
+            [],
+            JCH_VERSION,
+            ['in_footer' => false]
+        );
+
+        wp_enqueue_script('jch-tab-state');
         wp_enqueue_script('jch-sticky-overlap-observer');
-        wp_enqueue_script('jch-multiselect-js');
+        wp_enqueue_script('jch-multiselect');
+        wp_enqueue_script('jch-choices');
 
         if (JCH_PRO) {
             wp_register_script(
-                'jch-pagecacheformcontrol-js',
+                'jch-page-cache-form-control',
                 JCH_PLUGIN_URL . 'media/js/pagecache-form-control.js',
-                ['jquery', 'jch-chosen-js'],
+                ['jquery'],
                 JCH_VERSION,
-                true
+                ['in_footer' => true]
             );
 
-            wp_enqueue_script('jch-pagecacheformcontrol-js');
+            wp_enqueue_script('jch-page-cache-form-control');
         }
 
-        wp_add_inline_style('jch-wordpress-css', '*{overflow-anchor: none}');
+        wp_add_inline_style('jch-wordpress', '*{overflow-anchor: none}');
     }
 }

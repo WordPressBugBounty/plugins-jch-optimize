@@ -264,9 +264,14 @@ class BaseElement implements HtmlElementInterface
             }
 
             $newAttribute = new Attribute($name, $value, $delimiter);
-            $attributes->attach($newAttribute);
+            $attributes->offsetSet($newAttribute);
         }
 
         $this->attributes = $attributes;
+    }
+
+    public function getAttributes(): AttributesCollection
+    {
+        return $this->attributes;
     }
 }
